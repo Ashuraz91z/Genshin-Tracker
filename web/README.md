@@ -65,7 +65,7 @@ Pour une installation Node sans Docker : dossier de travail `web`, installation 
 | `DATABASE_PATH` | Chemin absolu vers le SQLite persistant |
 | `DOWNLOAD_PATH` | Chemin absolu vers le ZIP Kamera FR 0.2 |
 
-Le mode `npm start` lance le serveur standalone avec `HOSTNAME` (par défaut `0.0.0.0`) et le port `PORT` (3000 par défaut) ; placer un reverse proxy HTTPS devant et limiter l'accès direct au port. Le mode dev écoute uniquement sur `127.0.0.1`. Le lanceur conserve explicitement le chemin `web/data/tracker.sqlite`, même si le serveur standalone change de dossier de travail.
+Le mode `npm start` lance le serveur standalone avec `HOSTNAME` (par défaut `0.0.0.0`, ou la valeur de l’ancien `HOST` si elle est définie) et le port `PORT` (3000 par défaut) ; placer un reverse proxy HTTPS devant et limiter l'accès direct au port. Le mode dev écoute uniquement sur `127.0.0.1`. Le lanceur conserve explicitement le chemin `web/data/tracker.sqlite`, même si le serveur standalone change de dossier de travail. Les chemins `DATABASE_PATH` et `DOWNLOAD_PATH` relatifs sont résolus par rapport à `web/`, comme avant la migration.
 
 Sauvegarder la base après arrêt du service pour une copie cohérente. Protéger le dossier de données et ses sauvegardes.
 

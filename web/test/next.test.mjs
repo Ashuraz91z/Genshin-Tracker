@@ -4,7 +4,7 @@ import { spawn } from 'node:child_process';
 import { createServer } from 'node:net';
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { dirname, join } from 'node:path';
+import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { once } from 'node:events';
 import { setTimeout as delay } from 'node:timers/promises';
@@ -17,7 +17,7 @@ test('Next production preserves existing accounts and device keys, serves all pa
   const original=openStore(dbPath),user=original.register('Migration','migration-password-123');
   const cookie='gt_session='+original.session(user),pair=original.pair(user),device=original.redeem(pair.code,'Existing Windows PC');original.close();
   const socket=createServer();socket.listen(0,'127.0.0.1');await once(socket,'listening');const port=socket.address().port;await new Promise(resolve=>socket.close(resolve));
-  let logs='';const child=spawn(process.execPath,[join(web,'scripts/start.mjs')],{cwd:web,env:{...process.env,NODE_ENV:'production',HOSTNAME:'127.0.0.1',PORT:String(port),DATABASE_PATH:dbPath,DOWNLOAD_PATH:download,PUBLIC_URL:'',NEXT_TELEMETRY_DISABLED:'1'},stdio:['ignore','pipe','pipe']});
+  let logs='';const child=spawn(process.execPath,[join(web,'scripts/start.mjs')],{cwd:web,env:{...process.env,NODE_ENV:'production',HOSTNAME:'127.0.0.1',PORT:String(port),DATABASE_PATH:relative(web,dbPath),DOWNLOAD_PATH:relative(web,download),PUBLIC_URL:'',NEXT_TELEMETRY_DISABLED:'1'},stdio:['ignore','pipe','pipe']});
   child.stdout.on('data',chunk=>logs+=chunk);child.stderr.on('data',chunk=>logs+=chunk);
   t.after(async()=>{child.kill();if(child.exitCode===null)await once(child,'exit');rmSync(folder,{recursive:true,force:true});});
   const url='http://127.0.0.1:'+port;
