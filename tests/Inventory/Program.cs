@@ -46,3 +46,26 @@ var receipt=Newtonsoft.Json.Linq.JObject.Parse("{\"counts\":{\"characters\":0,\"
 var summary=string.Join("\n",SyncSummary.Describe(receipt));
 if(!summary.Contains("Personnages : 0 reçus")||!summary.Contains("aucune donnée lisible")||!summary.Contains("ancien inventaire conservé"))throw new Exception("Sync receipt hid a preserved or empty category.");
 Console.WriteLine("Sync receipts explain empty scans, received counts and preserved inventory.");
+
+var queue=System.IO.Path.Combine(System.IO.Path.GetTempPath(),"kamera-queue-"+Guid.NewGuid());System.IO.Directory.CreateDirectory(queue);
+try
+{
+    var bad=System.IO.Path.Combine(queue,"a.json");var good=System.IO.Path.Combine(queue,"b.json");
+    System.IO.File.WriteAllText(bad,"bad");System.IO.File.WriteAllText(good,"good");
+    var delivered=0;
+    await UploadQueue.Send(queue,payload=>{
+        if(payload=="bad")throw new UploadFailure(400,"Invalid old scan");
+        delivered++;return Task.FromResult(Newtonsoft.Json.Linq.JObject.Parse("{\"ok\":true}"));
+    },(text,ok)=>{});
+    if(delivered!=1||System.IO.File.Exists(good)||!System.IO.File.Exists(System.IO.Path.Combine(queue,"refused","a.json")))throw new Exception("A rejected old scan blocked a valid upload.");
+    System.IO.File.WriteAllText(good,"retry");
+    foreach(var code in new[]{401,429,503})
+    {
+        try{await UploadQueue.Send(queue,payload=>throw new UploadFailure(code,"Retry required"),(text,ok)=>{});throw new Exception("Transient/auth failures must stop the batch.");}catch(UploadFailure failure)when(failure.StatusCode==code){}
+        if(!System.IO.File.Exists(good))throw new Exception("Pending scan was lost after an auth/network error.");
+    }
+    await UploadQueue.Send(queue,payload=>Task.FromResult(Newtonsoft.Json.Linq.JObject.Parse("{\"ok\":true,\"duplicate\":true}")),(text,ok)=>{});
+    if(System.IO.File.Exists(good))throw new Exception("Acknowledged duplicate was not removed from the queue.");
+}
+finally{System.IO.Directory.Delete(queue,true);}
+Console.WriteLine("Upload queue: rejected scans isolated; 401/429/503 preserved; acknowledged retries removed.");

@@ -45,7 +45,7 @@ L'exhaustivité du compte et la précision OCR restent à vérifier dans le jeu.
 
 L'hébergement doit exécuter **Node.js 24+** avec disque persistant, ou Docker. Un hébergement statique/PHP seul ne suffit pas. Aucun serveur Hostinger n'a été modifié.
 
-Le paquet serveur de la release inclut les sources Next et le ZIP Windows attendu par le Dockerfile. Depuis un clone Git seul, télécharger l'asset `GenshinTracker-KameraFR-0.3.1.zip` dans `dist/` avant le build Docker.
+Le paquet serveur de la release inclut les sources Next et le ZIP Windows attendu par le Dockerfile. Depuis un clone Git seul, télécharger l'asset `GenshinTracker-KameraFR-0.3.2.zip` dans `dist/` avant le build Docker.
 
 Depuis `web/`, avec domaine pointant vers le serveur et ports 80/443 disponibles :
 
@@ -93,3 +93,13 @@ Kamera FR 0.3.0 peut se connecter avec le pseudo/mot de passe du tracker via `/a
 Déployer le serveur avant le compagnon Windows ; sauvegarder et garder le même DATABASE_PATH. Aucun changement de schéma SQLite. Mettre le nouveau ZIP à disposition et actualiser DOWNLOAD_PATH si une valeur personnalisée était définie. Les anciennes applications continuent d’envoyer leurs scans.
 
 Le journal détaille les quantités reçues et la décision pour chaque catégorie. Les rapports du nouveau compagnon contiennent les étapes horodatées. Les anciens rapports restent lisibles. L’import manuel exige un choix explicite pour remplacer un inventaire d’équipements existant ; cette permission n’est jamais acceptée depuis un envoi automatique d’appareil.
+
+## Stockage persistant — 0.4.2
+
+Si DATABASE_PATH est absent et PUBLIC_URL distant défini, la base n’est plus créée dans la sortie Next du déploiement. Sur Hostinger, un chemin contenant `hbuilds` utilise le dossier frère `tracker-data/tracker.sqlite`. Sinon, le stockage est dans `~/.local/share/genshin-tracker/<hôte-public>/tracker.sqlite`. Le mode localhost conserve `data/tracker.sqlite`. Une valeur explicite DATABASE_PATH garde toujours la priorité.
+
+Au démarrage du serveur, si la base persistante n’existe pas, les bases de ce site encore présentes dans les dossiers de builds sont examinées ; la plus récemment utilisée contenant des comptes est copiée avec VACUUM INTO, WAL compris, sans modifier la source. La publication du fichier est atomique. Aucune base persistante existante n’est écrasée. Cela ne récupère pas une base déjà supprimée par l’hébergeur et ne fusionne pas plusieurs comptes historiques. Sauvegarder la base et conserver ce dossier lors des mises à jour.
+
+131 portraits sur 133 entrées du catalogue sont maintenant locaux ; Mitya et Valeriy restent représentés par leurs initiales faute d’image dans le référentiel utilisé. Les URL alternatives HoYoWiki sont employées lorsque les anciens liens de portraits ne fonctionnent plus.
+
+Sur Hostinger, la préparation du paquet après build tente aussi cette sauvegarde avant le basculement du dossier `current/nodejs`. Vérifier le déploiement et l’accès au compte après la première mise à jour. L’import manuel n’actualise pas la date du dernier scan d’un PC : cette date indique uniquement un envoi réellement reçu de cet appareil.

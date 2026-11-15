@@ -1,8 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdtempSync, rmSync, mkdirSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { prepareDatabase } from '../lib/storage.mjs';
 import { openStore } from '../store.mjs';
 import { guestAccount } from '../lib/guest.mjs';
 import { createApp } from './http-fixture.mjs';
@@ -145,4 +146,20 @@ test('manual equipment replacement requires explicit authenticated import; devic
   assert.equal((await request('/api/import',{method:'POST',data:{good:changed,replaceInventory:true}})).status,401);
   const forced=await request('/api/import',{method:'POST',cookie:owner,data:{good:changed,replaceInventory:true}});assert.equal(forced.body.applied.weapons,'manual_replaced');
   const after=await request('/api/account',{cookie:owner});assert.equal(after.body.data.weapons[0].level,40);assert.equal(after.body.data.quality.weapons,'manual');assert.equal(after.body.data.artifacts.length,1);
+});
+
+test('Hostinger redeploys keep a stable database and migrate accounts, device tokens, sessions and committed WAL data',async t=>{
+  const root=mkdtempSync(join(tmpdir(),'genshin-hostinger-'));t.after(()=>rmSync(root,{recursive:true,force:true}));
+  const previous=join(root,'hbuilds','previous','nodejs');mkdirSync(join(previous,'data'),{recursive:true});
+  const original=openStore(join(previous,'data','tracker.sqlite')),user=original.register('Persistent','password123');
+  const session=original.session(user),pair=original.pair(user),device=original.redeem(pair.code,'Windows');
+  original.sync(user.id,'Windows',scan('before-redeploy'),device.deviceId);
+  const current=join(root,'hbuilds','new','nodejs');mkdirSync(current,{recursive:true});
+  const path=prepareDatabase({cwd:current,configured:undefined,publicUrl:'https://genshin.example.com'});
+  assert.equal(path,join(root,'tracker-data','tracker.sqlite'));assert.ok(existsSync(join(previous,'data','tracker.sqlite')));
+  const migrated=openStore(path);assert.equal(migrated.user(session).id,user.id);assert.equal(migrated.device(device.token).user_id,user.id);assert.equal(migrated.account(user).data.characters[0].level,80);
+  const next=join(root,'hbuilds','next','web');mkdirSync(next,{recursive:true});assert.equal(prepareDatabase({cwd:next,configured:undefined,publicUrl:'https://genshin.example.com'}),path);
+  assert.equal(prepareDatabase({cwd:next,configured:'custom.sqlite',publicUrl:'https://genshin.example.com'}),join(next,'custom.sqlite'));
+  assert.equal(prepareDatabase({cwd:next,configured:undefined,publicUrl:''}),join(next,'data/tracker.sqlite'));
+  migrated.close();original.close();
 });

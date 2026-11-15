@@ -23,6 +23,7 @@ namespace InventoryKamera
         private static readonly object ConfigLock = new object();
         internal static Action<string, bool> StatusChanged;
         internal static Action<JObject> AccountChanged;
+        internal static bool AccessRejected { get; private set; }
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         private static void Status(string text, bool ok = true) { Logger.Info(text); UserInterface.Trace(text); StatusChanged?.Invoke(text, ok); }
         private static Connection Load()
@@ -77,6 +78,7 @@ namespace InventoryKamera
                 if (File.Exists(ConfigPath)) File.Replace(temporary, ConfigPath, null);
                 else File.Move(temporary, ConfigPath);
             }
+            AccessRejected=false;
             AccountChanged?.Invoke(null);
         }
         internal static async Task Login(string url, string name, string password)
@@ -107,14 +109,20 @@ namespace InventoryKamera
             JObject result;
             try { result = JObject.Parse(text); }
             catch (JsonReaderException) { throw new InvalidDataException("Le site ne renvoie pas une réponse JSON valide (HTTP " + (int)response.StatusCode + "). Vérifiez son adresse et son déploiement."); }
-            if (!response.IsSuccessStatusCode) throw new InvalidOperationException("HTTP " + (int)response.StatusCode + " : " + ((string)result["error"] ?? "Requête refusée."));
+            if (!response.IsSuccessStatusCode) throw new UploadFailure((int)response.StatusCode,"HTTP " + (int)response.StatusCode + " : " + ((string)result["error"] ?? "Requête refusée."));
             return result;
+        }
+        private static bool IsCurrent(Connection config)
+        {
+            var current=Load();
+            return current!=null&&config!=null&&current.AccountId==config.AccountId&&current.Url==config.Url&&current.ProtectedToken==config.ProtectedToken;
         }
         internal static async Task RefreshAccount()
         {
+            Connection config=null;
             try
             {
-                var config = Load();
+                config = Load();
                 if (config == null) { Status("Connectez-vous une fois pour retrouver les données du site.", false); return; }
                 using (var client = Client(config.Url))
                 {
@@ -122,14 +130,14 @@ namespace InventoryKamera
                     using (var response = await client.GetAsync("/api/device/account"))
                     {
                         var result = await ReadResponse(response);
-                        var current = Load();
-                        if (current?.AccountId != config.AccountId || current.Url != config.Url) return;
+                        if (!IsCurrent(config)) return;
+                        AccessRejected=false;
                         AccountChanged?.Invoke(result);
                         Status("Compte « " + config.Username + " » actualisé : " + result["data"]?["characters"]?.Count() + " personnages, " + result["data"]?["weapons"]?.Count() + " armes, " + result["data"]?["artifacts"]?.Count() + " artéfacts.");
                     }
                 }
             }
-            catch (Exception ex) { Status("Impossible de relire les données du compte : " + ex.Message + " La connexion mémorisée est conservée. Si l’accès a été révoqué, reconnectez-vous.", false); }
+            catch (Exception ex) { if(!IsCurrent(config))return;if(ex is UploadFailure failure&&failure.StatusCode==401)AccessRejected=true;Status("Impossible de relire les données du compte : " + ex.Message + " Les données locales sont conservées. Reconnectez-vous si l’accès est refusé.", false); }
         }
         private static string QueueFolder(Connection config)
         {
@@ -140,18 +148,32 @@ namespace InventoryKamera
                 return Path.Combine(Folder, "outbox", identity);
             }
         }
+        private static int OtherPending(Connection config)
+        {
+            string root=Path.Combine(Folder,"outbox"),current=QueueFolder(config);
+            return Directory.Exists(root)?Directory.GetDirectories(root).Where(path=>path!=current).Sum(path=>Directory.GetFiles(path,"*.json").Length):0;
+        }
+        internal static void SendExisting(string path)
+        {
+            if(Load()==null)throw new InvalidOperationException("Connectez-vous au compte destinataire avant d’envoyer un fichier.");
+            var good=JObject.Parse(File.ReadAllText(path));
+            if((string)good["format"]!="GOOD")throw new InvalidDataException("Choisissez le fichier GOOD .json, pas son .rapport.json.");
+            Enqueue(path,Path.ChangeExtension(path,".rapport.json"));
+        }
         internal static void Enqueue(string goodPath, string reportPath)
         {
             try
             {
                 var config = Load();
                 if (config == null) { Status("Export local enregistré. Associez un compte dans Connexion pour les prochains scans."); return; }
-                string good = File.ReadAllText(goodPath), report = File.ReadAllText(reportPath), scanId;
+                string good = File.ReadAllText(goodPath), report = File.Exists(reportPath)?File.ReadAllText(reportPath):"{}", scanId;
                 using (var sha = SHA256.Create()) scanId = BitConverter.ToString(sha.ComputeHash(Encoding.UTF8.GetBytes(good + report))).Replace("-", "");
                 var payload = new JObject { ["scanId"] = scanId, ["capturedAt"] = File.GetLastWriteTimeUtc(goodPath).ToString("o"),
                     ["good"] = JObject.Parse(good), ["report"] = JObject.Parse(report) };
                 string queue = QueueFolder(config); Directory.CreateDirectory(queue);
-                File.WriteAllText(Path.Combine(queue, scanId + ".json"), payload.ToString(Formatting.None));
+                string destination=Path.Combine(queue,scanId+".json"),temporary=destination+"."+Guid.NewGuid().ToString("N")+".tmp";
+                try { File.WriteAllText(temporary,payload.ToString(Formatting.None));if(!File.Exists(destination))File.Move(temporary,destination); }
+                finally { if(File.Exists(temporary))File.Delete(temporary); }
                 Status("Export préparé pour envoi : " + Path.GetFileName(goodPath));
                 Task.Run((Func<Task>)SendPending);
             }
@@ -160,33 +182,35 @@ namespace InventoryKamera
         internal static async Task SendPending()
         {
             await Sending.WaitAsync();
+            Connection config=null;
             try
             {
-                var config = Load();
+                config = Load();
                 if (config == null) { Status("Associez votre compte depuis l’onglet Connexion.", false); return; }
                 string queue = QueueFolder(config);
-                if (!Directory.Exists(queue) || Directory.GetFiles(queue, "*.json").Length == 0) { Status("Connexion mémorisée. Aucun envoi en attente."); await RefreshAccount(); return; }
+                int other=OtherPending(config);
+                if(other>0)Status(other+" relevé(s) restent liés à une ancienne connexion. Utilisez Envoyer un fichier GOOD existant pour choisir celui à envoyer à ce compte.",false);
+                if (!Directory.Exists(queue) || Directory.GetFiles(queue, "*.json").Length == 0) { Status("Aucun envoi en attente pour ce compte."+(other>0?" Des relevés d’une ancienne connexion restent sur le PC.":"")); await RefreshAccount(); return; }
                 string token = Token(config);
+                int refused=0;
                 using (var client = Client(config.Url))
                 {
                     client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-                    foreach (string file in Directory.GetFiles(queue, "*.json"))
+                    refused=await UploadQueue.Send(queue,async payload=>
                     {
-                        Status("Synchronisation du relevé en cours…");
-                        using (var response = await client.PostAsync("/api/sync", new StringContent(File.ReadAllText(file), Encoding.UTF8, "application/json")))
+                        using(var response=await client.PostAsync("/api/sync",new StringContent(payload,Encoding.UTF8,"application/json")))
                         {
-                            var receipt = await ReadResponse(response);
-                            if ((bool?)receipt["ok"] != true) throw new InvalidDataException("Accusé de réception invalide.");
-                            Status((bool?)receipt["duplicate"] == true ? "Relevé déjà reçu par le site ; aucun doublon ajouté." : "Relevé reçu par le site.");
-                            foreach (string line in SyncSummary.Describe(receipt)) Status(line);
+                            return await ReadResponse(response);
                         }
-                        File.Delete(file);
-                    }
+                    },(text,ok)=>{if(IsCurrent(config))Status(text,ok);});
                 }
+
+                if(!IsCurrent(config))return;
                 Status("Envois terminés pour « " + config.Username + " ». Lecture des données enregistrées…");
                 await RefreshAccount();
+                if(refused>0)Status(refused+" relevé(s) refusé(s), conservés avec leur motif dans la file locale. Consultez Journal et erreurs.",false);
             }
-            catch (Exception ex) { Status("Synchronisation interrompue : " + ex.Message + " Les relevés restent en attente ; utilisez Réessayer l’envoi.", false); }
+            catch (Exception ex) { if(!IsCurrent(config))return;if(ex is UploadFailure failure&&failure.StatusCode==401)AccessRejected=true;Status("Synchronisation interrompue : " + ex.Message + " Les relevés restent en attente. "+(AccessRejected?"Reconnectez-vous ; ne relancez pas le scan.":"Nouvelle tentative automatique sous 30 secondes, ou Réessayer l’envoi."), false); }
             finally { Sending.Release(); }
         }
     }

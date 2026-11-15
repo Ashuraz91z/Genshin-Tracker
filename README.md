@@ -4,7 +4,7 @@ Un compagnon Windows et un site personnel pour retrouver les données de son com
 
 ## Utiliser l'application Windows
 
-1. Extraire **tout** `GenshinTracker-KameraFR-0.3.1.zip` dans un dossier où vous pouvez écrire. Garder les DLL, `tessdata` et `inventorylists` à côté de `InventoryKamera.FR.exe`.
+1. Extraire **tout** `GenshinTracker-KameraFR-0.3.2.zip` dans un dossier où vous pouvez écrire. Garder les DLL, `tessdata` et `inventorylists` à côté de `InventoryKamera.FR.exe`.
 2. Lancer l'exécutable. Prérequis hérités : **.NET Framework 4.7.2+** et **Visual C++ 2015–2022**. Le manifeste demande les droits administrateur pour piloter le jeu. Exécutable non signé.
 3. Utiliser Genshin en **français**, clavier/souris, format **16:9 ou 16:10**, HDR désactivé. Les touches B/C/1 peuvent être configurées dans Options.
 4. Dans **Options du scan**, préciser le nom personnalisé du Voyageur et du Nomade si nécessaire, ainsi que le dossier des exports.
@@ -87,10 +87,20 @@ Avant la première capture, Kamera attend jusqu’à 15 secondes que Genshin soi
 - **Journal et erreurs** montre les étapes horodatées, la préparation de l’export et les résultats par catégorie (reçu, appliqué, vide, ancien ou conservé). Les rapports incluent jusqu’à 500 étapes, consultables sur le site. Les erreurs HTTP du serveur sont expliquées ; les envois refusés restent en attente.
 - Un relevé vide des personnages/matériaux n’avance plus leur date de référence : un relevé valide arrivé plus tard peut être appliqué. Les personnages incomplets restent dans le rapport, sans inventer de statistiques.
 - Lors d’un import manuel sur un inventaire déjà rempli, le site propose explicitement de remplacer les armes/artéfacts. Sans ce choix, les anciens équipements sont conservés si le nouveau fichier ne confirme pas un scan complet. Le remplacement manuel reste marqué non vérifié.
-- Déployer le site 0.4.0 avant d’utiliser les nouvelles fonctions de l’application ; mettre à disposition `GenshinTracker-KameraFR-0.3.1.zip` et ajuster DOWNLOAD_PATH. Ne pas déplacer ni recréer la base SQLite existante.
+- Déployer le site 0.4.0 avant d’utiliser les nouvelles fonctions de l’application ; mettre à disposition `GenshinTracker-KameraFR-0.3.2.zip` et ajuster DOWNLOAD_PATH. Ne pas déplacer ni recréer la base SQLite existante.
 
 Les tests de transport ne remplacent pas un essai Genshin/DPAPI réel sur Windows. L’application affiche les données exportées ; elle ne calcule pas de statistiques de combat absentes du fichier.
 
 ### Connexion Windows 0.3.1
 
 L’onglet Connexion affiche le compte déjà relié dès le démarrage et après identification. Le formulaire est masqué tant que le PC est associé. **Changer de compte / se reconnecter** le réouvre explicitement ; **Garder le compte actuel** l’annule. Aucun jeton ni compte existant n’est supprimé et les champs secrets sont vidés à la fermeture du formulaire.
+
+### Synchronisation et exports — Windows 0.3.2 / site 0.4.2
+
+Un export crée deux fichiers complémentaires : `…json` contient l’inventaire GOOD à importer ; `….rapport.json` contient les erreurs et étapes du même scan. Ils ne représentent pas deux scans. Le raccourci Entrée est désarmé dès la fin de collecte : fermer le message de résultat ne recrée plus un export interrompu.
+
+Un HTTP 401 est affiché comme accès refusé, sans prétendre que le PC est connecté. Les réponses d’une ancienne connexion ne remplacent plus l’état du nouveau compte. Reconnectez-vous une fois puis utilisez **Réessayer l’envoi**. Si le site/compte a changé, les anciens envois restent isolés ; **Envoyer un fichier GOOD existant** permet de choisir explicitement le fichier destinataire sans refaire le scan.
+
+La file reprend automatiquement toutes les 30 secondes hors scan (sauf accès refusé). Un fichier définitivement refusé en 400/413/415/422 est conservé dans `outbox/<compte>/refused` avec le motif et ne bloque plus les autres. Réseau/401/429/5xx conservent les envois pour reprise. Le résultat est visible en bas de l’application dans tous les onglets.
+
+Le site utilise un stockage persistant hors des builds quand PUBLIC_URL est défini et DATABASE_PATH absent. Sur Hostinger (`hbuilds`), il utilise `tracker-data/tracker.sqlite` à côté de `hbuilds`. Il recherche l’ancienne base dans les builds et en copie une sauvegarde SQLite cohérente si aucune base persistante n’existe ; comptes et clés sont conservés, les originaux restent en place. Une configuration explicite DATABASE_PATH est toujours prioritaire.

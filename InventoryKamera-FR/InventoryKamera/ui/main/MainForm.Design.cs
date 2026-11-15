@@ -10,7 +10,7 @@ namespace InventoryKamera
         private static readonly Color Night = Color.FromArgb(11,17,32), Surface = Color.FromArgb(18,28,46),
             Raised = Color.FromArgb(25,37,58), Ink = Color.FromArgb(237,242,247), Muted = Color.FromArgb(166,179,198),
             Gold = Color.FromArgb(231,191,124), Mint = Color.FromArgb(126,215,189);
-        private Label syncStatusLabel;
+        private Label syncStatusLabel, syncProgressLabel;
         private TextBox siteAddress, pairingCode;
 
         private static Label Caption(string text, int size = 10, Color? color = null)
@@ -124,12 +124,21 @@ namespace InventoryKamera
             cancelConnectionButton=ActionButton("Garder le compte actuel");cancelConnectionButton.Width=260;cancelConnectionButton.Click+=(s,e)=>{if(!connectionBusy){ClearConnectionSecrets();UpdateConnectionView(false);}};connectionForm.Controls.Add(cancelConnectionButton);
             UpdateConnectionView(false);
             connect.Text=ClientSync.AccountName==null?"Connexion au site":"Compte : "+ClientSync.AccountName;
+            var sendFile=ActionButton("Envoyer un fichier GOOD existant");sendFile.Width=320;sendFile.Click+=(s,e)=>{
+                if(running||connectionBusy){syncStatusLabel.Text="Attendez la fin du scan ou de la connexion.";return;}
+                using(var file=new OpenFileDialog{Filter="Fichier GOOD (*.json)|*.json",Title="Choisissez le fichier GOOD, pas son rapport"})
+                {
+                    if(file.ShowDialog(this)!=DialogResult.OK)return;
+                    if(MessageBox.Show(this,"Envoyer ce fichier au compte « "+ClientSync.AccountName+" » sur "+ClientSync.SiteUrl+" ?", "Envoyer le relevé existant",MessageBoxButtons.YesNo,MessageBoxIcon.Question)!=DialogResult.Yes)return;
+                    try{ClientSync.SendExisting(file.FileName);}catch(Exception ex){syncStatusLabel.Text=ex.Message;UserInterface.Trace(ex.Message);}
+                }
+            };connectionStack.Controls.Add(sendFile);
             var retry=ActionButton("Réessayer l’envoi");retry.Width=220;retry.Click+=async(s,e)=>{retry.Enabled=false;try{await ClientSync.SendPending();}finally{retry.Enabled=true;}};connectionStack.Controls.Add(retry);
             syncStatusLabel=Caption(ClientSync.AccountName==null?"Aucun compte associé. Les exports restent enregistrés sur ce PC.":"Compte associé : "+ClientSync.AccountName,10,Muted);syncStatusLabel.Width=620;syncStatusLabel.Height=90;syncStatusLabel.Margin=new Padding(0,20,0,12);connectionStack.Controls.Add(syncStatusLabel);
             var privacy=Caption("La clé d’accès est protégée par votre session Windows. Les scans hors ligne restent en attente. Vous pouvez dissocier ce PC depuis le site.",9,Muted);privacy.Width=620;privacy.Height=80;connectionStack.Controls.Add(privacy);
-            ClientSync.StatusChanged=(text,ok)=>{if(!IsDisposed&&IsHandleCreated)BeginInvoke((MethodInvoker)(()=>{syncStatusLabel.Text=text;syncStatusLabel.ForeColor=ok?Mint:Color.Salmon;connect.Text=ClientSync.AccountName==null?"Connexion au site":"Compte : "+ClientSync.AccountName;}));};
+            ClientSync.StatusChanged=(text,ok)=>{if(!IsDisposed&&IsHandleCreated)BeginInvoke((MethodInvoker)(()=>{syncStatusLabel.Text=text;syncStatusLabel.ForeColor=ok?Mint:Color.Salmon;if(syncProgressLabel!=null){syncProgressLabel.Text=text;syncProgressLabel.ForeColor=ok?Mint:Color.Salmon;}RefreshConnectionAccess();connect.Text=ClientSync.AccountName==null?"Connexion au site":"Compte : "+ClientSync.AccountName;}));};
             StartAccountRefresh();
-            var footer=new Panel{Dock=DockStyle.Fill,BackColor=Night,Padding=new Padding(0,15,0,0)};ProgramStatus_Label.AutoSize=false;ProgramStatus_Label.Dock=DockStyle.Top;ProgramStatus_Label.Height=30;ProgramStatus_Label.BackColor=Night;ProgramStatus_Label.Font=new Font("Segoe UI",11);footer.Controls.Add(ProgramStatus_Label);root.Controls.Add(footer,0,3);
+            var footer=new Panel{Dock=DockStyle.Fill,BackColor=Night,Padding=new Padding(0,15,0,0)};ProgramStatus_Label.AutoSize=false;ProgramStatus_Label.Dock=DockStyle.Top;ProgramStatus_Label.Height=30;ProgramStatus_Label.BackColor=Night;ProgramStatus_Label.Font=new Font("Segoe UI",11);syncProgressLabel=Caption("Les envois et accusés de réception apparaîtront ici.",9,Muted);syncProgressLabel.Dock=DockStyle.Bottom;syncProgressLabel.Height=22;footer.Controls.Add(syncProgressLabel);footer.Controls.Add(ProgramStatus_Label);root.Controls.Add(footer,0,3);
             Controls.Add(root);ResumeLayout(true);
         }
         private static void AddSetting(FlowLayoutPanel panel,string name,Control control)

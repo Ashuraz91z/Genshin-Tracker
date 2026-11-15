@@ -31,6 +31,7 @@ namespace InventoryKamera
         private int Delay;
 
         private bool running = false;
+        private volatile bool scanCollecting;
 
         public MainForm()
         {
@@ -87,9 +88,11 @@ namespace InventoryKamera
             Logger.Info("Hotkey pressed");
             e.Handled = true;
             // Check if scanner is running
-            if (scannerThread != null && scannerThread.IsAlive)
+            if (scanCollecting && scannerThread != null && scannerThread.IsAlive)
             {
-                // Stop navigating weapons/artifacts
+                // Stop only the live collection, never a completed scan waiting on its result dialog.
+                scanCollecting=false;
+                RemoveHotkey();
                 scannerThread.Abort();
 
                 UserInterface.SetProgramStatus("Scan Stopped");
@@ -274,6 +277,8 @@ namespace InventoryKamera
 
                         // The Data object of json object
                         data.GatherData();
+                        scanCollecting=false;
+                        Invoke((MethodInvoker)RemoveHotkey);
                         ScanReport.Status = ScanReport.HasErrors ? "finished_with_errors" : "finished_unverified";
 
                         // Covert to GOOD
@@ -307,6 +312,7 @@ namespace InventoryKamera
                     }
                     finally
                     {
+                        scanCollecting=false;
                         ResetUI();
                         running = false;
                         BeginInvoke((MethodInvoker)delegate
@@ -319,6 +325,7 @@ namespace InventoryKamera
                 {
                     IsBackground = true
                 };
+                scanCollecting=true;
                 scannerThread.Start();
             }
             else

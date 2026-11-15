@@ -25,13 +25,20 @@ namespace InventoryKamera
         private void UpdateConnectionView(bool edit)
         {
             bool connected=ClientSync.AccountName!=null;
-            connectedAccountLabel.Text=connected?"Compte relié : « "+ClientSync.AccountName+" »"+Environment.NewLine+ClientSync.SiteUrl+Environment.NewLine+"Connexion mémorisée sur ce PC. Aucun identifiant à ressaisir pour scanner.":"Aucun compte relié. Connectez-vous une seule fois ci-dessous.";
+            RefreshConnectionAccess();
             changeAccountButton.Visible=connected&&!edit;
             connectionForm.Visible=!connected||edit;
             cancelConnectionButton.Visible=connected&&edit;
             if(!edit){ClearConnectionSecrets();siteAddress.Text=ClientSync.SiteUrl;connectionName.Text=ClientSync.AccountName??"";}
         }
 
+        private void RefreshConnectionAccess()
+        {
+            bool connected=ClientSync.AccountName!=null;
+            connectedAccountLabel.ForeColor=ClientSync.AccessRejected?Color.Salmon:Mint;
+            connectedAccountLabel.Text=connected&&ClientSync.AccessRejected?"Accès refusé par le site : « "+ClientSync.AccountName+" »"+Environment.NewLine+"Les exports sont conservés. Utilisez Se reconnecter avant de réessayer l’envoi.":connected?"Compte relié : « "+ClientSync.AccountName+" »"+Environment.NewLine+ClientSync.SiteUrl+Environment.NewLine+"Connexion mémorisée sur ce PC. Aucun identifiant à ressaisir pour scanner.":"Aucun compte relié. Connectez-vous une seule fois ci-dessous.";
+
+        }
         private TabPage BuildAccountPage()
         {
             var page = new TabPage("Mon compte") { BackColor = Surface, Padding = new Padding(18) };
@@ -101,7 +108,7 @@ namespace InventoryKamera
         {
             accountTimer=new Timer { Interval=30000 };
             bool refreshing=false;
-            accountTimer.Tick += async(s,e) => { if(refreshing||running||ClientSync.AccountName==null)return;refreshing=true;try{await ClientSync.RefreshAccount();}finally{refreshing=false;} };
+            accountTimer.Tick += async(s,e) => { if(refreshing||running||connectionBusy||ClientSync.AccountName==null||ClientSync.AccessRejected)return;refreshing=true;try{await ClientSync.SendPending();}finally{refreshing=false;} };
             accountTimer.Start();
             FormClosed += (s,e) => { accountTimer.Dispose();ClientSync.AccountChanged=null;ClientSync.StatusChanged=null; };
         }

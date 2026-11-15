@@ -17,7 +17,8 @@ for category in ['characters','weapons','materials','artifacts']:
         row={'name':fr['name'],'rarity':fr.get('rarity',max(fr.get('rarityList',[1]))),'id':fr['id']}
         if category=='characters':
             row.update(element=fr.get('elementText',''),weapon=fr.get('weaponText',''))
-            image=images.get(f.stem,{}).get('mihoyo_icon')
+            record=images.get(f.stem,{})
+            image=[record.get(field) for field in ['hoyowiki_icon','mihoyo_icon'] if record.get(field)]
             if image: row['portrait']=f'/assets/portraits/{key}.png';jobs.append((image,dest/'portraits'/f'{key}.png'))
         result[key]=row
     catalog[category]=result
@@ -25,14 +26,16 @@ for element in ['Anemo','Geo','Electro','Dendro','Hydro','Pyro','Cryo']:
     catalog['characters']['Traveler'+element]={'name':'Voyageur · '+element,'rarity':5,'element':element,'weapon':'Épée à une main','portrait':'/assets/portraits/Aether.png'}
 (dest/'catalogue.json').write_text(json.dumps(catalog,ensure_ascii=False,separators=(',',':')))
 def fetch(job):
-    url,path=job
+    urls,path=job
     if path.exists():return True
-    try:
-        req=urllib.request.Request(url,headers={'User-Agent':'GenshinTracker/0.2'})
-        with urllib.request.urlopen(req,timeout=15) as r: data=r.read()
-        if not data.startswith(b'\x89PNG'):return False
-        path.write_bytes(data);return True
-    except Exception:return False
+    for url in urls:
+        try:
+            req=urllib.request.Request(url,headers={'User-Agent':'GenshinTracker/0.3'})
+            with urllib.request.urlopen(req,timeout=15) as r: data=r.read()
+            if not data.startswith(b'\x89PNG'):continue
+            path.write_bytes(data);return True
+        except Exception:continue
+    return False
 with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
     results=list(pool.map(fetch,jobs))
 for row in catalog['characters'].values():
