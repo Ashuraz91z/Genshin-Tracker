@@ -17,6 +17,7 @@ namespace InventoryKamera
 		{
 			int viewed = 0;
 			string first = null;
+            HashSet<string> visited = new HashSet<string>();
 			HashSet<string> scanned = new HashSet<string>();
 
 			UserInterface.ResetCharacterDisplay();
@@ -24,7 +25,11 @@ namespace InventoryKamera
 			while (true)
 			{
 				var character = ScanCharacter(first);
-				if (Characters.Count > 0 && character.NameGOOD == Characters.ElementAt(0).NameGOOD) break;
+				if (!string.IsNullOrWhiteSpace(character.NameGOOD) && !visited.Add(character.NameGOOD))
+                {
+                    UserInterface.Trace("Parcours des personnages terminé : retour sur " + character.NameGOOD + ".");
+                    break;
+                }
 				if (character.IsValid())
 				{
                     if (!scanned.Contains(character.NameGOOD))

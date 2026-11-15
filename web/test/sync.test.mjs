@@ -47,7 +47,7 @@ test('partial and older scans preserve complete inventories and newer field valu
   const {request,register,pair}=await setup(t);const cookie=await register('Voyageur');const token=(await pair(cookie)).body.token;
   await request('/api/sync',{method:'POST',token,data:scan('first-complete'),origin:false});
   const partial=scan('second-partial',1000);partial.good.characters=[character(90)];partial.good.weapons=[];partial.good.artifacts=[];partial.good.materials={Mora:20};partial.report.status='interrupted';partial.report.errors=['Lecture interrompue'];
-  const result=await request('/api/sync',{method:'POST',token,data:partial,origin:false});assert.equal(result.body.applied.weapons,'preserved_previous');
+  const result=await request('/api/sync',{method:'POST',token,data:partial,origin:false});assert.equal(result.body.applied.weapons,'empty_scan');
   let account=(await request('/api/account',{cookie})).body;
   assert.equal(account.data.weapons.length,1);assert.equal(account.data.artifacts.length,1);assert.equal(account.data.characters[0].level,90);assert.equal(account.data.materials.Mora,20);
   const older=scan('old-outbox',-1000);older.good.characters=[character(10)];
@@ -140,9 +140,9 @@ test('manual equipment replacement requires explicit authenticated import; devic
   const {request,register,pair}=await setup(t);const owner=await register('ManualChoice'),token=(await pair(owner)).body.token;
   await request('/api/sync',{method:'POST',token,origin:false,data:scan('complete-equipment')});
   const changed={format:'GOOD',version:2,weapons:[{...weapon,level:40}]};
-  const ordinary=await request('/api/import',{method:'POST',cookie:owner,data:{good:changed}});assert.equal(ordinary.body.applied.weapons,'preserved_previous');
+  const ordinary=await request('/api/import',{method:'POST',cookie:owner,data:{good:changed}});assert.equal(ordinary.body.applied.weapons,'partial_merged');
   const spoof=scan('spoof-replacement',1000);spoof.good=changed;spoof.report.status='failed';spoof.replaceInventory=true;
-  assert.equal((await request('/api/sync',{method:'POST',token,origin:false,data:spoof})).body.applied.weapons,'preserved_previous');
+  assert.equal((await request('/api/sync',{method:'POST',token,origin:false,data:spoof})).body.applied.weapons,'older_scan');
   assert.equal((await request('/api/import',{method:'POST',data:{good:changed,replaceInventory:true}})).status,401);
   const forced=await request('/api/import',{method:'POST',cookie:owner,data:{good:changed,replaceInventory:true}});assert.equal(forced.body.applied.weapons,'manual_replaced');
   const after=await request('/api/account',{cookie:owner});assert.equal(after.body.data.weapons[0].level,40);assert.equal(after.body.data.quality.weapons,'manual');assert.equal(after.body.data.artifacts.length,1);
@@ -171,5 +171,15 @@ test('invalid OCR artifacts are excluded with diagnostics while valid artifacts 
  const account=(await request('/api/account',{cookie:owner})).body;assert.equal(account.data.characters.length,1);assert.equal(account.data.artifacts.length,1);assert.equal(account.data.quality.artifacts,'partial');assert.equal(account.scans[0].report.rejectedArtifacts,1);assert.match(account.scans[0].report.errors[0],/Artéfact #2 exclu/);
  const malformed=scan('all-invalid-artifacts',1000);malformed.good={format:'GOOD',version:2,artifacts:[{...artifact,mainStatKey:''}]};
  const empty=await request('/api/sync',{method:'POST',origin:false,token,data:malformed});assert.equal(empty.status,200);assert.equal(empty.body.applied.artifacts,'empty_scan');assert.equal((await request('/api/account',{cookie:owner})).body.data.artifacts.length,1);
- const override=await request('/api/import',{method:'POST',cookie:owner,data:{good:payload.good,replaceInventory:true}});assert.equal(override.body.applied.artifacts,'preserved_previous');
+ const override=await request('/api/import',{method:'POST',cookie:owner,data:{good:payload.good,replaceInventory:true}});assert.equal(override.body.applied.artifacts,'partial_merged');
+});
+
+test('partial equipment merges valid multiplicities on every import without deleting other categories',async t=>{
+ const {request,register,pair}=await setup(t);const owner=await register('PartialMerge'),token=(await pair(owner)).body.token;
+ await request('/api/sync',{method:'POST',token,origin:false,data:scan('merge-original')});
+ const partial=scan('merge-artifacts',1000);partial.good={format:'GOOD',version:2,artifacts:[artifact,artifact,{...artifact,setKey:'OceanHuedClam'}]};partial.report.status='finished_with_errors';partial.report.errors=['OCR'];
+ const receipt=await request('/api/sync',{method:'POST',token,origin:false,data:partial});assert.equal(receipt.body.applied.artifacts,'partial_merged');
+ let data=(await request('/api/account',{cookie:owner})).body.data;assert.equal(data.artifacts.length,3);assert.equal(data.weapons.length,1);assert.equal(data.characters.length,1);
+ const again=await request('/api/import',{method:'POST',cookie:owner,data:{good:partial.good}});assert.equal(again.body.applied.artifacts,'partial_merged');
+ data=(await request('/api/account',{cookie:owner})).body.data;assert.equal(data.artifacts.length,3);assert.equal(data.materials.Mora,123456);
 });

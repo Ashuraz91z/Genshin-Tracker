@@ -207,7 +207,8 @@ namespace InventoryKamera
         private void StartButton_Clicked(object sender, EventArgs e)
         {
             if (connectionBusy) { UserInterface.SetProgramStatus("Attendez la fin de la connexion au compte avant de lancer le scan."); return; }
-            if (running || !PrepareExportDirectory()) return;
+            if (running) { UserInterface.SetProgramStatus("Un scan est encore en cours ; Entrée permet de l’arrêter."); return; }
+            if (!PrepareExportDirectory()) return;
             GC.Collect();
 
             UserInterface.ResetAll();
@@ -290,7 +291,7 @@ namespace InventoryKamera
                         Logger.Info("Exported data");
 
                         UserInterface.SetProgramStatus("Terminé — consulter le rapport");
-                        MessageBox.Show("Export local enregistré avec son rapport. Le rapport indique les erreurs et les personnages partiellement lus. Une fin de parcours ne garantit pas un compte complet.", "Scan terminé", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        UserInterface.Trace("Export enregistré. Vous pouvez lancer un nouveau scan ; les erreurs restent dans le rapport.");
                     }
                     catch (ThreadAbortException)
                     {
@@ -313,8 +314,8 @@ namespace InventoryKamera
                     finally
                     {
                         scanCollecting=false;
-                        ResetUI();
                         running = false;
+                        ResetUI();
                         BeginInvoke((MethodInvoker)delegate
                         {
                             ManualExportButton.Enabled = data.HasData;

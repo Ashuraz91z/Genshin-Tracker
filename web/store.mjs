@@ -96,7 +96,15 @@ export function openStore(path) {
             && scan.report.selected[category] && scan.report.expectedFromScreen[category]===items.length;
           if(verified || (replaceInventory&&!(category==='artifacts'&&scan.report.rejectedArtifacts>0)) || !data.watermarks[category]) {
             data[category]=items;data.quality[category]=verified?'count_matched':replaceInventory?'manual':'partial';applied[category]=verified?'replaced':replaceInventory?'manual_replaced':'first_partial';
-          } else {applied[category]='preserved_previous';continue;}
+          } else if(items.length) {
+            // GOOD has no stable equipment IDs: preserve multiplicity without duplicating identical rescans.
+            const fingerprint=item=>JSON.stringify({...item,location:'',lock:false,...(item.substats?{substats:[...item.substats].sort((a,b)=>a.key.localeCompare(b.key))}:{})});
+            const remaining=new Map();
+            const merged=[...data[category]];
+            merged.forEach((item,index)=>{const k=fingerprint(item);if(!remaining.has(k))remaining.set(k,[]);remaining.get(k).push(index);});
+            items.forEach(item=>{const matches=remaining.get(fingerprint(item));if(matches?.length)merged[matches.shift()]=item;else merged.push(item);});
+            data[category]=merged;data.quality[category]='partial';applied[category]='partial_merged';
+          } else {applied[category]='empty_scan';continue;}
         }
         data.watermarks[category]=scan.capturedAt;
       }
