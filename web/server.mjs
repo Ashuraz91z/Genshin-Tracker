@@ -1,7 +1,7 @@
 import http from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import { mkdirSync, existsSync, createReadStream } from 'node:fs';
-import { dirname, resolve, extname, join } from 'node:path';
+import { dirname, resolve, extname, join, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { openStore, Problem, secret } from './store.mjs';
 
@@ -72,7 +72,7 @@ export function createApp({dbPath=join(ROOT,'data/tracker.sqlite'),publicUrl='',
       if(req.method!=='GET' && req.method!=='HEAD') throw new Problem('Route introuvable.',404);
       if(path.startsWith('/api/'))throw new Problem('Route introuvable.',404);
       const publicRoot=join(ROOT,'public'),filename=resolve(publicRoot,'.'+(path==='/'?'/index.html':decodeURIComponent(path)));
-      if(!filename.startsWith(publicRoot+'/'))throw new Problem('Accès refusé.',403);
+      if(!filename.startsWith(publicRoot+sep))throw new Problem('Accès refusé.',403);
       const info=await stat(filename).catch(()=>null);
       if(!info?.isFile())throw new Problem('Page introuvable.',404);
       const types={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.json':'application/json','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp'};
