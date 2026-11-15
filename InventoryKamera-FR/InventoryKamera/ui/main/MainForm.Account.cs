@@ -13,6 +13,24 @@ namespace InventoryKamera
         private TextBox accountHistory;
         private Timer accountTimer;
         private bool connectionBusy;
+        private FlowLayoutPanel connectionForm;
+        private Label connectedAccountLabel;
+        private Button changeAccountButton, cancelConnectionButton;
+        private TextBox connectionPassword, connectionName;
+
+        private void ClearConnectionSecrets()
+        {
+            connectionPassword?.Clear();pairingCode?.Clear();
+        }
+        private void UpdateConnectionView(bool edit)
+        {
+            bool connected=ClientSync.AccountName!=null;
+            connectedAccountLabel.Text=connected?"Compte relié : « "+ClientSync.AccountName+" »"+Environment.NewLine+ClientSync.SiteUrl+Environment.NewLine+"Connexion mémorisée sur ce PC. Aucun identifiant à ressaisir pour scanner.":"Aucun compte relié. Connectez-vous une seule fois ci-dessous.";
+            changeAccountButton.Visible=connected&&!edit;
+            connectionForm.Visible=!connected||edit;
+            cancelConnectionButton.Visible=connected&&edit;
+            if(!edit){ClearConnectionSecrets();siteAddress.Text=ClientSync.SiteUrl;connectionName.Text=ClientSync.AccountName??"";}
+        }
 
         private TabPage BuildAccountPage()
         {
@@ -38,7 +56,7 @@ namespace InventoryKamera
             accountHistory = new TextBox { Dock = DockStyle.Fill, Multiline = true, ReadOnly = true, ScrollBars = ScrollBars.Vertical,
                 BackColor = Night, ForeColor = Ink, Font = new Font("Consolas",9), Text = "Les derniers scans reçus par le site apparaîtront ici." };
             layout.Controls.Add(accountHistory, 0, 3); page.Controls.Add(layout);
-            ClientSync.AccountChanged = result => { if (!IsDisposed && IsHandleCreated) BeginInvoke((MethodInvoker)(() => ShowAccount(result))); };
+            ClientSync.AccountChanged = result => { if (!IsDisposed && IsHandleCreated) BeginInvoke((MethodInvoker)(() => { ShowAccount(result);if(result==null)UpdateConnectionView(false); })); };
             return page;
         }
         private void ShowAccount(JObject account)
@@ -67,6 +85,7 @@ namespace InventoryKamera
         {
             var name = new TextBox { Width=560, BackColor=Night, ForeColor=Ink, Text=ClientSync.AccountName??"" };
             var password = new TextBox { Width=560, BackColor=Night, ForeColor=Ink, UseSystemPasswordChar=true };
+            connectionPassword=password;connectionName=name;
             AddSetting(panel,"Pseudo du compte du tracker",name); AddSetting(panel,"Mot de passe du tracker (différent de HoYoverse)",password);
             var login=ActionButton("Se connecter",true);login.Width=220;
             login.Click += async (s,e) => {

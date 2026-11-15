@@ -7,7 +7,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
-NAME='GenshinTracker-KameraFR-0.3.0'
+NAME='GenshinTracker-KameraFR-0.3.1'
 BUILD=ROOT/'InventoryKamera-FR/InventoryKamera/bin/Release/net472'
 DEST=ROOT/'dist'/NAME
 

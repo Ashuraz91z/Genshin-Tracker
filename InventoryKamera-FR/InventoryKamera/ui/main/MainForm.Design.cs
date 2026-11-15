@@ -111,12 +111,19 @@ namespace InventoryKamera
             var info=Caption("Le jeu doit rester en français, en 16:9 ou 16:10, HDR désactivé.",9,Muted);info.Width=620;info.Height=45;optionsStack.Controls.Add(info);
             var connectionStack=Stack(0);connectionStack.Margin=new Padding(0);connection.Controls.Add(connectionStack);
             foreach(var label in new[]{Caption("02  /  SYNCHRONISATION",9,Gold),Caption("Du jeu à votre carnet",22),Caption("Connectez-vous une seule fois. Le PC reste relié à votre compte.",10,Muted)}){label.Width=620;connectionStack.Controls.Add(label);}
+            connectedAccountLabel=Caption("",11,Mint);connectedAccountLabel.Width=620;connectedAccountLabel.Height=70;connectionStack.Controls.Add(connectedAccountLabel);
+            changeAccountButton=ActionButton("Changer de compte / se reconnecter");changeAccountButton.Width=320;
+            changeAccountButton.Click+=(s,e)=>{if(running||connectionBusy){syncStatusLabel.Text="Attendez la fin du scan ou de la connexion avant de changer de compte.";return;}UpdateConnectionView(true);siteAddress.Focus();};connectionStack.Controls.Add(changeAccountButton);
+            connectionForm=new FlowLayoutPanel{FlowDirection=FlowDirection.TopDown,WrapContents=false,AutoSize=true,AutoSizeMode=AutoSizeMode.GrowAndShrink,Width=620,BackColor=Surface,Margin=new Padding(0),Padding=new Padding(0)};connectionStack.Controls.Add(connectionForm);
             siteAddress=new TextBox{Text=ClientSync.SiteUrl,Width=560,BackColor=Night,ForeColor=Ink};pairingCode=new TextBox{Width=560,BackColor=Night,ForeColor=Gold};
-            AddSetting(connectionStack,"Adresse HTTPS du site",siteAddress);
-            AddLoginControls(connectionStack);
-            var alternative=Caption("Autre méthode : un code temporaire créé sur le site (une seule fois).",9,Muted);alternative.Width=620;alternative.Height=48;connectionStack.Controls.Add(alternative);
-            AddSetting(connectionStack,"Code d’association (valable 10 minutes)",pairingCode);
-            var pairButton=ActionButton("Associer mon compte",true);pairButton.Width=220;pairButton.Click+=async(s,e)=>{if(running||connectionBusy){syncStatusLabel.Text="Attendez la fin du scan avant de changer de compte.";return;}pairButton.Enabled=false;connectionBusy=true;try{await ClientSync.Pair(siteAddress.Text,pairingCode.Text);pairingCode.Clear();}catch(Exception ex){UserInterface.Trace("Connexion refusée : "+ex.Message);syncStatusLabel.Text=ex.Message;syncStatusLabel.ForeColor=Color.Salmon;}finally{pairButton.Enabled=true;connectionBusy=false;}};connectionStack.Controls.Add(pairButton);
+            AddSetting(connectionForm,"Adresse HTTPS du site",siteAddress);
+            AddLoginControls(connectionForm);
+            var alternative=Caption("Autre méthode : un code temporaire créé sur le site (une seule fois).",9,Muted);alternative.Width=620;alternative.Height=48;connectionForm.Controls.Add(alternative);
+            AddSetting(connectionForm,"Code d’association (valable 10 minutes)",pairingCode);
+            var pairButton=ActionButton("Associer mon compte",true);pairButton.Width=220;pairButton.Click+=async(s,e)=>{if(running||connectionBusy){syncStatusLabel.Text="Attendez la fin du scan avant de changer de compte.";return;}pairButton.Enabled=false;connectionBusy=true;try{await ClientSync.Pair(siteAddress.Text,pairingCode.Text);pairingCode.Clear();}catch(Exception ex){UserInterface.Trace("Connexion refusée : "+ex.Message);syncStatusLabel.Text=ex.Message;syncStatusLabel.ForeColor=Color.Salmon;}finally{pairButton.Enabled=true;connectionBusy=false;}};connectionForm.Controls.Add(pairButton);
+            cancelConnectionButton=ActionButton("Garder le compte actuel");cancelConnectionButton.Width=260;cancelConnectionButton.Click+=(s,e)=>{if(!connectionBusy){ClearConnectionSecrets();UpdateConnectionView(false);}};connectionForm.Controls.Add(cancelConnectionButton);
+            UpdateConnectionView(false);
+            connect.Text=ClientSync.AccountName==null?"Connexion au site":"Compte : "+ClientSync.AccountName;
             var retry=ActionButton("Réessayer l’envoi");retry.Width=220;retry.Click+=async(s,e)=>{retry.Enabled=false;try{await ClientSync.SendPending();}finally{retry.Enabled=true;}};connectionStack.Controls.Add(retry);
             syncStatusLabel=Caption(ClientSync.AccountName==null?"Aucun compte associé. Les exports restent enregistrés sur ce PC.":"Compte associé : "+ClientSync.AccountName,10,Muted);syncStatusLabel.Width=620;syncStatusLabel.Height=90;syncStatusLabel.Margin=new Padding(0,20,0,12);connectionStack.Controls.Add(syncStatusLabel);
             var privacy=Caption("La clé d’accès est protégée par votre session Windows. Les scans hors ligne restent en attente. Vous pouvez dissocier ce PC depuis le site.",9,Muted);privacy.Width=620;privacy.Height=80;connectionStack.Controls.Add(privacy);
