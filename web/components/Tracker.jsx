@@ -54,7 +54,7 @@ export default function Tracker({view}) {
   async function revoke(id) {try{await api('/api/devices/'+encodeURIComponent(id),{method:'DELETE'});await refresh();notify('Appareil dissocié. Ses prochains envois seront refusés.');}catch(error){notify(error.message,true);}}
   async function importFile(event) {
     const file=event.target.files[0];if(!file)return;setBusy(true);
-    try{if(file.size>16*1024*1024)throw new Error('Fichier trop volumineux (16 Mo maximum).');const good=JSON.parse(await file.text());validateScan({scanId:'manual-file-check',capturedAt:new Date().toISOString(),good});
+    try{if(file.size>16*1024*1024)throw new Error('Fichier trop volumineux (16 Mo maximum).');const good=JSON.parse(await file.text());validateScan({scanId:'manual-file-check',capturedAt:new Date().toISOString(),good},{recoverArtifacts:!!account&&!account.guest});
       if(!account||account.guest){const next=guestAccount(good);try{sessionStorage.setItem(guestStorageKey,JSON.stringify({format:'GOOD',version:good.version,...Object.fromEntries(['characters','weapons','artifacts','materials'].filter(k=>good[k]!==undefined).map(k=>[k,next.data[k]]))}));}catch{throw new Error('Stockage du navigateur indisponible ou plein. Libérez de la place ou connectez-vous pour importer ce fichier.');}epoch.current++;setAccount(next);notify('Fichier ouvert localement. Aucune donnée envoyée au serveur.');return;}
       if(['weapons','artifacts'].some(key=>good[key]!==undefined&&account.data[key]?.length)){setPendingImport(good);setReplaceInventory(false);setModal('import');return;}
       await submitImport(good,false);

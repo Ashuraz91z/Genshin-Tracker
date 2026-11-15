@@ -24,6 +24,7 @@ export function Activity({scan,details=false,catalogue}) {
   return <><div className="activity-row"><span className={`activity-icon ${issue?'warning':''}`}><Icon name={issue?'shield':'refresh'}/></span><div><div className="activity-title">{scan.device}</div><p>{total||'Aucune catégorie actualisée'}</p></div><div className="activity-time"><div className={`status-badge ${issue?'warning':''}`}>{issue?'À vérifier':'Reçu'}</div><div>{when(scan.received)}</div></div></div>
     {details&&<details className="scan-details" open={issue||undefined}><summary>Détails du relevé</summary><p>Capture : {when(scan.captured)} · Réception : {when(scan.received)} · Statut : {scan.report.status}. L’exhaustivité du compte reste non vérifiée.</p><ul>
       {Object.entries(scan.applied).map(([key,value])=><li key={key}>{categories[key]} : {number(scan.counts[key]??0)} reçus — {outcomes[value]??value}</li>)}
+      {scan.report.rejectedArtifacts>0&&<li>{scan.report.rejectedArtifacts} artéfact(s) invalides exclus. Le reste du relevé a été traité ; l’ancien inventaire peut avoir été conservé.</li>}
       {scan.counts.characters===0&&<li>Aucun personnage valide dans ce fichier. Vérifiez que la catégorie Personnages est cochée et consultez les erreurs OCR.</li>}
       {scan.report.partialCharacters.map((c,i)=><li key={`partial-${i}`}>Personnage incomplet : {catalogue.characters?.[c.key]?.name??c.key}</li>)}
       {scan.report.errors.map((error,i)=><li key={`error-${i}`}>{error}</li>)}

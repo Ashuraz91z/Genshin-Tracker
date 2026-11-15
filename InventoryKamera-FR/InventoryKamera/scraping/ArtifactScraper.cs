@@ -14,7 +14,7 @@ namespace InventoryKamera
 	{
 		private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-		public ArtifactScraper() 
+		public ArtifactScraper()
 		{
 			inventoryPage = InventoryPage.Artifacts;
             SortByLevel = Properties.Settings.Default.MinimumArtifactLevel > 0;
@@ -126,7 +126,7 @@ namespace InventoryKamera
 				}
 				else
 				{
-                    
+
                     for (int i = 0; i < 10 * rows - 1; i++)
 					{
 						Navigation.Scroll(Navigation.Direction.DOWN, 1);
@@ -194,7 +194,7 @@ namespace InventoryKamera
 				level,
 				subStats,
 				equipped, //5
-				locked, 
+				locked,
 				card
 			};
 
@@ -259,9 +259,10 @@ namespace InventoryKamera
 			int level = 0;
 			bool _lock = false;
 
-			if (bm.Count >= 6)
+			if (bm == null || bm.Count < 7) throw new ArgumentException("Capture d’artéfact incomplète : 7 zones sont attendues.");
+            if (bm.Count >= 7)
 			{
-				int a_name = 0; int a_gearSlot = 1; int a_mainStat = 2; int a_level = 3; int a_subStats = 4; int a_equippedCharacter = 5; int a_lock = 6; 
+				int a_name = 0; int a_gearSlot = 1; int a_mainStat = 2; int a_level = 3; int a_subStats = 4; int a_equippedCharacter = 5; int a_lock = 6;
 				// Get Rarity
 				rarity = GetRarity(bm[a_name]);
 
@@ -282,7 +283,7 @@ namespace InventoryKamera
 				var taskMain  = taskGear.ContinueWith( (antecedent) => mainStat = ScanArtifactMainStat(bm[a_mainStat], antecedent.Result));
 				var taskLevel = Task.Run(() => level = ScanArtifactLevel(bm[a_level]));
 				var taskSubs  = Task.Run(() => subStats = ScanArtifactSubStats(bm[a_subStats]));
-				var taskEquip = Task.Run(() => equippedCharacter = ScanArtifactEquippedCharacter(bm[a_equippedCharacter]));
+
 				var taskName = Task.Run(() => setName = ScanArtifactSet(bm[a_name]));
 
 				tasks.Add(taskGear);
@@ -292,7 +293,7 @@ namespace InventoryKamera
 				tasks.Add(taskName);
 				if (b_equipped)
 				{
-					tasks.Add(taskEquip);
+					tasks.Add(Task.Run(() => equippedCharacter = ScanArtifactEquippedCharacter(bm[a_equippedCharacter])));
 				}
 
 				await Task.WhenAll(tasks.ToArray());
@@ -377,13 +378,13 @@ namespace InventoryKamera
 					Bitmap copy = (Bitmap)bm.Clone();
 					GenshinProcesor.SetContrast(100.0, ref copy);
 					Bitmap n = GenshinProcesor.ConvertToGrayscale(copy);
-					
+
 					GenshinProcesor.SetThreshold(135, ref n);
 					GenshinProcesor.SetInvert(ref n);
 
 					// Get Main Stat
 					string mainStat = GenshinProcesor.AnalyzeText(n).ToLower().Trim();
-					
+
 
 					// Remove anything not a-z as well as removes spaces/underscores
 					mainStat = Regex.Replace(mainStat, @"[\W_0-9]", string.Empty);
@@ -420,59 +421,17 @@ namespace InventoryKamera
 		private static List<SubStat> ScanArtifactSubStats(Bitmap artifactImage)
         {
             Bitmap bm = (Bitmap)artifactImage.Clone();
-			List<string> lines = new List<string>();
-			List<SubStat> substats = new List<SubStat>();
-			string text;
-            GenshinProcesor.SetBrightness(-30, ref bm);
-            GenshinProcesor.SetContrast(85, ref bm);
-			using (var n = GenshinProcesor.ConvertToGrayscale(bm))
-			{
-				text = GenshinProcesor.AnalyzeText(n, Tesseract.PageSegMode.Auto).ToLower();
-			}
-
-            lines = new List<string>(text.Split('\n'));
-            lines.RemoveAll(line => string.IsNullOrWhiteSpace(line));
-
-            var index = lines.FindIndex(line => line.Contains(":") || line.Contains("piece") || line.Contains("set") || line.Contains("2-"));
-            if (index >= 0)
+            try
             {
-                lines.RemoveRange(index, lines.Count - index);
+                GenshinProcesor.SetBrightness(-30, ref bm);
+                GenshinProcesor.SetContrast(85, ref bm);
+                string text;
+                using (var n = GenshinProcesor.ConvertToGrayscale(bm))
+                    text = GenshinProcesor.AnalyzeText(n, Tesseract.PageSegMode.Auto).ToLower();
+                return FrenchRecognition.ReadArtifactSubstats(text, name => GenshinProcesor.FindClosestStat(name,80), UserInterface.AddError)
+                    .Select(pair => new SubStat { stat=pair.Key,value=pair.Value }).ToList();
             }
-
-            bm.Dispose();
-            for (int i = 0; i < lines.Count; i++)
-            {
-                var line = Regex.Replace(lines[i], @"(?:^[^a-zA-Z]*)", string.Empty).Replace(" ", string.Empty);
-
-				if (line.Any(char.IsDigit))
-				{
-					Logger.Debug("Parsing artifact substat: {0}", line);
-
-					SubStat substat = new SubStat();
-					Regex re = new Regex(@"^(.*?)(\d+.*)");
-					var result = re.Match(line);
-					var stat = Regex.Replace(result.Groups[1].Value, @"[^\w]", string.Empty);
-					var value = result.Groups[2].Value;
-
-					string name = line.Contains("%") ? stat + "%" : stat;
-
-					substat.stat = GenshinProcesor.FindClosestStat(name, 80) ?? "";
-
-                    if (!FrenchRecognition.TryReadNumber(value, out substat.value))
-                    {
-                        UserInterface.AddError("Valeur de statistique illisible : " + line);
-                        substat.value = -1;
-                    }
-
-					if (string.IsNullOrWhiteSpace(substat.stat) || substat.value == -1)
-					{
-						Logger.Debug("Failed to parse stat from: {0}", line);
-					}
-
-					substats.Insert(i, substat);
-				}
-            }
-            return substats;
+            finally { bm?.Dispose(); }
         }
 
         private static string ScanArtifactEquippedCharacter(Bitmap bm)

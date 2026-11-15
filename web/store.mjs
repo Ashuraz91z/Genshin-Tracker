@@ -76,9 +76,9 @@ export function openStore(path) {
       return {user:{name:user.name},data:row?JSON.parse(row.data):blank(),devices,scans};
     },
     sync(userId,deviceName,body,deviceId,replaceInventory=false) {
-      const scan=validateScan(body);
-      const duplicate=db.prepare('SELECT applied,counts FROM scans WHERE user_id=? AND scan_id=?').get(userId,scan.scanId);
-      if(duplicate)return {ok:true,duplicate:true,scanId:scan.scanId,applied:JSON.parse(duplicate.applied),counts:JSON.parse(duplicate.counts)};
+      const scan=validateScan(body,{recoverArtifacts:true});
+      const duplicate=db.prepare('SELECT applied,counts,report FROM scans WHERE user_id=? AND scan_id=?').get(userId,scan.scanId);
+      if(duplicate)return {ok:true,duplicate:true,scanId:scan.scanId,applied:JSON.parse(duplicate.applied),counts:JSON.parse(duplicate.counts),rejectedArtifacts:JSON.parse(duplicate.report).rejectedArtifacts??0};
       const row=db.prepare('SELECT data FROM accounts WHERE user_id=?').get(userId);
       const data=row?JSON.parse(row.data):blank(),applied={},counts={};
       for(const category of ['characters','weapons','artifacts','materials']) {
@@ -86,7 +86,7 @@ export function openStore(path) {
         if(items===undefined) continue;
         counts[category]=category==='materials'?Object.keys(items).length:items.length;
         if(data.watermarks[category] && scan.capturedAt<=data.watermarks[category]) {applied[category]='older_scan';continue;}
-        if((category==='characters'&&items.length===0)||(category==='materials'&&Object.keys(items).length===0)){applied[category]='empty_scan';continue;}
+        if((category==='characters'&&items.length===0)||(category==='materials'&&Object.keys(items).length===0)||(category==='artifacts'&&items.length===0&&scan.report.rejectedArtifacts>0)){applied[category]='empty_scan';continue;}
         if(category==='characters') {
           const merged=new Map(data.characters.map(c=>[c.key,c]));
           items.forEach(c=>merged.set(c.key,c));data.characters=[...merged.values()];applied[category]='merged';
@@ -94,7 +94,7 @@ export function openStore(path) {
         else {
           const verified=scan.report.status==='finished_unverified' && scan.report.errors.length===0
             && scan.report.selected[category] && scan.report.expectedFromScreen[category]===items.length;
-          if(verified || replaceInventory || !data.watermarks[category]) {
+          if(verified || (replaceInventory&&!(category==='artifacts'&&scan.report.rejectedArtifacts>0)) || !data.watermarks[category]) {
             data[category]=items;data.quality[category]=verified?'count_matched':replaceInventory?'manual':'partial';applied[category]=verified?'replaced':replaceInventory?'manual_replaced':'first_partial';
           } else {applied[category]='preserved_previous';continue;}
         }
@@ -108,7 +108,7 @@ export function openStore(path) {
         if(deviceId) db.prepare('UPDATE devices SET last_seen=? WHERE id=?').run(now(),deviceId);
         db.exec('COMMIT');
       } catch(e) {db.exec('ROLLBACK');throw e;}
-      return {ok:true,duplicate:false,scanId:scan.scanId,applied,counts};
+      return {ok:true,duplicate:false,scanId:scan.scanId,applied,counts,rejectedArtifacts:scan.report.rejectedArtifacts};
     }
   };
 }

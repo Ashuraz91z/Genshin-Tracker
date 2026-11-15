@@ -107,7 +107,7 @@ namespace InventoryKamera
 
 			// Assign Traveler's custom name
 			GenshinProcesor.AssignTravelerName(Properties.Settings.Default.TravelerName);
-            
+
 			// Assign Wanderer's custom name
 			GenshinProcesor.UpdateCharacterName("wanderer", Properties.Settings.Default.WandererName);
 
@@ -267,7 +267,9 @@ namespace InventoryKamera
 				}
 
 				if (workerQueue.TryDequeue(out OCRImageCollection imageCollection))
-				{
+                {
+                    try
+                    {
 					switch (imageCollection.Type)
 					{
 						case "weapon":
@@ -299,7 +301,7 @@ namespace InventoryKamera
 							{
 								UserInterface.AddError($"Unable to validate information for weapon ID#{weapon.Id}");
 								string error = "";
-								if (!weapon.HasValidWeaponName()) error += "Invalid weapon name\n"; 
+								if (!weapon.HasValidWeaponName()) error += "Invalid weapon name\n";
 								if (!weapon.HasValidRarity()) error += "Invalid weapon rarity\n";
 								if (!weapon.HasValidLevel()) error += "Invalid weapon level\n";
 								if (!weapon.HasValidRefinementLevel()) error += "Invalid refinement level\n";
@@ -332,7 +334,7 @@ namespace InventoryKamera
                             }
 
                             // Dispose of everything
-                            imageCollection.Bitmaps.ForEach(b => b.Dispose());
+
 							break;
 
 						case "artifact":
@@ -403,7 +405,7 @@ namespace InventoryKamera
 							}
 
 							// Dispose of everything
-							imageCollection.Bitmaps.ForEach(b => b.Dispose());
+
 							break;
 
 						case "END":
@@ -413,11 +415,26 @@ namespace InventoryKamera
 						default:
 							MainForm.UnexpectedError("Unknown Image type for Image Processor");
 							break;
-					}
-				}
-				else
-				{
-					// Wait for more images to process
+                    }
+                    }
+                    catch(ThreadAbortException) { throw; }
+                    catch(Exception ex) when (!(ex is OutOfMemoryException))
+                    {
+                        string detail="OCR "+imageCollection.Type+" #"+imageCollection.Id+" : pièce ignorée, poursuite du parcours."+Environment.NewLine+OcrFailure.Describe(ex);
+                        UserInterface.AddError(detail);Logger.Error(ex,detail);
+                        try
+                        {
+                            string folder=Path.Combine("logging","ocr-errors",imageCollection.Type+"-"+imageCollection.Id);
+                            Directory.CreateDirectory(folder);File.WriteAllText(Path.Combine(folder,"error.txt"),detail);
+                            imageCollection.Bitmaps?.LastOrDefault()?.Save(Path.Combine(folder,"card.png"));
+                        }
+                        catch(Exception diagnosticError){Logger.Warn(diagnosticError,"Unable to save OCR diagnostic");}
+                    }
+                    finally { imageCollection.Bitmaps?.ForEach(bitmap=>bitmap?.Dispose()); }
+                }
+                else
+                {
+                    // Wait for more images to process
 					Thread.Sleep(250);
 				}
 			}
@@ -425,7 +442,7 @@ namespace InventoryKamera
             catch (Exception ex)
             {
                 b_threadCancel = true;
-                UserInterface.AddError("Erreur du traitement OCR : " + ex.Message);
+                UserInterface.AddError("Arrêt global du traitement OCR : " + OcrFailure.Describe(ex));
                 Logger.Error(ex, "OCR worker failed");
             }
 			Logger.Debug("Thread {threadId} exit", Thread.CurrentThread.ManagedThreadId);

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using InventoryKamera;
 
 static void Check(string input, string expected)
@@ -37,3 +38,13 @@ foreach (var sample in new[] { ("0/2100",0), ("123 / 2100",123), ("2 345 / 3 000
 foreach (string invalid in new[] { "1232100", "123/100", "12/?", "12/0", "-1/100", "" })
     if (FrenchRecognition.TryReadInventoryCount(invalid, out _)) throw new Exception("Guessed inventory count: " + invalid);
 Console.WriteLine("9 checks passed: inventory totals, changed capacity and unreadable counts.");
+
+var failures=new System.Collections.Generic.List<string>();
+string Map(string name)=>new System.Collections.Generic.Dictionary<string,string>{{"hp","hp"},{"hp%","hp_"},{"def","def"},{"critrate%","critRate_"},{"energyrecharge%","enerRech_"},{"atk%","atk_"}}.TryGetValue(name,out var key)?key:null;
+var rolls=FrenchRecognition.ReadArtifactSubstats("PV sans valeur\nhp+239\nTexte OCR sans nombre\ndef+23\ncritrate+3,5%(aactiver)\nenergyrecharge+5,2%",Map,failures.Add);
+if(rolls.Count!=3||rolls[0].Key!="hp"||rolls[0].Value!=239||rolls[2].Key!="enerRech_"||rolls[2].Value!=5.2m||failures.Count!=0)throw new Exception("Non-stat lines or inactive previews corrupted artifact parsing.");
+var broken=FrenchRecognition.ReadArtifactSubstats("atk+5,8%(a\ninconnu+12",Map,failures.Add);
+if(broken.Count!=2||broken.Any(s=>s.Key!=""||s.Value!=-1)||failures.Count!=2)throw new Exception("Invalid active stats were silently accepted or dropped.");
+var setStop=FrenchRecognition.ReadArtifactSubstats("hp+239\n2-piece: +18% ATK",Map,failures.Add);
+if(setStop.Count!=1)throw new Exception("Set bonuses were parsed as substats.");
+Console.WriteLine("Artifact OCR regressions: non-stat line gaps, inactive rolls, French decimals, truncated suffixes and set boundaries passed.");

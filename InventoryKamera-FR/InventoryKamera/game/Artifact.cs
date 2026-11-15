@@ -55,7 +55,7 @@ namespace InventoryKamera
 			Rarity = _rarity;
 			MainStat = string.IsNullOrWhiteSpace(_mainStat) ? "" : _mainStat;
 			Level = _level;
-			SubStats = _subStats.ToList().Where(e => e.value > 0).ToList();
+			SubStats = (_subStats ?? new List<SubStat>()).ToList();
 			SetName = string.IsNullOrWhiteSpace(_setName) ? "" : _setName;
 			EquippedCharacter = string.IsNullOrWhiteSpace(_equippedCharacter) ? "" : _equippedCharacter;
 			Lock = _Lock;
@@ -94,19 +94,10 @@ namespace InventoryKamera
 
 		public bool HasValidSubStats()
 		{
-			bool valid = true;
-
-			SubStats.ForEach(s =>
-			{
-                if (!string.IsNullOrWhiteSpace(s.stat) &&
-                    (!GenshinProcesor.IsValidStat(s.stat) || s.value == (decimal)(-1.0)))
-                {
-                    valid = false;
-                }
-            });
-
-			return valid;
-		}
+            var allowed=new HashSet<string> { "hp","hp_","atk","atk_","def","def_","eleMas","enerRech_","critRate_","critDMG_" };
+            return SubStats!=null && SubStats.Count<=4 && SubStats.All(s=>s.stat!=null&&allowed.Contains(s.stat)&&s.value>0&&s.value<=100000)
+                && SubStats.Select(s=>s.stat).Distinct().Count()==SubStats.Count;
+        }
 
 		public bool HasValidEquippedCharacter()
 		{

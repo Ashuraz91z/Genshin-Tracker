@@ -13,6 +13,8 @@ namespace InventoryKamera
             ["empty_scan"]="aucune donnée lisible, données précédentes conservées", ["manual_replaced"]="remplacement manuel demandé, données non vérifiées" };
         public static IEnumerable<string> Describe(JObject receipt)
         {
+            int rejected=(int?)receipt["rejectedArtifacts"]??0;
+            if(rejected>0)yield return rejected+" artéfact(s) invalides exclus par le serveur ; les autres données sont traitées. Consultez le journal du relevé.";
             foreach (var item in (receipt["applied"] as JObject ?? new JObject()).Properties())
             {
                 string outcome=(string)item.Value;

@@ -163,3 +163,13 @@ test('Hostinger redeploys keep a stable database and migrate accounts, device to
   assert.equal(prepareDatabase({cwd:next,configured:undefined,publicUrl:''}),join(next,'data/tracker.sqlite'));
   migrated.close();original.close();
 });
+
+test('invalid OCR artifacts are excluded with diagnostics while valid artifacts and other categories still sync',async t=>{
+ const {request,register,pair}=await setup(t);const owner=await register('ArtifactOCR'),token=(await pair(owner)).body.token;
+ const payload=scan('bad-artifact-and-valid');payload.report.status='interrupted';payload.good.artifacts=[artifact,{...artifact,substats:[{key:'',value:5.8}]}];
+ const received=await request('/api/sync',{method:'POST',origin:false,token,data:payload});assert.equal(received.status,200);assert.equal(received.body.rejectedArtifacts,1);assert.equal(received.body.counts.artifacts,1);
+ const account=(await request('/api/account',{cookie:owner})).body;assert.equal(account.data.characters.length,1);assert.equal(account.data.artifacts.length,1);assert.equal(account.data.quality.artifacts,'partial');assert.equal(account.scans[0].report.rejectedArtifacts,1);assert.match(account.scans[0].report.errors[0],/Artéfact #2 exclu/);
+ const malformed=scan('all-invalid-artifacts',1000);malformed.good={format:'GOOD',version:2,artifacts:[{...artifact,mainStatKey:''}]};
+ const empty=await request('/api/sync',{method:'POST',origin:false,token,data:malformed});assert.equal(empty.status,200);assert.equal(empty.body.applied.artifacts,'empty_scan');assert.equal((await request('/api/account',{cookie:owner})).body.data.artifacts.length,1);
+ const override=await request('/api/import',{method:'POST',cookie:owner,data:{good:payload.good,replaceInventory:true}});assert.equal(override.body.applied.artifacts,'preserved_previous');
+});

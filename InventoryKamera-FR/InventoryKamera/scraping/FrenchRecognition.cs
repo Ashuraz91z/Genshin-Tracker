@@ -67,6 +67,34 @@ namespace InventoryKamera
             return decimal.TryParse(number, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out value);
         }
 
+        internal static List<KeyValuePair<string,decimal>> ReadArtifactSubstats(string text, Func<string,string> findStat, Action<string> error)
+        {
+            var stats=new List<KeyValuePair<string,decimal>>();
+            foreach(string raw in (text??"").Split('\n'))
+            {
+                string line=Regex.Replace(Normalize(raw),@"\s","");
+                if(string.IsNullOrWhiteSpace(line))continue;
+                if(line.Contains(":")||line.Contains("piece")||line.Contains("set")||line.Contains("2-"))break;
+                if(!line.Any(char.IsDigit))continue;
+                // Locked preview rolls are not active substats; do not add their values to the export.
+                if(Regex.IsMatch(line,@"\(a+ctiver\)?$"))continue;
+                line=Regex.Replace(line,@"^[^a-zA-Z]*","");
+                var match=Regex.Match(line,@"^(.*?)(\d+.*)$");
+                string name=Regex.Replace(match.Groups[1].Value,@"[^\w]","");
+                string valueText=match.Groups[2].Value;
+                string key=findStat(name+(valueText.Contains("%")?"%":""))??"";
+                decimal value;
+                if(string.IsNullOrWhiteSpace(key)||!TryReadNumber(valueText,out value)||value<=0)
+                {
+                    error("Sous-statistique illisible : « "+raw.Trim()+" ». Cette pièce est exclue de l’export valide.");
+                    stats.Add(new KeyValuePair<string,decimal>("",-1));
+                    continue;
+                }
+                stats.Add(new KeyValuePair<string,decimal>(key,value));
+            }
+            return stats;
+        }
+
         internal static string ForScanner(string text)
         {
             string normalized = Normalize(text);

@@ -69,3 +69,13 @@ try
 }
 finally{System.IO.Directory.Delete(queue,true);}
 Console.WriteLine("Upload queue: rejected scans isolated; 401/429/503 preserved; acknowledged retries removed.");
+
+var validRolls=new System.Collections.Generic.List<Artifact.SubStat>{new Artifact.SubStat{stat="critRate_",value=3.5m}};
+var testArtifact=new Artifact("OceanHuedClam",5,0,"flower","hp",validRolls);
+if(!testArtifact.HasValidSubStats())throw new Exception("A valid substat was rejected.");
+foreach(var roll in new[]{new Artifact.SubStat{stat="",value=3.5m},new Artifact.SubStat{stat="critRate_",value=-1},new Artifact.SubStat{stat="bad",value=10}})
+ if(new Artifact("OceanHuedClam",5,0,"flower","hp",new System.Collections.Generic.List<Artifact.SubStat>{roll}).HasValidSubStats())throw new Exception("Malformed OCR stat was accepted for export.");
+var nested=new AggregateException(new ArgumentOutOfRangeException("index","line gap"));
+string explained=OcrFailure.Describe(nested);
+if(!explained.Contains("ArgumentOutOfRangeException")||!explained.Contains("line gap"))throw new Exception("OCR aggregate hid its actionable cause.");
+Console.WriteLine("Artifact export rejects invalid keys/values; aggregate OCR errors retain the exact exception.");
