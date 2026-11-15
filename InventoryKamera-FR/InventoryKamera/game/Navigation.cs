@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -364,6 +364,7 @@ namespace InventoryKamera
 				if (genshin != null)
 				{
 					handle = genshin.MainWindowHandle;
+                    if (handle == IntPtr.Zero) return false;
 					
 					var windowPlacement = new WindowPlacement{length = Marshal.SizeOf(typeof(WindowPlacement))};
 					GetWindowPlacement(handle, ref windowPlacement);
@@ -376,8 +377,18 @@ namespace InventoryKamera
 					}
 
 					// Bring game to front
-					SetForegroundWindow(handle);
-					return true;
+                    UserInterface.SetProgramStatus("Revenez dans Genshin (Alt+Tab), menu Paimon ouvert — attente de 15 secondes");
+                    SetForegroundWindow(handle);
+                    // Windows may refuse activation from a background thread; allow a manual switch before capture.
+                    var waiting = Stopwatch.StartNew();
+                    while (GetForegroundWindow() != handle)
+                    {
+                        if (waiting.ElapsedMilliseconds >= 15000)
+                            throw new InvalidOperationException("Impossible d’activer Genshin. Relancez le scan puis revenez dans le jeu avec Alt+Tab sous 15 secondes, menu Paimon ouvert.");
+                        Thread.Sleep(100);
+                    }
+                    UserInterface.SetProgramStatus("Scan en cours — gardez Genshin au premier plan");
+                    return true;
 				}
 			}
 			return false;
