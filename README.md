@@ -4,7 +4,7 @@ Un compagnon Windows et un site personnel pour retrouver les données de son com
 
 ## Utiliser l'application Windows
 
-1. Extraire **tout** `GenshinTracker-KameraFR-0.2.0.zip` dans un dossier où vous pouvez écrire. Garder les DLL, `tessdata` et `inventorylists` à côté de `InventoryKamera.FR.exe`.
+1. Extraire **tout** `GenshinTracker-KameraFR-0.2.1.zip` dans un dossier où vous pouvez écrire. Garder les DLL, `tessdata` et `inventorylists` à côté de `InventoryKamera.FR.exe`.
 2. Lancer l'exécutable. Prérequis hérités : **.NET Framework 4.7.2+** et **Visual C++ 2015–2022**. Le manifeste demande les droits administrateur pour piloter le jeu. Exécutable non signé.
 3. Utiliser Genshin en **français**, clavier/souris, format **16:9 ou 16:10**, HDR désactivé. Les touches B/C/1 peuvent être configurées dans Options.
 4. Dans **Options du scan**, préciser le nom personnalisé du Voyageur et du Nomade si nécessaire, ainsi que le dossier des exports.
@@ -72,3 +72,7 @@ Sources et versions : `UPSTREAM.md`, `inventorylists/source.json`, `web/public/a
 ## GitHub et livraison
 
 Code du site : `web/` ; code de l'application : `InventoryKamera-FR/`. Le workflow GitHub Actions construit et teste Next.js en mode production, puis compile l’application et publie les paquets dans Releases. Le serveur de production se lance par `npm run build` puis `npm start` depuis `web/` (variable `PORT`, 3000 par défaut), ou avec Docker/Caddy. Les modèles OCR sont récupérés automatiquement au build depuis une version officielle figée et vérifiés par SHA-256. Les exécutables, bases SQLite, connexions locales et fichiers `.env` ne sont pas versionnés. Guide Hostinger : `web/README.md`.
+
+### Correctif Windows 0.2.1
+
+Un dossier d’export vide utilise automatiquement `Documents\GenshinTracker\Exports`. Un chemin invalide ou inaccessible affiche un avertissement avant le scan. Le bouton d’ouverture du dossier et l’export utilisent le même contrôle.

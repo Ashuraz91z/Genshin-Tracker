@@ -94,7 +94,7 @@ namespace InventoryKamera
         internal void WriteToJSON(string outputDirectory)
         {
             // Creates directory if doesn't exist
-            Directory.CreateDirectory(outputDirectory);
+            outputDirectory = ExportDirectory.Prepare(outputDirectory);
 
             // Create file with timestamp in name
             string fileName = $"genshinData_GOOD_{DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss_fff")}.json";

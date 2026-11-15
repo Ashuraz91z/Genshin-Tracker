@@ -8,4 +8,4 @@
 - OCR : Tesseract, modèles préentraînés fra/eng de tessdata_fast, téléchargés le 15 novembre 2026. Empreintes exactes dans le paquet.
 - Les rapports de cadrage restent dans `reports/`.
 
-- Version 0.2.0 : site Node/SQLite, synchronisation par appareil, interface WinForms revue et direction UI/UX Pro Max. Aucun hébergement de production configuré.
+- Version 0.2.1 : site Node/SQLite, synchronisation par appareil, interface WinForms revue et direction UI/UX Pro Max. Aucun hébergement de production configuré.

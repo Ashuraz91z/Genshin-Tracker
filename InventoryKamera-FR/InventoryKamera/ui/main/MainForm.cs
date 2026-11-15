@@ -141,7 +141,7 @@ namespace InventoryKamera
             ProgramStatus_Label.Text = "";
             if (string.IsNullOrWhiteSpace(OutputPath_TextBox.Text))
             {
-                OutputPath_TextBox.Text = Directory.GetCurrentDirectory() + @"\GenshinData";
+                OutputPath_TextBox.Text = ExportDirectory.Resolve(null);
             }
             
         }
@@ -203,6 +203,7 @@ namespace InventoryKamera
 
         private void StartButton_Clicked(object sender, EventArgs e)
         {
+            if (running || !PrepareExportDirectory()) return;
             GC.Collect();
 
             UserInterface.ResetAll();
@@ -210,7 +211,7 @@ namespace InventoryKamera
             UserInterface.SetProgramStatus("Scanning");
             Logger.Info("Starting scan");
 
-            if (Directory.Exists(OutputPath_TextBox.Text) || Directory.CreateDirectory(OutputPath_TextBox.Text).Exists)
+            if (Directory.Exists(OutputPath_TextBox.Text))
             {
                 if (running)
                 {
@@ -497,16 +498,26 @@ namespace InventoryKamera
 
         #endregion Unicode Helper Functions
 
+        private bool PrepareExportDirectory()
+        {
+            try
+            {
+                OutputPath_TextBox.Text = ExportDirectory.Prepare(OutputPath_TextBox.Text);
+                return true;
+            }
+            catch (Exception error) when (error is ArgumentException || error is IOException || error is UnauthorizedAccessException || error is System.Security.SecurityException || error is NotSupportedException)
+            {
+                Logger.Error(error, "Cannot create export directory");
+                UserInterface.SetProgramStatus("Dossier d’export inaccessible");
+                MessageBox.Show(this, "Impossible d’utiliser le dossier des exports. Choisissez un dossier accessible dans Options du scan.\n\n" + error.Message,
+                    "Dossier des exports", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+        }
+
         private void ExportFolderMenuItem_Click(object sender, EventArgs e)
         {
-            if (Directory.Exists(OutputPath_TextBox.Text) || Directory.CreateDirectory(OutputPath_TextBox.Text).Exists)
-            {
-                Process.Start($@"{OutputPath_TextBox.Text}");
-            }
-            else
-            {
-                Process.Start("explorer.exe");
-            }
+            if (PrepareExportDirectory()) Process.Start(OutputPath_TextBox.Text);
         }
 
         private void MainForm_Shown(object sender, EventArgs e)
