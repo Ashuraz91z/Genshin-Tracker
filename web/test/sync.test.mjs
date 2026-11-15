@@ -183,3 +183,28 @@ test('partial equipment merges valid multiplicities on every import without dele
  const again=await request('/api/import',{method:'POST',cookie:owner,data:{good:partial.good}});assert.equal(again.body.applied.artifacts,'partial_merged');
  data=(await request('/api/account',{cookie:owner})).body.data;assert.equal(data.artifacts.length,3);assert.equal(data.materials.Mora,123456);
 });
+
+test('manual artifacts and teams are isolated, validated, reversible and survive scans and reopening the database',async t=>{
+ const {request,register,dbPath}=await setup(t),alice=await register('Manual Alice'),bob=await register('Manual Bob');
+ const imported=scan('customization-original');await request('/api/import',{method:'POST',cookie:alice,data:imported});
+ const {artifactIdentity}=await import('../lib/customization.mjs');
+ const input={characterKey:'KamisatoAyaka',source:artifactIdentity(artifact),artifact:{...artifact,substats:[{key:'critRate_',value:3.9},{key:'critDMG_',value:7.8},{key:'atk',value:19},{key:'enerRech_',value:5.8}]}};
+ assert.equal((await request('/api/manual-artifacts',{method:'POST',cookie:alice,origin:false,data:input})).status,403);
+ assert.equal((await request('/api/manual-artifacts',{method:'POST',data:input})).status,401);
+ assert.equal((await request('/api/manual-artifacts',{method:'POST',cookie:bob,data:input})).status,400);
+ const saved=await request('/api/manual-artifacts',{method:'POST',cookie:alice,data:input});assert.equal(saved.status,200);assert.equal(saved.body.data.artifacts.length,1);assert.equal(saved.body.data.artifacts[0].location,'KamisatoAyaka');
+ const id=saved.body.customizations.artifacts[0].id;
+ for(const patch of [{rarity:3},{level:21},{mainStatKey:'critRate_'},{substats:[{key:'hp',value:10}]},{substats:[{key:'critRate_',value:9000}]},{setKey:'NoSuchSet'}])assert.equal((await request('/api/manual-artifacts',{method:'POST',cookie:alice,data:{...input,artifact:{...input.artifact,...patch}}})).status,400);
+ assert.equal((await request('/api/manual-artifacts/'+id,{method:'DELETE',cookie:bob})).status,400);
+ const team=await request('/api/teams',{method:'POST',cookie:alice,data:{name:'Mon équipe',characters:['KamisatoAyaka'],duration:20,enemyLevel:100,resistance:10,iterations:20}});assert.equal(team.status,200);const teamId=team.body.customizations.teams[0].id;
+ assert.equal((await request('/api/teams',{method:'POST',cookie:alice,data:{name:'Doublon',characters:['KamisatoAyaka','KamisatoAyaka']}})).status,400);
+ assert.equal((await request('/api/teams/'+teamId,{method:'DELETE',cookie:bob})).status,400);
+ const newer=scan('customization-newer',1000);newer.good.artifacts[0]={...artifact,level:4,location:'KamisatoAyaka'};
+ await request('/api/import',{method:'POST',cookie:alice,data:{...newer,replaceInventory:true}});
+ const after=await request('/api/account',{cookie:alice});assert.equal(after.body.customizations.artifacts.length,1);assert.equal(after.body.data.artifacts.filter(a=>a.location==='KamisatoAyaka').length,1);assert.equal(after.body.data.artifacts.find(a=>a.manualId).level,20);
+ const reedited=await request('/api/manual-artifacts',{method:'POST',cookie:alice,data:input});assert.equal(reedited.status,200);assert.equal(reedited.body.customizations.artifacts[0].id,id);
+ const other=openStore(dbPath);const row=other.db.prepare('SELECT data FROM customizations').get();assert.equal(JSON.parse(row.data).teams[0].name,'Mon équipe');other.close();
+ const removed=await request('/api/manual-artifacts/'+id,{method:'DELETE',cookie:alice});assert.equal(removed.status,200);assert.equal(removed.body.data.artifacts.length,1);assert.equal(removed.body.data.artifacts[0].level,4);assert.equal(removed.body.data.artifacts[0].location,'KamisatoAyaka');
+ assert.equal((await request('/api/teams/'+teamId,{method:'DELETE',cookie:alice})).status,200);
+ const untouched=await request('/api/account',{cookie:bob});assert.equal(untouched.body.customizations.teams.length,0);assert.equal(untouched.body.data.artifacts.length,0);
+});

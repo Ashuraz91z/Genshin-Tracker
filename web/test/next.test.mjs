@@ -33,12 +33,12 @@ test('Next production preserves existing accounts and device keys, serves all pa
   const desktopAccount=await call('/api/device/account',{session:null,token:device.token,origin:false});assert.equal(desktopAccount.status,200);assert.equal(desktopAccount.body.user.name,'Migration');
   const before=await call('/api/account');assert.equal(before.status,200);assert.equal(before.body.user.name,'Migration');
   let previousNonce;
-  for(const page of ['/','/characters','/inventory','/sync']) {
+  for(const page of ['/','/characters','/characters/KamisatoAyaka','/inventory','/teams','/sync']) {
     const response=await fetch(url+page);assert.equal(response.status,200,page);const html=await response.text();
     assert.ok(html.includes('GENSHIN'));assert.ok(html.includes('Ouverture de votre carnet'));
     const csp=response.headers.get('content-security-policy'),nonce=csp?.match(/'nonce-([^']+)'/)?.[1];
     assert.ok(nonce,'Production page missing CSP nonce');assert.notEqual(nonce,previousNonce);previousNonce=nonce;
-    assert.ok(!csp.includes('unsafe-inline')&&!csp.includes('unsafe-eval'));
+    assert.ok(!csp.includes("'unsafe-inline'")&&!csp.includes("'unsafe-eval'"));
     const scripts=[...html.matchAll(/<script\b([^>]*)>/g)];assert.ok(scripts.length>0);
     for(const script of scripts)assert.ok(script[1].includes(`nonce="${nonce}"`),'Hydration script blocked by CSP');
     const sources=[...html.matchAll(/(?:src|href)="([^" ]*\/_next\/(?:static|[^" ]+)[^" ]*)"/g)].map(m=>m[1]);

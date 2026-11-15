@@ -1,0 +1,14 @@
+import { readFileSync } from 'node:fs';
+import { gunzipSync } from 'node:zlib';
+import { runInThisContext } from 'node:vm';
+import assert from 'node:assert/strict';
+import { buildSimulation } from '../lib/simulation.mjs';
+import { team,data } from './simulation-fixture.mjs';
+const metadata=JSON.parse(readFileSync(new URL('../public/simulator/data.json',import.meta.url))),catalogue=JSON.parse(readFileSync(new URL('../public/assets/catalogue.json',import.meta.url)));
+const {config,issues}=buildSimulation(team,data,catalogue,metadata);assert.deepEqual(issues,[]);
+runInThisContext(readFileSync(new URL('../public/simulator/wasm_exec.js',import.meta.url),'utf8'));
+const go=new globalThis.Go(),wasm=gunzipSync(readFileSync(new URL('../public/simulator/gcsim.wasm.gz',import.meta.url)));const loaded=await WebAssembly.instantiate(wasm,go.importObject);go.run(loaded.instance);
+const decode=value=>{if(typeof value==='string'){const result=JSON.parse(value);assert.ok(!result.error,result.error);return result;}return value;};
+const parsed=decode(globalThis.validateConfig(config));assert.equal(parsed.settings.damage_mode,false);
+decode(globalThis.initializeAggregator(config));decode(globalThis.initializeWorker(config));for(let i=0;i<20;i++)decode(globalThis.aggregate(decode(globalThis.simulate())));
+const result=decode(globalThis.flush());console.log(JSON.stringify({iterations:result.stats.iterations,DPS:result.stats.dps,totalDamage:result.stats.total_damage}));assert.ok(result.stats.total_damage.mean>0);assert.ok(result.stats.dps.mean>0);assert.equal(result.stats.iterations,20);assert.equal(result.stats.duration.mean,20);process.exit(0);

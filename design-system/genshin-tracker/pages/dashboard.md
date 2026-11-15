@@ -27,3 +27,9 @@ La direction du site évolue sur demande de Lucas : verre dépoli, fond diffus b
 ### Équipements par personnage
 
 Fiche personnage élargie : arme à gauche, cinq emplacements d’artéfacts à droite, une colonne sur mobile. Les cartes illustrées utilisent les mêmes raretés et noms que l’inventaire ; détails dépliables au clavier pour les sous-statistiques. Résumé de l’arme et du nombre d’emplacements identifiés directement sur les cartes personnages. Les associations proviennent uniquement de `location` : état « non identifié » si absent, tous les candidats et un avertissement en cas de plusieurs armes ou pièces pour un même emplacement. Les sets sont comptés comme pièces relevées, sans prétendre calculer des bonus actifs.
+
+### Catalogue et équipes (0.5)
+
+Les personnages s’ouvrent en pages complètes et l’inventaire affiche ses détails dans la page. Les vignettes d’équipement sont agrandies, sans petites capsules autour de chaque image. Le seul dialogue d’équipement est un formulaire de correction explicite : catalogue illustré, recherche, rareté/niveau, principale calculée et quatre sous-statistiques. Les corrections sont marquées « Saisie manuelle ».
+
+Équipes : bibliothèque des compositions, résultat de rotation en tête, équipements visibles et hypothèses proches du bouton de simulation. La personnalisation du script gcsim est secondaire et repliée sous « avancé ». Aucun score de puissance présenté comme des dégâts : les données insuffisantes bloquent le calcul, les limitations du moteur restent affichées. Cinq entrées de navigation, mises en page adaptées aux petits écrans.

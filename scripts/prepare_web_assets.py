@@ -19,14 +19,22 @@ for category in ['characters','weapons','materials','artifacts']:
             row.update(element=fr.get('elementText',''),weapon=fr.get('weaponText',''))
             record=images[category].get(f.stem,{})
             image=[record.get(field) for field in ['hoyowiki_icon','mihoyo_icon'] if record.get(field)]
+            if not image:
+                try:
+                    with urllib.request.urlopen(urllib.request.Request('https://gi.yatta.moe/api/v2/en/avatar/'+str(fr['id']),headers={'User-Agent':'Mozilla/5.0'}),timeout=10) as response:avatar=json.load(response)['data']
+                    if ref.good(avatar['name'])==key and avatar.get('icon'):record['filename_icon']=avatar['icon']
+                except Exception:pass
+            if record.get('filename_icon'):image.append('https://enka.network/ui/'+record['filename_icon']+'.png')
             if image: row['portrait']=f'/assets/portraits/{key}.png';jobs.append((image,dest/'portraits'/f'{key}.png'))
         else:
             record=images[category].get(f.stem,{})
             (dest/category).mkdir(exist_ok=True)
             if category=='artifacts':
+                row['rarities']=fr.get('rarityList',[row['rarity']]);row['effect2Pc']=fr.get('effect2Pc','');row['effect4Pc']=fr.get('effect4Pc','')
                 row['pieces']={slot:{'name':fr[slot]['name']} for slot in ['flower','plume','sands','goblet','circlet'] if slot in fr}
                 for slot,piece in row['pieces'].items():
                     urls=[record[field] for field in [slot,'mihoyo_'+slot] if record.get(field)]
+                    if record.get('filename_'+slot):urls.append('https://enka.network/ui/'+record['filename_'+slot]+'.png')
                     if urls:
                         piece['image']=f'/assets/{category}/{key}-{slot}.png'
                         jobs.append((urls,dest/category/f'{key}-{slot}.png'))
@@ -34,6 +42,7 @@ for category in ['characters','weapons','materials','artifacts']:
                 urls=[record[field] for field in ['icon','mihoyo_icon'] if record.get(field)]
                 if not urls and record.get('filename_icon'):
                     urls=['https://upload-os-bbs.mihoyo.com/game_record/genshin/equip/'+record['filename_icon']+'.png']
+                if record.get('filename_icon'):urls.extend(['https://enka.network/ui/'+record['filename_icon']+'.png','https://gi.yatta.moe/assets/UI/'+record['filename_icon']+'.png'])
                 if urls:
                     row['image']=f'/assets/{category}/{key}.png'
                     jobs.append((urls,dest/category/f'{key}.png'))
@@ -48,7 +57,7 @@ def fetch(job):
     if path.exists():return True
     for url in urls:
         try:
-            req=urllib.request.Request(url,headers={'User-Agent':'GenshinTracker/0.3'})
+            req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0 (compatible; GenshinTracker)' })
             with urllib.request.urlopen(req,timeout=15) as r: data=r.read()
             if not data.startswith(b'\x89PNG'):continue
             path.write_bytes(data);return True
@@ -102,3 +111,5 @@ print(f'Catalogue FR préparé ; {sum(results)}/{len(jobs)} illustrations dispon
 
 if mirror_commit:
     with (dest/'SOURCES.md').open('a') as sources:sources.write('Illustrations complémentaires : https://github.com/MadeBaruna/paimon-moe/tree/'+mirror_commit+'/static/images (miroir des illustrations du jeu, droits HoYoverse).\n')
+
+with (dest/'SOURCES.md').open('a') as sources:sources.write('Images manquantes : https://enka.network/ui/ et https://gi.yatta.moe/assets/UI/ ; identifiants et icônes manquants vérifiés via https://gi.yatta.moe/api/v2/en/avatar/<id>.\n')

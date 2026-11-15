@@ -65,6 +65,10 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
         return json(200,store.sync(device.user_id,device.name,await body(),device.id));
       }
       if(method==='POST' && path==='/api/import'){const u=requireUser(),input=await body();input.scanId??=secret();input.capturedAt??=new Date().toISOString();return json(200,store.sync(u.id,'Import manuel',input,undefined,input.replaceInventory===true));}
+      if(method==='POST'&&path==='/api/manual-artifacts'){const u=requireUser(),input=await body(),catalogue=JSON.parse(await readFile(join(publicDirectory,'assets/catalogue.json'),'utf8'));return json(200,store.saveArtifact(u,input,catalogue));}
+      if(method==='DELETE'&&/^\/api\/manual-artifacts\/[^/]+$/.test(path))return json(200,store.removeArtifact(requireUser(),decodeURIComponent(path.split('/').pop())));
+      if(method==='POST'&&path==='/api/teams')return json(200,store.saveTeam(requireUser(),await body()));
+      if(method==='DELETE'&&/^\/api\/teams\/[^/]+$/.test(path))return json(200,store.removeTeam(requireUser(),decodeURIComponent(path.split('/').pop())));
       if(method==='GET' && path==='/api/catalogue')return new Response(await readFile(join(publicDirectory,'assets/catalogue.json')),{headers:{...securityHeaders,'Content-Type':'application/json','Cache-Control':'public,max-age=3600'}});
       if(method==='GET' && path==='/api/download') {
         const info=await stat(/* turbopackIgnore: true */ download).catch(()=>null);

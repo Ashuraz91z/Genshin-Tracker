@@ -33,6 +33,9 @@ jobs:
       - name: Test site and Next production server
         working-directory: web
         run: npm test
+      - name: Verify the rotation simulation engine
+        working-directory: web
+        run: npm run test:engine
       - name: Build and test Windows package
         env:
           PYTHON: python

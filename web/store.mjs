@@ -4,6 +4,7 @@ import { createHash, randomBytes, scryptSync, timingSafeEqual } from 'node:crypt
 export const hash = value => createHash('sha256').update(value).digest('hex');
 export const secret = () => randomBytes(32).toString('base64url');
 import { Problem, need, validateScan } from './lib/scan.mjs';
+import { emptyCustomization, projectInventory, validateArtifactEdit, validateTeam } from './lib/customization.mjs';
 export { Problem, validateScan } from './lib/scan.mjs';
 
 export function openStore(path) {
@@ -15,6 +16,9 @@ export function openStore(path) {
     CREATE TABLE IF NOT EXISTS devices(id TEXT PRIMARY KEY,user_id TEXT REFERENCES users(id),name TEXT,token TEXT UNIQUE,created TEXT,last_seen TEXT);
     CREATE TABLE IF NOT EXISTS accounts(user_id TEXT PRIMARY KEY REFERENCES users(id),data TEXT NOT NULL);
     CREATE TABLE IF NOT EXISTS scans(user_id TEXT REFERENCES users(id),scan_id TEXT,captured TEXT,received TEXT,device TEXT,report TEXT,counts TEXT,applied TEXT,PRIMARY KEY(user_id,scan_id));`);
+  db.exec('CREATE TABLE IF NOT EXISTS customizations(user_id TEXT PRIMARY KEY REFERENCES users(id),data TEXT NOT NULL)');
+  const customization=userId=>{const row=db.prepare('SELECT data FROM customizations WHERE user_id=?').get(userId);return row?JSON.parse(row.data):emptyCustomization();};
+  const saveCustomization=(userId,value)=>db.prepare('INSERT INTO customizations VALUES(?,?) ON CONFLICT(user_id) DO UPDATE SET data=excluded.data').run(userId,JSON.stringify(value));
   const now=()=>new Date().toISOString();
   const blank=()=>({characters:[],weapons:[],artifacts:[],materials:{},watermarks:{},quality:{},updatedAt:null});
   return {
@@ -73,7 +77,41 @@ export function openStore(path) {
       const devices=db.prepare('SELECT id,name,created,last_seen FROM devices WHERE user_id=? ORDER BY created DESC').all(user.id);
       const scans=db.prepare('SELECT scan_id,captured,received,device,report,counts,applied FROM scans WHERE user_id=? ORDER BY received DESC LIMIT 30').all(user.id)
         .map(s=>({...s,report:((r)=>({...r,errors:r.errors.slice(0,20)}))(JSON.parse(s.report)),counts:JSON.parse(s.counts),applied:JSON.parse(s.applied)}));
-      return {user:{name:user.name},data:row?JSON.parse(row.data):blank(),devices,scans};
+      const custom=customization(user.id);
+      return {user:{name:user.name},data:projectInventory(row?JSON.parse(row.data):blank(),custom),customizations:custom,devices,scans};
+    },
+    saveArtifact(user,input,catalogue) {
+      db.exec('BEGIN IMMEDIATE');
+      try {
+        const row=db.prepare('SELECT data FROM accounts WHERE user_id=?').get(user.id),data=row?JSON.parse(row.data):blank();
+        const custom=customization(user.id),edit=validateArtifactEdit(input,data,catalogue,custom);
+        const previous=custom.artifacts.find(a=>a.characterKey===edit.characterKey&&a.artifact.slotKey===edit.artifact.slotKey);
+        need(previous||custom.artifacts.length<1500,'Limite de corrections atteinte.');
+        custom.artifacts=custom.artifacts.filter(a=>!(a.characterKey===edit.characterKey&&a.artifact.slotKey===edit.artifact.slotKey)&&!(edit.source&&a.source===edit.source));
+        custom.artifacts.push({...edit,id:previous?.id??secret()});saveCustomization(user.id,custom);db.exec('COMMIT');
+      } catch(error){db.exec('ROLLBACK');throw error;}
+      return this.account(user);
+    },
+    removeArtifact(user,id) {
+      db.exec('BEGIN IMMEDIATE');
+      try {const custom=customization(user.id);need(custom.artifacts.some(a=>a.id===id),'Correction introuvable.');custom.artifacts=custom.artifacts.filter(a=>a.id!==id);saveCustomization(user.id,custom);db.exec('COMMIT');}
+      catch(error){db.exec('ROLLBACK');throw error;}
+      return this.account(user);
+    },
+    saveTeam(user,input) {
+      db.exec('BEGIN IMMEDIATE');
+      try {
+        const data=this.account(user).data,team=validateTeam(input,data),custom=customization(user.id);
+        const previous=custom.teams.find(t=>t.id===input.id);need(!input.id||previous,'Équipe introuvable.');need(previous||custom.teams.length<50,'50 équipes maximum.');
+        const id=previous?.id??secret();custom.teams=custom.teams.filter(t=>t.id!==id);custom.teams.push({...team,id});saveCustomization(user.id,custom);db.exec('COMMIT');
+      }catch(error){db.exec('ROLLBACK');throw error;}
+      return this.account(user);
+    },
+    removeTeam(user,id) {
+      db.exec('BEGIN IMMEDIATE');
+      try{const custom=customization(user.id);need(custom.teams.some(t=>t.id===id),'Équipe introuvable.');custom.teams=custom.teams.filter(t=>t.id!==id);saveCustomization(user.id,custom);db.exec('COMMIT');}
+      catch(error){db.exec('ROLLBACK');throw error;}
+      return this.account(user);
     },
     sync(userId,deviceName,body,deviceId,replaceInventory=false) {
       const scan=validateScan(body,{recoverArtifacts:true});
