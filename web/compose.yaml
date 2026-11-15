@@ -1,0 +1,30 @@
+services:
+  tracker:
+    build:
+      context: ..
+      dockerfile: web/Dockerfile
+    environment:
+      PUBLIC_URL: https://${DOMAIN:?Définir DOMAIN dans .env}
+    volumes:
+      - tracker-data:/data
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp
+  caddy:
+    image: caddy:2-alpine
+    environment:
+      DOMAIN: ${DOMAIN:?Définir DOMAIN dans .env}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    restart: unless-stopped
+volumes:
+  tracker-data:
+  caddy-data:
+  caddy-config:

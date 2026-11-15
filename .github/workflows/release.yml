@@ -1,0 +1,54 @@
+name: Build and release Windows app
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test site
+        run: node --test web/test/sync.test.mjs
+      - name: Build and test Windows package
+        env:
+          PYTHON: python
+        shell: bash
+        run: bash scripts/build_windows.sh
+      - name: Package server
+        run: python scripts/package_server.py
+      - name: Preserve packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: genshin-tracker-packages
+          path: dist/*.zip*
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          $version = (Get-Content web/package.json | ConvertFrom-Json).version
+          $tag = "v$version"
+          $existing = gh release view $tag --json tagName 2>$null
+          $assets = @(Get-ChildItem dist -File | Where-Object { $_.Name -match "\.(zip|sha256)$" } | ForEach-Object { $_.FullName })
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host "Release $tag already exists; keeping its original artifacts."
+            exit 0
+          } else {
+            gh release create $tag @assets --target $env:GITHUB_SHA --title "Genshin Tracker $version" --notes "Site avec synchronisation de compte et compagnon Windows Kamera FR. Extraire tout le paquet Windows. Les tests automatisés ne remplacent pas un essai réel dans Genshin."
+          }
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

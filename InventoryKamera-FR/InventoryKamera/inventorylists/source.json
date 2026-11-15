@@ -1,0 +1,21 @@
+{
+  "source": "https://github.com/theBowja/genshin-db",
+  "commit": "8e5badd60b5d894284ccc927a56c9683529d2592",
+  "language": "French",
+  "counts": {
+    "characters": 126,
+    "weapons": 256,
+    "materials": 931,
+    "artifacts": 63,
+    "talents": 129,
+    "constellations": 129
+  },
+  "aliases": 1519,
+  "scannerLookupCounts": {
+    "characters": 123,
+    "weapons": 254,
+    "artifacts": 63,
+    "materials": 916
+  },
+  "notice": "Snapshot communautaire ; couverture actuelle du jeu à contrôler."
+}

@@ -1,0 +1,9 @@
+.git
+**/bin
+**/obj
+**/.env
+**/node_modules
+web/data
+**/__pycache__
+dist/*
+!dist/GenshinTracker-KameraFR-0.2.0.zip

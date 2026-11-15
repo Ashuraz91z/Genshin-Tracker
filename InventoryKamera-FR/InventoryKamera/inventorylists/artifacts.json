@@ -1,0 +1,1938 @@
+{
+  "adaycarvedfromrisingwinds": {
+    "setName": "A Day Carved From Rising Winds",
+    "GOOD": "ADayCarvedFromRisingWinds",
+    "normalizedName": "adaycarvedfromrisingwinds",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Windborne Flower's Spruchdichtung",
+        "GOOD": "WindborneFlowersSpruchdichtung",
+        "normalizedName": "windborneflowersspruchdichtung"
+      },
+      "plume": {
+        "artifactName": "Dawn's Brilliant Oath",
+        "GOOD": "DawnsBrilliantOath",
+        "normalizedName": "dawnsbrilliantoath"
+      },
+      "sands": {
+        "artifactName": "A Note in Spring's Leich",
+        "GOOD": "ANoteInSpringsLeich",
+        "normalizedName": "anoteinspringsleich"
+      },
+      "goblet": {
+        "artifactName": "Heldenepos's Unspoken Tale",
+        "GOOD": "HeldenepossUnspokenTale",
+        "normalizedName": "heldenepossunspokentale"
+      },
+      "circlet": {
+        "artifactName": "Minnesang of Love and Lament",
+        "GOOD": "MinnesangOfLoveAndLament",
+        "normalizedName": "minnesangofloveandlament"
+      }
+    }
+  },
+  "adventurer": {
+    "setName": "Adventurer",
+    "GOOD": "Adventurer",
+    "normalizedName": "adventurer",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Adventurer's Flower",
+        "GOOD": "AdventurersFlower",
+        "normalizedName": "adventurersflower"
+      },
+      "plume": {
+        "artifactName": "Adventurer's Tail Feather",
+        "GOOD": "AdventurersTailFeather",
+        "normalizedName": "adventurerstailfeather"
+      },
+      "sands": {
+        "artifactName": "Adventurer's Pocket Watch",
+        "GOOD": "AdventurersPocketWatch",
+        "normalizedName": "adventurerspocketwatch"
+      },
+      "goblet": {
+        "artifactName": "Adventurer's Golden Goblet",
+        "GOOD": "AdventurersGoldenGoblet",
+        "normalizedName": "adventurersgoldengoblet"
+      },
+      "circlet": {
+        "artifactName": "Adventurer's Bandana",
+        "GOOD": "AdventurersBandana",
+        "normalizedName": "adventurersbandana"
+      }
+    }
+  },
+  "archaicpetra": {
+    "setName": "Archaic Petra",
+    "GOOD": "ArchaicPetra",
+    "normalizedName": "archaicpetra",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Flower of Creviced Cliff",
+        "GOOD": "FlowerOfCrevicedCliff",
+        "normalizedName": "flowerofcrevicedcliff"
+      },
+      "plume": {
+        "artifactName": "Feather of Jagged Peaks",
+        "GOOD": "FeatherOfJaggedPeaks",
+        "normalizedName": "featherofjaggedpeaks"
+      },
+      "sands": {
+        "artifactName": "Sundial of Enduring Jade",
+        "GOOD": "SundialOfEnduringJade",
+        "normalizedName": "sundialofenduringjade"
+      },
+      "goblet": {
+        "artifactName": "Goblet of Chiseled Crag",
+        "GOOD": "GobletOfChiseledCrag",
+        "normalizedName": "gobletofchiseledcrag"
+      },
+      "circlet": {
+        "artifactName": "Mask of Solitude Basalt",
+        "GOOD": "MaskOfSolitudeBasalt",
+        "normalizedName": "maskofsolitudebasalt"
+      }
+    }
+  },
+  "aubadeofmorningstarandmoon": {
+    "setName": "Aubade of Morningstar and Moon",
+    "GOOD": "AubadeOfMorningstarAndMoon",
+    "normalizedName": "aubadeofmorningstarandmoon",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Moonlit Offering's Opulent Dream",
+        "GOOD": "MoonlitOfferingsOpulentDream",
+        "normalizedName": "moonlitofferingsopulentdream"
+      },
+      "plume": {
+        "artifactName": "Moonlit Offering's Parting Light",
+        "GOOD": "MoonlitOfferingsPartingLight",
+        "normalizedName": "moonlitofferingspartinglight"
+      },
+      "sands": {
+        "artifactName": "Moonlit Offering's Final Hour",
+        "GOOD": "MoonlitOfferingsFinalHour",
+        "normalizedName": "moonlitofferingsfinalhour"
+      },
+      "goblet": {
+        "artifactName": "Moonlit Offering's Libation",
+        "GOOD": "MoonlitOfferingsLibation",
+        "normalizedName": "moonlitofferingslibation"
+      },
+      "circlet": {
+        "artifactName": "Moonlit Offering's Silver Crown",
+        "GOOD": "MoonlitOfferingsSilverCrown",
+        "normalizedName": "moonlitofferingssilvercrown"
+      }
+    }
+  },
+  "berserker": {
+    "setName": "Berserker",
+    "GOOD": "Berserker",
+    "normalizedName": "berserker",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Berserker's Rose",
+        "GOOD": "BerserkersRose",
+        "normalizedName": "berserkersrose"
+      },
+      "plume": {
+        "artifactName": "Berserker's Indigo Feather",
+        "GOOD": "BerserkersIndigoFeather",
+        "normalizedName": "berserkersindigofeather"
+      },
+      "sands": {
+        "artifactName": "Berserker's Timepiece",
+        "GOOD": "BerserkersTimepiece",
+        "normalizedName": "berserkerstimepiece"
+      },
+      "goblet": {
+        "artifactName": "Berserker's Bone Goblet",
+        "GOOD": "BerserkersBoneGoblet",
+        "normalizedName": "berserkersbonegoblet"
+      },
+      "circlet": {
+        "artifactName": "Berserker's Battle Mask",
+        "GOOD": "BerserkersBattleMask",
+        "normalizedName": "berserkersbattlemask"
+      }
+    }
+  },
+  "blizzardstrayer": {
+    "setName": "Blizzard Strayer",
+    "GOOD": "BlizzardStrayer",
+    "normalizedName": "blizzardstrayer",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Snowswept Memory",
+        "GOOD": "SnowsweptMemory",
+        "normalizedName": "snowsweptmemory"
+      },
+      "plume": {
+        "artifactName": "Icebreaker's Resolve",
+        "GOOD": "IcebreakersResolve",
+        "normalizedName": "icebreakersresolve"
+      },
+      "sands": {
+        "artifactName": "Frozen Homeland's Demise",
+        "GOOD": "FrozenHomelandsDemise",
+        "normalizedName": "frozenhomelandsdemise"
+      },
+      "goblet": {
+        "artifactName": "Frost-Weaved Dignity",
+        "GOOD": "FrostWeavedDignity",
+        "normalizedName": "frostweaveddignity"
+      },
+      "circlet": {
+        "artifactName": "Broken Rime's Echo",
+        "GOOD": "BrokenRimesEcho",
+        "normalizedName": "brokenrimesecho"
+      }
+    }
+  },
+  "bloodstainedchivalry": {
+    "setName": "Bloodstained Chivalry",
+    "GOOD": "BloodstainedChivalry",
+    "normalizedName": "bloodstainedchivalry",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Bloodstained Flower of Iron",
+        "GOOD": "BloodstainedFlowerOfIron",
+        "normalizedName": "bloodstainedflowerofiron"
+      },
+      "plume": {
+        "artifactName": "Bloodstained Black Plume",
+        "GOOD": "BloodstainedBlackPlume",
+        "normalizedName": "bloodstainedblackplume"
+      },
+      "sands": {
+        "artifactName": "Bloodstained Final Hour",
+        "GOOD": "BloodstainedFinalHour",
+        "normalizedName": "bloodstainedfinalhour"
+      },
+      "goblet": {
+        "artifactName": "Bloodstained Chevalier's Goblet",
+        "GOOD": "BloodstainedChevaliersGoblet",
+        "normalizedName": "bloodstainedchevaliersgoblet"
+      },
+      "circlet": {
+        "artifactName": "Bloodstained Iron Mask",
+        "GOOD": "BloodstainedIronMask",
+        "normalizedName": "bloodstainedironmask"
+      }
+    }
+  },
+  "braveheart": {
+    "setName": "Brave Heart",
+    "GOOD": "BraveHeart",
+    "normalizedName": "braveheart",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Medal of the Brave",
+        "GOOD": "MedalOfTheBrave",
+        "normalizedName": "medalofthebrave"
+      },
+      "plume": {
+        "artifactName": "Prospect of the Brave",
+        "GOOD": "ProspectOfTheBrave",
+        "normalizedName": "prospectofthebrave"
+      },
+      "sands": {
+        "artifactName": "Fortitude of the Brave",
+        "GOOD": "FortitudeOfTheBrave",
+        "normalizedName": "fortitudeofthebrave"
+      },
+      "goblet": {
+        "artifactName": "Outset of the Brave",
+        "GOOD": "OutsetOfTheBrave",
+        "normalizedName": "outsetofthebrave"
+      },
+      "circlet": {
+        "artifactName": "Crown of the Brave",
+        "GOOD": "CrownOfTheBrave",
+        "normalizedName": "crownofthebrave"
+      }
+    }
+  },
+  "celestialgift": {
+    "setName": "Celestial Gift",
+    "GOOD": "CelestialGift",
+    "normalizedName": "celestialgift",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Heavensent Fragrance",
+        "GOOD": "HeavensentFragrance",
+        "normalizedName": "heavensentfragrance"
+      },
+      "plume": {
+        "artifactName": "Heavensent Demise",
+        "GOOD": "HeavensentDemise",
+        "normalizedName": "heavensentdemise"
+      },
+      "sands": {
+        "artifactName": "Heavensent Decree",
+        "GOOD": "HeavensentDecree",
+        "normalizedName": "heavensentdecree"
+      },
+      "goblet": {
+        "artifactName": "Heavensent Reward",
+        "GOOD": "HeavensentReward",
+        "normalizedName": "heavensentreward"
+      },
+      "circlet": {
+        "artifactName": "Heavensent Crown",
+        "GOOD": "HeavensentCrown",
+        "normalizedName": "heavensentcrown"
+      }
+    }
+  },
+  "crimsonwitchofflames": {
+    "setName": "Crimson Witch of Flames",
+    "GOOD": "CrimsonWitchOfFlames",
+    "normalizedName": "crimsonwitchofflames",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Witch's Flower of Blaze",
+        "GOOD": "WitchsFlowerOfBlaze",
+        "normalizedName": "witchsflowerofblaze"
+      },
+      "plume": {
+        "artifactName": "Witch's Ever-Burning Plume",
+        "GOOD": "WitchsEverBurningPlume",
+        "normalizedName": "witchseverburningplume"
+      },
+      "sands": {
+        "artifactName": "Witch's End Time",
+        "GOOD": "WitchsEndTime",
+        "normalizedName": "witchsendtime"
+      },
+      "goblet": {
+        "artifactName": "Witch's Heart Flames",
+        "GOOD": "WitchsHeartFlames",
+        "normalizedName": "witchsheartflames"
+      },
+      "circlet": {
+        "artifactName": "Witch's Scorching Hat",
+        "GOOD": "WitchsScorchingHat",
+        "normalizedName": "witchsscorchinghat"
+      }
+    }
+  },
+  "deepwoodmemories": {
+    "setName": "Deepwood Memories",
+    "GOOD": "DeepwoodMemories",
+    "normalizedName": "deepwoodmemories",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Labyrinth Wayfarer",
+        "GOOD": "LabyrinthWayfarer",
+        "normalizedName": "labyrinthwayfarer"
+      },
+      "plume": {
+        "artifactName": "Scholar of Vines",
+        "GOOD": "ScholarOfVines",
+        "normalizedName": "scholarofvines"
+      },
+      "sands": {
+        "artifactName": "A Time of Insight",
+        "GOOD": "ATimeOfInsight",
+        "normalizedName": "atimeofinsight"
+      },
+      "goblet": {
+        "artifactName": "Lamp of the Lost",
+        "GOOD": "LampOfTheLost",
+        "normalizedName": "lampofthelost"
+      },
+      "circlet": {
+        "artifactName": "Laurel Coronet",
+        "GOOD": "LaurelCoronet",
+        "normalizedName": "laurelcoronet"
+      }
+    }
+  },
+  "defenderswill": {
+    "setName": "Defender's Will",
+    "GOOD": "DefendersWill",
+    "normalizedName": "defenderswill",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Guardian's Flower",
+        "GOOD": "GuardiansFlower",
+        "normalizedName": "guardiansflower"
+      },
+      "plume": {
+        "artifactName": "Guardian's Sigil",
+        "GOOD": "GuardiansSigil",
+        "normalizedName": "guardianssigil"
+      },
+      "sands": {
+        "artifactName": "Guardian's Clock",
+        "GOOD": "GuardiansClock",
+        "normalizedName": "guardiansclock"
+      },
+      "goblet": {
+        "artifactName": "Guardian's Vessel",
+        "GOOD": "GuardiansVessel",
+        "normalizedName": "guardiansvessel"
+      },
+      "circlet": {
+        "artifactName": "Guardian's Band",
+        "GOOD": "GuardiansBand",
+        "normalizedName": "guardiansband"
+      }
+    }
+  },
+  "desertpavilionchronicle": {
+    "setName": "Desert Pavilion Chronicle",
+    "GOOD": "DesertPavilionChronicle",
+    "normalizedName": "desertpavilionchronicle",
+    "artifacts": {
+      "flower": {
+        "artifactName": "The First Days of the City of Kings",
+        "GOOD": "TheFirstDaysOfTheCityOfKings",
+        "normalizedName": "thefirstdaysofthecityofkings"
+      },
+      "plume": {
+        "artifactName": "End of the Golden Realm",
+        "GOOD": "EndOfTheGoldenRealm",
+        "normalizedName": "endofthegoldenrealm"
+      },
+      "sands": {
+        "artifactName": "Timepiece of the Lost Path",
+        "GOOD": "TimepieceOfTheLostPath",
+        "normalizedName": "timepieceofthelostpath"
+      },
+      "goblet": {
+        "artifactName": "Defender of the Enchanting Dream",
+        "GOOD": "DefenderOfTheEnchantingDream",
+        "normalizedName": "defenderoftheenchantingdream"
+      },
+      "circlet": {
+        "artifactName": "Legacy of the Desert High-Born",
+        "GOOD": "LegacyOfTheDesertHighBorn",
+        "normalizedName": "legacyofthedeserthighborn"
+      }
+    }
+  },
+  "disenchantmentindeepshadow": {
+    "setName": "Disenchantment in Deep Shadow",
+    "GOOD": "DisenchantmentInDeepShadow",
+    "normalizedName": "disenchantmentindeepshadow",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Iridescence That Ceased Amidst Glory",
+        "GOOD": "IridescenceThatCeasedAmidstGlory",
+        "normalizedName": "iridescencethatceasedamidstglory"
+      },
+      "plume": {
+        "artifactName": "Sharpness That Ceased Upon Wondrous Creation",
+        "GOOD": "SharpnessThatCeasedUponWondrousCreation",
+        "normalizedName": "sharpnessthatceaseduponwondrouscreation"
+      },
+      "sands": {
+        "artifactName": "Moment That Ceased Upon Waking From Grand Dreams",
+        "GOOD": "MomentThatCeasedUponWakingFromGrandDreams",
+        "normalizedName": "momentthatceaseduponwakingfromgranddreams"
+      },
+      "goblet": {
+        "artifactName": "Ovations That Ceased Upon Festivity",
+        "GOOD": "OvationsThatCeasedUponFestivity",
+        "normalizedName": "ovationsthatceaseduponfestivity"
+      },
+      "circlet": {
+        "artifactName": "Pendulum That Ceased Amidst a Great Fall",
+        "GOOD": "PendulumThatCeasedAmidstAGreatFall",
+        "normalizedName": "pendulumthatceasedamidstagreatfall"
+      }
+    }
+  },
+  "echoesofanoffering": {
+    "setName": "Echoes of an Offering",
+    "GOOD": "EchoesOfAnOffering",
+    "normalizedName": "echoesofanoffering",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Soulscent Bloom",
+        "GOOD": "SoulscentBloom",
+        "normalizedName": "soulscentbloom"
+      },
+      "plume": {
+        "artifactName": "Jade Leaf",
+        "GOOD": "JadeLeaf",
+        "normalizedName": "jadeleaf"
+      },
+      "sands": {
+        "artifactName": "Symbol of Felicitation",
+        "GOOD": "SymbolOfFelicitation",
+        "normalizedName": "symboloffelicitation"
+      },
+      "goblet": {
+        "artifactName": "Chalice of the Font",
+        "GOOD": "ChaliceOfTheFont",
+        "normalizedName": "chaliceofthefont"
+      },
+      "circlet": {
+        "artifactName": "Flowing Rings",
+        "GOOD": "FlowingRings",
+        "normalizedName": "flowingrings"
+      }
+    }
+  },
+  "emblemofseveredfate": {
+    "setName": "Emblem of Severed Fate",
+    "GOOD": "EmblemOfSeveredFate",
+    "normalizedName": "emblemofseveredfate",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Magnificent Tsuba",
+        "GOOD": "MagnificentTsuba",
+        "normalizedName": "magnificenttsuba"
+      },
+      "plume": {
+        "artifactName": "Sundered Feather",
+        "GOOD": "SunderedFeather",
+        "normalizedName": "sunderedfeather"
+      },
+      "sands": {
+        "artifactName": "Storm Cage",
+        "GOOD": "StormCage",
+        "normalizedName": "stormcage"
+      },
+      "goblet": {
+        "artifactName": "Scarlet Vessel",
+        "GOOD": "ScarletVessel",
+        "normalizedName": "scarletvessel"
+      },
+      "circlet": {
+        "artifactName": "Ornate Kabuto",
+        "GOOD": "OrnateKabuto",
+        "normalizedName": "ornatekabuto"
+      }
+    }
+  },
+  "finaleofthedeepgalleries": {
+    "setName": "Finale of the Deep Galleries",
+    "GOOD": "FinaleOfTheDeepGalleries",
+    "normalizedName": "finaleofthedeepgalleries",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Deep Gallery's Echoing Song",
+        "GOOD": "DeepGallerysEchoingSong",
+        "normalizedName": "deepgallerysechoingsong"
+      },
+      "plume": {
+        "artifactName": "Deep Gallery's Distant Pact",
+        "GOOD": "DeepGallerysDistantPact",
+        "normalizedName": "deepgallerysdistantpact"
+      },
+      "sands": {
+        "artifactName": "Deep Gallery's Moment of Oblivion",
+        "GOOD": "DeepGallerysMomentOfOblivion",
+        "normalizedName": "deepgallerysmomentofoblivion"
+      },
+      "goblet": {
+        "artifactName": "Deep Gallery's Bestowed Banquet",
+        "GOOD": "DeepGallerysBestowedBanquet",
+        "normalizedName": "deepgallerysbestowedbanquet"
+      },
+      "circlet": {
+        "artifactName": "Deep Gallery's Lost Crown",
+        "GOOD": "DeepGallerysLostCrown",
+        "normalizedName": "deepgalleryslostcrown"
+      }
+    }
+  },
+  "flowerofparadiselost": {
+    "setName": "Flower of Paradise Lost",
+    "GOOD": "FlowerOfParadiseLost",
+    "normalizedName": "flowerofparadiselost",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Ay-Khanoum's Myriad",
+        "GOOD": "AyKhanoumsMyriad",
+        "normalizedName": "aykhanoumsmyriad"
+      },
+      "plume": {
+        "artifactName": "Wilting Feast",
+        "GOOD": "WiltingFeast",
+        "normalizedName": "wiltingfeast"
+      },
+      "sands": {
+        "artifactName": "A Moment Congealed",
+        "GOOD": "AMomentCongealed",
+        "normalizedName": "amomentcongealed"
+      },
+      "goblet": {
+        "artifactName": "Secret-Keeper's Magic Bottle",
+        "GOOD": "SecretKeepersMagicBottle",
+        "normalizedName": "secretkeepersmagicbottle"
+      },
+      "circlet": {
+        "artifactName": "Amethyst Crown",
+        "GOOD": "AmethystCrown",
+        "normalizedName": "amethystcrown"
+      }
+    }
+  },
+  "fragmentofharmonicwhimsy": {
+    "setName": "Fragment of Harmonic Whimsy",
+    "GOOD": "FragmentOfHarmonicWhimsy",
+    "normalizedName": "fragmentofharmonicwhimsy",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Harmonious Symphony Prelude",
+        "GOOD": "HarmoniousSymphonyPrelude",
+        "normalizedName": "harmonioussymphonyprelude"
+      },
+      "plume": {
+        "artifactName": "Ancient Sea's Nocturnal Musing",
+        "GOOD": "AncientSeasNocturnalMusing",
+        "normalizedName": "ancientseasnocturnalmusing"
+      },
+      "sands": {
+        "artifactName": "The Grand Jape of the Turning of Fate",
+        "GOOD": "TheGrandJapeOfTheTurningOfFate",
+        "normalizedName": "thegrandjapeoftheturningoffate"
+      },
+      "goblet": {
+        "artifactName": "Ichor Shower Rhapsody",
+        "GOOD": "IchorShowerRhapsody",
+        "normalizedName": "ichorshowerrhapsody"
+      },
+      "circlet": {
+        "artifactName": "Whimsical Dance of the Withered",
+        "GOOD": "WhimsicalDanceOfTheWithered",
+        "normalizedName": "whimsicaldanceofthewithered"
+      }
+    }
+  },
+  "gambler": {
+    "setName": "Gambler",
+    "GOOD": "Gambler",
+    "normalizedName": "gambler",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Gambler's Brooch",
+        "GOOD": "GamblersBrooch",
+        "normalizedName": "gamblersbrooch"
+      },
+      "plume": {
+        "artifactName": "Gambler's Feather Accessory",
+        "GOOD": "GamblersFeatherAccessory",
+        "normalizedName": "gamblersfeatheraccessory"
+      },
+      "sands": {
+        "artifactName": "Gambler's Pocket Watch",
+        "GOOD": "GamblersPocketWatch",
+        "normalizedName": "gamblerspocketwatch"
+      },
+      "goblet": {
+        "artifactName": "Gambler's Dice Cup",
+        "GOOD": "GamblersDiceCup",
+        "normalizedName": "gamblersdicecup"
+      },
+      "circlet": {
+        "artifactName": "Gambler's Earrings",
+        "GOOD": "GamblersEarrings",
+        "normalizedName": "gamblersearrings"
+      }
+    }
+  },
+  "gildeddreams": {
+    "setName": "Gilded Dreams",
+    "GOOD": "GildedDreams",
+    "normalizedName": "gildeddreams",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Dreaming Steelbloom",
+        "GOOD": "DreamingSteelbloom",
+        "normalizedName": "dreamingsteelbloom"
+      },
+      "plume": {
+        "artifactName": "Feather of Judgment",
+        "GOOD": "FeatherOfJudgment",
+        "normalizedName": "featherofjudgment"
+      },
+      "sands": {
+        "artifactName": "The Sunken Years",
+        "GOOD": "TheSunkenYears",
+        "normalizedName": "thesunkenyears"
+      },
+      "goblet": {
+        "artifactName": "Honeyed Final Feast",
+        "GOOD": "HoneyedFinalFeast",
+        "normalizedName": "honeyedfinalfeast"
+      },
+      "circlet": {
+        "artifactName": "Shadow of the Sand King",
+        "GOOD": "ShadowOfTheSandKing",
+        "normalizedName": "shadowofthesandking"
+      }
+    }
+  },
+  "gladiatorsfinale": {
+    "setName": "Gladiator's Finale",
+    "GOOD": "GladiatorsFinale",
+    "normalizedName": "gladiatorsfinale",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Gladiator's Nostalgia",
+        "GOOD": "GladiatorsNostalgia",
+        "normalizedName": "gladiatorsnostalgia"
+      },
+      "plume": {
+        "artifactName": "Gladiator's Destiny",
+        "GOOD": "GladiatorsDestiny",
+        "normalizedName": "gladiatorsdestiny"
+      },
+      "sands": {
+        "artifactName": "Gladiator's Longing",
+        "GOOD": "GladiatorsLonging",
+        "normalizedName": "gladiatorslonging"
+      },
+      "goblet": {
+        "artifactName": "Gladiator's Intoxication",
+        "GOOD": "GladiatorsIntoxication",
+        "normalizedName": "gladiatorsintoxication"
+      },
+      "circlet": {
+        "artifactName": "Gladiator's Triumphus",
+        "GOOD": "GladiatorsTriumphus",
+        "normalizedName": "gladiatorstriumphus"
+      }
+    }
+  },
+  "goldentroupe": {
+    "setName": "Golden Troupe",
+    "GOOD": "GoldenTroupe",
+    "normalizedName": "goldentroupe",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Golden Song's Variation",
+        "GOOD": "GoldenSongsVariation",
+        "normalizedName": "goldensongsvariation"
+      },
+      "plume": {
+        "artifactName": "Golden Bird's Shedding",
+        "GOOD": "GoldenBirdsShedding",
+        "normalizedName": "goldenbirdsshedding"
+      },
+      "sands": {
+        "artifactName": "Golden Era's Prelude",
+        "GOOD": "GoldenErasPrelude",
+        "normalizedName": "goldenerasprelude"
+      },
+      "goblet": {
+        "artifactName": "Golden Night's Bustle",
+        "GOOD": "GoldenNightsBustle",
+        "normalizedName": "goldennightsbustle"
+      },
+      "circlet": {
+        "artifactName": "Golden Troupe's Reward",
+        "GOOD": "GoldenTroupesReward",
+        "normalizedName": "goldentroupesreward"
+      }
+    }
+  },
+  "heartofdepth": {
+    "setName": "Heart of Depth",
+    "GOOD": "HeartOfDepth",
+    "normalizedName": "heartofdepth",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Gilded Corsage",
+        "GOOD": "GildedCorsage",
+        "normalizedName": "gildedcorsage"
+      },
+      "plume": {
+        "artifactName": "Gust of Nostalgia",
+        "GOOD": "GustOfNostalgia",
+        "normalizedName": "gustofnostalgia"
+      },
+      "sands": {
+        "artifactName": "Copper Compass",
+        "GOOD": "CopperCompass",
+        "normalizedName": "coppercompass"
+      },
+      "goblet": {
+        "artifactName": "Goblet of Thundering Deep",
+        "GOOD": "GobletOfThunderingDeep",
+        "normalizedName": "gobletofthunderingdeep"
+      },
+      "circlet": {
+        "artifactName": "Wine-Stained Tricorne",
+        "GOOD": "WineStainedTricorne",
+        "normalizedName": "winestainedtricorne"
+      }
+    }
+  },
+  "heartofthefurnace": {
+    "setName": "Heart of the Furnace",
+    "GOOD": "HeartOfTheFurnace",
+    "normalizedName": "heartofthefurnace",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Foundryman's Conjecture",
+        "GOOD": "FoundrymansConjecture",
+        "normalizedName": "foundrymansconjecture"
+      },
+      "plume": {
+        "artifactName": "Foundryman's Observation",
+        "GOOD": "FoundrymansObservation",
+        "normalizedName": "foundrymansobservation"
+      },
+      "sands": {
+        "artifactName": "Foundryman's Calculus",
+        "GOOD": "FoundrymansCalculus",
+        "normalizedName": "foundrymanscalculus"
+      },
+      "goblet": {
+        "artifactName": "Foundryman's Magnanimity",
+        "GOOD": "FoundrymansMagnanimity",
+        "normalizedName": "foundrymansmagnanimity"
+      },
+      "circlet": {
+        "artifactName": "Foundryman's Legacy",
+        "GOOD": "FoundrymansLegacy",
+        "normalizedName": "foundrymanslegacy"
+      }
+    }
+  },
+  "huskofopulentdreams": {
+    "setName": "Husk of Opulent Dreams",
+    "GOOD": "HuskOfOpulentDreams",
+    "normalizedName": "huskofopulentdreams",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Bloom Times",
+        "GOOD": "BloomTimes",
+        "normalizedName": "bloomtimes"
+      },
+      "plume": {
+        "artifactName": "Plume of Luxury",
+        "GOOD": "PlumeOfLuxury",
+        "normalizedName": "plumeofluxury"
+      },
+      "sands": {
+        "artifactName": "Song of Life",
+        "GOOD": "SongOfLife",
+        "normalizedName": "songoflife"
+      },
+      "goblet": {
+        "artifactName": "Calabash of Awakening",
+        "GOOD": "CalabashOfAwakening",
+        "normalizedName": "calabashofawakening"
+      },
+      "circlet": {
+        "artifactName": "Skeletal Hat",
+        "GOOD": "SkeletalHat",
+        "normalizedName": "skeletalhat"
+      }
+    }
+  },
+  "instructor": {
+    "setName": "Instructor",
+    "GOOD": "Instructor",
+    "normalizedName": "instructor",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Instructor's Brooch",
+        "GOOD": "InstructorsBrooch",
+        "normalizedName": "instructorsbrooch"
+      },
+      "plume": {
+        "artifactName": "Instructor's Feather Accessory",
+        "GOOD": "InstructorsFeatherAccessory",
+        "normalizedName": "instructorsfeatheraccessory"
+      },
+      "sands": {
+        "artifactName": "Instructor's Pocket Watch",
+        "GOOD": "InstructorsPocketWatch",
+        "normalizedName": "instructorspocketwatch"
+      },
+      "goblet": {
+        "artifactName": "Instructor's Tea Cup",
+        "GOOD": "InstructorsTeaCup",
+        "normalizedName": "instructorsteacup"
+      },
+      "circlet": {
+        "artifactName": "Instructor's Cap",
+        "GOOD": "InstructorsCap",
+        "normalizedName": "instructorscap"
+      }
+    }
+  },
+  "lavawalker": {
+    "setName": "Lavawalker",
+    "GOOD": "Lavawalker",
+    "normalizedName": "lavawalker",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Lavawalker's Resolution",
+        "GOOD": "LavawalkersResolution",
+        "normalizedName": "lavawalkersresolution"
+      },
+      "plume": {
+        "artifactName": "Lavawalker's Salvation",
+        "GOOD": "LavawalkersSalvation",
+        "normalizedName": "lavawalkerssalvation"
+      },
+      "sands": {
+        "artifactName": "Lavawalker's Torment",
+        "GOOD": "LavawalkersTorment",
+        "normalizedName": "lavawalkerstorment"
+      },
+      "goblet": {
+        "artifactName": "Lavawalker's Epiphany",
+        "GOOD": "LavawalkersEpiphany",
+        "normalizedName": "lavawalkersepiphany"
+      },
+      "circlet": {
+        "artifactName": "Lavawalker's Wisdom",
+        "GOOD": "LavawalkersWisdom",
+        "normalizedName": "lavawalkerswisdom"
+      }
+    }
+  },
+  "longnightsoath": {
+    "setName": "Long Night's Oath",
+    "GOOD": "LongNightsOath",
+    "normalizedName": "longnightsoath",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Lightkeeper's Pledge",
+        "GOOD": "LightkeepersPledge",
+        "normalizedName": "lightkeeperspledge"
+      },
+      "plume": {
+        "artifactName": "Nightingale's Tail Feather",
+        "GOOD": "NightingalesTailFeather",
+        "normalizedName": "nightingalestailfeather"
+      },
+      "sands": {
+        "artifactName": "Undying One's Mourning Bell",
+        "GOOD": "UndyingOnesMourningBell",
+        "normalizedName": "undyingonesmourningbell"
+      },
+      "goblet": {
+        "artifactName": "A Horn Unwinded",
+        "GOOD": "AHornUnwinded",
+        "normalizedName": "ahornunwinded"
+      },
+      "circlet": {
+        "artifactName": "Dyed Tassel",
+        "GOOD": "DyedTassel",
+        "normalizedName": "dyedtassel"
+      }
+    }
+  },
+  "luckydog": {
+    "setName": "Lucky Dog",
+    "GOOD": "LuckyDog",
+    "normalizedName": "luckydog",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Lucky Dog's Clover",
+        "GOOD": "LuckyDogsClover",
+        "normalizedName": "luckydogsclover"
+      },
+      "plume": {
+        "artifactName": "Lucky Dog's Eagle Feather",
+        "GOOD": "LuckyDogsEagleFeather",
+        "normalizedName": "luckydogseaglefeather"
+      },
+      "sands": {
+        "artifactName": "Lucky Dog's Hourglass",
+        "GOOD": "LuckyDogsHourglass",
+        "normalizedName": "luckydogshourglass"
+      },
+      "goblet": {
+        "artifactName": "Lucky Dog's Goblet",
+        "GOOD": "LuckyDogsGoblet",
+        "normalizedName": "luckydogsgoblet"
+      },
+      "circlet": {
+        "artifactName": "Lucky Dog's Silver Circlet",
+        "GOOD": "LuckyDogsSilverCirclet",
+        "normalizedName": "luckydogssilvercirclet"
+      }
+    }
+  },
+  "maidenbeloved": {
+    "setName": "Maiden Beloved",
+    "GOOD": "MaidenBeloved",
+    "normalizedName": "maidenbeloved",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Maiden's Distant Love",
+        "GOOD": "MaidensDistantLove",
+        "normalizedName": "maidensdistantlove"
+      },
+      "plume": {
+        "artifactName": "Maiden's Heart-stricken Infatuation",
+        "GOOD": "MaidensHeartStrickenInfatuation",
+        "normalizedName": "maidensheartstrickeninfatuation"
+      },
+      "sands": {
+        "artifactName": "Maiden's Passing Youth",
+        "GOOD": "MaidensPassingYouth",
+        "normalizedName": "maidenspassingyouth"
+      },
+      "goblet": {
+        "artifactName": "Maiden's Fleeting Leisure",
+        "GOOD": "MaidensFleetingLeisure",
+        "normalizedName": "maidensfleetingleisure"
+      },
+      "circlet": {
+        "artifactName": "Maiden's Fading Beauty",
+        "GOOD": "MaidensFadingBeauty",
+        "normalizedName": "maidensfadingbeauty"
+      }
+    }
+  },
+  "marechausseehunter": {
+    "setName": "Marechaussee Hunter",
+    "GOOD": "MarechausseeHunter",
+    "normalizedName": "marechausseehunter",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Hunter's Brooch",
+        "GOOD": "HuntersBrooch",
+        "normalizedName": "huntersbrooch"
+      },
+      "plume": {
+        "artifactName": "Masterpiece's Overture",
+        "GOOD": "MasterpiecesOverture",
+        "normalizedName": "masterpiecesoverture"
+      },
+      "sands": {
+        "artifactName": "Moment of Judgment",
+        "GOOD": "MomentOfJudgment",
+        "normalizedName": "momentofjudgment"
+      },
+      "goblet": {
+        "artifactName": "Forgotten Vessel",
+        "GOOD": "ForgottenVessel",
+        "normalizedName": "forgottenvessel"
+      },
+      "circlet": {
+        "artifactName": "Veteran's Visage",
+        "GOOD": "VeteransVisage",
+        "normalizedName": "veteransvisage"
+      }
+    }
+  },
+  "martialartist": {
+    "setName": "Martial Artist",
+    "GOOD": "MartialArtist",
+    "normalizedName": "martialartist",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Martial Artist's Red Flower",
+        "GOOD": "MartialArtistsRedFlower",
+        "normalizedName": "martialartistsredflower"
+      },
+      "plume": {
+        "artifactName": "Martial Artist's Feather Accessory",
+        "GOOD": "MartialArtistsFeatherAccessory",
+        "normalizedName": "martialartistsfeatheraccessory"
+      },
+      "sands": {
+        "artifactName": "Martial Artist's Water Hourglass",
+        "GOOD": "MartialArtistsWaterHourglass",
+        "normalizedName": "martialartistswaterhourglass"
+      },
+      "goblet": {
+        "artifactName": "Martial Artist's Wine Cup",
+        "GOOD": "MartialArtistsWineCup",
+        "normalizedName": "martialartistswinecup"
+      },
+      "circlet": {
+        "artifactName": "Martial Artist's Bandana",
+        "GOOD": "MartialArtistsBandana",
+        "normalizedName": "martialartistsbandana"
+      }
+    }
+  },
+  "nightoftheskysunveiling": {
+    "setName": "Night of the Sky's Unveiling",
+    "GOOD": "NightOfTheSkysUnveiling",
+    "normalizedName": "nightoftheskysunveiling",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Bloom of the Mind's Desire",
+        "GOOD": "BloomOfTheMindsDesire",
+        "normalizedName": "bloomofthemindsdesire"
+      },
+      "plume": {
+        "artifactName": "Feather of Indelible Sin",
+        "GOOD": "FeatherOfIndelibleSin",
+        "normalizedName": "featherofindeliblesin"
+      },
+      "sands": {
+        "artifactName": "Revelation's Toll",
+        "GOOD": "RevelationsToll",
+        "normalizedName": "revelationstoll"
+      },
+      "goblet": {
+        "artifactName": "Vessel of Plenty",
+        "GOOD": "VesselOfPlenty",
+        "normalizedName": "vesselofplenty"
+      },
+      "circlet": {
+        "artifactName": "Crown of the Befallen",
+        "GOOD": "CrownOfTheBefallen",
+        "normalizedName": "crownofthebefallen"
+      }
+    }
+  },
+  "nighttimewhispersintheechoingwoods": {
+    "setName": "Nighttime Whispers in the Echoing Woods",
+    "GOOD": "NighttimeWhispersInTheEchoingWoods",
+    "normalizedName": "nighttimewhispersintheechoingwoods",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Selfless Floral Accessory",
+        "GOOD": "SelflessFloralAccessory",
+        "normalizedName": "selflessfloralaccessory"
+      },
+      "plume": {
+        "artifactName": "Honest Quill",
+        "GOOD": "HonestQuill",
+        "normalizedName": "honestquill"
+      },
+      "sands": {
+        "artifactName": "Faithful Hourglass",
+        "GOOD": "FaithfulHourglass",
+        "normalizedName": "faithfulhourglass"
+      },
+      "goblet": {
+        "artifactName": "Magnanimous Ink Bottle",
+        "GOOD": "MagnanimousInkBottle",
+        "normalizedName": "magnanimousinkbottle"
+      },
+      "circlet": {
+        "artifactName": "Compassionate Ladies' Hat",
+        "GOOD": "CompassionateLadiesHat",
+        "normalizedName": "compassionateladieshat"
+      }
+    }
+  },
+  "noblesseoblige": {
+    "setName": "Noblesse Oblige",
+    "GOOD": "NoblesseOblige",
+    "normalizedName": "noblesseoblige",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Royal Flora",
+        "GOOD": "RoyalFlora",
+        "normalizedName": "royalflora"
+      },
+      "plume": {
+        "artifactName": "Royal Plume",
+        "GOOD": "RoyalPlume",
+        "normalizedName": "royalplume"
+      },
+      "sands": {
+        "artifactName": "Royal Pocket Watch",
+        "GOOD": "RoyalPocketWatch",
+        "normalizedName": "royalpocketwatch"
+      },
+      "goblet": {
+        "artifactName": "Royal Silver Urn",
+        "GOOD": "RoyalSilverUrn",
+        "normalizedName": "royalsilverurn"
+      },
+      "circlet": {
+        "artifactName": "Royal Masque",
+        "GOOD": "RoyalMasque",
+        "normalizedName": "royalmasque"
+      }
+    }
+  },
+  "nymphsdream": {
+    "setName": "Nymph's Dream",
+    "GOOD": "NymphsDream",
+    "normalizedName": "nymphsdream",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Odyssean Flower",
+        "GOOD": "OdysseanFlower",
+        "normalizedName": "odysseanflower"
+      },
+      "plume": {
+        "artifactName": "Wicked Mage's Plumule",
+        "GOOD": "WickedMagesPlumule",
+        "normalizedName": "wickedmagesplumule"
+      },
+      "sands": {
+        "artifactName": "Nymph's Constancy",
+        "GOOD": "NymphsConstancy",
+        "normalizedName": "nymphsconstancy"
+      },
+      "goblet": {
+        "artifactName": "Heroes' Tea Party",
+        "GOOD": "HeroesTeaParty",
+        "normalizedName": "heroesteaparty"
+      },
+      "circlet": {
+        "artifactName": "Fell Dragon's Monocle",
+        "GOOD": "FellDragonsMonocle",
+        "normalizedName": "felldragonsmonocle"
+      }
+    }
+  },
+  "obsidiancodex": {
+    "setName": "Obsidian Codex",
+    "GOOD": "ObsidianCodex",
+    "normalizedName": "obsidiancodex",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Reckoning of the Xenogenic",
+        "GOOD": "ReckoningOfTheXenogenic",
+        "normalizedName": "reckoningofthexenogenic"
+      },
+      "plume": {
+        "artifactName": "Root of the Spirit-Marrow",
+        "GOOD": "RootOfTheSpiritMarrow",
+        "normalizedName": "rootofthespiritmarrow"
+      },
+      "sands": {
+        "artifactName": "Myths of the Night Realm",
+        "GOOD": "MythsOfTheNightRealm",
+        "normalizedName": "mythsofthenightrealm"
+      },
+      "goblet": {
+        "artifactName": "Pre-Banquet of the Contenders",
+        "GOOD": "PreBanquetOfTheContenders",
+        "normalizedName": "prebanquetofthecontenders"
+      },
+      "circlet": {
+        "artifactName": "Crown of the Saints",
+        "GOOD": "CrownOfTheSaints",
+        "normalizedName": "crownofthesaints"
+      }
+    }
+  },
+  "oceanhuedclam": {
+    "setName": "Ocean-Hued Clam",
+    "GOOD": "OceanHuedClam",
+    "normalizedName": "oceanhuedclam",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Sea-Dyed Blossom",
+        "GOOD": "SeaDyedBlossom",
+        "normalizedName": "seadyedblossom"
+      },
+      "plume": {
+        "artifactName": "Deep Palace's Plume",
+        "GOOD": "DeepPalacesPlume",
+        "normalizedName": "deeppalacesplume"
+      },
+      "sands": {
+        "artifactName": "Cowry of Parting",
+        "GOOD": "CowryOfParting",
+        "normalizedName": "cowryofparting"
+      },
+      "goblet": {
+        "artifactName": "Pearl Cage",
+        "GOOD": "PearlCage",
+        "normalizedName": "pearlcage"
+      },
+      "circlet": {
+        "artifactName": "Crown of Watatsumi",
+        "GOOD": "CrownOfWatatsumi",
+        "normalizedName": "crownofwatatsumi"
+      }
+    }
+  },
+  "paleflame": {
+    "setName": "Pale Flame",
+    "GOOD": "PaleFlame",
+    "normalizedName": "paleflame",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Stainless Bloom",
+        "GOOD": "StainlessBloom",
+        "normalizedName": "stainlessbloom"
+      },
+      "plume": {
+        "artifactName": "Wise Doctor's Pinion",
+        "GOOD": "WiseDoctorsPinion",
+        "normalizedName": "wisedoctorspinion"
+      },
+      "sands": {
+        "artifactName": "Moment of Cessation",
+        "GOOD": "MomentOfCessation",
+        "normalizedName": "momentofcessation"
+      },
+      "goblet": {
+        "artifactName": "Surpassing Cup",
+        "GOOD": "SurpassingCup",
+        "normalizedName": "surpassingcup"
+      },
+      "circlet": {
+        "artifactName": "Mocking Mask",
+        "GOOD": "MockingMask",
+        "normalizedName": "mockingmask"
+      }
+    }
+  },
+  "prayersfordestiny": {
+    "setName": "Prayers for Destiny",
+    "GOOD": "PrayersForDestiny",
+    "normalizedName": "prayersfordestiny",
+    "artifacts": {
+      "circlet": {
+        "artifactName": "Tiara of Torrents",
+        "GOOD": "TiaraOfTorrents",
+        "normalizedName": "tiaraoftorrents"
+      }
+    }
+  },
+  "prayersforillumination": {
+    "setName": "Prayers for Illumination",
+    "GOOD": "PrayersForIllumination",
+    "normalizedName": "prayersforillumination",
+    "artifacts": {
+      "circlet": {
+        "artifactName": "Tiara of Flame",
+        "GOOD": "TiaraOfFlame",
+        "normalizedName": "tiaraofflame"
+      }
+    }
+  },
+  "prayersforwisdom": {
+    "setName": "Prayers for Wisdom",
+    "GOOD": "PrayersForWisdom",
+    "normalizedName": "prayersforwisdom",
+    "artifacts": {
+      "circlet": {
+        "artifactName": "Tiara of Thunder",
+        "GOOD": "TiaraOfThunder",
+        "normalizedName": "tiaraofthunder"
+      }
+    }
+  },
+  "prayerstospringtime": {
+    "setName": "Prayers to Springtime",
+    "GOOD": "PrayersToSpringtime",
+    "normalizedName": "prayerstospringtime",
+    "artifacts": {
+      "circlet": {
+        "artifactName": "Tiara of Frost",
+        "GOOD": "TiaraOfFrost",
+        "normalizedName": "tiaraoffrost"
+      }
+    }
+  },
+  "resolutionofsojourner": {
+    "setName": "Resolution of Sojourner",
+    "GOOD": "ResolutionOfSojourner",
+    "normalizedName": "resolutionofsojourner",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Heart of Comradeship",
+        "GOOD": "HeartOfComradeship",
+        "normalizedName": "heartofcomradeship"
+      },
+      "plume": {
+        "artifactName": "Feather of Homecoming",
+        "GOOD": "FeatherOfHomecoming",
+        "normalizedName": "featherofhomecoming"
+      },
+      "sands": {
+        "artifactName": "Sundial of the Sojourner",
+        "GOOD": "SundialOfTheSojourner",
+        "normalizedName": "sundialofthesojourner"
+      },
+      "goblet": {
+        "artifactName": "Goblet of the Sojourner",
+        "GOOD": "GobletOfTheSojourner",
+        "normalizedName": "gobletofthesojourner"
+      },
+      "circlet": {
+        "artifactName": "Crown of Parting",
+        "GOOD": "CrownOfParting",
+        "normalizedName": "crownofparting"
+      }
+    }
+  },
+  "retracingbolide": {
+    "setName": "Retracing Bolide",
+    "GOOD": "RetracingBolide",
+    "normalizedName": "retracingbolide",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Summer Night's Bloom",
+        "GOOD": "SummerNightsBloom",
+        "normalizedName": "summernightsbloom"
+      },
+      "plume": {
+        "artifactName": "Summer Night's Finale",
+        "GOOD": "SummerNightsFinale",
+        "normalizedName": "summernightsfinale"
+      },
+      "sands": {
+        "artifactName": "Summer Night's Moment",
+        "GOOD": "SummerNightsMoment",
+        "normalizedName": "summernightsmoment"
+      },
+      "goblet": {
+        "artifactName": "Summer Night's Waterballoon",
+        "GOOD": "SummerNightsWaterballoon",
+        "normalizedName": "summernightswaterballoon"
+      },
+      "circlet": {
+        "artifactName": "Summer Night's Mask",
+        "GOOD": "SummerNightsMask",
+        "normalizedName": "summernightsmask"
+      }
+    }
+  },
+  "scarletproof": {
+    "setName": "Scarlet Proof",
+    "GOOD": "ScarletProof",
+    "normalizedName": "scarletproof",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Honor to Your Devotion",
+        "GOOD": "HonorToYourDevotion",
+        "normalizedName": "honortoyourdevotion"
+      },
+      "plume": {
+        "artifactName": "Glory to Your Legacy",
+        "GOOD": "GloryToYourLegacy",
+        "normalizedName": "glorytoyourlegacy"
+      },
+      "sands": {
+        "artifactName": "Time Gifted Unto You",
+        "GOOD": "TimeGiftedUntoYou",
+        "normalizedName": "timegifteduntoyou"
+      },
+      "goblet": {
+        "artifactName": "Chalice of Your Blood and Sorrow",
+        "GOOD": "ChaliceOfYourBloodAndSorrow",
+        "normalizedName": "chaliceofyourbloodandsorrow"
+      },
+      "circlet": {
+        "artifactName": "Testament to Your Faith",
+        "GOOD": "TestamentToYourFaith",
+        "normalizedName": "testamenttoyourfaith"
+      }
+    }
+  },
+  "scholar": {
+    "setName": "Scholar",
+    "GOOD": "Scholar",
+    "normalizedName": "scholar",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Scholar's Bookmark",
+        "GOOD": "ScholarsBookmark",
+        "normalizedName": "scholarsbookmark"
+      },
+      "plume": {
+        "artifactName": "Scholar's Quill Pen",
+        "GOOD": "ScholarsQuillPen",
+        "normalizedName": "scholarsquillpen"
+      },
+      "sands": {
+        "artifactName": "Scholar's Clock",
+        "GOOD": "ScholarsClock",
+        "normalizedName": "scholarsclock"
+      },
+      "goblet": {
+        "artifactName": "Scholar's Ink Cup",
+        "GOOD": "ScholarsInkCup",
+        "normalizedName": "scholarsinkcup"
+      },
+      "circlet": {
+        "artifactName": "Scholar's Lens",
+        "GOOD": "ScholarsLens",
+        "normalizedName": "scholarslens"
+      }
+    }
+  },
+  "scrolloftheheroofcindercity": {
+    "setName": "Scroll of the Hero of Cinder City",
+    "GOOD": "ScrollOfTheHeroOfCinderCity",
+    "normalizedName": "scrolloftheheroofcindercity",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Beast Tamer's Talisman",
+        "GOOD": "BeastTamersTalisman",
+        "normalizedName": "beasttamerstalisman"
+      },
+      "plume": {
+        "artifactName": "Mountain Ranger's Marker",
+        "GOOD": "MountainRangersMarker",
+        "normalizedName": "mountainrangersmarker"
+      },
+      "sands": {
+        "artifactName": "Mystic's Gold Dial",
+        "GOOD": "MysticsGoldDial",
+        "normalizedName": "mysticsgolddial"
+      },
+      "goblet": {
+        "artifactName": "Wandering Scholar's Claw Cup",
+        "GOOD": "WanderingScholarsClawCup",
+        "normalizedName": "wanderingscholarsclawcup"
+      },
+      "circlet": {
+        "artifactName": "Demon-Warrior's Feather Mask",
+        "GOOD": "DemonWarriorsFeatherMask",
+        "normalizedName": "demonwarriorsfeathermask"
+      }
+    }
+  },
+  "shimenawasreminiscence": {
+    "setName": "Shimenawa's Reminiscence",
+    "GOOD": "ShimenawasReminiscence",
+    "normalizedName": "shimenawasreminiscence",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Entangling Bloom",
+        "GOOD": "EntanglingBloom",
+        "normalizedName": "entanglingbloom"
+      },
+      "plume": {
+        "artifactName": "Shaft of Remembrance",
+        "GOOD": "ShaftOfRemembrance",
+        "normalizedName": "shaftofremembrance"
+      },
+      "sands": {
+        "artifactName": "Morning Dew's Moment",
+        "GOOD": "MorningDewsMoment",
+        "normalizedName": "morningdewsmoment"
+      },
+      "goblet": {
+        "artifactName": "Hopeful Heart",
+        "GOOD": "HopefulHeart",
+        "normalizedName": "hopefulheart"
+      },
+      "circlet": {
+        "artifactName": "Capricious Visage",
+        "GOOD": "CapriciousVisage",
+        "normalizedName": "capriciousvisage"
+      }
+    }
+  },
+  "silkenmoonsserenade": {
+    "setName": "Silken Moon's Serenade",
+    "GOOD": "SilkenMoonsSerenade",
+    "normalizedName": "silkenmoonsserenade",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Crystal Tear of the Wanderer",
+        "GOOD": "CrystalTearOfTheWanderer",
+        "normalizedName": "crystaltearofthewanderer"
+      },
+      "plume": {
+        "artifactName": "Pristine Plume of the Blessed",
+        "GOOD": "PristinePlumeOfTheBlessed",
+        "normalizedName": "pristineplumeoftheblessed"
+      },
+      "sands": {
+        "artifactName": "Frost Devotee's Delirium",
+        "GOOD": "FrostDevoteesDelirium",
+        "normalizedName": "frostdevoteesdelirium"
+      },
+      "goblet": {
+        "artifactName": "Joyous Glory of the Pure",
+        "GOOD": "JoyousGloryOfThePure",
+        "normalizedName": "joyousgloryofthepure"
+      },
+      "circlet": {
+        "artifactName": "Holy Crown of the Believer",
+        "GOOD": "HolyCrownOfTheBeliever",
+        "normalizedName": "holycrownofthebeliever"
+      }
+    }
+  },
+  "songofdayspast": {
+    "setName": "Song of Days Past",
+    "GOOD": "SongOfDaysPast",
+    "normalizedName": "songofdayspast",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Forgotten Oath of Days Past",
+        "GOOD": "ForgottenOathOfDaysPast",
+        "normalizedName": "forgottenoathofdayspast"
+      },
+      "plume": {
+        "artifactName": "Recollection of Days Past",
+        "GOOD": "RecollectionOfDaysPast",
+        "normalizedName": "recollectionofdayspast"
+      },
+      "sands": {
+        "artifactName": "Echoing Sound From Days Past",
+        "GOOD": "EchoingSoundFromDaysPast",
+        "normalizedName": "echoingsoundfromdayspast"
+      },
+      "goblet": {
+        "artifactName": "Promised Dream of Days Past",
+        "GOOD": "PromisedDreamOfDaysPast",
+        "normalizedName": "promiseddreamofdayspast"
+      },
+      "circlet": {
+        "artifactName": "Poetry of Days Past",
+        "GOOD": "PoetryOfDaysPast",
+        "normalizedName": "poetryofdayspast"
+      }
+    }
+  },
+  "tenacityofthemillelith": {
+    "setName": "Tenacity of the Millelith",
+    "GOOD": "TenacityOfTheMillelith",
+    "normalizedName": "tenacityofthemillelith",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Flower of Accolades",
+        "GOOD": "FlowerOfAccolades",
+        "normalizedName": "flowerofaccolades"
+      },
+      "plume": {
+        "artifactName": "Ceremonial War-Plume",
+        "GOOD": "CeremonialWarPlume",
+        "normalizedName": "ceremonialwarplume"
+      },
+      "sands": {
+        "artifactName": "Orichalceous Time-Dial",
+        "GOOD": "OrichalceousTimeDial",
+        "normalizedName": "orichalceoustimedial"
+      },
+      "goblet": {
+        "artifactName": "Noble's Pledging Vessel",
+        "GOOD": "NoblesPledgingVessel",
+        "normalizedName": "noblespledgingvessel"
+      },
+      "circlet": {
+        "artifactName": "General's Ancient Helm",
+        "GOOD": "GeneralsAncientHelm",
+        "normalizedName": "generalsancienthelm"
+      }
+    }
+  },
+  "theexile": {
+    "setName": "The Exile",
+    "GOOD": "TheExile",
+    "normalizedName": "theexile",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Exile's Flower",
+        "GOOD": "ExilesFlower",
+        "normalizedName": "exilesflower"
+      },
+      "plume": {
+        "artifactName": "Exile's Feather",
+        "GOOD": "ExilesFeather",
+        "normalizedName": "exilesfeather"
+      },
+      "sands": {
+        "artifactName": "Exile's Pocket Watch",
+        "GOOD": "ExilesPocketWatch",
+        "normalizedName": "exilespocketwatch"
+      },
+      "goblet": {
+        "artifactName": "Exile's Goblet",
+        "GOOD": "ExilesGoblet",
+        "normalizedName": "exilesgoblet"
+      },
+      "circlet": {
+        "artifactName": "Exile's Circlet",
+        "GOOD": "ExilesCirclet",
+        "normalizedName": "exilescirclet"
+      }
+    }
+  },
+  "thunderingfury": {
+    "setName": "Thundering Fury",
+    "GOOD": "ThunderingFury",
+    "normalizedName": "thunderingfury",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Thunderbird's Mercy",
+        "GOOD": "ThunderbirdsMercy",
+        "normalizedName": "thunderbirdsmercy"
+      },
+      "plume": {
+        "artifactName": "Survivor of Catastrophe",
+        "GOOD": "SurvivorOfCatastrophe",
+        "normalizedName": "survivorofcatastrophe"
+      },
+      "sands": {
+        "artifactName": "Hourglass of Thunder",
+        "GOOD": "HourglassOfThunder",
+        "normalizedName": "hourglassofthunder"
+      },
+      "goblet": {
+        "artifactName": "Omen of Thunderstorm",
+        "GOOD": "OmenOfThunderstorm",
+        "normalizedName": "omenofthunderstorm"
+      },
+      "circlet": {
+        "artifactName": "Thunder Summoner's Crown",
+        "GOOD": "ThunderSummonersCrown",
+        "normalizedName": "thundersummonerscrown"
+      }
+    }
+  },
+  "thundersoother": {
+    "setName": "Thundersoother",
+    "GOOD": "Thundersoother",
+    "normalizedName": "thundersoother",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Thundersoother's Heart",
+        "GOOD": "ThundersoothersHeart",
+        "normalizedName": "thundersoothersheart"
+      },
+      "plume": {
+        "artifactName": "Thundersoother's Plume",
+        "GOOD": "ThundersoothersPlume",
+        "normalizedName": "thundersoothersplume"
+      },
+      "sands": {
+        "artifactName": "Hour of Soothing Thunder",
+        "GOOD": "HourOfSoothingThunder",
+        "normalizedName": "hourofsoothingthunder"
+      },
+      "goblet": {
+        "artifactName": "Thundersoother's Goblet",
+        "GOOD": "ThundersoothersGoblet",
+        "normalizedName": "thundersoothersgoblet"
+      },
+      "circlet": {
+        "artifactName": "Thundersoother's Diadem",
+        "GOOD": "ThundersoothersDiadem",
+        "normalizedName": "thundersoothersdiadem"
+      }
+    }
+  },
+  "tinymiracle": {
+    "setName": "Tiny Miracle",
+    "GOOD": "TinyMiracle",
+    "normalizedName": "tinymiracle",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Tiny Miracle's Flower",
+        "GOOD": "TinyMiraclesFlower",
+        "normalizedName": "tinymiraclesflower"
+      },
+      "plume": {
+        "artifactName": "Tiny Miracle's Feather",
+        "GOOD": "TinyMiraclesFeather",
+        "normalizedName": "tinymiraclesfeather"
+      },
+      "sands": {
+        "artifactName": "Tiny Miracle's Hourglass",
+        "GOOD": "TinyMiraclesHourglass",
+        "normalizedName": "tinymiracleshourglass"
+      },
+      "goblet": {
+        "artifactName": "Tiny Miracle's Goblet",
+        "GOOD": "TinyMiraclesGoblet",
+        "normalizedName": "tinymiraclesgoblet"
+      },
+      "circlet": {
+        "artifactName": "Tiny Miracle's Earrings",
+        "GOOD": "TinyMiraclesEarrings",
+        "normalizedName": "tinymiraclesearrings"
+      }
+    }
+  },
+  "travelingdoctor": {
+    "setName": "Traveling Doctor",
+    "GOOD": "TravelingDoctor",
+    "normalizedName": "travelingdoctor",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Traveling Doctor's Silver Lotus",
+        "GOOD": "TravelingDoctorsSilverLotus",
+        "normalizedName": "travelingdoctorssilverlotus"
+      },
+      "plume": {
+        "artifactName": "Traveling Doctor's Owl Feather",
+        "GOOD": "TravelingDoctorsOwlFeather",
+        "normalizedName": "travelingdoctorsowlfeather"
+      },
+      "sands": {
+        "artifactName": "Traveling Doctor's Pocket Watch",
+        "GOOD": "TravelingDoctorsPocketWatch",
+        "normalizedName": "travelingdoctorspocketwatch"
+      },
+      "goblet": {
+        "artifactName": "Traveling Doctor's Medicine Pot",
+        "GOOD": "TravelingDoctorsMedicinePot",
+        "normalizedName": "travelingdoctorsmedicinepot"
+      },
+      "circlet": {
+        "artifactName": "Traveling Doctor's Handkerchief",
+        "GOOD": "TravelingDoctorsHandkerchief",
+        "normalizedName": "travelingdoctorshandkerchief"
+      }
+    }
+  },
+  "unfinishedreverie": {
+    "setName": "Unfinished Reverie",
+    "GOOD": "UnfinishedReverie",
+    "normalizedName": "unfinishedreverie",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Dark Fruit of Bright Flowers",
+        "GOOD": "DarkFruitOfBrightFlowers",
+        "normalizedName": "darkfruitofbrightflowers"
+      },
+      "plume": {
+        "artifactName": "Faded Emerald Tail",
+        "GOOD": "FadedEmeraldTail",
+        "normalizedName": "fadedemeraldtail"
+      },
+      "sands": {
+        "artifactName": "Moment of Attainment",
+        "GOOD": "MomentOfAttainment",
+        "normalizedName": "momentofattainment"
+      },
+      "goblet": {
+        "artifactName": "The Wine-Flask Over Which the Plan Was Hatched",
+        "GOOD": "TheWineFlaskOverWhichThePlanWasHatched",
+        "normalizedName": "thewineflaskoverwhichtheplanwashatched"
+      },
+      "circlet": {
+        "artifactName": "Crownless Crown",
+        "GOOD": "CrownlessCrown",
+        "normalizedName": "crownlesscrown"
+      }
+    }
+  },
+  "vermillionhereafter": {
+    "setName": "Vermillion Hereafter",
+    "GOOD": "VermillionHereafter",
+    "normalizedName": "vermillionhereafter",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Flowering Life",
+        "GOOD": "FloweringLife",
+        "normalizedName": "floweringlife"
+      },
+      "plume": {
+        "artifactName": "Feather of Nascent Light",
+        "GOOD": "FeatherOfNascentLight",
+        "normalizedName": "featherofnascentlight"
+      },
+      "sands": {
+        "artifactName": "Solar Relic",
+        "GOOD": "SolarRelic",
+        "normalizedName": "solarrelic"
+      },
+      "goblet": {
+        "artifactName": "Moment of the Pact",
+        "GOOD": "MomentOfThePact",
+        "normalizedName": "momentofthepact"
+      },
+      "circlet": {
+        "artifactName": "Thundering Poise",
+        "GOOD": "ThunderingPoise",
+        "normalizedName": "thunderingpoise"
+      }
+    }
+  },
+  "viridescentvenerer": {
+    "setName": "Viridescent Venerer",
+    "GOOD": "ViridescentVenerer",
+    "normalizedName": "viridescentvenerer",
+    "artifacts": {
+      "flower": {
+        "artifactName": "In Remembrance of Viridescent Fields",
+        "GOOD": "InRemembranceOfViridescentFields",
+        "normalizedName": "inremembranceofviridescentfields"
+      },
+      "plume": {
+        "artifactName": "Viridescent Arrow Feather",
+        "GOOD": "ViridescentArrowFeather",
+        "normalizedName": "viridescentarrowfeather"
+      },
+      "sands": {
+        "artifactName": "Viridescent Venerer's Determination",
+        "GOOD": "ViridescentVenerersDetermination",
+        "normalizedName": "viridescentvenerersdetermination"
+      },
+      "goblet": {
+        "artifactName": "Viridescent Venerer's Vessel",
+        "GOOD": "ViridescentVenerersVessel",
+        "normalizedName": "viridescentvenerersvessel"
+      },
+      "circlet": {
+        "artifactName": "Viridescent Venerer's Diadem",
+        "GOOD": "ViridescentVenerersDiadem",
+        "normalizedName": "viridescentvenerersdiadem"
+      }
+    }
+  },
+  "vourukashasglow": {
+    "setName": "Vourukasha's Glow",
+    "GOOD": "VourukashasGlow",
+    "normalizedName": "vourukashasglow",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Stamen of Khvarena's Origin",
+        "GOOD": "StamenOfKhvarenasOrigin",
+        "normalizedName": "stamenofkhvarenasorigin"
+      },
+      "plume": {
+        "artifactName": "Vibrant Pinion",
+        "GOOD": "VibrantPinion",
+        "normalizedName": "vibrantpinion"
+      },
+      "sands": {
+        "artifactName": "Ancient Abscission",
+        "GOOD": "AncientAbscission",
+        "normalizedName": "ancientabscission"
+      },
+      "goblet": {
+        "artifactName": "Feast of Boundless Joy",
+        "GOOD": "FeastOfBoundlessJoy",
+        "normalizedName": "feastofboundlessjoy"
+      },
+      "circlet": {
+        "artifactName": "Heart of Khvarena's Brilliance",
+        "GOOD": "HeartOfKhvarenasBrilliance",
+        "normalizedName": "heartofkhvarenasbrilliance"
+      }
+    }
+  },
+  "wandererstroupe": {
+    "setName": "Wanderer's Troupe",
+    "GOOD": "WanderersTroupe",
+    "normalizedName": "wandererstroupe",
+    "artifacts": {
+      "flower": {
+        "artifactName": "Troupe's Dawnlight",
+        "GOOD": "TroupesDawnlight",
+        "normalizedName": "troupesdawnlight"
+      },
+      "plume": {
+        "artifactName": "Bard's Arrow Feather",
+        "GOOD": "BardsArrowFeather",
+        "normalizedName": "bardsarrowfeather"
+      },
+      "sands": {
+        "artifactName": "Concert's Final Hour",
+        "GOOD": "ConcertsFinalHour",
+        "normalizedName": "concertsfinalhour"
+      },
+      "goblet": {
+        "artifactName": "Wanderer's String-Kettle",
+        "GOOD": "WanderersStringKettle",
+        "normalizedName": "wanderersstringkettle"
+      },
+      "circlet": {
+        "artifactName": "Conductor's Top Hat",
+        "GOOD": "ConductorsTopHat",
+        "normalizedName": "conductorstophat"
+      }
+    }
+  }
+}
