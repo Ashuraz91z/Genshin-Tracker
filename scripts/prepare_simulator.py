@@ -1,6 +1,6 @@
 """Prepare the pinned MIT gcsim build and its GOOD mappings. Build wasm separately with Go."""
 from pathlib import Path
-import gzip, hashlib, json, re, shutil, subprocess, sys
+import gzip, hashlib, json, os, re, shutil, subprocess, sys
 root=Path(__file__).resolve().parents[1];source=Path(sys.argv[1]);wasm=Path(sys.argv[2]);goroot=Path(sys.argv[3]);dest=root/'web/public/simulator';dest.mkdir(exist_ok=True)
 assert 'MIT License' in (source/'LICENSE').read_text()
 assert subprocess.check_output(['git','rev-parse','HEAD'],cwd=source,text=True).strip()=='caf738dc807a646e2eee7e7b572f225dd6deb510','Use the pinned v2.47.2 sources'
@@ -15,3 +15,14 @@ metadata.update(mainStats=json.loads((data/'artifact_main_gen.json').read_text()
 (dest/'data.json').write_text(json.dumps(metadata,separators=(',',':')))
 (dest/'SOURCES.md').write_text('gcsim v2.47.2 (MIT): https://github.com/genshinsim/gcsim/tree/'+metadata['commit']+'\nBuild: Go 1.27.4, GOOS=js GOARCH=wasm go build -trimpath -ldflags="-s -w" ./cmd/wasm\nSHA256 wasm: '+hashlib.sha256(wasm.read_bytes()).hexdigest()+'\nGo runtime: https://go.dev/ ; see LICENSE-go.txt.\n')
 print('Moteur gcsim prêt :', {k:len(metadata[k]) for k in ['characters','weapons','artifacts']})
+
+# Retain the notices of the Go modules actually linked into the browser engine.
+modules=subprocess.check_output([str(goroot/'bin/go'),'list','-deps','-f','{{if .Module}}{{.Module.Path}}|{{.Module.Version}}|{{.Module.Dir}}{{end}}','./cmd/wasm'],cwd=source,env=dict(os.environ,GOOS='js',GOARCH='wasm'),text=True)
+notices=[]
+for entry in sorted(set(modules.splitlines())):
+    if not entry:continue
+    name,version,directory=entry.split('|',2)
+    for file in sorted(Path(directory).iterdir()):
+        if file.is_file() and file.name.upper().startswith(('LICENSE','LICENCE','NOTICE','COPYING')):
+            notices.append(name+' '+version+' / '+file.name+'\n'+file.read_text(errors='replace'))
+(dest/'THIRD-PARTY-NOTICES.txt').write_text('\n\n'.join(notices)+'\n')
