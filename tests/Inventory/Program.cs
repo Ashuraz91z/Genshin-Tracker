@@ -28,3 +28,21 @@ try
 }
 finally { if (System.IO.Directory.Exists(temp)) System.IO.Directory.Delete(temp, true); }
 Console.WriteLine("Export paths: empty default, whitespace, directory creation and invalid paths verified.");
+
+var reportType=assembly.GetType("InventoryKamera.ScanReport",true);
+var nonPublic=System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Static;
+var reset=reportType.GetMethod("Reset",nonPublic);
+var progress=reportType.GetMethod("Progress",nonPublic);
+reset.Invoke(null,null);
+for(int i=0;i<550;i++) progress.Invoke(null,new object[]{"Étape "+i});
+var events=reportType.GetField("Events",nonPublic).GetValue(null);
+if((int)events.GetType().GetProperty("Count").GetValue(events)!=500)throw new Exception("Progress history must remain bounded.");
+if((bool)reportType.GetProperty("HasErrors",nonPublic).GetValue(null))throw new Exception("Progress messages must not mark valid scans as failed.");
+reset.Invoke(null,null);
+if((int)events.GetType().GetProperty("Count").GetValue(events)!=0)throw new Exception("Previous scan events leaked into a new report.");
+Console.WriteLine("Scan journal: bounded progress, error separation and reset verified.");
+
+var receipt=Newtonsoft.Json.Linq.JObject.Parse("{\"counts\":{\"characters\":0,\"weapons\":12},\"applied\":{\"characters\":\"empty_scan\",\"weapons\":\"preserved_previous\"}}");
+var summary=string.Join("\n",SyncSummary.Describe(receipt));
+if(!summary.Contains("Personnages : 0 reçus")||!summary.Contains("aucune donnée lisible")||!summary.Contains("ancien inventaire conservé"))throw new Exception("Sync receipt hid a preserved or empty category.");
+Console.WriteLine("Sync receipts explain empty scans, received counts and preserved inventory.");

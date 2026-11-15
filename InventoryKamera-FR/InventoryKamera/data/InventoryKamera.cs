@@ -115,6 +115,7 @@ namespace InventoryKamera
 			if (Properties.Settings.Default.ScanWeapons)
 			{
 				Logger.Info("Scanning weapons...");
+                UserInterface.SetProgramStatus("Lecture des armes…");
 				// Get Weapons
 				Navigation.InventoryScreen();
 				Navigation.SelectWeaponInventory();
@@ -130,11 +131,13 @@ namespace InventoryKamera
 				}
 				Navigation.MainMenuScreen();
 				Logger.Info("Done scanning weapons");
+                UserInterface.SetProgramStatus("Parcours des armes terminé ; traitement OCR en cours.");
 			}
 
 			if (Properties.Settings.Default.ScanArtifacts)
 			{
 				Logger.Info("Scanning artifacts...");
+                UserInterface.SetProgramStatus("Lecture des artéfacts…");
 
 				// Get Artifacts
 				Navigation.InventoryScreen();
@@ -151,6 +154,7 @@ namespace InventoryKamera
 				}
 				Navigation.MainMenuScreen();
 				Logger.Info("Done scanning artifacts");
+                UserInterface.SetProgramStatus("Parcours des artéfacts terminé ; traitement OCR en cours.");
 			}
 
 			workerQueue.Enqueue(new OCRImageCollection(null, "END", 0));
@@ -158,6 +162,7 @@ namespace InventoryKamera
 			if (Properties.Settings.Default.ScanCharacters)
 			{
 				Logger.Info("Scanning characters...");
+                UserInterface.SetProgramStatus("Lecture des personnages et aptitudes…");
 				// Get characters
 				Navigation.CharacterScreen();
 				try
@@ -171,6 +176,7 @@ namespace InventoryKamera
 				}
 				Navigation.MainMenuScreen();
 				Logger.Info("Done scanning characters");
+                UserInterface.SetProgramStatus("Lecture des personnages terminée : " + Characters.Count + " personnages valides.");
 			}
 
 			// Wait for Image Processors to finish
@@ -189,6 +195,7 @@ namespace InventoryKamera
 			if (Properties.Settings.Default.ScanCharDevItems)
 			{
 				Logger.Info("Scanning character development materials...");
+                UserInterface.SetProgramStatus("Lecture des matériaux de développement…");
 				// Get Materials
 				Navigation.InventoryScreen();
 				Navigation.SelectCharacterDevelopmentInventory();
@@ -206,12 +213,14 @@ namespace InventoryKamera
 				}
 				Navigation.MainMenuScreen();
 				Logger.Info("Done scanning character development materials");
+                UserInterface.SetProgramStatus("Matériaux de développement parcourus.");
 			}
 
 			// Scan Materials
 			if (Properties.Settings.Default.ScanMaterials)
 			{
 				Logger.Info("Scanning materials...");
+                UserInterface.SetProgramStatus("Lecture des matériaux…");
 				// Get Materials
 				Navigation.InventoryScreen();
 				Navigation.SelectMaterialInventory();
@@ -229,6 +238,7 @@ namespace InventoryKamera
 				}
 				Navigation.MainMenuScreen();
 				Logger.Info("Done scanning materials");
+                UserInterface.SetProgramStatus("Lecture des matériaux terminée.");
 			}
 		}
 

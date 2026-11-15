@@ -203,6 +203,7 @@ namespace InventoryKamera
 
         private void StartButton_Clicked(object sender, EventArgs e)
         {
+            if (connectionBusy) { UserInterface.SetProgramStatus("Attendez la fin de la connexion au compte avant de lancer le scan."); return; }
             if (running || !PrepareExportDirectory()) return;
             GC.Collect();
 

@@ -32,6 +32,7 @@ namespace InventoryKamera
 						Characters.Add(character);
                         scanned.Add(character.NameGOOD);
 						UserInterface.IncrementCharacterCount();
+                        UserInterface.Trace("Personnage lu : " + character.NameGOOD + " · niveau " + character.Level + " · C" + character.Constellation + " · aptitudes " + string.Join("/", character.Talents.Values));
 						Logger.Info("Scanned {0} successfully", character.NameGOOD);
 						if (Characters.Count == 1) first = character.NameGOOD;
 					}

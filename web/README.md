@@ -45,7 +45,7 @@ L'exhaustivité du compte et la précision OCR restent à vérifier dans le jeu.
 
 L'hébergement doit exécuter **Node.js 24+** avec disque persistant, ou Docker. Un hébergement statique/PHP seul ne suffit pas. Aucun serveur Hostinger n'a été modifié.
 
-Le paquet serveur de la release inclut les sources Next et le ZIP Windows attendu par le Dockerfile. Depuis un clone Git seul, télécharger l'asset `GenshinTracker-KameraFR-0.2.2.zip` dans `dist/` avant le build Docker.
+Le paquet serveur de la release inclut les sources Next et le ZIP Windows attendu par le Dockerfile. Depuis un clone Git seul, télécharger l'asset `GenshinTracker-KameraFR-0.3.0.zip` dans `dist/` avant le build Docker.
 
 Depuis `web/`, avec domaine pointant vers le serveur et ports 80/443 disponibles :
 
@@ -63,7 +63,7 @@ Pour une installation Node sans Docker : dossier de travail `web`, installation 
 |---|---|
 | `PUBLIC_URL` | Origine publique exacte, par exemple `https://genshin.example.com` |
 | `DATABASE_PATH` | Chemin absolu vers le SQLite persistant |
-| `DOWNLOAD_PATH` | Chemin absolu vers le ZIP Kamera FR 0.2 |
+| `DOWNLOAD_PATH` | Chemin absolu vers le ZIP Kamera FR 0.3 |
 
 Le mode `npm start` lance le serveur standalone avec `HOSTNAME` (par défaut `0.0.0.0`, ou la valeur de l’ancien `HOST` si elle est définie) et le port `PORT` (3000 par défaut) ; placer un reverse proxy HTTPS devant et limiter l'accès direct au port. Le mode dev écoute uniquement sur `127.0.0.1`. Le lanceur conserve explicitement le chemin `web/data/tracker.sqlite`, même si le serveur standalone change de dossier de travail. Les chemins `DATABASE_PATH` et `DOWNLOAD_PATH` relatifs sont résolus par rapport à `web/`, comme avant la migration.
 
@@ -85,3 +85,11 @@ Sources : [Next Route Handlers](https://nextjs.org/docs/app/api-reference/file-c
 ## Consulter sans compte
 
 Sur l’écran d’accueil, **Importer sans compte** ouvre un export GOOD `.json` (16 Mo maximum). La validation et l’affichage s’effectuent dans le navigateur : aucun contenu du fichier n’est envoyé au serveur. La session locale utilise `sessionStorage`, reste disponible après navigation/rechargement et peut être effacée via le profil visiteur. Le navigateur peut restaurer une session fermée selon ses réglages ; utilisez **Effacer la session visiteur** sur un appareil partagé. Un nouvel import remplace la vue locale. Les scans restent non vérifiés ; ce mode ne prouve pas un inventaire complet. L’association Kamera et la synchronisation serveur nécessitent un compte.
+
+## Mise à jour 0.4.0
+
+Kamera FR 0.3.0 peut se connecter avec le pseudo/mot de passe du tracker via `/api/device/login`, puis conserve sa clé de PC. Le mot de passe n’est pas enregistré dans l’application. Les clés déjà associées restent valides ; une reconnexion du même PC avec sa clé existante la réutilise. L’accès aux données côté application emploie `/api/device/account` avec cette clé, révocable depuis le site. Aucun accès aux autres comptes et aucune association avec HoYoverse.
+
+Déployer le serveur avant le compagnon Windows ; sauvegarder et garder le même DATABASE_PATH. Aucun changement de schéma SQLite. Mettre le nouveau ZIP à disposition et actualiser DOWNLOAD_PATH si une valeur personnalisée était définie. Les anciennes applications continuent d’envoyer leurs scans.
+
+Le journal détaille les quantités reçues et la décision pour chaque catégorie. Les rapports du nouveau compagnon contiennent les étapes horodatées. Les anciens rapports restent lisibles. L’import manuel exige un choix explicite pour remplacer un inventaire d’équipements existant ; cette permission n’est jamais acceptée depuis un envoi automatique d’appareil.

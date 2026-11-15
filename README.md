@@ -1,10 +1,10 @@
-# Genshin Tracker — site Next.js 0.3 / Kamera FR 0.2
+# Genshin Tracker — site Next.js 0.4 / Kamera FR 0.3
 
 Un compagnon Windows et un site personnel pour retrouver les données de son compte Genshin. Le jeu reste en français. Base complète d'Inventory Kamera, interface revue et synchronisation après les scans.
 
 ## Utiliser l'application Windows
 
-1. Extraire **tout** `GenshinTracker-KameraFR-0.2.2.zip` dans un dossier où vous pouvez écrire. Garder les DLL, `tessdata` et `inventorylists` à côté de `InventoryKamera.FR.exe`.
+1. Extraire **tout** `GenshinTracker-KameraFR-0.3.0.zip` dans un dossier où vous pouvez écrire. Garder les DLL, `tessdata` et `inventorylists` à côté de `InventoryKamera.FR.exe`.
 2. Lancer l'exécutable. Prérequis hérités : **.NET Framework 4.7.2+** et **Visual C++ 2015–2022**. Le manifeste demande les droits administrateur pour piloter le jeu. Exécutable non signé.
 3. Utiliser Genshin en **français**, clavier/souris, format **16:9 ou 16:10**, HDR désactivé. Les touches B/C/1 peuvent être configurées dans Options.
 4. Dans **Options du scan**, préciser le nom personnalisé du Voyageur et du Nomade si nécessaire, ainsi que le dossier des exports.
@@ -15,7 +15,7 @@ Les raretés minimales sont à 1 par défaut. L'OCR est un modèle Tesseract fra
 
 ## Connecter le site et l'application
 
-Sur le site, créer un compte puis cliquer **Relier Kamera**. Dans **Connexion** de l'application, saisir l'adresse du site et le code temporaire. Les scans suivants seront envoyés automatiquement après l'export local.
+Sur le site, créer un compte du tracker. Dans **Connexion** de l’application, saisir l’adresse du site, le pseudo et le mot de passe du tracker : le PC est relié automatiquement. Le mot de passe n’est pas conservé ; une clé protégée par Windows permet de reprendre la synchronisation aux prochains démarrages. Le code temporaire du site reste une autre méthode, nécessaire une seule fois.
 
 - Le code est valable 10 minutes et utilisable une seule fois.
 - La clé d'appareil est chiffrée par Windows DPAPI pour l'utilisateur connecté ; aucun mot de passe du site n'est enregistré par Kamera.
@@ -80,3 +80,13 @@ Un dossier d’export vide utilise automatiquement `Documents\GenshinTracker\Exp
 ### Activation du jeu (Windows 0.2.2)
 
 Avant la première capture, Kamera attend jusqu’à 15 secondes que Genshin soit au premier plan. Si Windows refuse l’activation automatique, revenir dans le jeu avec Alt+Tab en gardant le menu Paimon ouvert. Pendant le scan, quitter le jeu arrête toujours les actions. Comportement à valider sur le PC Windows.
+
+## Compte et diagnostic — Kamera FR 0.3.0 / site 0.4.0
+
+- **Mon compte** dans l’application affiche les données réellement enregistrées sur le site : personnages, niveaux et aptitudes, compteurs de collection et 30 derniers relevés. Actualisation après connexion/envoi, au démarrage et toutes les 30 secondes hors scan ; bouton manuel disponible. Les clés existantes restent compatibles.
+- **Journal et erreurs** montre les étapes horodatées, la préparation de l’export et les résultats par catégorie (reçu, appliqué, vide, ancien ou conservé). Les rapports incluent jusqu’à 500 étapes, consultables sur le site. Les erreurs HTTP du serveur sont expliquées ; les envois refusés restent en attente.
+- Un relevé vide des personnages/matériaux n’avance plus leur date de référence : un relevé valide arrivé plus tard peut être appliqué. Les personnages incomplets restent dans le rapport, sans inventer de statistiques.
+- Lors d’un import manuel sur un inventaire déjà rempli, le site propose explicitement de remplacer les armes/artéfacts. Sans ce choix, les anciens équipements sont conservés si le nouveau fichier ne confirme pas un scan complet. Le remplacement manuel reste marqué non vérifié.
+- Déployer le site 0.4.0 avant d’utiliser les nouvelles fonctions de l’application ; mettre à disposition `GenshinTracker-KameraFR-0.3.0.zip` et ajuster DOWNLOAD_PATH. Ne pas déplacer ni recréer la base SQLite existante.
+
+Les tests de transport ne remplacent pas un essai Genshin/DPAPI réel sur Windows. L’application affiche les données exportées ; elle ne calcule pas de statistiques de combat absentes du fichier.

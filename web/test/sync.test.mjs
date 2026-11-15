@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { openStore } from '../store.mjs';
 import { guestAccount } from '../lib/guest.mjs';
 import { createApp } from './http-fixture.mjs';
 
@@ -105,4 +106,43 @@ test('guest GOOD import validates all categories locally and replaces rather tha
   assert.throws(()=>guestAccount({...good,characters:[{...character(),level:-1}]}),/Personnage/);
   assert.throws(()=>guestAccount({...good,materials:JSON.parse('{"__proto__":1}')}),/Quantité/);
   assert.deepEqual(guestAccount(JSON.parse(JSON.stringify(good)),local.data.updatedAt).data,local.data);
+});
+
+test('desktop login persists device access, reuses its key, reads actual account and respects revocation',async t=>{
+  const {request,register,dbPath}=await setup(t);const owner=await register('Desktop'),other=await register('Other');
+  const login={name:'Desktop',password:'a-test-password-at-least-12',deviceName:'PC Windows'};
+  assert.equal((await request('/api/device/login',{method:'POST',origin:false,data:{...login,password:'wrongpass'}})).status,401);
+  const connected=await request('/api/device/login',{method:'POST',origin:false,data:login});assert.equal(connected.status,200);const token=connected.body.token;
+  assert.equal((await request('/api/device/account',{cookie:owner})).status,401);
+  const payload=scan('desktop-upload');payload.report.events=[{at:new Date().toISOString(),message:'Lecture des personnages terminée.'}];
+  const receipt=await request('/api/sync',{method:'POST',origin:false,token,data:payload});assert.equal(receipt.body.counts.characters,1);assert.equal(receipt.body.applied.characters,'merged');
+  const actual=await request('/api/device/account',{origin:false,token});assert.equal(actual.body.user.name,'Desktop');assert.equal(actual.body.data.characters[0].talent.burst,9);assert.equal(actual.body.scans[0].report.events[0].message,'Lecture des personnages terminée.');
+  const repeated=await request('/api/device/login',{method:'POST',origin:false,token,data:login});assert.equal(repeated.body.token,token);assert.equal((await request('/api/account',{cookie:owner})).body.devices.length,1);
+  const duplicate=await request('/api/sync',{method:'POST',origin:false,token,data:payload});assert.equal(duplicate.body.duplicate,true);assert.deepEqual(duplicate.body.counts,receipt.body.counts);assert.deepEqual(duplicate.body.applied,receipt.body.applied);
+  const reopened=openStore(dbPath);assert.ok(reopened.device(token));reopened.close();
+  assert.equal((await request('/api/account',{cookie:other})).body.data.characters.length,0);
+  const switched=await request('/api/device/login',{method:'POST',origin:false,token,data:{...login,name:'Other'}});assert.notEqual(switched.body.token,token);assert.equal((await request('/api/device/account',{token:switched.body.token})).body.user.name,'Other');
+  await request('/api/devices/'+connected.body.deviceId,{method:'DELETE',cookie:owner});assert.equal((await request('/api/device/account',{token})).status,401);assert.equal((await request('/api/sync',{method:'POST',origin:false,token,data:payload})).status,401);
+});
+
+test('empty character scans preserve data without blocking a valid delayed scan and explain the outcome',async t=>{
+  const {request,register,pair}=await setup(t);const owner=await register('EmptyScan');const token=(await pair(owner)).body.token;
+  const first=scan('first-populated',-1000);first.good={format:'GOOD',version:2,characters:[character(70)]};
+  await request('/api/sync',{method:'POST',origin:false,token,data:first});
+  const empty=scan('empty-newer',1000);empty.good={format:'GOOD',version:2,characters:[],materials:{}};
+  const rejected=await request('/api/sync',{method:'POST',origin:false,token,data:empty});assert.equal(rejected.body.applied.characters,'empty_scan');assert.equal(rejected.body.applied.materials,'empty_scan');
+  const valid=scan('valid-delayed',0);valid.good={format:'GOOD',version:2,characters:[character(80)]};
+  const accepted=await request('/api/sync',{method:'POST',origin:false,token,data:valid});assert.equal(accepted.body.applied.characters,'merged');assert.equal((await request('/api/account',{cookie:owner})).body.data.characters[0].level,80);
+});
+
+test('manual equipment replacement requires explicit authenticated import; device payload cannot bypass protection',async t=>{
+  const {request,register,pair}=await setup(t);const owner=await register('ManualChoice'),token=(await pair(owner)).body.token;
+  await request('/api/sync',{method:'POST',token,origin:false,data:scan('complete-equipment')});
+  const changed={format:'GOOD',version:2,weapons:[{...weapon,level:40}]};
+  const ordinary=await request('/api/import',{method:'POST',cookie:owner,data:{good:changed}});assert.equal(ordinary.body.applied.weapons,'preserved_previous');
+  const spoof=scan('spoof-replacement',1000);spoof.good=changed;spoof.report.status='failed';spoof.replaceInventory=true;
+  assert.equal((await request('/api/sync',{method:'POST',token,origin:false,data:spoof})).body.applied.weapons,'preserved_previous');
+  assert.equal((await request('/api/import',{method:'POST',data:{good:changed,replaceInventory:true}})).status,401);
+  const forced=await request('/api/import',{method:'POST',cookie:owner,data:{good:changed,replaceInventory:true}});assert.equal(forced.body.applied.weapons,'manual_replaced');
+  const after=await request('/api/account',{cookie:owner});assert.equal(after.body.data.weapons[0].level,40);assert.equal(after.body.data.quality.weapons,'manual');assert.equal(after.body.data.artifacts.length,1);
 });

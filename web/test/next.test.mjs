@@ -28,6 +28,9 @@ test('Next production preserves existing accounts and device keys, serves all pa
     const response=await fetch(url+path,{method,headers:{...(session?{Cookie:session}:{}),...(origin?{Origin:url}:{}),...(token?{Authorization:'Bearer '+token}:{}),...(data?{'Content-Type':'application/json'}:{})},body:data?JSON.stringify(data):undefined});
     return {status:response.status,headers:response.headers,body:await response.json()};
   };
+  const desktop=await call('/api/device/login',{method:'POST',origin:false,session:null,token:device.token,data:{name:'Migration',password:'migration-password-123',deviceName:'Existing PC'}});
+  assert.equal(desktop.status,200);assert.equal(desktop.body.token,device.token);
+  const desktopAccount=await call('/api/device/account',{session:null,token:device.token,origin:false});assert.equal(desktopAccount.status,200);assert.equal(desktopAccount.body.user.name,'Migration');
   const before=await call('/api/account');assert.equal(before.status,200);assert.equal(before.body.user.name,'Migration');
   let previousNonce;
   for(const page of ['/','/characters','/inventory','/sync']) {

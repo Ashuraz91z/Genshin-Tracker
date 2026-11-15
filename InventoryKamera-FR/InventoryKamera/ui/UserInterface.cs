@@ -103,7 +103,8 @@ namespace InventoryKamera
 			{
 				MethodInvoker textBoxAction = delegate
 				{
-					textBox.AppendText(text.Replace("\n", Environment.NewLine));
+					if (textBox.TextLength > 200000) textBox.Text = textBox.Text.Substring(textBox.TextLength - 150000);
+                    textBox.AppendText(text.Replace("\n", Environment.NewLine));
 					textBox.AppendText(Environment.NewLine);
 					textBox.Refresh();
 				};
@@ -201,6 +202,7 @@ namespace InventoryKamera
 		public static void SetWeapon_Max(int value)
 		{
             ScanReport.ExpectedWeapons = value;
+            Trace("Compteur du jeu : " + value + " armes attendues.");
 			UpdateLabel(value.ToString(), weaponMax_Label);
 			Logger.Info("Parsed {value} weapons to scan", value);
 		}
@@ -208,6 +210,7 @@ namespace InventoryKamera
 		public static void SetArtifact_Max(int value)
 		{
             ScanReport.ExpectedArtifacts = value;
+            Trace("Compteur du jeu : " + value + " artéfacts attendus.");
 			UpdateLabel(value.ToString(), artifactMax_Label);
 			Logger.Info("Parsed {value} artifacts to scan", value);
 		}
@@ -216,7 +219,9 @@ namespace InventoryKamera
 		{
 			lock (artifactCount_Label)
 			{
-				UpdateLabel($"{Int32.Parse(artifactCount_Label.Text) + 1}", artifactCount_Label);
+				int count = Int32.Parse(artifactCount_Label.Text) + 1;
+                UpdateLabel(count.ToString(), artifactCount_Label);
+                if (count % 25 == 0) Trace(count + " artéfacts lus et validés.");
 			}
 		}
 
@@ -224,7 +229,9 @@ namespace InventoryKamera
 		{
 			lock (weaponCount_Label)
 			{
-				UpdateLabel($"{Int32.Parse(weaponCount_Label.Text) + 1}", weaponCount_Label);
+				int count = Int32.Parse(weaponCount_Label.Text) + 1;
+                UpdateLabel(count.ToString(), weaponCount_Label);
+                if (count % 25 == 0) Trace(count + " armes lues et validées.");
 			}
 		}
 
@@ -236,8 +243,16 @@ namespace InventoryKamera
 			}
 		}
 
+        public static void Trace(string message)
+        {
+            ScanReport.Progress(message);
+            if (error_TextBox == null || error_TextBox.IsDisposed) return;
+            UpdateTextBox("[" + DateTime.Now.ToString("HH:mm:ss") + "] " + message + Environment.NewLine, error_TextBox);
+        }
+
 		public static void SetProgramStatus(string status, bool ok = true)
 		{
+            Trace(status);
 			MethodInvoker statusAction = delegate
 			{
 				programStatus_Label.Text = status;

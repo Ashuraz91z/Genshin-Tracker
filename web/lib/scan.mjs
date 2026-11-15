@@ -52,6 +52,7 @@ export function validateScan(body) {
   for(const category of ['weapons','artifacts']) expected[category]=integer(raw.expectedFromScreen?.[category],0,20000)?raw.expectedFromScreen[category]:null;
   return {scanId:body.scanId,capturedAt:new Date(time).toISOString(),good:cleaned,
     report:{errorCount:Array.isArray(raw.errors)?raw.errors.length:0,status:String(raw.status??'imported').slice(0,80),errors,selected,expectedFromScreen:expected,
+      events:Array.isArray(raw.events)?raw.events.slice(-500).map(e=>({at:Number.isFinite(Date.parse(e?.at))?new Date(e.at).toISOString():null,message:String(e?.message??'').slice(0,2000)})):[],
       partialCharacters:Array.isArray(raw.partialCharacters)?raw.partialCharacters.slice(0,300).map(c=>({key:String(c?.key??'Inconnu').slice(0,100),level:integer(c?.level,1,100)?c.level:null})):[],completenessVerified:false}};
 }
 

@@ -86,7 +86,8 @@ namespace InventoryKamera
             var errors=new TabPage("Journal et erreurs"){BackColor=Surface,Padding=new Padding(18)};
             var optionsPage=new TabPage("Options du scan"){BackColor=Surface,Padding=new Padding(18)};
             var connection=new TabPage("Connexion"){BackColor=Surface,Padding=new Padding(22)};
-            tabs.TabPages.AddRange(new[]{live,errors,optionsPage,connection});content.Controls.Add(tabs,0,1);connect.Click+=(s,e)=>tabs.SelectedTab=connection;
+            var accountPage = BuildAccountPage();
+            tabs.TabPages.AddRange(new[]{live,errors,optionsPage,connection,accountPage});content.Controls.Add(tabs,0,1);connect.Click+=(s,e)=>tabs.SelectedTab=connection;
             var liveGrid=new TableLayoutPanel{Dock=DockStyle.Fill,ColumnCount=2,RowCount=3,BackColor=Surface};liveGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent,45));liveGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent,55));
             liveGrid.RowStyles.Add(new RowStyle(SizeType.Absolute,34));liveGrid.RowStyles.Add(new RowStyle(SizeType.Percent,52));liveGrid.RowStyles.Add(new RowStyle(SizeType.Percent,48));
             liveGrid.Controls.Add(Caption("Équipement en cours",10,Muted),0,0);liveGrid.Controls.Add(Caption("Personnage et aptitudes",10,Muted),1,0);
@@ -97,7 +98,7 @@ namespace InventoryKamera
             foreach(var text in new[]{ArtifactOutput_TextBox,CharacterOutput_TextBox}){text.Dock=DockStyle.Fill;text.Multiline=true;text.ScrollBars=ScrollBars.Vertical;text.Font=new Font("Consolas",9);text.ReadOnly=true;text.Margin=new Padding(0,0,12,0);}
             liveGrid.Controls.Add(ArtifactOutput_TextBox,0,2);liveGrid.Controls.Add(CharacterOutput_TextBox,1,2);live.Controls.Add(liveGrid);
             ErrorLog_TextBox.Dock=DockStyle.Fill;ErrorLog_TextBox.Multiline=true;ErrorLog_TextBox.ScrollBars=ScrollBars.Vertical;ErrorLog_TextBox.Font=new Font("Consolas",9);ErrorLog_TextBox.ReadOnly=true;
-            var errorTitle=Caption("Les lectures incertaines restent visibles ici et dans le rapport exporté.",10,Muted);errors.Controls.Add(ErrorLog_TextBox);errors.Controls.Add(errorTitle);
+            var errorTitle=Caption("Étapes du scan, exports et réponses du site, avec heure. Les erreurs restent dans le rapport.",10,Muted);errors.Controls.Add(ErrorLog_TextBox);errors.Controls.Add(errorTitle);
             var optionsStack=Stack(0);optionsStack.Margin=new Padding(0);optionsPage.Controls.Add(optionsStack);
             AddSetting(optionsStack,"Rareté minimale des armes",WeaponRarityControl);AddSetting(optionsStack,"Rareté minimale des artéfacts",ArtifactRarityControl);
             AddSetting(optionsStack,"Niveau minimal des armes",MinimumWeaponLevelControl);AddSetting(optionsStack,"Niveau minimal des artéfacts",numericUpDown1);
@@ -109,14 +110,18 @@ namespace InventoryKamera
             Navigation_Image.Width=160;Navigation_Image.Height=70;Navigation_Image.SizeMode=PictureBoxSizeMode.Zoom;optionsStack.Controls.Add(Navigation_Image);
             var info=Caption("Le jeu doit rester en français, en 16:9 ou 16:10, HDR désactivé.",9,Muted);info.Width=620;info.Height=45;optionsStack.Controls.Add(info);
             var connectionStack=Stack(0);connectionStack.Margin=new Padding(0);connection.Controls.Add(connectionStack);
-            foreach(var label in new[]{Caption("02  /  SYNCHRONISATION",9,Gold),Caption("Du jeu à votre carnet",22),Caption("Créez un code temporaire dans Synchronisation sur le site.",10,Muted)}){label.Width=620;connectionStack.Controls.Add(label);}
+            foreach(var label in new[]{Caption("02  /  SYNCHRONISATION",9,Gold),Caption("Du jeu à votre carnet",22),Caption("Connectez-vous une seule fois. Le PC reste relié à votre compte.",10,Muted)}){label.Width=620;connectionStack.Controls.Add(label);}
             siteAddress=new TextBox{Text=ClientSync.SiteUrl,Width=560,BackColor=Night,ForeColor=Ink};pairingCode=new TextBox{Width=560,BackColor=Night,ForeColor=Gold};
-            AddSetting(connectionStack,"Adresse HTTPS du site",siteAddress);AddSetting(connectionStack,"Code d’association (valable 10 minutes)",pairingCode);
-            var pairButton=ActionButton("Associer mon compte",true);pairButton.Width=220;pairButton.Click+=async(s,e)=>{if(running){syncStatusLabel.Text="Attendez la fin du scan avant de changer de compte.";return;}pairButton.Enabled=false;try{await ClientSync.Pair(siteAddress.Text,pairingCode.Text);pairingCode.Clear();}catch(Exception ex){syncStatusLabel.Text=ex.Message;syncStatusLabel.ForeColor=Color.Salmon;}finally{pairButton.Enabled=true;}};connectionStack.Controls.Add(pairButton);
+            AddSetting(connectionStack,"Adresse HTTPS du site",siteAddress);
+            AddLoginControls(connectionStack);
+            var alternative=Caption("Autre méthode : un code temporaire créé sur le site (une seule fois).",9,Muted);alternative.Width=620;alternative.Height=48;connectionStack.Controls.Add(alternative);
+            AddSetting(connectionStack,"Code d’association (valable 10 minutes)",pairingCode);
+            var pairButton=ActionButton("Associer mon compte",true);pairButton.Width=220;pairButton.Click+=async(s,e)=>{if(running||connectionBusy){syncStatusLabel.Text="Attendez la fin du scan avant de changer de compte.";return;}pairButton.Enabled=false;connectionBusy=true;try{await ClientSync.Pair(siteAddress.Text,pairingCode.Text);pairingCode.Clear();}catch(Exception ex){UserInterface.Trace("Connexion refusée : "+ex.Message);syncStatusLabel.Text=ex.Message;syncStatusLabel.ForeColor=Color.Salmon;}finally{pairButton.Enabled=true;connectionBusy=false;}};connectionStack.Controls.Add(pairButton);
             var retry=ActionButton("Réessayer l’envoi");retry.Width=220;retry.Click+=async(s,e)=>{retry.Enabled=false;try{await ClientSync.SendPending();}finally{retry.Enabled=true;}};connectionStack.Controls.Add(retry);
             syncStatusLabel=Caption(ClientSync.AccountName==null?"Aucun compte associé. Les exports restent enregistrés sur ce PC.":"Compte associé : "+ClientSync.AccountName,10,Muted);syncStatusLabel.Width=620;syncStatusLabel.Height=90;syncStatusLabel.Margin=new Padding(0,20,0,12);connectionStack.Controls.Add(syncStatusLabel);
             var privacy=Caption("La clé d’accès est protégée par votre session Windows. Les scans hors ligne restent en attente. Vous pouvez dissocier ce PC depuis le site.",9,Muted);privacy.Width=620;privacy.Height=80;connectionStack.Controls.Add(privacy);
-            ClientSync.StatusChanged=(text,ok)=>{if(!IsDisposed&&IsHandleCreated)BeginInvoke((MethodInvoker)(()=>{syncStatusLabel.Text=text;syncStatusLabel.ForeColor=ok?Mint:Color.Salmon;}));};
+            ClientSync.StatusChanged=(text,ok)=>{if(!IsDisposed&&IsHandleCreated)BeginInvoke((MethodInvoker)(()=>{syncStatusLabel.Text=text;syncStatusLabel.ForeColor=ok?Mint:Color.Salmon;connect.Text=ClientSync.AccountName==null?"Connexion au site":"Compte : "+ClientSync.AccountName;}));};
+            StartAccountRefresh();
             var footer=new Panel{Dock=DockStyle.Fill,BackColor=Night,Padding=new Padding(0,15,0,0)};ProgramStatus_Label.AutoSize=false;ProgramStatus_Label.Dock=DockStyle.Top;ProgramStatus_Label.Height=30;ProgramStatus_Label.BackColor=Night;ProgramStatus_Label.Font=new Font("Segoe UI",11);footer.Controls.Add(ProgramStatus_Label);root.Controls.Add(footer,0,3);
             Controls.Add(root);ResumeLayout(true);
         }

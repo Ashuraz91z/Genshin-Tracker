@@ -102,6 +102,7 @@ namespace InventoryKamera
 
             // Write file
             WriteToJson(outputFile);
+            UserInterface.Trace("Export GOOD enregistré : " + fileName + " · " + (Characters?.Count ?? 0) + " personnages, " + (Weapons?.Count ?? 0) + " armes, " + (Artifacts?.Count ?? 0) + " artéfacts.");
             string reportPath = Path.ChangeExtension(outputFile, ".rapport.json");
             ScanReport.Write(reportPath, genshinDataForReport);
             ClientSync.Enqueue(outputFile, reportPath);

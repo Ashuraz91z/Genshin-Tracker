@@ -14,3 +14,7 @@ input::placeholder{color:#8f9fb6;opacity:1}
 .auth-form .password-warning{color:var(--gold);font-size:12px;line-height:1.6;margin:0 0 18px}
 
 .guest-entry{border-top:1px solid var(--border);margin-top:24px;padding-top:20px}.auth-form .guest-entry p{font-size:12px;line-height:1.6;color:var(--muted);margin:12px 0 0}.guest-banner{padding:16px 20px;border:1px solid var(--border);border-radius:12px;margin-bottom:24px;background:var(--panel)}.guest-banner p{font-size:13px;line-height:1.6;margin-bottom:10px}
+
+.scan-timeline{padding-left:22px;max-height:320px;overflow:auto;font-size:12px;line-height:1.7}.scan-timeline time{color:var(--gold);margin-right:8px}.scan-details h3{font-size:14px;margin-top:18px}
+
+.import-choice{display:flex;gap:12px;align-items:flex-start;line-height:1.6;margin:20px 0}.import-choice input{width:20px;height:20px;flex-shrink:0;margin:0}

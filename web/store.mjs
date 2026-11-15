@@ -58,6 +58,14 @@ export function openStore(path) {
       const user=db.prepare('SELECT name FROM users WHERE id=?').get(pair.user_id);
       return {token,deviceId:id,accountId:pair.user_id,username:user.name};
     },
+    connect(user,name,existingToken) {
+      need(typeof name==='string' && name.trim().length>0 && name.length<=64,'Nom du PC invalide.');
+      const existing=existingToken?db.prepare('SELECT id,user_id FROM devices WHERE token=?').get(hash(existingToken)):null;
+      if(existing?.user_id===user.id)return {token:existingToken,deviceId:existing.id,accountId:user.id,username:user.name};
+      const token=secret(),id=secret();
+      db.prepare('INSERT INTO devices VALUES(?,?,?,?,?,?)').run(id,user.id,name.trim(),hash(token),now(),null);
+      return {token,deviceId:id,accountId:user.id,username:user.name};
+    },
     device(token) { return token?db.prepare('SELECT id,user_id,name FROM devices WHERE token=?').get(hash(token)):null; },
     revoke(user,id) { db.prepare('DELETE FROM devices WHERE id=? AND user_id=?').run(id,user.id); },
     account(user) {
@@ -67,9 +75,10 @@ export function openStore(path) {
         .map(s=>({...s,report:((r)=>({...r,errors:r.errors.slice(0,20)}))(JSON.parse(s.report)),counts:JSON.parse(s.counts),applied:JSON.parse(s.applied)}));
       return {user:{name:user.name},data:row?JSON.parse(row.data):blank(),devices,scans};
     },
-    sync(userId,deviceName,body,deviceId) {
+    sync(userId,deviceName,body,deviceId,replaceInventory=false) {
       const scan=validateScan(body);
-      if(db.prepare('SELECT 1 FROM scans WHERE user_id=? AND scan_id=?').get(userId,scan.scanId)) return {ok:true,duplicate:true};
+      const duplicate=db.prepare('SELECT applied,counts FROM scans WHERE user_id=? AND scan_id=?').get(userId,scan.scanId);
+      if(duplicate)return {ok:true,duplicate:true,scanId:scan.scanId,applied:JSON.parse(duplicate.applied),counts:JSON.parse(duplicate.counts)};
       const row=db.prepare('SELECT data FROM accounts WHERE user_id=?').get(userId);
       const data=row?JSON.parse(row.data):blank(),applied={},counts={};
       for(const category of ['characters','weapons','artifacts','materials']) {
@@ -77,6 +86,7 @@ export function openStore(path) {
         if(items===undefined) continue;
         counts[category]=category==='materials'?Object.keys(items).length:items.length;
         if(data.watermarks[category] && scan.capturedAt<=data.watermarks[category]) {applied[category]='older_scan';continue;}
+        if((category==='characters'&&items.length===0)||(category==='materials'&&Object.keys(items).length===0)){applied[category]='empty_scan';continue;}
         if(category==='characters') {
           const merged=new Map(data.characters.map(c=>[c.key,c]));
           items.forEach(c=>merged.set(c.key,c));data.characters=[...merged.values()];applied[category]='merged';
@@ -84,8 +94,8 @@ export function openStore(path) {
         else {
           const verified=scan.report.status==='finished_unverified' && scan.report.errors.length===0
             && scan.report.selected[category] && scan.report.expectedFromScreen[category]===items.length;
-          if(verified || !data.watermarks[category]) {
-            data[category]=items;data.quality[category]=verified?'count_matched':'partial';applied[category]=verified?'replaced':'first_partial';
+          if(verified || replaceInventory || !data.watermarks[category]) {
+            data[category]=items;data.quality[category]=verified?'count_matched':replaceInventory?'manual':'partial';applied[category]=verified?'replaced':replaceInventory?'manual_replaced':'first_partial';
           } else {applied[category]='preserved_previous';continue;}
         }
         data.watermarks[category]=scan.capturedAt;
@@ -98,7 +108,7 @@ export function openStore(path) {
         if(deviceId) db.prepare('UPDATE devices SET last_seen=? WHERE id=?').run(now(),deviceId);
         db.exec('COMMIT');
       } catch(e) {db.exec('ROLLBACK');throw e;}
-      return {ok:true,duplicate:false,applied};
+      return {ok:true,duplicate:false,scanId:scan.scanId,applied,counts};
     }
   };
 }
