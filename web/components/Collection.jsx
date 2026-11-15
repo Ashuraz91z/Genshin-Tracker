@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import Icon from './Icon';
+import { elementName } from '../lib/collection.mjs';
 export const number=n=>new Intl.NumberFormat('fr-FR').format(n);
 export const when=value=>value?new Intl.DateTimeFormat('fr-FR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}).format(new Date(value)):'Pas encore de scan';
 export function Modal({children,onClose,label}) {
@@ -12,9 +13,9 @@ export function Empty({title,description,onPair}) {
 }
 export function CharacterCard({character,reference={},onClick}) {
   const name=reference.name??character.key;
-  return <button className="character-card" onClick={onClick} aria-label={`Voir ${name}`}><div className={`portrait-wrap ${reference.rarity===4?'four':''}`}>
+  return <button className="character-card" data-element={elementName(reference.element)} onClick={onClick} aria-label={`Voir ${name}`}><div className={`portrait-wrap ${reference.rarity===4?'four':''}`}>
     {reference.portrait?<img src={reference.portrait} alt="" loading="lazy" width="200" height="190"/>:<span className="portrait-initial">{name[0]}</span>}
-    <span className="element-badge">{reference.element??'Non référencé'}</span></div><div className="character-info"><div className="stars" aria-label={`${reference.rarity??'?'} étoiles`}>{'✦'.repeat(reference.rarity??0)}</div><h3>{name}</h3><div><span>Niv. {character.level}</span><span>C{character.constellation}</span></div></div></button>;
+    <span className="element-badge">{elementName(reference.element)||'Non référencé'}</span></div><div className="character-info"><div className="stars" aria-label={`${reference.rarity??'?'} étoiles`}>{'✦'.repeat(reference.rarity??0)}</div><h3>{name}</h3><div><span>Niv. {character.level}</span><span>C{character.constellation}</span></div></div></button>;
 }
 const categories={characters:'Personnages',weapons:'Armes',artifacts:'Artéfacts',materials:'Matériaux'};
 const outcomes={partial_merged:'pièces valides fusionnées, pièces précédentes conservées',merged:'données fusionnées',replaced:'inventaire actualisé, compteur concordant',first_partial:'premier relevé partiel enregistré',preserved_previous:'inventaire précédent conservé, scan incomplet',older_scan:'relevé plus ancien, données actuelles conservées',empty_scan:'aucune donnée lisible, données précédentes conservées',manual_replaced:'inventaire remplacé à votre demande, import non vérifié'};

@@ -13,3 +13,13 @@ Les recommandations initiales gaming (showcase 3D) ne correspondent pas au suivi
 - Windows : mêmes couleurs et hiérarchie, contrôles natifs conservés, vrais onglets, configuration et erreurs distinctes.
 
 Migration 0.3 : mêmes tokens CSS et illustrations, composants React sous Next.js App Router ; navigation interne avec next/link, états React et dialogues natifs. Routes serveur pour l’API, sans injection HTML manuelle.
+
+## Refonte du site — Liquid Glass (15 novembre 2026)
+
+La direction du site évolue sur demande de Lucas : verre dépoli, fond diffus bleu/lavande/menthe, panneaux arrondis et police système Apple/Segoe UI. La recherche Pro Max ciblée `glassmorphism dashboard readable` confirme cette direction ; la proposition gaming 3D est écartée car elle ne sert pas la consultation d’inventaire. Le compagnon Windows garde sa présentation actuelle.
+
+- Thèmes clair, sombre et automatique ; préférence locale appliquée avant hydratation via script avec nonce CSP. Option de réduction de transparence et respect du mouvement réduit.
+- Dashboard : compteurs importés, répartition élémentaire, artéfacts 5 étoiles, armes équipées et nombre de sets présents. Aucune estimation de complétion du jeu.
+- Personnages : nuances Pyro orange, Hydro bleu, Anémo turquoise, Électro violet, Cryo cyan, Géo ocre et Dendro vert ; libellé visible en complément de la couleur. Recherche, rareté, élément et tris.
+- Inventaire : cartes d’objets illustrées, nom de pièce et de set, niveau/quantité, propriétaire, fiche de détails ; filtres combinables et affichage progressif par 60 objets.
+- Images locales et chargement différé ; provenance dans `web/public/assets/SOURCES.md`. Pictogramme lorsque l’image manque ; rareté inconnue explicitement distinguée des objets 1 étoile.
