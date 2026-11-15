@@ -23,3 +23,7 @@ La direction du site évolue sur demande de Lucas : verre dépoli, fond diffus b
 - Personnages : nuances Pyro orange, Hydro bleu, Anémo turquoise, Électro violet, Cryo cyan, Géo ocre et Dendro vert ; libellé visible en complément de la couleur. Recherche, rareté, élément et tris.
 - Inventaire : cartes d’objets illustrées, nom de pièce et de set, niveau/quantité, propriétaire, fiche de détails ; filtres combinables et affichage progressif par 60 objets.
 - Images locales et chargement différé ; provenance dans `web/public/assets/SOURCES.md`. Pictogramme lorsque l’image manque ; rareté inconnue explicitement distinguée des objets 1 étoile.
+
+### Équipements par personnage
+
+Fiche personnage élargie : arme à gauche, cinq emplacements d’artéfacts à droite, une colonne sur mobile. Les cartes illustrées utilisent les mêmes raretés et noms que l’inventaire ; détails dépliables au clavier pour les sous-statistiques. Résumé de l’arme et du nombre d’emplacements identifiés directement sur les cartes personnages. Les associations proviennent uniquement de `location` : état « non identifié » si absent, tous les candidats et un avertissement en cas de plusieurs armes ou pièces pour un même emplacement. Les sets sont comptés comme pièces relevées, sans prétendre calculer des bonus actifs.

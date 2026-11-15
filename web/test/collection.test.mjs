@@ -19,3 +19,15 @@ test('every published illustration points to an existing local PNG',()=>{
   const file=new URL('../public'+entry[field],import.meta.url);assert.ok(existsSync(file),entry[field]);assert.equal(readFileSync(file).subarray(0,8).toString('hex'),'89504e470d0a1a0a');
  }
 });
+
+test('character equipment follows GOOD locations, keeps the five slots and exposes conflicting scans',async()=>{
+ const {characterEquipment}=await import('../lib/collection.mjs');
+ const data={weapons:[{key:'PrototypeAmber',level:70,refinement:1,location:'SangonomiyaKokomi'},{key:'Other',location:''}],artifacts:[{setKey:'Finale',slotKey:'circlet',level:20,rarity:5,location:'Skirk'},{setKey:'Finale',slotKey:'flower',level:20,rarity:5,location:'Skirk'},{setKey:'Clam',slotKey:'flower',level:20,rarity:5,location:'SangonomiyaKokomi'},{setKey:'Finale',slotKey:'plume',location:''}],materials:{}};
+ const catalogue={weapons:{PrototypeAmber:{name:'Malice (prototype)',image:'/amber.png',rarity:4}},artifacts:{Finale:{name:'Finale des galeries profondes',pieces:{circlet:{name:'Couronne perdue',image:'/circlet.png'}}},Clam:{name:'Palourde aux teintes océaniques'}}};
+ const before=JSON.stringify(data),kokomi=characterEquipment(data,catalogue,'SangonomiyaKokomi'),skirk=characterEquipment(data,catalogue,'Skirk');
+ assert.equal(kokomi.weapons[0].name,'Malice (prototype)');assert.equal(kokomi.identifiedSlots,1);assert.equal(kokomi.ambiguous,false);
+ assert.equal(skirk.weapons.length,0);assert.equal(skirk.slots.circlet[0].image,'/circlet.png');assert.equal(skirk.identifiedSlots,2);assert.equal(skirk.sets[0].count,2);assert.equal(Object.keys(skirk.slots).length,5);assert.equal(skirk.slots.plume.length,0);
+ assert.equal(characterEquipment(data,catalogue,'Unknown').identifiedSlots,0);assert.equal(JSON.stringify(data),before);
+ data.artifacts.push({...data.artifacts[0],level:16});data.weapons.push({...data.weapons[0],level:80});
+ assert.equal(characterEquipment(data,catalogue,'Skirk').ambiguous,true);assert.equal(characterEquipment(data,catalogue,'Skirk').slots.circlet.length,2);assert.equal(characterEquipment(data,catalogue,'SangonomiyaKokomi').ambiguous,true);
+});

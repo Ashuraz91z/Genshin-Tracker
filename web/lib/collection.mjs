@@ -26,3 +26,12 @@ export function filterInventory(items,{search='',rarity='',set='',slot='',equipp
       return (b.level??0)-(a.level??0)||b.rarity-a.rarity;
     });
 }
+
+export function characterEquipment(data,catalogue,characterKey) {
+  const weapons=inventoryItems(data,catalogue,'weapons').filter(item=>item.location===characterKey);
+  const artifacts=inventoryItems(data,catalogue,'artifacts').filter(item=>item.location===characterKey);
+  const slots=Object.fromEntries(['flower','plume','sands','goblet','circlet'].map(slot=>[slot,artifacts.filter(item=>item.slotKey===slot)]));
+  const sets=new Map();
+  artifacts.forEach(item=>sets.set(item.setKey,{name:item.setName,count:(sets.get(item.setKey)?.count??0)+1}));
+  return {weapons,slots,sets:[...sets.values()],identifiedSlots:Object.values(slots).filter(items=>items.length>0).length,ambiguous:weapons.length>1||Object.values(slots).some(items=>items.length>1)};
+}
