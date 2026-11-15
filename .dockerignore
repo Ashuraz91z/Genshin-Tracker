@@ -7,3 +7,7 @@ web/data
 **/__pycache__
 dist/*
 !dist/GenshinTracker-KameraFR-0.2.0.zip
+web/.next
+web/out
+**/.env*
+!web/.env.example

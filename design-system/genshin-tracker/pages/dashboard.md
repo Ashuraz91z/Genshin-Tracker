@@ -11,3 +11,5 @@ Les recommandations initiales gaming (showcase 3D) ne correspondent pas au suivi
 - Contraste AA, focus visible, cibles de 44 px, états d'attente/erreur locaux, aucune animation obligatoire.
 - Mobile : navigation horizontale, une colonne ; dialogue accessible, clavier et fermeture Échap.
 - Windows : mêmes couleurs et hiérarchie, contrôles natifs conservés, vrais onglets, configuration et erreurs distinctes.
+
+Migration 0.3 : mêmes tokens CSS et illustrations, composants React sous Next.js App Router ; navigation interne avec next/link, états React et dialogues natifs. Routes serveur pour l’API, sans injection HTML manuelle.

@@ -1,4 +1,4 @@
-# Genshin Tracker — Kamera FR 0.2.0
+# Genshin Tracker — site Next.js 0.3 / Kamera FR 0.2
 
 Un compagnon Windows et un site personnel pour retrouver les données de son compte Genshin. Le jeu reste en français. Base complète d'Inventory Kamera, interface revue et synchronisation après les scans.
 
@@ -24,7 +24,7 @@ Sur le site, créer un compte puis cliquer **Relier Kamera**. Dans **Connexion**
 - HTTPS est obligatoire à distance. `localhost` désigne la machine qui l'utilise, pas votre autre ordinateur.
 - Le serveur fusionne personnages et matériaux. Un inventaire d'armes/artéfacts déjà présent est conservé si le nouveau scan est partiel ; les données plus anciennes ne remplacent pas les plus récentes.
 
-Le site a quatre vues : tableau de bord, personnages/aptitudes, inventaire filtrable et journal de synchronisation. Un import GOOD manuel est aussi disponible. Les données sont persistantes en SQLite et rattachées au compte authentifié.
+Le site utilise **Next.js 16.4.6 et React 19.3.1**, avec l’App Router et les Route Handlers pour l’API. SQLite et les URL de synchronisation sont conservés, ainsi que les comptes et clés d’appareils existants si la base est conservée. Le site a quatre vues : tableau de bord, personnages/aptitudes, inventaire filtrable et journal de synchronisation. Un import GOOD manuel est aussi disponible. Les données sont persistantes en SQLite et rattachées au compte authentifié.
 
 ## Lancer le site localement
 
@@ -32,7 +32,8 @@ Avec Node.js 24 ou supérieur, depuis le dossier du projet :
 
 ```sh
 cd web
-npm start
+npm ci
+npm run dev
 ```
 
 Ouvrir **http://127.0.0.1:8788**. Aucun compte ou inventaire factice n'est préchargé. Le déploiement autonome Docker/Caddy est décrit dans `web/README.md` (ou `SITE.md` dans le paquet Windows). Domaine et serveur de production restent à désigner ; aucun hébergement distant n'a été modifié.
@@ -53,7 +54,7 @@ Avec .NET SDK 8 et Python 3.9+ :
 
 ```sh
 bash scripts/build_windows.sh
-cd web && npm test
+cd web && npm ci && npm run build && npm test
 ```
 
 Le projet C# SDK cible .NET Framework 4.7.2. Le build fonctionne depuis macOS mais ne teste pas l'interface Windows.
@@ -70,4 +71,4 @@ Sources et versions : `UPSTREAM.md`, `inventorylists/source.json`, `web/public/a
 
 ## GitHub et livraison
 
-Code du site : `web/` ; code de l'application : `InventoryKamera-FR/`. Le workflow GitHub Actions compile, teste et publie les paquets dans Releases. Les modèles OCR sont récupérés automatiquement au build depuis une version officielle figée et vérifiés par SHA-256. Les exécutables, bases SQLite, connexions locales et fichiers `.env` ne sont pas versionnés. Guide Hostinger : `web/README.md`.
+Code du site : `web/` ; code de l'application : `InventoryKamera-FR/`. Le workflow GitHub Actions construit et teste Next.js en mode production, puis compile l’application et publie les paquets dans Releases. Le serveur de production se lance par `npm run build` puis `npm start` depuis `web/` (variable `PORT`, 3000 par défaut), ou avec Docker/Caddy. Les modèles OCR sont récupérés automatiquement au build depuis une version officielle figée et vérifiés par SHA-256. Les exécutables, bases SQLite, connexions locales et fichiers `.env` ne sont pas versionnés. Guide Hostinger : `web/README.md`.

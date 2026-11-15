@@ -8,3 +8,5 @@
 
 input::placeholder{color:#8f9fb6;opacity:1}
 #profile-name{max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.activity-title{overflow-wrap:anywhere}.device-row>div{min-width:0;overflow-wrap:anywhere;max-width:100%}@media(max-width:700px){#profile-name{max-width:80px}.device-row>div{max-width:calc(100% - 44px)}}
+.route-loading{padding:70px 20px;color:var(--muted);min-height:350px;display:grid;place-items:center}
+.characters-grid>.empty-state{grid-column:1/-1;min-height:300px}

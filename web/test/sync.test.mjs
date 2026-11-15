@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { createApp } from '../server.mjs';
+import { createApp } from './http-fixture.mjs';
 
 const character=(level=80)=>({key:'KamisatoAyaka',level,constellation:2,ascension:6,talent:{auto:8,skill:8,burst:9}});
 const weapon={key:'DullBlade',level:20,ascension:1,refinement:1,location:'KamisatoAyaka',lock:false};
@@ -81,16 +81,4 @@ test('SQLite records survive opening a second store on the same database',async 
   await request('/api/sync',{method:'POST',token,data:scan('persisted-scan'),origin:false});
   const {openStore}=await import('../store.mjs');const reopened=openStore(dbPath);
   try{const user=reopened.user(cookie.split('=')[1]);assert.equal(reopened.account(user).data.characters.length,1);assert.equal(reopened.account(user).scans.length,1);}finally{reopened.close();}
-});
-
-test('the actual web entry and every referenced local asset are served with safe MIME types',async t=>{
-  const {server}=await setup(t),url='http://127.0.0.1:'+server.address().port;
-  const response=await fetch(url+'/');assert.equal(response.status,200);assert.ok(response.headers.get('content-type').includes('text/html'));
-  const html=await response.text();assert.ok(html.includes('id="auth-form"'));assert.ok(html.includes('id="pair-dialog"'));
-  for(const asset of ['/app.js','/style.css','/assets/mark.svg','/assets/voyage.svg','/api/catalogue']) {
-    const file=await fetch(url+asset);assert.equal(file.status,200,asset);assert.notEqual(file.headers.get('content-type'),'text/html');
-  }
-  const catalogue=await (await fetch(url+'/api/catalogue')).json();
-  const ayaka=catalogue.characters.KamisatoAyaka;assert.equal(ayaka.name,'Kamisato Ayaka');
-  if(ayaka.portrait)assert.equal((await fetch(url+ayaka.portrait)).status,200);
 });

@@ -1,64 +1,83 @@
-# Site Genshin Tracker
+# Genshin Tracker — site Next.js 0.3
 
-Tableau de bord français, application serveur Node.js 24+ sans dépendance npm, stockage SQLite. Le site est préparé pour l'hébergement autonome sur les serveurs de Lucas ; aucune publication distante effectuée sans cible identifiée.
+**Next.js 16.4.6 / React 19.3.1, App Router, Route Handlers Node.js et SQLite.** Le design bleu nuit/or/menthe est conservé, avec des composants React et de vraies routes `/`, `/characters`, `/inventory` et `/sync`.
 
-## Démarrer localement
+## Démarrer
+
+Prérequis : Node.js 24+ et npm.
 
 ```sh
 cd web
+npm ci
+npm run dev
+```
+
+Ouvrir http://127.0.0.1:8788. Pour la production :
+
+```sh
+npm ci
+npm run build
 npm start
 ```
 
-Ouvrir http://127.0.0.1:8788 puis créer un compte (pseudo et mot de passe de 12 caractères minimum). Aucun compte HoYoverse requis. La base est créée dans `web/data/tracker.sqlite`, hors Git. Aucun compte ou inventaire de démonstration n'est préchargé.
+Configurer l'origine publique HTTPS et un stockage persistant avant de déployer. La base par défaut reste `web/data/tracker.sqlite`. Aucun compte ni inventaire de démonstration n'est ajouté. Si une base de la version 0.2 existe, **garder son chemin**, avec ses éventuels fichiers WAL/SHM : comptes, sessions, clés de PC et données utilisent le même schéma.
 
-## Relier l'application
+## Application Windows
 
-1. Sur le site : **Relier Kamera**, qui affiche l'adresse du site et un code valable 10 minutes.
-2. Dans Kamera FR 0.2.0 : **Connexion**, saisir l'adresse et le code, puis **Associer mon compte**.
-3. Après chaque export, le GOOD et son rapport sont envoyés automatiquement. Le site actualise les données toutes les 5 secondes tant qu'il est visible.
-4. Hors ligne, les envois restent dans `%LOCALAPPDATA%\GenshinTracker\outbox`, séparés par site et compte. Utiliser **Réessayer l'envoi** ou redémarrer l'application. Les exports restent également dans le dossier choisi.
-5. Pour révoquer un appareil : **Synchronisation → Dissocier** sur le site. Une nouvelle association sera nécessaire.
+Kamera FR 0.2 reste compatible : les URL et formats d'API n'ont pas changé. Les PC déjà associés conservent leurs clés si la base est conservée et le domaine ne change pas.
 
-HTTPS est obligatoire pour une adresse distante ; HTTP est accepté uniquement sur la boucle locale. Le PC Windows et le Mac n'ont pas le même `localhost` : utiliser l'adresse HTTPS du serveur pour le PC de jeu. Le site permet aussi un import manuel GOOD, sans garantie de complétude.
+Sur le site : **Relier Kamera**. Dans l'application : **Connexion**, saisir l'adresse HTTPS et le code temporaire. Après chaque export, le relevé GOOD et son rapport sont envoyés automatiquement ; le site actualise les données toutes les 5 secondes lorsqu'il est visible. Les envois hors ligne restent séparés par site/compte ; utiliser **Réessayer l'envoi** ou redémarrer l'app. Un appareil se révoque depuis **Synchronisation → Dissocier**.
 
-## Politique de mise à jour
+Le PC Windows et le Mac n'ont pas le même `localhost`. À distance, utiliser l'adresse HTTPS du serveur. Un import GOOD manuel reste disponible.
 
-- Personnages : fusion par clé GOOD ; champs lus mis à jour, personnages absents conservés.
-- Matériaux : quantités fournies mises à jour ; ressources absentes conservées.
-- Armes et artéfacts : remplacement seulement si le rapport signale un parcours terminé sans erreur, la catégorie sélectionnée et un compteur du jeu égal au nombre d'objets. Cela ne garantit pas l'exactitude OCR. Les inventaires précédents sont conservés sinon ; un premier relevé partiel peut initialiser un compte vide et est marqué partiel.
-- Les scans en retard ne régressent pas les catégories plus récentes. Un scan reçu deux fois n'est pas appliqué deux fois.
-- Historique : 30 derniers relevés visibles, avec erreurs, personnages incomplets et catégories conservées. Le serveur garde les métadonnées de tous les relevés ; le GOOD brut reste dans les exports locaux de l'application.
-- La synchronisation ne supprime ni compte ni export local. Les données non couvertes par Kamera restent inconnues.
+## Données et sécurité
 
-## Héberger avec HTTPS
+- Personnages fusionnés par clé ; quantités de matériaux actualisées ; absences conservées.
+- Armes/artéfacts remplacés seulement avec parcours terminé sans erreur et compteur concordant. Sinon, inventaire précédent conservé ; un premier relevé peut être marqué partiel.
+- Rejouer un scan ou recevoir un ancien relevé ne fait pas régresser les données récentes.
+- Comptes isolés, mots de passe scrypt, cookies HttpOnly/SameSite, contrôle de l'origine des requêtes et clés d'appareils hachées/révocables.
+- Politique CSP avec nonce unique par rendu pour les scripts et styles Next.js, sans `unsafe-inline` ni `unsafe-eval` en production.
+- Les fichiers SQLite et `.env*` sont exclus de Git, des paquets et du traçage standalone. Le service vise un petit usage personnel : les limites de tentatives d'authentification sont partagées par instance.
 
-Prérequis : Docker Compose, domaine pointant vers le serveur, ports 80/443 accessibles pour Caddy. Depuis le dossier `web` :
+L'exhaustivité du compte et la précision OCR restent à vérifier dans le jeu. Captures et GOOD bruts restent dans les exports locaux de Kamera ; le serveur conserve les données structurées et les métadonnées des scans.
+
+## Hostinger / serveur autonome
+
+L'hébergement doit exécuter **Node.js 24+** avec disque persistant, ou Docker. Un hébergement statique/PHP seul ne suffit pas. Aucun serveur Hostinger n'a été modifié.
+
+Le paquet serveur de la release inclut les sources Next et le ZIP Windows attendu par le Dockerfile. Depuis un clone Git seul, télécharger l'asset `GenshinTracker-KameraFR-0.2.0.zip` dans `dist/` avant le build Docker.
+
+Depuis `web/`, avec domaine pointant vers le serveur et ports 80/443 disponibles :
 
 ```sh
 cp .env.example .env
-# Renseigner le vrai DOMAIN dans .env.
+# Renseigner DOMAIN dans .env.
 docker compose up -d --build
 ```
 
-Le build attend `dist/GenshinTracker-KameraFR-0.2.0.zip` à la racine du projet. Caddy gère HTTPS. La base est dans le volume `tracker-data`, les certificats dans `caddy-data`. Ne pas exposer directement le port Node sur Internet.
+Le Dockerfile compile Next puis utilise sa sortie **standalone**. Le script de build y copie aussi `public` et `.next/static`. Caddy gère HTTPS ; SQLite reste dans le volume `tracker-data`. Ne pas supprimer ce volume lors d'une mise à jour.
 
-Pour un reverse proxy existant, lancer Node avec `HOST=127.0.0.1`, `PORT`, `PUBLIC_URL=https://votre-domaine` et `DATABASE_PATH` selon l'installation. L'origine publique doit correspondre exactement à celle du navigateur. Aucun secret serveur n'est nécessaire dans `.env` ; les sessions et clés d'appareils sont générées aléatoirement.
+Pour une installation Node sans Docker : dossier de travail `web`, installation `npm ci`, build `npm run build`, démarrage `npm start` (port `PORT`, 3000 par défaut). Variables serveur :
 
-Sauvegarder le répertoire SQLite, avec ses fichiers WAL/SHM si présents, après arrêt du service pour une copie cohérente. Protéger les sauvegardes comme les données du compte. Le service utilise un seul processus et une base locale ; ce déploiement vise un petit service personnel.
+| Variable | Usage |
+|---|---|
+| `PUBLIC_URL` | Origine publique exacte, par exemple `https://genshin.example.com` |
+| `DATABASE_PATH` | Chemin absolu vers le SQLite persistant |
+| `DOWNLOAD_PATH` | Chemin absolu vers le ZIP Kamera FR 0.2 |
 
-## Tests et limites
+Le mode `npm start` lance le serveur standalone avec `HOSTNAME` (par défaut `0.0.0.0`) et le port `PORT` (3000 par défaut) ; placer un reverse proxy HTTPS devant et limiter l'accès direct au port. Le mode dev écoute uniquement sur `127.0.0.1`. Le lanceur conserve explicitement le chemin `web/data/tracker.sqlite`, même si le serveur standalone change de dossier de travail.
+
+Sauvegarder la base après arrêt du service pour une copie cohérente. Protéger le dossier de données et ses sauvegardes.
+
+## Tests et livraison
 
 ```sh
+npm run build
 npm test
 ```
 
-Tests HTTP/SQLite : association et usage unique du code, isolation de comptes, révocation, rejouabilité, scans partiels et anciens, validation, origine des requêtes, import et persistance. Le transport de l'application compile, mais DPAPI, interface WinForms et scan réel n'ont pas été exécutés sur Windows.
+Les tests couvrent les règles de synchronisation via le même gestionnaire que Next, puis lancent un vrai serveur Next **en production** avec une base temporaire : sessions et clés d'appareil existantes, pages/ressources, nonces CSP, association, refus d'origine et réception d'un scan Kamera.
 
-Direction visuelle UI/UX Pro Max documentée dans `design-system/genshin-tracker/pages/dashboard.md`. Le navigateur intégré est indisponible et l'accès natif à Safari a été refusé : rendu et responsive non vérifiés visuellement dans cette session. Les portraits disponibles et le catalogue sont locaux ; leurs sources sont dans `public/assets/SOURCES.md`.
+GitHub Actions construit et teste le site, puis produit les paquets Windows et serveur. Les binaires sont dans Releases. Le test ne lance pas Genshin ni l'interface WinForms et ne remplace pas une vérification visuelle du navigateur.
 
-
-## Depuis GitHub vers Hostinger
-
-Le dépôt contient le code du site et de l'application. Les ZIP compilés sont dans **Releases**, produits par `.github/workflows/release.yml` après le push sur main. Pour déployer, le plus direct est de télécharger le paquet **Serveur**, qui contient également le ZIP Windows attendu par le Dockerfile.
-
-Depuis un clone Git seul, créer `dist/` et y placer l'asset `GenshinTracker-KameraFR-0.2.0.zip` téléchargé de la release avant le build Docker. Le moteur exige Node.js 24+ et un répertoire SQLite persistant. Un hébergement limité aux fichiers statiques ou PHP ne suffit pas : le site possède une API et une base de données. Aucun serveur Hostinger n'a été modifié dans cette livraison.
+Sources : [Next Route Handlers](https://nextjs.org/docs/app/api-reference/file-conventions/route), [CSP et nonces](https://nextjs.org/docs/app/guides/content-security-policy), [sortie standalone](https://nextjs.org/docs/app/api-reference/config/next-config-js/output). Portraits et référentiel : `public/assets/SOURCES.md`. Direction UI/UX Pro Max : `design-system/genshin-tracker/pages/dashboard.md` à la racine du dépôt.

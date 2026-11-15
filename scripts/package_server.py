@@ -1,11 +1,13 @@
 """Package the deployable site and current Windows download, excluding runtime data."""
 import hashlib
+import json
 import zipfile
 from pathlib import Path
 root=Path(__file__).resolve().parents[1]
-name='GenshinTracker-Serveur-0.2.0'
+version=json.loads((root/'web/package.json').read_text())['version']
+name=f'GenshinTracker-Serveur-{version}'
 archive=root/'dist'/f'{name}.zip'
-files=[p for p in (root/'web').rglob('*') if p.is_file() and not any(part in {'data','node_modules','.env'} for part in p.relative_to(root/'web').parts)]
+files=[p for p in (root/'web').rglob('*') if p.is_file() and not (p.name.startswith('.env') and p.name!='.env.example') and not any(part in {'data','node_modules','.env','.next','out'} for part in p.relative_to(root/'web').parts)]
 files += [root/'.dockerignore',root/'dist/GenshinTracker-KameraFR-0.2.0.zip']
 with zipfile.ZipFile(archive,'w',zipfile.ZIP_DEFLATED) as out:
     for file in files:out.write(file,Path(name)/file.relative_to(root))
