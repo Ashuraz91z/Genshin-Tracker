@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { guestAccount } from '../lib/guest.mjs';
 import { createApp } from './http-fixture.mjs';
 
 const character=(level=80)=>({key:'KamisatoAyaka',level,constellation:2,ascension:6,talent:{auto:8,skill:8,burst:9}});
@@ -88,4 +89,20 @@ test('SQLite records survive opening a second store on the same database',async 
   assert.equal((await request('/api/register',{method:'POST',data:{name:'Court',password:'12345'}})).status,400);
   assert.equal((await request('/api/register',{method:'POST',data:{name:'SixChars',password:'123456'}})).status,200);
   assert.equal((await request('/api/login',{method:'POST',data:{name:'SixChars',password:'123456'}})).status,200);
+});
+
+test('guest GOOD import validates all categories locally and replaces rather than merges',()=>{
+  const good=scan('guest-test').good;
+  const local=guestAccount(good);
+  assert.equal(local.guest,true);assert.deepEqual(local.devices,[]);
+  assert.equal(local.data.characters[0].key,'KamisatoAyaka');
+  assert.equal(local.data.weapons[0].key,'DullBlade');
+  assert.equal(local.data.artifacts[0].mainStatKey,'hp');
+  assert.equal(local.data.materials.Mora,123456);
+  assert.equal(local.data.quality.weapons,'first_partial');
+  assert.deepEqual(guestAccount({format:'GOOD',version:2,materials:{Mora:2}}).data.characters,[]);
+  assert.throws(()=>guestAccount({format:'invalid',version:2,materials:{}}),/GOOD/);
+  assert.throws(()=>guestAccount({...good,characters:[{...character(),level:-1}]}),/Personnage/);
+  assert.throws(()=>guestAccount({...good,materials:JSON.parse('{"__proto__":1}')}),/Quantité/);
+  assert.deepEqual(guestAccount(JSON.parse(JSON.stringify(good)),local.data.updatedAt).data,local.data);
 });

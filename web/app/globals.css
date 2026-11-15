@@ -12,3 +12,5 @@ input::placeholder{color:#8f9fb6;opacity:1}
 .characters-grid>.empty-state{grid-column:1/-1;min-height:300px}
 
 .auth-form .password-warning{color:var(--gold);font-size:12px;line-height:1.6;margin:0 0 18px}
+
+.guest-entry{border-top:1px solid var(--border);margin-top:24px;padding-top:20px}.auth-form .guest-entry p{font-size:12px;line-height:1.6;color:var(--muted);margin:12px 0 0}.guest-banner{padding:16px 20px;border:1px solid var(--border);border-radius:12px;margin-bottom:24px;background:var(--panel)}.guest-banner p{font-size:13px;line-height:1.6;margin-bottom:10px}

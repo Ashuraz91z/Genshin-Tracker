@@ -81,3 +81,7 @@ Les tests couvrent les règles de synchronisation via le même gestionnaire que 
 GitHub Actions construit et teste le site, puis produit les paquets Windows et serveur. Les binaires sont dans Releases. Le test ne lance pas Genshin ni l'interface WinForms et ne remplace pas une vérification visuelle du navigateur.
 
 Sources : [Next Route Handlers](https://nextjs.org/docs/app/api-reference/file-conventions/route), [CSP et nonces](https://nextjs.org/docs/app/guides/content-security-policy), [sortie standalone](https://nextjs.org/docs/app/api-reference/config/next-config-js/output). Portraits et référentiel : `public/assets/SOURCES.md`. Direction UI/UX Pro Max : `design-system/genshin-tracker/pages/dashboard.md` à la racine du dépôt.
+
+## Consulter sans compte
+
+Sur l’écran d’accueil, **Importer sans compte** ouvre un export GOOD `.json` (16 Mo maximum). La validation et l’affichage s’effectuent dans le navigateur : aucun contenu du fichier n’est envoyé au serveur. La session locale utilise `sessionStorage`, reste disponible après navigation/rechargement et peut être effacée via le profil visiteur. Le navigateur peut restaurer une session fermée selon ses réglages ; utilisez **Effacer la session visiteur** sur un appareil partagé. Un nouvel import remplace la vue locale. Les scans restent non vérifiés ; ce mode ne prouve pas un inventaire complet. L’association Kamera et la synchronisation serveur nécessitent un compte.
