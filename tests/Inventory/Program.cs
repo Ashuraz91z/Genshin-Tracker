@@ -79,3 +79,20 @@ var nested=new AggregateException(new ArgumentOutOfRangeException("index","line 
 string explained=OcrFailure.Describe(nested);
 if(!explained.Contains("ArgumentOutOfRangeException")||!explained.Contains("line gap"))throw new Exception("OCR aggregate hid its actionable cause.");
 Console.WriteLine("Artifact export rejects invalid keys/values; aggregate OCR errors retain the exact exception.");
+
+var ownerParser=assembly.GetType("InventoryKamera.FrenchRecognition",true).GetMethod("ReadEquippedCharacter",nonPublic);
+var reference=Newtonsoft.Json.Linq.JObject.Parse(System.IO.File.ReadAllText("InventoryKamera-FR/InventoryKamera/inventorylists/characters.json"));
+Func<string,string> ownerLookup=name=>(string)reference[name]?["GOOD"];
+string kokomi=(string)ownerParser.Invoke(null,new object[]{"Équipé par Sangonomiya Kokomi",ownerLookup});
+if(kokomi!="SangonomiyaKokomi")throw new Exception("Real character reference did not resolve Kokomi.");
+var linkedWeapon=new Weapon("PrototypeAmber",70,false,1,false,kokomi,1,4);
+var linkedArtifact=new Artifact("OceanHuedClam",5,20,"flower","hp",validRolls,kokomi);
+foreach(object item in new object[]{linkedWeapon,linkedArtifact})
+ if((string)Newtonsoft.Json.Linq.JObject.FromObject(item)["location"]!="SangonomiyaKokomi")throw new Exception("Equipped owner was lost during GOOD serialization.");
+Console.WriteLine("Real Kokomi reference resolves the French equipment label and remains in weapon/artifact GOOD location.");
+
+string skirk=(string)ownerParser.Invoke(null,new object[]{"Équipé par Skirk",ownerLookup});
+var skirkCirclet=new Artifact("FinaleOfTheDeepGalleries",5,20,"circlet","critRate_",validRolls,skirk,1,true);
+if(skirk!="Skirk"||(string)Newtonsoft.Json.Linq.JObject.FromObject(skirkCirclet)["location"]!="Skirk")
+ throw new Exception("The artifact1 Skirk owner was lost during French parsing or GOOD export.");
+Console.WriteLine("Real artifact1 Skirk label resolves and remains in GOOD location.");

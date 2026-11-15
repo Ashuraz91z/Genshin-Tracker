@@ -263,7 +263,6 @@ namespace InventoryKamera
 				});
 				var taskLevel = Task.Run(() => level = ScanLevel(bm[w_level], ref ascended));
 				var taskRefinement = Task.Run(() => refinementLevel = ScanRefinement(bm[w_refinement]));
-				var taskEquipped = Task.Run(() => equippedCharacter = ScanEquippedCharacter(bm[w_equippedCharacter]));
 
 				tasks.Add(taskName);
 				tasks.Add(taskLevel);
@@ -271,7 +270,7 @@ namespace InventoryKamera
 
 				if (b_equipped)
 				{
-					tasks.Add(taskEquipped);
+					tasks.Add(Task.Run(() => equippedCharacter = ScanEquippedCharacter(bm[w_equippedCharacter])));
 				}
 
 				await Task.WhenAll(tasks.ToArray());
@@ -350,29 +349,15 @@ namespace InventoryKamera
 		}
 
 		public string ScanEquippedCharacter(Bitmap bm)
-		{
-			Bitmap n = GenshinProcesor.ConvertToGrayscale(bm);
-			GenshinProcesor.SetContrast(60.0, ref n);
-
-			string extractedString = GenshinProcesor.AnalyzeText(n);
-			n.Dispose();
-
-			if (extractedString != "")
-			{
-				var regexItem = new Regex(@"Equipped\s*:");
-				if (regexItem.IsMatch(extractedString))
-				{
-					var name = extractedString.Split(':')[1];
-
-					name = Regex.Replace(name, @"[\W]", string.Empty).ToLower();
-					name = GenshinProcesor.FindClosestCharacterName(name);
-
-					return name;
-				}
-			}
-			// artifact has no equipped character
-			return null;
-		}
+        {
+            using (Bitmap image = GenshinProcesor.ConvertToGrayscale(bm))
+            {
+                Bitmap adjusted = image;
+                GenshinProcesor.SetContrast(60.0, ref adjusted);
+                return FrenchRecognition.ReadEquippedCharacter(GenshinProcesor.AnalyzeText(adjusted),
+                    name => GenshinProcesor.FindClosestCharacterName(name));
+            }
+        }
 
 		#endregion Task Methods
 	}

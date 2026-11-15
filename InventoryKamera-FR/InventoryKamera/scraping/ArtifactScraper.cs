@@ -435,26 +435,15 @@ namespace InventoryKamera
         }
 
         private static string ScanArtifactEquippedCharacter(Bitmap bm)
-		{
-			Bitmap n = GenshinProcesor.ConvertToGrayscale(bm);
-			GenshinProcesor.SetContrast(60.0, ref n);
-
-			string equippedCharacter = GenshinProcesor.AnalyzeText(n).ToLower();
-			n.Dispose();
-
-			if (equippedCharacter != "")
-			{
-				if (equippedCharacter.Contains("equipped") && equippedCharacter.Contains(":"))
-				{
-					equippedCharacter = Regex.Replace(equippedCharacter.Split(':')[1], @"[\W]", string.Empty);
-					equippedCharacter = GenshinProcesor.FindClosestCharacterName(equippedCharacter);
-
-					return equippedCharacter;
-				}
-			}
-			// artifact has no equipped character
-			return null;
-		}
+        {
+            using (Bitmap image = GenshinProcesor.ConvertToGrayscale(bm))
+            {
+                Bitmap adjusted = image;
+                GenshinProcesor.SetContrast(60.0, ref adjusted);
+                return FrenchRecognition.ReadEquippedCharacter(GenshinProcesor.AnalyzeText(adjusted),
+                    name => GenshinProcesor.FindClosestCharacterName(name));
+            }
+        }
 
 		private static string ScanArtifactSet(Bitmap itemName)
         {

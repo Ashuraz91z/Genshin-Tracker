@@ -48,3 +48,29 @@ if(broken.Count!=2||broken.Any(s=>s.Key!=""||s.Value!=-1)||failures.Count!=2)thr
 var setStop=FrenchRecognition.ReadArtifactSubstats("hp+239\n2-piece: +18% ATK",Map,failures.Add);
 if(setStop.Count!=1)throw new Exception("Set bonuses were parsed as substats.");
 Console.WriteLine("Artifact OCR regressions: non-stat line gaps, inactive rolls, French decimals, truncated suffixes and set boundaries passed.");
+
+var equipmentNames = new System.Collections.Generic.Dictionary<string,string> {
+    {"sangonomiyakokomi","SangonomiyaKokomi"}, {"skirk","Skirk"}, {"raidenshogun","RaidenShogun"}, {"wanderer","Wanderer"}
+};
+string FindEquipmentOwner(string name) => equipmentNames.TryGetValue(name,out var key) ? key : null;
+foreach (var sample in new[] {
+    ("Équipé par Sangonomiya Kokomi", "SangonomiyaKokomi"),
+    ("Équipé par Skirk", "Skirk"),
+    ("Equipped: Skirk", "Skirk"),
+    ("Équipé par : Sangonomiya Kokomi", "SangonomiyaKokomi"),
+    ("  EQUIPE PAR\u00a0Sangonomiya\nKokomi  ", "SangonomiyaKokomi"),
+    ("Equipped Sangonomiya Kokomi", "SangonomiyaKokomi"),
+    ("Equipped: Sangonomiya Kokomi", "SangonomiyaKokomi"),
+    ("Equipped : Raiden Shogun", "RaidenShogun"),
+    ("Équipé par Shogun Raiden", "RaidenShogun"),
+    ("Équipé par Nomade", "Wanderer"),
+    ("Équipé : Nomade", "Wanderer")
+}) {
+    var owner=FrenchRecognition.ReadEquippedCharacter(sample.Item1,FindEquipmentOwner);
+    if(owner!=sample.Item2)throw new Exception("Equipment owner failed: "+sample.Item1+" => "+owner);
+    if(FrenchRecognition.ReadEquippedCharacter(FrenchRecognition.ForScanner(sample.Item1),FindEquipmentOwner)!=owner)
+        throw new Exception("Pre-normalized OCR changed the equipment owner.");
+}
+foreach (var text in new[] {null,"","Non équipé","Non équipé par Sangonomiya Kokomi","Sangonomiya Kokomi","Équipé par", "Equipped:","Équipé par inconnu","Équipé par Sangonomiya Kokomi 123"})
+    if(FrenchRecognition.ReadEquippedCharacter(text,FindEquipmentOwner)!=null)throw new Exception("Guessed owner: "+text);
+Console.WriteLine("Equipment regressions passed: real Kokomi label without colon, French/English variants, wrapped OCR, aliases and absent/unknown owners.");

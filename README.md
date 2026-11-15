@@ -4,7 +4,7 @@ Un compagnon Windows et un site personnel pour retrouver les données de son com
 
 ## Utiliser l'application Windows
 
-1. Extraire **tout** `GenshinTracker-KameraFR-0.4.0.zip` dans un dossier où vous pouvez écrire. Garder les DLL, `tessdata` et `inventorylists` à côté de `InventoryKamera.FR.exe`.
+1. Extraire **tout** `GenshinTracker-KameraFR-0.4.1.zip` dans un dossier où vous pouvez écrire. Garder les DLL, `tessdata` et `inventorylists` à côté de `InventoryKamera.FR.exe`.
 2. Lancer l'exécutable. Prérequis hérités : **.NET Framework 4.7.2+** et **Visual C++ 2015–2022**. Le manifeste demande les droits administrateur pour piloter le jeu. Exécutable non signé.
 3. Utiliser Genshin en **français**, clavier/souris, format **16:9 ou 16:10**, HDR désactivé. Les touches B/C/1 peuvent être configurées dans Options.
 4. Dans **Options du scan**, préciser le nom personnalisé du Voyageur et du Nomade si nécessaire, ainsi que le dossier des exports.
@@ -112,3 +112,9 @@ Le parseur ne confond plus le numéro de ligne OCR avec l’index d’une sous-s
 Une exception de traitement est rapportée avec type de pièce, numéro, exception interne et pile d’appel ; la capture et le diagnostic restent sous `logging/ocr-errors/`. La pièce fautive est ignorée et le worker poursuit les suivantes. Les bitmaps sont libérés dans finally. Une tâche de lecture de personnage équipé n’est plus lancée hors du groupe attendu lorsque la pièce n’est pas équipée.
 
 Le serveur peut reprendre les anciens fichiers contenant des artéfacts invalides : les pièces refusées sont exclues avec leur motif dans le rapport, et les autres catégories/pièces valides sont traitées. Un inventaire existant n’est pas remplacé si des pièces ont été rejetées, même avec l’option de remplacement manuel. Le relevé reste partiel/non vérifié ; comparer les quantités à celles du jeu. Le HTTP 400 « Statistiques secondaires invalides » n’est pas un échec d’authentification.
+
+### Équipements du jeu français — Kamera FR 0.4.1
+
+- La lecture du propriétaire accepte désormais « Équipé par Sangonomiya Kokomi » sans deux-points, pour les armes comme pour les artéfacts ; les libellés avec deux-points restent reconnus.
+- Garder « Lier les armes » et « Lier les artéfacts » cochés. Un ancien GOOD dont `location` est vide ne permet pas de retrouver rétroactivement les propriétaires : refaire uniquement les catégories Armes / Artéfacts suffit.
+- Extraire le ZIP 0.4.1 complet. Les données du compte sur le site et l’association de l’appareil sont conservées. Le correctif ne change pas la base de données.

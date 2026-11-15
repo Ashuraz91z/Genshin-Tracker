@@ -52,6 +52,16 @@ namespace InventoryKamera
                 .Replace('’', '\'').Replace('œ', 'o').Replace('\u00a0', ' ').Replace('\u202f', ' ');
         }
 
+        internal static string ReadEquippedCharacter(string text, Func<string,string> findCharacter)
+        {
+            // French equipment labels omit the colon used by the English UI.
+            var match = Regex.Match(ForScanner(text),
+                @"^\s*equipped(?:\s*:\s*|\s+)([\p{L}][\p{L}\s'.-]*)\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+            if (!match.Success) return null;
+            string name = Regex.Replace(match.Groups[1].Value, @"[^\p{L}]", "").ToLowerInvariant();
+            return findCharacter(name);
+        }
+
         internal static bool TryReadInventoryCount(string text, out int count)
         {
             count = 0;
