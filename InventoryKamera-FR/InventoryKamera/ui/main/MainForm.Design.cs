@@ -10,7 +10,7 @@ namespace InventoryKamera
         private static readonly Color Night = Color.FromArgb(11,17,32), Surface = Color.FromArgb(18,28,46),
             Raised = Color.FromArgb(25,37,58), Ink = Color.FromArgb(237,242,247), Muted = Color.FromArgb(166,179,198),
             Gold = Color.FromArgb(231,191,124), Mint = Color.FromArgb(126,215,189);
-        private Label syncStatusLabel, syncProgressLabel;
+        private Label syncStatusLabel, syncProgressLabel, localScanHint;
         private TextBox siteAddress, pairingCode;
 
         private static Label Caption(string text, int size = 10, Color? color = null)
@@ -46,15 +46,15 @@ namespace InventoryKamera
             SuspendLayout();
             Style(this);
             Controls.Clear();
-            BackColor = Night; Font = new Font("Segoe UI",10); MinimumSize = new Size(1024,760); Size = new Size(1220,870);
+            BackColor = Night; Font = new Font("Segoe UI",10); MinimumSize = new Size(1080,760); Size = new Size(1280,900);
             StartPosition = FormStartPosition.CenterScreen; FormBorderStyle = FormBorderStyle.Sizable; MaximizeBox = true;
             var root = new TableLayoutPanel { Dock = DockStyle.Fill, BackColor = Night, Padding = new Padding(26,12,26,20), ColumnCount = 1, RowCount = 4 };
             root.RowStyles.Add(new RowStyle(SizeType.Absolute,28)); root.RowStyles.Add(new RowStyle(SizeType.Absolute,105));
             root.RowStyles.Add(new RowStyle(SizeType.Percent,100)); root.RowStyles.Add(new RowStyle(SizeType.Absolute,68));
             menuStrip1.Dock = DockStyle.Fill; menuStrip1.BackColor = Night; menuStrip1.ForeColor = Muted; root.Controls.Add(menuStrip1,0,0);
             var header = new Panel { Dock = DockStyle.Fill, BackColor = Night, Padding = new Padding(0,10,0,0) };
-            var title = Caption("GENSHIN TRACKER",23,Gold); title.BackColor = Night;
-            var subtitle = Caption("KAMERA FR  /  Votre aventure, une vue d’ensemble.",10,Muted); subtitle.BackColor=Night; subtitle.Top=54;
+            var title = Caption("Kamera FR",25,Ink); title.BackColor = Night;
+            var subtitle = Caption("SCANNER WINDOWS  /  VERSION 0.4  /  Genshin Tracker",10,Muted); subtitle.BackColor=Night; subtitle.Top=54;
             title.Dock = DockStyle.None; title.SetBounds(0,6,600,42); subtitle.Dock=DockStyle.None; subtitle.SetBounds(2,52,650,28);
             var connect = ActionButton("Connexion au site"); connect.Anchor=AnchorStyles.Top|AnchorStyles.Right;connect.Location=new Point(870,16);
             header.Controls.AddRange(new Control[]{title,subtitle,connect}); header.Resize+=(s,e)=>connect.Left=header.ClientSize.Width-connect.Width;
@@ -62,7 +62,7 @@ namespace InventoryKamera
             var body = new TableLayoutPanel {Dock=DockStyle.Fill,ColumnCount=2,RowCount=1,BackColor=Night};
             body.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute,280));body.ColumnStyles.Add(new ColumnStyle(SizeType.Percent,100));root.Controls.Add(body,0,2);
             var settings = Stack(); body.Controls.Add(settings,0,0);
-            foreach(var label in new[]{Caption("01  /  COLLECTE",9,Gold),Caption("Préparer le scan",19),Caption("Choisissez les données à relever.",9,Muted)}) {label.Width=220;settings.Controls.Add(label);}
+            foreach(var label in new[]{Caption("SCAN LOCAL",9,Gold),Caption("Préparer le scan",19),Caption("Un scan peut viser une seule catégorie.",9,Muted)}) {label.Width=220;settings.Controls.Add(label);}
             foreach(var check in new[]{Characters_CheckBox,Weapons_CheckBox,Artifacts_Checkbox,CharDevItems_CheckBox,Materials_CheckBox})
             {check.AutoSize=false;check.Width=220;check.Height=36;check.Margin=new Padding(0,2,0,2);settings.Controls.Add(check);}
             var delayTitle=Caption("Vitesse de navigation",10,Muted);delayTitle.Width=220;delayTitle.Margin=new Padding(0,18,0,0);settings.Controls.Add(delayTitle);
@@ -70,8 +70,10 @@ namespace InventoryKamera
             var delayHelp=Caption("Rapide           Modéré           Lent",8,Muted);delayHelp.Width=220;settings.Controls.Add(delayHelp);
             var launch=StartScan_Button;launch.Width=220;launch.Height=48;launch.FlatStyle=FlatStyle.Flat;launch.BackColor=Gold;launch.ForeColor=Night;launch.Font=new Font("Segoe UI",11,FontStyle.Bold);launch.Margin=new Padding(0,18,0,6);settings.Controls.Add(launch);
             var stop=Caption("ENTRÉE pour arrêter le scan",9,Muted);stop.Width=220;settings.Controls.Add(stop);
-            var options=Caption("Options détaillées dans les onglets.",8,Muted);options.Width=220;settings.Controls.Add(options);
-            var content=new TableLayoutPanel{Dock=DockStyle.Fill,RowCount=2,ColumnCount=1,BackColor=Night};content.RowStyles.Add(new RowStyle(SizeType.Absolute,100));content.RowStyles.Add(new RowStyle(SizeType.Percent,100));body.Controls.Add(content,1,0);
+            var options=Caption("Avant de commencer",11,Ink);options.Width=220;options.Margin=new Padding(0,20,0,4);settings.Controls.Add(options);
+            var checklist=Caption("1. Ouvrez le menu Paimon.\n2. Lancez le scan puis Alt+Tab.\n3. Gardez Genshin au premier plan.\n\nJeu en français • HDR désactivé\nFormat 16:9 ou 16:10",10,Muted);checklist.Width=220;checklist.Height=180;settings.Controls.Add(checklist);
+            var content=new TableLayoutPanel{Dock=DockStyle.Fill,RowCount=3,ColumnCount=1,BackColor=Night};content.RowStyles.Add(new RowStyle(SizeType.Absolute,62));content.RowStyles.Add(new RowStyle(SizeType.Absolute,110));content.RowStyles.Add(new RowStyle(SizeType.Percent,100));body.Controls.Add(content,1,0);
+            localScanHint=Caption("Aucun scan effectué dans cette session. Les compteurs ci-dessous concernent uniquement ce PC.\nLes données enregistrées sur le site sont disponibles dans Mon compte.",10,Muted);localScanHint.Dock=DockStyle.Fill;content.Controls.Add(localScanHint,0,0);
             var stats = new TableLayoutPanel {Dock=DockStyle.Fill,ColumnCount=3,BackColor=Night,Margin=new Padding(0,0,0,16)};
             foreach(var item in new[]{new{Title="PERSONNAGES",Value=CharactersScanned_Label,Max=(Label)null},new{Title="ARMES",Value=WeaponsScannedCount_Label,Max=WeaponsMax_Labell},new{Title="ARTÉFACTS",Value=ArtifactsScanned_Label,Max=ArtifactsMax_Label}})
             {
@@ -79,15 +81,15 @@ namespace InventoryKamera
                 var label=Caption(item.Title,8,Muted);label.Height=24;item.Value.Dock=DockStyle.Fill;item.Value.AutoSize=false;item.Value.Font=new Font("Segoe UI",25);item.Value.ForeColor=Gold;item.Value.BackColor=Surface;
                 card.Controls.Add(item.Value);if(item.Max!=null){item.Max.Dock=DockStyle.Right;item.Max.AutoSize=false;item.Max.Width=50;item.Max.ForeColor=Muted;item.Max.BackColor=Surface;item.Max.TextAlign=ContentAlignment.BottomRight;card.Controls.Add(item.Max);}card.Controls.Add(label);stats.Controls.Add(card);
             }
-            content.Controls.Add(stats,0,0);
-            var tabs=new TabControl{Dock=DockStyle.Fill,Font=new Font("Segoe UI",10),Padding=new Point(18,10),DrawMode=TabDrawMode.OwnerDrawFixed,SizeMode=TabSizeMode.Fixed,ItemSize=new Size(155,42)};
+            content.Controls.Add(stats,0,1);
+            var tabs=new TabControl{Dock=DockStyle.Fill,Font=new Font("Segoe UI",10),Padding=new Point(18,10),DrawMode=TabDrawMode.OwnerDrawFixed,SizeMode=TabSizeMode.Fixed,Multiline=true,ItemSize=new Size(132,42)};
             tabs.DrawItem+=(sender,e)=>{bool selected=e.Index==tabs.SelectedIndex;using(var brush=new SolidBrush(selected?Raised:Surface))e.Graphics.FillRectangle(brush,e.Bounds);TextRenderer.DrawText(e.Graphics,tabs.TabPages[e.Index].Text,tabs.Font,e.Bounds,selected?Gold:Muted,TextFormatFlags.HorizontalCenter|TextFormatFlags.VerticalCenter);if(selected)using(var pen=new Pen(Gold,2))e.Graphics.DrawLine(pen,e.Bounds.Left+12,e.Bounds.Bottom-2,e.Bounds.Right-12,e.Bounds.Bottom-2);if((e.State&DrawItemState.Focus)!=0)e.DrawFocusRectangle();};
-            var live=new TabPage("Lecture en direct"){BackColor=Surface,Padding=new Padding(18)};
-            var errors=new TabPage("Journal et erreurs"){BackColor=Surface,Padding=new Padding(18)};
-            var optionsPage=new TabPage("Options du scan"){BackColor=Surface,Padding=new Padding(18)};
+            var live=new TabPage("Scan en direct"){BackColor=Surface,Padding=new Padding(18)};
+            var errors=new TabPage("Journal"){BackColor=Surface,Padding=new Padding(18)};
+            var optionsPage=new TabPage("Options"){BackColor=Surface,Padding=new Padding(18)};
             var connection=new TabPage("Connexion"){BackColor=Surface,Padding=new Padding(22)};
             var accountPage = BuildAccountPage();
-            tabs.TabPages.AddRange(new[]{live,errors,optionsPage,connection,accountPage});content.Controls.Add(tabs,0,1);connect.Click+=(s,e)=>tabs.SelectedTab=connection;
+            tabs.TabPages.AddRange(new[]{live,errors,optionsPage,connection,accountPage});content.Controls.Add(tabs,0,2);connect.Click+=(s,e)=>tabs.SelectedTab=connection;
             var liveGrid=new TableLayoutPanel{Dock=DockStyle.Fill,ColumnCount=2,RowCount=3,BackColor=Surface};liveGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent,45));liveGrid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent,55));
             liveGrid.RowStyles.Add(new RowStyle(SizeType.Absolute,34));liveGrid.RowStyles.Add(new RowStyle(SizeType.Percent,52));liveGrid.RowStyles.Add(new RowStyle(SizeType.Percent,48));
             liveGrid.Controls.Add(Caption("Équipement en cours",10,Muted),0,0);liveGrid.Controls.Add(Caption("Personnage et aptitudes",10,Muted),1,0);
@@ -97,13 +99,21 @@ namespace InventoryKamera
             int column=0;foreach(var picture in new[]{CharacterTalent1_PictureBox,CharacterTalent2_PictureBox,CharacterTalent3_PictureBox}){picture.Dock=DockStyle.Fill;picture.SizeMode=PictureBoxSizeMode.Zoom;samples.Controls.Add(picture,column++,2);}liveGrid.Controls.Add(samples,1,1);
             foreach(var text in new[]{ArtifactOutput_TextBox,CharacterOutput_TextBox}){text.Dock=DockStyle.Fill;text.Multiline=true;text.ScrollBars=ScrollBars.Vertical;text.Font=new Font("Consolas",9);text.ReadOnly=true;text.Margin=new Padding(0,0,12,0);}
             liveGrid.Controls.Add(ArtifactOutput_TextBox,0,2);liveGrid.Controls.Add(CharacterOutput_TextBox,1,2);live.Controls.Add(liveGrid);
-            ErrorLog_TextBox.Dock=DockStyle.Fill;ErrorLog_TextBox.Multiline=true;ErrorLog_TextBox.ScrollBars=ScrollBars.Vertical;ErrorLog_TextBox.Font=new Font("Consolas",9);ErrorLog_TextBox.ReadOnly=true;
-            var errorTitle=Caption("Étapes du scan, exports et réponses du site, avec heure. Les erreurs restent dans le rapport.",10,Muted);errors.Controls.Add(ErrorLog_TextBox);errors.Controls.Add(errorTitle);
+            ErrorLog_TextBox.Dock=DockStyle.Fill;ErrorLog_TextBox.Multiline=true;ErrorLog_TextBox.ScrollBars=ScrollBars.Vertical;ErrorLog_TextBox.Font=new Font("Consolas",10);ErrorLog_TextBox.ReadOnly=true;ErrorLog_TextBox.WordWrap=false;ErrorLog_TextBox.ScrollBars=ScrollBars.Both;ErrorLog_TextBox.BackColor=Night;
+            var errorTitle=Caption("Journal du scanner",18,Ink);errorTitle.Height=42;
+            var journalHelp=Caption("Scan, OCR et synchronisation • les erreurs sont conservées dans le rapport.",10,Muted);journalHelp.Height=36;
+            var journalActions=new FlowLayoutPanel{Dock=DockStyle.Bottom,Height=60,BackColor=Surface,WrapContents=false};
+            var copyJournal=ActionButton("Copier le journal");copyJournal.Click+=(s,e)=>{if(ErrorLog_TextBox.TextLength>0){try{Clipboard.SetText(ErrorLog_TextBox.Text);syncProgressLabel.Text="Journal copié dans le presse-papiers.";}catch(System.Runtime.InteropServices.ExternalException){syncProgressLabel.Text="Presse-papiers occupé. Réessayez dans un instant.";}}};
+            var openJournal=ActionButton("Ouvrir les logs");openJournal.Click+=(s,e)=>{try{System.Diagnostics.Process.Start(System.IO.Path.GetFullPath("logging"));}catch(Exception ex){UserInterface.Trace("Impossible d’ouvrir les logs : "+ex.Message);}};
+            journalActions.Controls.AddRange(new Control[]{copyJournal,openJournal});errors.Controls.Add(ErrorLog_TextBox);errors.Controls.Add(journalActions);errors.Controls.Add(journalHelp);errors.Controls.Add(errorTitle);
             var optionsStack=Stack(0);optionsStack.Margin=new Padding(0);optionsPage.Controls.Add(optionsStack);
+            AddSection(optionsStack,"01  /  ÉQUIPEMENTS", "Les filtres limitent les pièces relevées ; les autres données du compte sont conservées.");
             AddSetting(optionsStack,"Rareté minimale des armes",WeaponRarityControl);AddSetting(optionsStack,"Rareté minimale des artéfacts",ArtifactRarityControl);
             AddSetting(optionsStack,"Niveau minimal des armes",MinimumWeaponLevelControl);AddSetting(optionsStack,"Niveau minimal des artéfacts",numericUpDown1);
+            AddSection(optionsStack,"02  /  PERSONNAGES", "Utilisez les noms personnalisés visibles dans votre jeu.");
             AddSetting(optionsStack,"Nom du Voyageur",travelerNameTextBox);AddSetting(optionsStack,"Nom personnalisé du Nomade",wandererNameTextBox);
             foreach(var check in new[]{EquipWeaponsCheckBox,EquipArtifactsCheckBox,LogScreenshotsCheckBox}){check.AutoSize=true;check.Margin=new Padding(0,12,0,0);optionsStack.Controls.Add(check);}
+            AddSection(optionsStack,"03  /  EXPORTS ET DIAGNOSTIC", "Chaque scan produit un fichier GOOD et son rapport de lecture.");
             AddSetting(optionsStack,"Dossier des exports",OutputPath_TextBox);FileSelectButton.Width=130;FileSelectButton.Height=36;optionsStack.Controls.Add(FileSelectButton);
             var exportButton=ActionButton("Ouvrir les exports");exportButton.Click+=ExportFolderMenuItem_Click;optionsStack.Controls.Add(exportButton);
             ManualExportButton.Width=200;ManualExportButton.Height=44;ManualExportButton.FlatStyle=FlatStyle.Flat;ManualExportButton.Text="Exporter vers Optimizer";optionsStack.Controls.Add(ManualExportButton);
@@ -141,10 +151,15 @@ namespace InventoryKamera
             var footer=new Panel{Dock=DockStyle.Fill,BackColor=Night,Padding=new Padding(0,15,0,0)};ProgramStatus_Label.AutoSize=false;ProgramStatus_Label.Dock=DockStyle.Top;ProgramStatus_Label.Height=30;ProgramStatus_Label.BackColor=Night;ProgramStatus_Label.Font=new Font("Segoe UI",11);syncProgressLabel=Caption("Les envois et accusés de réception apparaîtront ici.",9,Muted);syncProgressLabel.Dock=DockStyle.Bottom;syncProgressLabel.Height=22;footer.Controls.Add(syncProgressLabel);footer.Controls.Add(ProgramStatus_Label);root.Controls.Add(footer,0,3);
             Controls.Add(root);ResumeLayout(true);
         }
+        private static void AddSection(FlowLayoutPanel panel,string title,string help)
+        {
+            var heading=Caption(title,11,Gold);heading.Width=520;heading.Margin=new Padding(0,20,0,0);panel.Controls.Add(heading);
+            var description=Caption(help,10,Muted);description.Width=520;description.Height=48;panel.Controls.Add(description);
+        }
         private static void AddSetting(FlowLayoutPanel panel,string name,Control control)
         {
             var label=Caption(name,9,Muted);label.Width=560;label.Margin=new Padding(0,14,0,2);panel.Controls.Add(label);
-            control.Margin=new Padding(0,0,0,3);control.MinimumSize=new Size(0,28);control.Width=control is NumericUpDown?100:560;panel.Controls.Add(control);
+            control.Margin=new Padding(0,0,0,3);control.MinimumSize=new Size(0,28);control.Width=control is NumericUpDown?120:520;panel.Controls.Add(control);
         }
     }
 }

@@ -56,6 +56,11 @@ namespace InventoryKamera
             accountCharacters = new DataGridView { Dock = DockStyle.Fill, ReadOnly = true, AllowUserToAddRows = false, AllowUserToDeleteRows = false,
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill, RowHeadersVisible = false, BackgroundColor = Night,
                 BorderStyle = BorderStyle.None, EnableHeadersVisualStyles = false };
+            accountCharacters.RowTemplate.Height=36;
+            accountCharacters.ColumnHeadersHeight=40;accountCharacters.ColumnHeadersHeightSizeMode=DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            accountCharacters.GridColor=Raised;accountCharacters.CellBorderStyle=DataGridViewCellBorderStyle.SingleHorizontal;
+            accountCharacters.AlternatingRowsDefaultCellStyle.BackColor=Raised;
+            accountCharacters.DefaultCellStyle.SelectionBackColor=Color.FromArgb(50,70,95);accountCharacters.DefaultCellStyle.SelectionForeColor=Ink;
             accountCharacters.DefaultCellStyle.BackColor = Surface; accountCharacters.DefaultCellStyle.ForeColor = Ink;
             accountCharacters.ColumnHeadersDefaultCellStyle.BackColor = Raised; accountCharacters.ColumnHeadersDefaultCellStyle.ForeColor = Gold;
             foreach (var title in new[] { "Personnage (GOOD)", "Niveau", "Constellation", "Attaque", "Compétence", "Déchaînement" }) accountCharacters.Columns.Add(title,title);

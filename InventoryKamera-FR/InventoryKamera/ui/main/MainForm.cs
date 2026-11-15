@@ -212,6 +212,7 @@ namespace InventoryKamera
             GC.Collect();
 
             UserInterface.ResetAll();
+            localScanHint.Text="Scan de cette session • les compteurs ci-dessous affichent uniquement les lectures locales.\nLes données déjà reçues du site restent consultables dans Mon compte.";
 
             UserInterface.SetProgramStatus("Scanning");
             Logger.Info("Starting scan");

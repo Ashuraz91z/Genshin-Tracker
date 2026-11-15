@@ -256,8 +256,8 @@ namespace InventoryKamera
 			MethodInvoker statusAction = delegate
 			{
 				programStatus_Label.Text = status;
-				programStatus_Label.ForeColor = ok ? Color.Green : Color.Red;
-				programStatus_Label.Font = new Font(programStatus_Label.Font.FontFamily, 15);
+				programStatus_Label.ForeColor = ok ? Color.FromArgb(126,215,189) : Color.Salmon;
+				programStatus_Label.Font = new Font(programStatus_Label.Font.FontFamily, 11);
 				programStatus_Label.Refresh();
 			};
 

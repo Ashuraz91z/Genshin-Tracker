@@ -4,7 +4,7 @@ Un compagnon Windows et un site personnel pour retrouver les données de son com
 
 ## Utiliser l'application Windows
 
-1. Extraire **tout** `GenshinTracker-KameraFR-0.3.4.zip` dans un dossier où vous pouvez écrire. Garder les DLL, `tessdata` et `inventorylists` à côté de `InventoryKamera.FR.exe`.
+1. Extraire **tout** `GenshinTracker-KameraFR-0.4.0.zip` dans un dossier où vous pouvez écrire. Garder les DLL, `tessdata` et `inventorylists` à côté de `InventoryKamera.FR.exe`.
 2. Lancer l'exécutable. Prérequis hérités : **.NET Framework 4.7.2+** et **Visual C++ 2015–2022**. Le manifeste demande les droits administrateur pour piloter le jeu. Exécutable non signé.
 3. Utiliser Genshin en **français**, clavier/souris, format **16:9 ou 16:10**, HDR désactivé. Les touches B/C/1 peuvent être configurées dans Options.
 4. Dans **Options du scan**, préciser le nom personnalisé du Voyageur et du Nomade si nécessaire, ainsi que le dossier des exports.
@@ -87,7 +87,7 @@ Avant la première capture, Kamera attend jusqu’à 15 secondes que Genshin soi
 - **Journal et erreurs** montre les étapes horodatées, la préparation de l’export et les résultats par catégorie (reçu, appliqué, vide, ancien ou conservé). Les rapports incluent jusqu’à 500 étapes, consultables sur le site. Les erreurs HTTP du serveur sont expliquées ; les envois refusés restent en attente.
 - Un relevé vide des personnages/matériaux n’avance plus leur date de référence : un relevé valide arrivé plus tard peut être appliqué. Les personnages incomplets restent dans le rapport, sans inventer de statistiques.
 - Lors d’un import manuel sur un inventaire déjà rempli, le site propose explicitement de remplacer les armes/artéfacts. Sans ce choix, les anciens équipements sont conservés si le nouveau fichier ne confirme pas un scan complet. Le remplacement manuel reste marqué non vérifié.
-- Déployer le site 0.4.0 avant d’utiliser les nouvelles fonctions de l’application ; mettre à disposition `GenshinTracker-KameraFR-0.3.4.zip` et ajuster DOWNLOAD_PATH. Ne pas déplacer ni recréer la base SQLite existante.
+- Déployer le site 0.4.0 avant d’utiliser les nouvelles fonctions de l’application ; mettre à disposition `GenshinTracker-KameraFR-0.4.0.zip` et ajuster DOWNLOAD_PATH. Ne pas déplacer ni recréer la base SQLite existante.
 
 Les tests de transport ne remplacent pas un essai Genshin/DPAPI réel sur Windows. L’application affiche les données exportées ; elle ne calcule pas de statistiques de combat absentes du fichier.
 
@@ -105,7 +105,7 @@ La file reprend automatiquement toutes les 30 secondes hors scan (sauf accès re
 
 Le site utilise un stockage persistant hors des builds quand PUBLIC_URL est défini et DATABASE_PATH absent. Sur Hostinger (`hbuilds`), il utilise `tracker-data/tracker.sqlite` à côté de `hbuilds`. Il recherche l’ancienne base dans les builds et en copie une sauvegarde SQLite cohérente si aucune base persistante n’existe ; comptes et clés sont conservés, les originaux restent en place. Une configuration explicite DATABASE_PATH est toujours prioritaire.
 
-### Artéfacts OCR — Windows 0.3.4 / site 0.4.4
+### Artéfacts OCR — Windows 0.4.0 / site 0.4.5
 
 Le parseur ne confond plus le numéro de ligne OCR avec l’index d’une sous-statistique. Les lignes sans nombre ne provoquent plus d’index hors limites. Les aperçus de statistiques « à activer » complets sont ignorés ; les suffixes tronqués et les statistiques actives illisibles rendent la pièce invalide plutôt que d’inventer une valeur. Une sous-statistique sans clé ou invalide empêche désormais l’export de cette pièce.
 
