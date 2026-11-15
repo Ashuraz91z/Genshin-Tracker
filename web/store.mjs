@@ -75,7 +75,7 @@ export function openStore(path) {
     db, close:()=>db.close(),
     register(name,password) {
       need(typeof name==='string' && /^[\p{L}\p{N}_ -]{3,32}$/u.test(name.trim()),'Pseudo : 3 à 32 lettres, chiffres, espaces ou tirets.');
-      need(typeof password==='string' && password.length>=12 && password.length<=128,'Mot de passe : 12 à 128 caractères.');
+      need(typeof password==='string' && password.length>=6 && password.length<=128,'Mot de passe : 6 à 128 caractères.');
       name=name.trim();
       if(db.prepare('SELECT id FROM users WHERE name=?').get(name)) throw new Problem('Ce pseudo est déjà utilisé.',409);
       const id=secret(), salt=secret(),digest=scryptSync(password,salt,64).toString('hex');

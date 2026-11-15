@@ -82,3 +82,10 @@ test('SQLite records survive opening a second store on the same database',async 
   const {openStore}=await import('../store.mjs');const reopened=openStore(dbPath);
   try{const user=reopened.user(cookie.split('=')[1]);assert.equal(reopened.account(user).data.characters.length,1);assert.equal(reopened.account(user).scans.length,1);}finally{reopened.close();}
 });
+
+ test('registration accepts six characters, rejects five and preserves login',async t=>{
+  const {request}=await setup(t);
+  assert.equal((await request('/api/register',{method:'POST',data:{name:'Court',password:'12345'}})).status,400);
+  assert.equal((await request('/api/register',{method:'POST',data:{name:'SixChars',password:'123456'}})).status,200);
+  assert.equal((await request('/api/login',{method:'POST',data:{name:'SixChars',password:'123456'}})).status,200);
+});
