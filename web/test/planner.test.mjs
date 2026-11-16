@@ -18,3 +18,10 @@ test('planner costs, domain days, guide, team analysis and damage scenarios',()=
  for(const mode of ['inventory','ideal']){const d=scenarioData(mode,team.characters,data,catalogue,metadata,planner,{constellation:0});assert.deepEqual(buildSimulation(team,d,catalogue,metadata).issues,[]);assert.equal(d.characters[0].talent.skill,10);}
  assert.equal(data.characters[0].level,80);
 });
+import { recommendTeams, adviseTeam } from '../lib/recommend.mjs';
+test('team recommendations follow the box and advise the main team',()=>{
+ const box={characters:['Xiangling','Bennett','Xingqiu','Sucrose','Beidou','Fischl'].map(key=>({key,level:80,ascension:5,constellation:6,talent:{auto:6,skill:8,burst:8}})),weapons:[],artifacts:[],materials:{}};
+ const recos=recommendTeams(box,catalogue);assert.equal(recos[0].id,'national');assert.deepEqual(recos[0].picked,['Xiangling','Bennett','Xingqiu','Sucrose']);
+ assert.ok(recos.some(t=>t.id==='taser'&&t.coverage===1));assert.ok(recos.every(t=>t.picked.every(k=>box.characters.some(c=>c.key===k))));
+ const advice=adviseTeam(['Xiangling','Bennett','Beidou','Fischl'],box,catalogue);assert.ok(advice.archetype);assert.equal(advice.invest.length,4);
+});
