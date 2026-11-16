@@ -1,0 +1,33 @@
+.selectTrigger{display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;max-width:100%;min-width:0;min-height:46px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--input);color:var(--text);text-align:left;font:inherit;font-size:13px;box-shadow:inset 0 1px 0 #ffffff0a;cursor:pointer}
+.selectTrigger>span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.selectTrigger:hover{border-color:var(--gold);background:var(--surface-high);transform:none}
+.selectTrigger[data-state=open]{border-color:var(--gold);box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 15%,transparent)}
+.selectTrigger:disabled{opacity:.5;cursor:not-allowed}
+.selectChevron{flex-shrink:0;width:22px;height:22px;display:grid;place-items:center;border-left:1px solid var(--line);padding-left:7px;color:var(--muted)}
+.selectChevron svg,.check svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.selectTrigger[data-state=open] .selectChevron svg{transform:rotate(180deg)}
+.selectMenu{z-index:1000;min-width:var(--radix-select-trigger-width);max-width:min(460px,calc(100vw - 24px));max-height:min(340px,var(--radix-select-content-available-height));background:var(--surface-high);border:1px solid var(--line);border-radius:16px;box-shadow:0 16px 48px #101b4026;backdrop-filter:blur(24px);overflow:hidden;font:13px/1.5 var(--font);color:var(--text)}
+.selectViewport{padding:6px}.selectOption{position:relative;display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:42px;padding:10px 34px 10px 12px;border-radius:10px;cursor:pointer;outline:none;overflow-wrap:anywhere}
+.selectOption[data-highlighted]{background:color-mix(in srgb,var(--gold) 14%,var(--surface));color:var(--text)}
+.selectOption[data-state=checked]{color:var(--gold);font-weight:600}
+.selectOption[data-disabled]{opacity:.4;cursor:not-allowed}.check{position:absolute;right:10px;display:flex;align-items:center}.scrollButton{display:flex;justify-content:center;align-items:center;height:24px;color:var(--gold);background:var(--surface-high)}
+.commandDialog{width:min(600px,calc(100vw - 32px));max-width:600px;max-height:calc(100dvh - 48px);padding:0;overflow:hidden;border-radius:22px;background:var(--surface-high);border:1px solid var(--line);box-shadow:0 28px 100px #08132d55;backdrop-filter:blur(28px)}
+.commandDialog::backdrop{background:#10182970;backdrop-filter:blur(7px)}
+.commandDialog>form{position:absolute;right:12px;top:10px;z-index:1}
+.commandDialog>form button{position:static;width:44px;height:44px;min-height:44px;font-size:24px;border-radius:8px;background:var(--input);border:1px solid var(--border);line-height:1}
+.command{width:100%}.commandHeader{display:flex;align-items:center;gap:14px;padding:16px 62px 16px 22px;border-bottom:1px solid var(--line);color:var(--gold)}
+.commandHeader input{margin:0;flex:1;min-width:0;border:0;background:transparent;padding:6px 0;min-height:32px;border-radius:0;outline:none;box-shadow:none;font-size:15px;color:var(--text)}
+.commandHeader input:focus-visible{outline:none}
+.commandList{max-height:min(440px,calc(100dvh - 210px));overflow-y:auto;overscroll-behavior:contain;padding:8px;scroll-padding:8px}
+.commandList [cmdk-group-heading]{padding:12px 12px 7px;font-size:10px;font-weight:650;text-transform:uppercase;letter-spacing:1.3px;color:var(--muted)}
+.commandItem{display:flex;align-items:center;gap:12px;min-height:46px;padding:8px 12px;border:1px solid transparent;border-radius:12px;cursor:pointer;color:var(--text);outline:none}
+.commandItem[data-selected=true]{background:color-mix(in srgb,var(--gold) 12%,var(--surface));border-color:color-mix(in srgb,var(--gold) 24%,transparent)}
+.commandIcon,.commandAvatar{width:34px;height:34px;flex-shrink:0;border-radius:9px;display:grid;place-items:center;background:var(--input);color:var(--muted)}
+.commandAvatar{background:color-mix(in srgb,var(--element) 15%,var(--input));overflow:hidden}.commandAvatar img{object-fit:contain;object-position:bottom}
+.commandItem[data-selected=true] .commandIcon{color:var(--gold)}
+.commandText{flex:1;min-width:0;font-size:13px;font-weight:550;line-height:1.4;overflow-wrap:anywhere}.commandText small{display:block;font-size:11px;font-weight:400;margin-top:3px;color:var(--muted)}
+.commandHint{font-size:10px;color:var(--muted);opacity:0;white-space:nowrap}.commandHint>span{margin-left:8px}.commandItem[data-selected=true] .commandHint{opacity:1}
+.commandFooter{display:flex;align-items:center;gap:18px;padding:12px 20px;border-top:1px solid var(--line);background:var(--input);color:var(--muted);font-size:10px}.commandFooter>span{display:flex;align-items:center;gap:5px}.commandFooter kbd{margin:0;padding:1px 4px;border-color:var(--line);font-size:10px}
+.commandEmpty{display:grid;justify-items:center;gap:10px;padding:35px 15px;color:var(--muted);font-size:12px;text-align:center}.commandEmpty strong{font-size:15px;color:var(--text)}
+@media(max-width:600px){.commandDialog{max-height:calc(100dvh - 32px)}.commandHeader{padding-left:16px}.commandHeader input{font-size:14px}.commandFooter{gap:12px;padding:12px;font-size:9px}.commandHint{display:none}.selectTrigger{font-size:12px;padding:11px 12px}}
+@media(prefers-reduced-motion:no-preference){.selectMenu,.commandDialog{animation:appear .16s ease-out}.selectChevron svg{transition:transform .16s ease}@keyframes appear{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}}

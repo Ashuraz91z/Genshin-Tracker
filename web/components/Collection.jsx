@@ -5,7 +5,7 @@ export const number=n=>new Intl.NumberFormat('fr-FR').format(n);
 export const when=value=>value?new Intl.DateTimeFormat('fr-FR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}).format(new Date(value)):'Pas encore de scan';
 export function Modal({children,onClose,label,className}) {
   const dialog=useRef(null);
-  useEffect(()=>{dialog.current.showModal();},[]);
+  useEffect(()=>{dialog.current.showModal();dialog.current.querySelector('[data-autofocus]')?.focus();},[]);
   return <dialog ref={dialog} className={className} onClose={onClose} aria-label={label}><form method="dialog"><button className="close-button" aria-label="Fermer la fenêtre">×</button></form>{children}</dialog>;
 }
 export function Empty({title,description,onPair}) {

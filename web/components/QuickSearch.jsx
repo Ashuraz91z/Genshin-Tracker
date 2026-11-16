@@ -1,23 +1,28 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Command } from 'cmdk';
 import Icon from './Icon';
 import { Modal } from './Collection';
 import { elementName } from '../lib/collection.mjs';
+import styles from './controls.module.css';
 export default function QuickSearch({sections,characters=[],catalogue}) {
-  const router=useRouter(),[open,setOpen]=useState(false),[query,setQuery]=useState('');
-  useEffect(()=>{
-    const key=e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();setQuery('');setOpen(true);}};
-    window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key);
-  },[]);
-  const q=query.trim().toLocaleLowerCase('fr');
-  const results=[...Object.values(sections).map(s=>({id:s.url,label:s.label,hint:'Page',icon:s.icon,url:s.url})),
-    ...characters.map(c=>{const r=catalogue.characters?.[c.key]??{};return {id:c.key,label:r.name??c.key,hint:`${elementName(r.element)||'Personnage'} · Niv. ${c.level} · C${c.constellation}`,portrait:r.portrait,url:'/characters/'+encodeURIComponent(c.key)};})]
-    .filter(r=>!q||`${r.label} ${r.hint}`.toLocaleLowerCase('fr').includes(q)).slice(0,8);
-  const go=url=>{setOpen(false);router.push(url);};
-  return <><button className="settings-button" aria-label="Recherche rapide (Ctrl+K)" onClick={()=>{setQuery('');setOpen(true);}}><Icon name="search"/><span>Rechercher <kbd>Ctrl K</kbd></span></button>
-    {open&&<Modal label="Recherche rapide" className="quick-search" onClose={()=>setOpen(false)}><label className="search-field"><Icon name="search"/><input autoFocus type="search" value={query} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>{if(e.key==='Enter'&&results[0])go(results[0].url);}} placeholder="Un personnage, une page…" aria-label="Rechercher un personnage ou une page"/></label>
-      <ul className="quick-results">{results.map(r=><li key={r.id}><button onClick={()=>go(r.url)}>{r.portrait?<img src={r.portrait} width="32" height="32" alt=""/>:<Icon name={r.icon}/>}<span><strong>{r.label}</strong><small>{r.hint}</small></span></button></li>)}</ul>
-      {!results.length&&<p className="muted">Aucun résultat pour « {query} ». Essayez un nom de personnage comme « Bennett » ou une page comme « Inventaire ».</p>}
-      <p className="muted"><kbd>Entrée</kbd> ouvre le premier résultat · <kbd>Échap</kbd> ferme</p></Modal>}</>;
+ const router=useRouter(),[open,setOpen]=useState(false),[query,setQuery]=useState(''),[shortcut,setShortcut]=useState('Ctrl K');
+ const show=()=>{setQuery('');setOpen(true);};
+ useEffect(()=>{
+  setShortcut(/Mac|iPhone|iPad/.test(navigator.platform)?'⌘ K':'Ctrl K');
+  const key=e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();setOpen(value=>!value);setQuery('');}};
+  window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key);
+ },[]);
+ const go=url=>{setOpen(false);router.push(url);};
+ const pages=Object.values(sections);
+ const people=characters.map(c=>{const r=catalogue.characters?.[c.key]??{};return {...c,name:r.name??c.key,element:elementName(r.element),portrait:r.portrait};});
+ return <><button className="settings-button" aria-label={`Recherche rapide (${shortcut})`} onClick={show}><Icon name="search"/><span>Rechercher <kbd>{shortcut}</kbd></span></button>
+ {open&&<Modal label="Recherche rapide" className={styles.commandDialog} onClose={()=>setOpen(false)}><Command label="Navigation rapide" loop className={styles.command}>
+  <div className={styles.commandHeader}><Icon name="search"/><Command.Input autoFocus data-autofocus value={query} onValueChange={setQuery} placeholder="Où voulez-vous aller ?" aria-label="Rechercher une page ou un personnage"/></div>
+  <Command.List className={styles.commandList}><Command.Empty className={styles.commandEmpty}><Icon name="search"/><strong>Aucun résultat</strong><span>Essayez un autre nom de personnage ou de page.</span></Command.Empty>
+   <Command.Group heading="Navigation">{pages.map(page=><Command.Item key={page.url} value={page.label} onSelect={()=>go(page.url)} className={styles.commandItem}><span className={styles.commandIcon}><Icon name={page.icon}/></span><span className={styles.commandText}>{page.label}</span><span className={styles.commandHint}>Ouvrir <span aria-hidden="true">↵</span></span></Command.Item>)}</Command.Group>
+   <Command.Group heading="Vos personnages">{people.map(person=><Command.Item key={person.key} value={`${person.name} ${person.element}`} onSelect={()=>go('/characters/'+encodeURIComponent(person.key))} className={styles.commandItem}><span className={styles.commandAvatar} data-element={person.element}>{person.portrait?<img src={person.portrait} width="34" height="38" alt=""/>:<Icon name="users"/>}</span><span className={styles.commandText}>{person.name}<small>{person.element} · Niveau {person.level} · C{person.constellation}</small></span><span className={styles.commandHint} aria-hidden="true">↵</span></Command.Item>)}</Command.Group>
+  </Command.List><div className={styles.commandFooter}><span><kbd>↑</kbd><kbd>↓</kbd> Naviguer</span><span><kbd>↵</kbd> Ouvrir</span><span><kbd>esc</kbd> Fermer</span></div>
+ </Command></Modal>}</>;
 }

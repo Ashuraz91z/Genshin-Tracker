@@ -129,3 +129,34 @@ kbd{font:inherit;font-size:10px;border:1px solid var(--border);border-radius:4px
  .workspace .team-library>.section-heading{flex-wrap:wrap}
  .workspace footer{margin-top:28px}
 }
+
+/* Shared column edges and elemental surfaces. */
+.workspace .dashboard-grid{grid-template-columns:1.5fr 1fr}
+.overview-content .equipment-panel{display:flex;flex-direction:column}
+.overview-content .equipment-panel>.section-heading{margin-bottom:20px}
+.overview-content .equipment-panel>.text-button{margin-top:auto}
+.character-card[data-element],.character-profile[data-element],.team-member[data-element],.elemental-card[data-element]{background:linear-gradient(145deg,color-mix(in srgb,var(--element) 15%,var(--surface-high)),color-mix(in srgb,var(--element) 8%,var(--surface)));border-color:color-mix(in srgb,var(--element) 35%,var(--border))}
+.character-card[data-element]:hover{background:linear-gradient(145deg,color-mix(in srgb,var(--element) 22%,var(--surface-high)),color-mix(in srgb,var(--element) 12%,var(--surface)));border-color:var(--element)}
+.character-card .character-info{background:transparent}
+.character-card .portrait-wrap{background:radial-gradient(ellipse at 50% 80%,color-mix(in srgb,var(--element) 22%,transparent),transparent 72%)}
+.character-card .character-loadout{border-color:color-mix(in srgb,var(--element) 28%,var(--line))}
+.team-member{position:relative;border-radius:20px;padding:18px 14px;gap:12px}
+.team-member>img{width:110px;height:122px;filter:drop-shadow(0 10px 10px color-mix(in srgb,var(--element,#8a91a5) 18%,transparent))}
+.team-member>label{font-size:12px;gap:8px}
+.team-member>small{font-size:11px;min-height:34px;overflow-wrap:anywhere}
+.team-member>.text-button{font-size:11px}
+.team-member label:has(button[role=combobox]){min-width:0}
+.workspace .heading-actions .button{font-size:12px;padding:11px 14px;min-height:44px;border-radius:12px}
+@media(max-width:1200px){.workspace .dashboard-grid{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:700px){.team-members{grid-template-columns:minmax(0,1fr)}.team-member{display:grid;grid-template-columns:82px minmax(0,1fr);gap:10px 16px;padding:16px}.team-member>img,.team-member>.member-placeholder{grid-row:1 / span 4;width:82px;height:100px;align-self:center}.team-member>label,.team-member>small,.team-member>span:not(.member-placeholder),.team-member>.text-button{grid-column:2;min-height:0}.team-member>.text-button{justify-self:start}.workspace .heading-actions .button{font-size:11px;padding:10px}}
+
+.overview-content :is(.insights-grid,.dashboard-grid)>.panel>.section-heading{min-height:48px;align-items:center}
+@media(max-width:700px){.overview-content :is(.insights-grid,.dashboard-grid)>.panel>.section-heading{min-height:0}}
+
+.team-members{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.team-member{display:grid;grid-template-columns:88px minmax(0,1fr);align-content:start;gap:8px 16px;min-height:174px}
+.team-member>img,.team-member>.member-placeholder{grid-row:1 / span 4;width:88px;height:124px;align-self:center}
+.team-member>label,.team-member>small,.team-member>span:not(.member-placeholder),.team-member>.text-button{grid-column:2;min-height:0}
+.team-member>.text-button{justify-self:start;margin-top:0}
+.team-member>small{line-height:1.6}
+@media(max-width:700px){.team-members{grid-template-columns:minmax(0,1fr)}.team-member{grid-template-columns:72px minmax(0,1fr);gap:8px 12px;min-height:150px}.team-member>img,.team-member>.member-placeholder{width:72px;height:100px}}
