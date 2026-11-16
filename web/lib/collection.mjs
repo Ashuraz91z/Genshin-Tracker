@@ -1,3 +1,4 @@
+import { critValue } from './insights.mjs';
 export const elements=['Pyro','Hydro','Anémo','Électro','Cryo','Géo','Dendro'];
 export function elementName(element='') {
   return ({Anemo:'Anémo',Electro:'Électro',Geo:'Géo'})[element]??element;
@@ -21,6 +22,7 @@ export function filterInventory(items,{search='',rarity='',set='',slot='',equipp
       if(sort==='name')return a.name.localeCompare(b.name,'fr');
       if(sort==='set')return a.setName.localeCompare(b.setName,'fr')||(b.level??0)-(a.level??0);
       if(sort==='rarity')return b.rarity-a.rarity||(b.level??0)-(a.level??0);
+      if(sort==='cv')return critValue(b)-critValue(a)||(b.level??0)-(a.level??0);
       if(sort==='quantity')return (b.count??0)-(a.count??0);
       if(sort==='levelAsc')return (a.level??0)-(b.level??0);
       return (b.level??0)-(a.level??0)||b.rarity-a.rarity;
