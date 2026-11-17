@@ -1,5 +1,7 @@
 # Genshin Tracker — site Next.js 0.3
 
+Copyright (c) 2026 Lux Audere. Code original du site sous AGPL-3.0-only, sans garantie ; voir `../LICENSE` ou `public/licenses/agpl-3.0.txt`. Les composants et ressources tiers conservent leurs propres licences. Code source : https://github.com/Ashuraz91z/Genshin-Tracker (dépôt privé pendant la préparation de publication). Le service hébergé est destiné à être payant ; l’auto-hébergement est autorisé.
+
 **Next.js 16.4.6 / React 19.3.1, App Router, Route Handlers Node.js et SQLite.** Le design bleu nuit/or/menthe est conservé, avec des composants React et de vraies routes `/`, `/characters`, `/inventory` et `/sync`.
 
 ## Démarrer

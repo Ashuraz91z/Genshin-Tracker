@@ -68,6 +68,16 @@ python3 scripts/prepare_web_assets.py /chemin/vers/genshin-db
 
 Sources et versions : `UPSTREAM.md`, `inventorylists/source.json`, `web/public/assets/SOURCES.md`. Licences et attributions dans `licenses`. Genshin Impact et ses contenus appartiennent à leurs ayants droit ; outil communautaire non affilié à HoYoverse.
 
+## Licence
+
+Copyright (c) 2026 Lux Audere.
+
+Le code original du site et les outils propres à ce dépôt sont sous **GNU AGPL version 3 uniquement** (`AGPL-3.0-only`), voir [LICENSE](LICENSE). Vous pouvez les utiliser, les modifier, les distribuer et proposer votre propre hébergement, y compris payant, en respectant cette licence. Une version modifiée accessible en ligne doit proposer à ses utilisateurs le code source correspondant sous la même licence. Le logiciel est fourni sans garantie.
+
+Le compagnon Windows dans `InventoryKamera-FR/`, y compris nos adaptations, reste sous sa [licence MIT](InventoryKamera-FR/LICENSE). Les composants tiers, données, modèles OCR et ressources du jeu conservent leurs licences et droits respectifs : voir `licenses/`, `UPSTREAM.md`, `web/public/assets/SOURCES.md` et `web/public/simulator/`. La licence AGPL ne confère aucun droit supplémentaire sur les illustrations de Genshin Impact.
+
+Code source : https://github.com/Ashuraz91z/Genshin-Tracker . Le dépôt reste privé pendant la préparation de sa publication. Le service en ligne géré par Lux Audere est destiné à être payant ; l’auto-hébergement du code est autorisé par ses licences.
+
 
 ## GitHub et livraison
 

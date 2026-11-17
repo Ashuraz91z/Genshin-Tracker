@@ -24,6 +24,7 @@ def package():
     for filename in ['README.md','UPSTREAM.md']:
         shutil.copy2(ROOT/filename,DEST/filename)
     shutil.copytree(ROOT/'licenses',DEST/'licenses',dirs_exist_ok=True)
+    shutil.copy2(ROOT/'InventoryKamera-FR/LICENSE',DEST/'LICENSE.txt')
     shutil.copy2(ROOT/'web/README.md',DEST/'SITE.md')
     assets=json.loads((ROOT/'InventoryKamera-FR/InventoryKamera/obj/project.assets.json').read_text())
     cache=Path(next(iter(assets['packageFolders'])))
@@ -48,7 +49,7 @@ def package():
     required=['InventoryKamera.FR.exe','InventoryKamera.FR.exe.config','Tesseract.dll','Newtonsoft.Json.dll',
         'x64/tesseract50.dll','x64/leptonica-1.82.0.dll','x86/tesseract50.dll',
         'tessdata/fra.traineddata','tessdata/eng.traineddata','inventorylists/characters.json',
-        'inventorylists/french-aliases.json','inventorylists/catalogue-fr.json','README.md']
+        'inventorylists/french-aliases.json','inventorylists/catalogue-fr.json','README.md','LICENSE.txt']
     for filename in required: assert (DEST/filename).stat().st_size>0,filename
     characters=json.loads((DEST/'inventorylists/characters.json').read_text())
     assert 'traveler' in characters and 'wanderer' in characters
