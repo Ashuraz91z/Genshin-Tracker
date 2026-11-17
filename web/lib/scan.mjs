@@ -10,7 +10,7 @@ export function validateScan(body,{recoverArtifacts=false}={}) {
   const time=Date.parse(body.capturedAt);
   need(Number.isFinite(time) && time<=Date.now()+600000,'Date du scan invalide ou horloge du PC en avance.');
   const good=body.good;
-  need(good?.format==='GOOD' && [1,2,3].includes(good.version),'Un fichier GOOD compatible est attendu.');
+  need(good?.format==='GOOD' && [1,2,3].includes(good.version),'Choisissez un fichier d’inventaire .json exporté par Kamera FR ou un scanner compatible avec le format GOOD, et non son rapport de scan.');
   const cleaned={},rejectionErrors=[];let rejectedArtifacts=0;
   for (const category of ['characters','weapons','artifacts']) {
     if (good[category]===undefined) continue;
