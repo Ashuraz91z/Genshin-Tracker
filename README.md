@@ -1,130 +1,99 @@
-# Genshin Tracker — site Next.js 0.4 / Kamera FR 0.3
+<p align="center">
+  <img src="web/public/assets/mark.svg" width="72" height="72" alt="Logo Genshin Tracker" />
+</p>
 
-Un compagnon Windows et un site personnel pour retrouver les données de son compte Genshin. Le jeu reste en français. Base complète d'Inventory Kamera, interface revue et synchronisation après les scans.
+<h1 align="center">Genshin Tracker</h1>
 
-## Utiliser l'application Windows
+<p align="center">
+  Votre carnet de progression pour Genshin Impact.<br />
+  Retrouvez votre collection, préparez vos équipes et choisissez vos prochaines améliorations.
+</p>
 
-1. Extraire **tout** `GenshinTracker-KameraFR-0.4.1.zip` dans un dossier où vous pouvez écrire. Garder les DLL, `tessdata` et `inventorylists` à côté de `InventoryKamera.FR.exe`.
-2. Lancer l'exécutable. Prérequis hérités : **.NET Framework 4.7.2+** et **Visual C++ 2015–2022**. Le manifeste demande les droits administrateur pour piloter le jeu. Exécutable non signé.
-3. Utiliser Genshin en **français**, clavier/souris, format **16:9 ou 16:10**, HDR désactivé. Les touches B/C/1 peuvent être configurées dans Options.
-4. Dans **Options du scan**, préciser le nom personnalisé du Voyageur et du Nomade si nécessaire, ainsi que le dossier des exports.
-5. Ouvrir le menu Paimon puis cliquer **Scanner Genshin**. Ne pas déplacer la souris pendant le parcours. **ENTRÉE arrête le scan** ; les actions s'arrêtent aussi si Genshin perd le premier plan.
-6. Consulter les onglets **Lecture en direct**, **Journal et erreurs** et les exports GOOD / `.rapport.json`.
+<p align="center">
+  <a href="https://genshin-tracker.com">Ouvrir le site</a> ·
+  <a href="https://github.com/Ashuraz91z/Genshin-Tracker/releases">Téléchargements</a> ·
+  <a href="docs/SCANNER.md">Guide du scanner</a> ·
+  <a href="docs/DEVELOPPEMENT.md">Développer et héberger</a>
+</p>
 
-Les raretés minimales sont à 1 par défaut. L'OCR est un modèle Tesseract français/anglais préentraîné avec 1 519 correspondances des noms du jeu : pas de traduction automatique et pas de nouvel entraînement sur des captures.
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/site-AGPL--3.0-6366f1?style=flat-square" alt="Licence du site : AGPL-3.0" /></a>
+  <a href="InventoryKamera-FR/LICENSE"><img src="https://img.shields.io/badge/scanner-MIT-0f9d7a?style=flat-square" alt="Licence du scanner : MIT" /></a>
+  <img src="https://img.shields.io/badge/scanner-Windows-334155?style=flat-square" alt="Scanner pour Windows" />
+</p>
 
-## Connecter le site et l'application
+---
 
-Sur le site, créer un compte du tracker. Dans **Connexion** de l’application, saisir l’adresse du site, le pseudo et le mot de passe du tracker : le PC est relié automatiquement. Le mot de passe n’est pas conservé ; une clé protégée par Windows permet de reprendre la synchronisation aux prochains démarrages. Le code temporaire du site reste une autre méthode, nécessaire une seule fois.
+## Un compte, une vue d’ensemble
 
-- Le code est valable 10 minutes et utilisable une seule fois.
-- La clé d'appareil est chiffrée par Windows DPAPI pour l'utilisateur connecté ; aucun mot de passe du site n'est enregistré par Kamera.
-- En cas de panne réseau, le relevé reste dans une file locale séparée par site/compte. **Réessayer l'envoi** ou redémarrer l'application. Les exports locaux sont conservés même après réception.
-- L'appareil peut être révoqué depuis **Synchronisation** sur le site.
-- HTTPS est obligatoire à distance. `localhost` désigne la machine qui l'utilise, pas votre autre ordinateur.
-- Le serveur fusionne personnages et matériaux. Un inventaire d'armes/artéfacts déjà présent est conservé si le nouveau scan est partiel ; les données plus anciennes ne remplacent pas les plus récentes.
+Genshin Tracker associe un site web et **Kamera FR**, un scanner Windows adapté au jeu en français. Importez les données relevées dans les menus du jeu, puis retrouvez-les dans un carnet consultable depuis votre navigateur.
 
-Le site utilise **Next.js 16.4.6 et React 19.3.1**, avec l’App Router et les Route Handlers pour l’API. SQLite et les URL de synchronisation sont conservés, ainsi que les comptes et clés d’appareils existants si la base est conservée. Le site a quatre vues : tableau de bord, personnages/aptitudes, inventaire filtrable et journal de synchronisation. Un import GOOD manuel est aussi disponible. Les données sont persistantes en SQLite et rattachées au compte authentifié.
+| Dans le carnet | Ce que vous pouvez faire |
+| --- | --- |
+| **Personnages** | Consulter niveaux, constellations, talents et équipements identifiés. |
+| **Inventaire** | Filtrer les armes, artéfacts et matériaux importés, puis corriger les artéfacts. |
+| **Progression** | Repérer les ressources manquantes et préparer vos améliorations et activités de farm. |
+| **Équipes** | Composer des équipes, préparer une rotation et lancer les simulations prises en charge par gcsim. |
+| **Collection** | Comparer le catalogue du jeu à votre inventaire pour voir ce que vous possédez et ce qui manque. |
+| **Synchronisation** | Relier votre PC et consulter les résultats et erreurs de chaque relevé. |
 
-## Lancer le site localement
+Le projet vise un suivi global de progression. Les quêtes, succès et données d’exploration ne sont pas suivis dans cette version.
 
-Avec Node.js 24 ou supérieur, depuis le dossier du projet :
+## Commencer
+
+### Avec Kamera FR sur Windows
+
+1. Téléchargez le paquet **Kamera FR** dans les [Releases](https://github.com/Ashuraz91z/Genshin-Tracker/releases) et extrayez le dossier complet.
+2. Créez votre compte sur le [site](https://genshin-tracker.com), puis connectez le scanner depuis son onglet **Connexion**.
+3. Lancez un scan avec le jeu en français. Vos relevés sont conservés sur le PC et synchronisés avec votre carnet.
+
+Prérequis Windows, réglages du jeu et dépannage : **[guide du scanner](docs/SCANNER.md)**.
+
+### Avec un fichier d’inventaire existant
+
+Ouvrez le site et choisissez **Importer sans compte**. Sélectionnez le fichier `.json` créé par Kamera FR ou un autre scanner compatible. Ce format d’échange, appelé **GOOD**, contient les personnages, armes, artéfacts et matériaux relevés.
+
+En mode visiteur, le contenu importé reste dans la session de votre navigateur et n’est pas envoyé au serveur. Vous pouvez l’effacer depuis votre profil. Un compte permet de conserver votre carnet en ligne et de recevoir les scans du PC.
+
+## Héberger votre propre carnet
+
+Vous pouvez héberger votre propre instance. Le code est libre ; l’hébergement géré par Lux Audere est destiné à être payant.
+
+Pour lancer le site sur votre machine, avec **Node.js 24+** et npm :
 
 ```sh
-cd web
+git clone https://github.com/Ashuraz91z/Genshin-Tracker.git
+cd Genshin-Tracker/web
 npm ci
 npm run dev
 ```
 
-Ouvrir **http://127.0.0.1:8788**. Aucun compte ou inventaire factice n'est préchargé. Le déploiement autonome Docker/Caddy est décrit dans `web/README.md` (ou `SITE.md` dans le paquet Windows). Domaine et serveur de production restent à désigner ; aucun hébergement distant n'a été modifié.
+Ouvrez **http://127.0.0.1:8788**. Un clone privé nécessite un accès au dépôt. Consultez le [guide développeur](docs/DEVELOPPEMENT.md) pour la production, les variables d’environnement et les tests.
 
-## Vérification et limites
+## Documentation et contributions
 
-Vérifié : compilation de l'exécutable Windows ; 1 553 cas de reconnaissance/parsing ; 10 contrôles du référentiel ; 40 000 ajouts concurrents d'inventaire sans perte ; ressources WinForms ; tests HTTP/SQLite d'association, isolation des comptes, révocation, doublons, scans partiels/anciens, validation et persistance ; vérification des fichiers et empreintes du paquet.
+- [Utiliser et dépanner le scanner Windows](docs/SCANNER.md)
+- [Développer, tester et héberger le projet](docs/DEVELOPPEMENT.md)
+- [Déploiement et stockage du site](web/README.md)
+- [Provenance des composants et des données](UPSTREAM.md)
+- [Notes techniques historiques](docs/HISTORIQUE.md)
 
-Non exécuté sur Windows : lancement de l'interface, DPAPI, association réelle depuis l'exécutable, captures, clics et OCR dans Genshin. Le rendu web/mobile n'a pas pu être inspecté visuellement : navigateur intégré indisponible et accès à Safari refusé. Les tests API utilisent un client HTTP simulant le compagnon, pas l'exécutable Windows.
+Pour signaler un problème, ouvrez une [issue](https://github.com/Ashuraz91z/Genshin-Tracker/issues) avec les étapes, la version et le résultat attendu. Retirez les données personnelles des captures et journaux. Pour un problème de sécurité ou d’accès à un compte, écrivez à **contact@lux-audere.com** sans publier de mot de passe ni de clé d’appareil.
 
-La fin d'un parcours ou des compteurs concordants ne garantissent pas un relevé complet. Kamera couvre les personnages/aptitudes, armes, artéfacts et deux onglets de matériaux. Quêtes, succès, exploration, événements, autres onglets et avatars personnalisés sans données d'aptitudes restent non couverts. Les objets illisibles peuvent manquer dans GOOD et doivent être vérifiés dans le rapport. Pas encore d'écran de correction/reprise objet par objet. Aucune arme de remplacement n'est inventée si l'équipement d'un personnage est inconnu.
+## Limites à connaître
 
-La géométrie de capture reste dérivée de Kamera et peut demander une calibration sur votre version du jeu. Les captures de diagnostic sont activées par défaut pour les premiers essais et peuvent prendre de la place ; elles sont locales et archivées, pas envoyées au site. Compatibilité anti-cheat non établie.
+Un scan OCR peut manquer des objets ou mal lire leurs caractéristiques : vérifiez le rapport et les quantités en jeu. Les simulations dépendent des équipements, de la rotation et des personnages pris en charge par le moteur. Elles ne garantissent pas les dégâts obtenus en jeu.
 
-## Construire et tester
+Le scanner automatise la navigation dans les menus. Le projet ne dispose pas d’une approbation de HoYoverse et ne garantit pas l’absence de sanction. Les tests automatisés ne remplacent pas un essai réel dans Genshin sur votre configuration Windows.
 
-Avec .NET SDK 8 et Python 3.9+ :
+## Licences et crédits
 
-```sh
-bash scripts/build_windows.sh
-cd web && npm ci && npm run build && npm test
-```
+| Composant | Licence |
+| --- | --- |
+| Site web et outils propres au projet | [GNU AGPL-3.0 uniquement](LICENSE) |
+| Kamera FR et ses adaptations d’Inventory Kamera | [MIT](InventoryKamera-FR/LICENSE) |
+| Autres composants, référentiels et modèles OCR | [Notices tierces](licenses/) et [provenance](UPSTREAM.md) |
 
-Le projet C# SDK cible .NET Framework 4.7.2. Le build fonctionne depuis macOS mais ne teste pas l'interface Windows.
+Merci aux projets [Inventory Kamera](https://github.com/Andrewthe13th/Inventory_Kamera), [genshin-db](https://github.com/theBowja/genshin-db), [Tesseract](https://github.com/tesseract-ocr/tesseract) et [gcsim](https://github.com/genshinsim/gcsim). Les versions et notices utilisées figurent dans le dépôt.
 
-Régénérer les données depuis un checkout genshin-db :
-
-```sh
-python3 scripts/prepare_french_data.py /chemin/vers/genshin-db
-python3 scripts/prepare_web_assets.py /chemin/vers/genshin-db
-```
-
-Sources et versions : `UPSTREAM.md`, `inventorylists/source.json`, `web/public/assets/SOURCES.md`. Licences et attributions dans `licenses`. Genshin Impact et ses contenus appartiennent à leurs ayants droit ; outil communautaire non affilié à HoYoverse.
-
-## Licence
-
-Copyright (c) 2026 Lux Audere.
-
-Le code original du site et les outils propres à ce dépôt sont sous **GNU AGPL version 3 uniquement** (`AGPL-3.0-only`), voir [LICENSE](LICENSE). Vous pouvez les utiliser, les modifier, les distribuer et proposer votre propre hébergement, y compris payant, en respectant cette licence. Une version modifiée accessible en ligne doit proposer à ses utilisateurs le code source correspondant sous la même licence. Le logiciel est fourni sans garantie.
-
-Le compagnon Windows dans `InventoryKamera-FR/`, y compris nos adaptations, reste sous sa [licence MIT](InventoryKamera-FR/LICENSE). Les composants tiers, données, modèles OCR et ressources du jeu conservent leurs licences et droits respectifs : voir `licenses/`, `UPSTREAM.md`, `web/public/assets/SOURCES.md` et `web/public/simulator/`. La licence AGPL ne confère aucun droit supplémentaire sur les illustrations de Genshin Impact.
-
-Code source : https://github.com/Ashuraz91z/Genshin-Tracker . Le dépôt reste privé pendant la préparation de sa publication. Le service en ligne géré par Lux Audere est destiné à être payant ; l’auto-hébergement du code est autorisé par ses licences.
-
-
-## GitHub et livraison
-
-Code du site : `web/` ; code de l'application : `InventoryKamera-FR/`. Le workflow GitHub Actions construit et teste Next.js en mode production, puis compile l’application et publie les paquets dans Releases. Le serveur de production se lance par `npm run build` puis `npm start` depuis `web/` (variable `PORT`, 3000 par défaut), ou avec Docker/Caddy. Les modèles OCR sont récupérés automatiquement au build depuis une version officielle figée et vérifiés par SHA-256. Les exécutables, bases SQLite, connexions locales et fichiers `.env` ne sont pas versionnés. Guide Hostinger : `web/README.md`.
-
-### Correctif Windows 0.2.2
-
-Un dossier d’export vide utilise automatiquement `Documents\GenshinTracker\Exports`. Un chemin invalide ou inaccessible affiche un avertissement avant le scan. Le bouton d’ouverture du dossier et l’export utilisent le même contrôle.
-
-### Activation du jeu (Windows 0.2.2)
-
-Avant la première capture, Kamera attend jusqu’à 15 secondes que Genshin soit au premier plan. Si Windows refuse l’activation automatique, revenir dans le jeu avec Alt+Tab en gardant le menu Paimon ouvert. Pendant le scan, quitter le jeu arrête toujours les actions. Comportement à valider sur le PC Windows.
-
-## Compte et diagnostic — Kamera FR 0.3.0 / site 0.4.0
-
-- **Mon compte** dans l’application affiche les données réellement enregistrées sur le site : personnages, niveaux et aptitudes, compteurs de collection et 30 derniers relevés. Actualisation après connexion/envoi, au démarrage et toutes les 30 secondes hors scan ; bouton manuel disponible. Les clés existantes restent compatibles.
-- **Journal et erreurs** montre les étapes horodatées, la préparation de l’export et les résultats par catégorie (reçu, appliqué, vide, ancien ou conservé). Les rapports incluent jusqu’à 500 étapes, consultables sur le site. Les erreurs HTTP du serveur sont expliquées ; les envois refusés restent en attente.
-- Un relevé vide des personnages/matériaux n’avance plus leur date de référence : un relevé valide arrivé plus tard peut être appliqué. Les personnages incomplets restent dans le rapport, sans inventer de statistiques.
-- Lors d’un import manuel sur un inventaire déjà rempli, le site propose explicitement de remplacer les armes/artéfacts. Sans ce choix, les anciens équipements sont conservés si le nouveau fichier ne confirme pas un scan complet. Le remplacement manuel reste marqué non vérifié.
-- Déployer le site 0.4.0 avant d’utiliser les nouvelles fonctions de l’application ; mettre à disposition `GenshinTracker-KameraFR-0.4.0.zip` et ajuster DOWNLOAD_PATH. Ne pas déplacer ni recréer la base SQLite existante.
-
-Les tests de transport ne remplacent pas un essai Genshin/DPAPI réel sur Windows. L’application affiche les données exportées ; elle ne calcule pas de statistiques de combat absentes du fichier.
-
-### Connexion Windows 0.3.1
-
-L’onglet Connexion affiche le compte déjà relié dès le démarrage et après identification. Le formulaire est masqué tant que le PC est associé. **Changer de compte / se reconnecter** le réouvre explicitement ; **Garder le compte actuel** l’annule. Aucun jeton ni compte existant n’est supprimé et les champs secrets sont vidés à la fermeture du formulaire.
-
-### Synchronisation et exports — Windows 0.3.2 / site 0.4.2
-
-Un export crée deux fichiers complémentaires : `…json` contient l’inventaire GOOD à importer ; `….rapport.json` contient les erreurs et étapes du même scan. Ils ne représentent pas deux scans. Le raccourci Entrée est désarmé dès la fin de collecte : fermer le message de résultat ne recrée plus un export interrompu.
-
-Un HTTP 401 est affiché comme accès refusé, sans prétendre que le PC est connecté. Les réponses d’une ancienne connexion ne remplacent plus l’état du nouveau compte. Reconnectez-vous une fois puis utilisez **Réessayer l’envoi**. Si le site/compte a changé, les anciens envois restent isolés ; **Envoyer un fichier GOOD existant** permet de choisir explicitement le fichier destinataire sans refaire le scan.
-
-La file reprend automatiquement toutes les 30 secondes hors scan (sauf accès refusé). Un fichier définitivement refusé en 400/413/415/422 est conservé dans `outbox/<compte>/refused` avec le motif et ne bloque plus les autres. Réseau/401/429/5xx conservent les envois pour reprise. Le résultat est visible en bas de l’application dans tous les onglets.
-
-Le site utilise un stockage persistant hors des builds quand PUBLIC_URL est défini et DATABASE_PATH absent. Sur Hostinger (`hbuilds`), il utilise `tracker-data/tracker.sqlite` à côté de `hbuilds`. Il recherche l’ancienne base dans les builds et en copie une sauvegarde SQLite cohérente si aucune base persistante n’existe ; comptes et clés sont conservés, les originaux restent en place. Une configuration explicite DATABASE_PATH est toujours prioritaire.
-
-### Artéfacts OCR — Windows 0.4.0 / site 0.4.5
-
-Le parseur ne confond plus le numéro de ligne OCR avec l’index d’une sous-statistique. Les lignes sans nombre ne provoquent plus d’index hors limites. Les aperçus de statistiques « à activer » complets sont ignorés ; les suffixes tronqués et les statistiques actives illisibles rendent la pièce invalide plutôt que d’inventer une valeur. Une sous-statistique sans clé ou invalide empêche désormais l’export de cette pièce.
-
-Une exception de traitement est rapportée avec type de pièce, numéro, exception interne et pile d’appel ; la capture et le diagnostic restent sous `logging/ocr-errors/`. La pièce fautive est ignorée et le worker poursuit les suivantes. Les bitmaps sont libérés dans finally. Une tâche de lecture de personnage équipé n’est plus lancée hors du groupe attendu lorsque la pièce n’est pas équipée.
-
-Le serveur peut reprendre les anciens fichiers contenant des artéfacts invalides : les pièces refusées sont exclues avec leur motif dans le rapport, et les autres catégories/pièces valides sont traitées. Un inventaire existant n’est pas remplacé si des pièces ont été rejetées, même avec l’option de remplacement manuel. Le relevé reste partiel/non vérifié ; comparer les quantités à celles du jeu. Le HTTP 400 « Statistiques secondaires invalides » n’est pas un échec d’authentification.
-
-### Équipements du jeu français — Kamera FR 0.4.1
-
-- La lecture du propriétaire accepte désormais « Équipé par Sangonomiya Kokomi » sans deux-points, pour les armes comme pour les artéfacts ; les libellés avec deux-points restent reconnus.
-- Garder « Lier les armes » et « Lier les artéfacts » cochés. Un ancien GOOD dont `location` est vide ne permet pas de retrouver rétroactivement les propriétaires : refaire uniquement les catégories Armes / Artéfacts suffit.
-- Extraire le ZIP 0.4.1 complet. Les données du compte sur le site et l’association de l’appareil sont conservées. Le correctif ne change pas la base de données.
+**Un projet Lux Audere.** Genshin Tracker n’est ni affilié ni approuvé par HoYoverse. Genshin Impact, ses marques et ses illustrations appartiennent à leurs ayants droit ; les licences du code ne modifient pas ces droits.

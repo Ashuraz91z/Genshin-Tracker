@@ -1,5 +1,7 @@
 # Provenance
 
+Origines des composants et versions de départ. Les mentions de versions ci-dessous sont historiques ; le [README](README.md) décrit le projet actuel.
+
 - Inventory Kamera : https://github.com/Andrewthe13th/Inventory_Kamera
 - Commit de départ : `01e08c0527149ef40083608f50f16a2963293285`.
 - Code importé dans `InventoryKamera-FR/` ; auteur et licence MIT d'origine conservés.

@@ -21,8 +21,8 @@ def package():
     for unused in ['genshin_best_eng.traineddata','genshin_fast_09_04_21.traineddata']:
         old=DEST/'tessdata'/unused
         if old.exists(): old.unlink()
-    for filename in ['README.md','UPSTREAM.md']:
-        shutil.copy2(ROOT/filename,DEST/filename)
+    shutil.copy2(ROOT/'docs/SCANNER.md',DEST/'README.md')
+    shutil.copy2(ROOT/'UPSTREAM.md',DEST/'UPSTREAM.md')
     shutil.copytree(ROOT/'licenses',DEST/'licenses',dirs_exist_ok=True)
     shutil.copy2(ROOT/'InventoryKamera-FR/LICENSE',DEST/'LICENSE.txt')
     shutil.copy2(ROOT/'web/README.md',DEST/'SITE.md')
