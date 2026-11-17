@@ -7,6 +7,6 @@ export default function LegalLinks() {
     <Link href="/confidentialite">Confidentialité</Link>
     <Link href="/cookies">Cookies et stockage local</Link>
     <Link href="/conditions-utilisation">Conditions d’utilisation</Link>
-    <a href="mailto:contact@lux-audere.com">Contact</a>
+    <a href="mailto:contact@genshin-tracker.com">Contact</a>
   </nav>;
 }

@@ -14,7 +14,7 @@ const web=dirname(dirname(fileURLToPath(import.meta.url)));
 test('Next production preserves existing accounts and device keys, serves all pages with CSP nonces, and receives a Kamera scan',async t=>{
   const folder=mkdtempSync(join(tmpdir(),'genshin-next-')),dbPath=join(folder,'tracker.sqlite'),download=join(folder,'app.zip');
   writeFileSync(download,Buffer.from('PK\x03\x04fixture-download'));
-  const original=openStore(dbPath),user=original.register('Migration','migration-password-123');
+  const original=openStore(dbPath),user=original.register('Migration','migration-password-123','migration@example.com');
   const cookie='gt_session='+original.session(user),pair=original.pair(user),device=original.redeem(pair.code,'Existing Windows PC');original.close();
   const socket=createServer();socket.listen(0,'127.0.0.1');await once(socket,'listening');const port=socket.address().port;await new Promise(resolve=>socket.close(resolve));
   let logs='';const child=spawn(process.execPath,[join(web,'scripts/start.mjs')],{cwd:web,env:{...process.env,NODE_ENV:'production',HOSTNAME:'127.0.0.1',PORT:String(port),DATABASE_PATH:relative(web,dbPath),DOWNLOAD_PATH:relative(web,download),PUBLIC_URL:'',NEXT_TELEMETRY_DISABLED:'1'},stdio:['ignore','pipe','pipe']});
@@ -47,7 +47,7 @@ test('Next production preserves existing accounts and device keys, serves all pa
   for(const [page,title] of [['/mentions-legales','Mentions légales'],['/confidentialite','Confidentialité'],['/cookies','Cookies et stockage local'],['/conditions-utilisation','Conditions d’utilisation']]) {
     const response=await fetch(url+page);assert.equal(response.status,200,page);const html=await response.text();
     assert.ok(html.includes('<h1>'+title+'</h1>'),page);
-    assert.ok(html.includes('mailto:contact@lux-audere.com'),page);
+    assert.ok(html.includes('mailto:contact@genshin-tracker.com'),page);
     for(const href of ['/mentions-legales','/confidentialite','/cookies','/conditions-utilisation'])assert.ok(html.includes('href="'+href+'"'),page+' missing '+href);
     assert.ok(!/À (?:compléter|renseigner)|\[SIRET\]/i.test(html),'Unfinished legal page');
   }

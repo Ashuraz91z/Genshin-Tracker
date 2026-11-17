@@ -21,7 +21,7 @@ test('trial grants access, expiry locks the account, checkout + confirm unlock i
   let cookie,userId;
   const call=async(path,method='GET',data)=>{const r=await api.handle(new Request('http://localhost'+path,{method,headers:{host:'localhost',origin:'http://localhost',...(cookie?{cookie}:{}),...(data?{'content-type':'application/json'}:{})},body:data&&JSON.stringify(data)}));
     const setCookie=r.headers.get('set-cookie');if(setCookie)cookie=setCookie.split(';')[0];return {status:r.status,body:await r.json()};};
-  await call('/api/register','POST',{name:'Abonne',password:'long-enough-password'});
+  await call('/api/register','POST',{name:'Abonne',password:'long-enough-password',email:'abonne@example.com'});
   userId=api.store.db.prepare('SELECT id FROM users').get().id;
   let account=await call('/api/account');
   assert.equal(account.body.billing.trial,true);assert.ok(account.body.data);
@@ -37,7 +37,7 @@ test('trial grants access, expiry locks the account, checkout + confirm unlock i
   const checkout=await call('/api/billing/checkout','POST',{plan:'year'});
   assert.equal(checkout.body.url,'https://checkout.stripe.com/c/pay/cs_test');
   const params=calls.find(c=>c[1]==='checkout/sessions')[2];
-  assert.equal(params.client_reference_id,userId);assert.equal(params.subscription_data.metadata.user_id,userId);assert.equal(params.line_items[0].price,'price_1Ucn6rRgFbPfVITSjwOsIRzx');
+  assert.equal(params.client_reference_id,userId);assert.equal(params.subscription_data.metadata.user_id,userId);assert.equal(params.line_items[0].price,'price_1Ucn6rRgFbPfVITSjwOsIRzx');assert.equal(params.customer_email,'abonne@example.com');
 
   assert.equal((await call('/api/billing/confirm','POST',{session:'cs_ok'})).body.billing.subscribed,true);
   account=await call('/api/account');assert.ok(account.body.data);assert.equal(account.body.billing.plan,'month');

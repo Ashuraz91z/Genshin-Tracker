@@ -4,12 +4,13 @@ import { Readable } from 'node:stream';
 import { dirname, resolve, join } from 'node:path';
 import { prepareDatabase } from './storage.mjs';
 import { need } from './scan.mjs';
+import { createMailer, mails } from './mail.mjs';
 import { openStore, Problem, secret } from '../store.mjs';
 import { billingView, pickSubscription, prices, stripeClient, subscriptionState } from './billing.mjs';
 
 const securityHeaders={'X-Content-Type-Options':'nosniff','Referrer-Policy':'same-origin','X-Frame-Options':'DENY',
   'Content-Security-Policy':"default-src 'none'; script-src 'self'; frame-ancestors 'none'; base-uri 'none'"};
-export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',download=resolve('../dist/GenshinTracker-KameraFR-0.4.1.zip'),publicDirectory=resolve('public'),stripe=stripeClient(process.env.STRIPE_SECRET_KEY)}={}) {
+export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',download=resolve('../dist/GenshinTracker-KameraFR-0.4.1.zip'),publicDirectory=resolve('public'),stripe=stripeClient(process.env.STRIPE_SECRET_KEY),mailer=createMailer()}={}) {
   const publicOrigin=publicUrl?new URL(publicUrl).origin:null;
   if(publicOrigin && !publicOrigin.startsWith('https://') && !/^http:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/.test(publicOrigin))throw new Error('PUBLIC_URL doit utiliser HTTPS hors localhost.');
   mkdirSync(dirname(dbPath),{recursive:true,mode:0o700});
@@ -32,6 +33,11 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
     }
     return view;
   }
+  async function sendMail(to,mail) {
+    if(!mailer){console.info('[mail] SMTP non configuré, message non envoyé :',mail.subject);return;}
+    try{await mailer({to,...mail});}catch(error){console.error('[mail]',error.message);}
+  }
+  const sendVerification=(user,email,origin)=>sendMail(email,mails.verify(user.name,origin+'/api/email/verify?token='+store.issueToken(user.id,'verify',2*864e5)));
   const paid=async userId=>{if(!(await billing(userId)).active)throw new Problem('Votre essai gratuit est terminé. Choisissez une formule pour continuer.',402);};
   const cookie=(token,remove=false)=>`gt_session=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${remove?0:604800}${secure?'; Secure':''}`;
   async function handle(request) {
@@ -59,13 +65,48 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
       const limit=(key,max)=>{const previous=rates.get(key),rate=previous&&previous.until>Date.now()?previous:{count:0,until:Date.now()+600000};
         if(++rate.count>max)throw new Problem('Trop de tentatives. Réessayez dans dix minutes.',429);if(rates.size>10000)rates.clear();rates.set(key,rate);};
       const limitLogin=input=>limit(path+':'+String(input?.name??'').trim().toLowerCase(),10);
-      if(method==='POST' && ['/api/register','/api/login','/api/device/pair','/api/device/login'].includes(path))limit(path,path.endsWith('/login')?300:30);
+      if(method==='POST' && ['/api/register','/api/login','/api/device/pair','/api/device/login','/api/password/forgot'].includes(path))limit(path,path.endsWith('/login')?300:30);
       if(method==='POST' && ['/api/register','/api/login'].includes(path)) {
-        const input=await body();if(path==='/api/login')limitLogin(input);const account=path==='/api/register'?store.register(input.name,input.password):store.login(input.name,input.password);
+        const input=await body();if(path==='/api/login')limitLogin(input);const account=path==='/api/register'?store.register(input.name,input.password,input.email,input.newsletter):store.login(input.name,input.password);
+        if(path==='/api/register')await sendVerification(account,store.profile(account.id).email,origin);
         return json(200,{user:{name:account.name}},{'Set-Cookie':cookie(store.session(account))});
       }
       if(method==='POST' && path==='/api/logout'){store.logout(session);return json(200,{ok:true},{'Set-Cookie':cookie('',true)});}
       if(method==='GET' && path==='/api/account'){const u=requireUser(),plan=await billing(u.id);return json(200,plan.active?{...store.account(u),billing:plan}:{user:{name:u.name},billing:plan,locked:true});}
+      if(method==='POST' && path==='/api/account/email') {
+        const u=requireUser(),input=await body(),current=store.profile(u.id);
+        if(typeof input.email==='string'&&input.email.trim().toLowerCase()!==current.email) {
+          // A stolen session must not be enough to redirect password resets to another inbox.
+          if(current.email)store.login(u.name,input.password??'');
+          await sendVerification(u,store.setEmail(u.id,input.email),origin);
+        }
+        if(typeof input.newsletter==='boolean')store.setNewsletter(u.id,input.newsletter);
+        return json(200,{profile:store.profile(u.id)});
+      }
+      if(method==='POST' && path==='/api/email/resend') {
+        const u=requireUser(),profile=store.profile(u.id);limit('resend:'+u.id,3);
+        if(!profile.email||profile.emailVerified)throw new Problem('Aucune adresse à confirmer.',409);
+        await sendVerification(u,profile.email,origin);return json(200,{ok:true});
+      }
+      if(method==='GET' && path==='/api/email/verify') {
+        const userId=store.useToken(new URL(request.url).searchParams.get('token'),'verify');
+        if(userId)store.verifyEmail(userId);
+        return Response.redirect(origin+'/app?email='+(userId?'ok':'expire'),303);
+      }
+      if(method==='POST' && path==='/api/password/forgot') {
+        const input=await body(),target=store.userByEmail(input.email);
+        limit('forgot:'+String(input.email??'').trim().toLowerCase(),3);
+        if(target)await sendMail(target.email,mails.reset(target.name,origin+'/mot-de-passe?token='+store.issueToken(target.id,'reset',36e5)));
+        // Same answer whether or not the address exists.
+        return json(200,{ok:true});
+      }
+      if(method==='POST' && path==='/api/password/reset') {
+        const input=await body();
+        need(typeof input.password==='string'&&input.password.length>=8&&input.password.length<=128,'Mot de passe : 8 à 128 caractères.');
+        const userId=store.useToken(input.token,'reset');
+        if(!userId)throw new Problem('Lien expiré ou déjà utilisé. Refaites une demande.',400);
+        store.resetPassword(userId,input.password);return json(200,{ok:true});
+      }
       if(method==='POST' && path.startsWith('/api/billing/')) {
         const u=requireUser(),input=await body();
         if(!stripe)throw new Problem('Le paiement n’est pas configuré sur ce serveur.',404);
@@ -73,7 +114,7 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
         if(path==='/api/billing/checkout') {
           need(Object.hasOwn(prices,input.plan),'Formule inconnue.');
           if(billingView(row).subscribed)throw new Problem('Vous êtes déjà abonné. Gérez votre formule depuis votre compte.',409);
-          const session=await stripe('POST','checkout/sessions',{mode:'subscription',locale:'fr',line_items:[{price:prices[input.plan],quantity:1}],client_reference_id:u.id,customer:row.stripe_customer??undefined,
+          const session=await stripe('POST','checkout/sessions',{mode:'subscription',locale:'fr',line_items:[{price:prices[input.plan],quantity:1}],client_reference_id:u.id,customer:row.stripe_customer??undefined,customer_email:row.stripe_customer?undefined:store.profile(u.id).email??undefined,
             subscription_data:{metadata:{user_id:u.id},trial_end:Date.parse(row.trial_ends)-Date.now()>2*864e5?Math.floor(Date.parse(row.trial_ends)/1000):undefined},allow_promotion_codes:true,success_url:origin+'/app?abonnement=ok&session={CHECKOUT_SESSION_ID}',cancel_url:origin+'/app',
             custom_text:{submit:{message:'Abonnement sans engagement, résiliable à tout moment depuis votre compte. En vous abonnant, vous acceptez les conditions d’utilisation de Genshin Tracker.'}}});
           return json(200,{url:session.url});
