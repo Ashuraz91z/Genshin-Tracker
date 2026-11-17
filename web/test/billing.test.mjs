@@ -21,7 +21,7 @@ test('trial grants access, expiry locks the account, checkout + confirm unlock i
   let cookie,userId;
   const call=async(path,method='GET',data)=>{const r=await api.handle(new Request('http://localhost'+path,{method,headers:{host:'localhost',origin:'http://localhost',...(cookie?{cookie}:{}),...(data?{'content-type':'application/json'}:{})},body:data&&JSON.stringify(data)}));
     const setCookie=r.headers.get('set-cookie');if(setCookie)cookie=setCookie.split(';')[0];return {status:r.status,body:await r.json()};};
-  await call('/api/register','POST',{name:'Abonne',password:'long-enough-password',email:'abonne@example.com'});
+  await call('/api/register','POST',{name:'Abonne',password:'long-enough-password',email:'abonne@example.com',terms:true});
   userId=api.store.db.prepare('SELECT id FROM users').get().id;
   let account=await call('/api/account');
   assert.equal(account.body.billing.trial,true);assert.ok(account.body.data);

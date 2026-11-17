@@ -21,7 +21,7 @@ async function setup(t) {
     const response=await fetch(url+path,{method,headers:{...(cookie?{Cookie:cookie}:{}),...(token?{Authorization:'Bearer '+token}:{}),...(origin?{Origin:url}:{}),...(data!==undefined?{'Content-Type':'application/json'}:{})},body:data===undefined?undefined:JSON.stringify(data)});
     return {status:response.status,body:await response.json(),cookie:response.headers.get('set-cookie')?.split(';')[0],headers:response.headers};
   };
-  async function register(name){const res=await request('/api/register',{method:'POST',data:{name,password:'a-test-password-at-least-12',email:name.toLowerCase().replace(/[^a-z0-9]/g,'')+'@example.com'}});assert.equal(res.status,200);return res.cookie;}
+  async function register(name){const res=await request('/api/register',{method:'POST',data:{name,password:'a-test-password-at-least-12',email:name.toLowerCase().replace(/[^a-z0-9]/g,'')+'@example.com',terms:true}});assert.equal(res.status,200);return res.cookie;}
   async function pair(cookie){const code=await request('/api/pair',{method:'POST',cookie,data:{}});return request('/api/device/pair',{method:'POST',origin:false,data:{code:code.body.code,deviceName:'PC de test'}});}
   return {...app,request,register,pair,dbPath};
 }
@@ -88,9 +88,9 @@ test('SQLite records survive opening a second store on the same database',async 
 
  test('registration accepts six characters, rejects five and preserves login',async t=>{
   const {request}=await setup(t);
-  assert.equal((await request('/api/register',{method:'POST',data:{name:'Court',password:'1234567',email:'court@example.com'}})).status,400);
-  assert.equal((await request('/api/register',{method:'POST',data:{name:'SixChars',password:'12345678',email:'six@example.com'}})).status,200);
-  assert.equal((await request('/api/login',{method:'POST',data:{name:'SixChars',password:'12345678',email:'six@example.com'}})).status,200);
+  assert.equal((await request('/api/register',{method:'POST',data:{name:'Court',password:'1234567',email:'court@example.com',terms:true}})).status,400);
+  assert.equal((await request('/api/register',{method:'POST',data:{name:'SixChars',password:'12345678',email:'six@example.com',terms:true}})).status,200);
+  assert.equal((await request('/api/login',{method:'POST',data:{name:'SixChars',password:'12345678',email:'six@example.com',terms:true}})).status,200);
 });
 
 test('guest GOOD import validates all categories locally and replaces rather than merges',()=>{

@@ -4,6 +4,7 @@ import { createHash, randomBytes, scryptSync, timingSafeEqual } from 'node:crypt
 export const hash = value => createHash('sha256').update(value).digest('hex');
 export const secret = () => randomBytes(32).toString('base64url');
 export const trialDays = 14;
+export const termsVersion = '2026-11-17';
 function validEmail(email) {
   need(typeof email==='string' && email.trim().length<=254 && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim()),'Adresse e-mail invalide.');
   return email.trim().toLowerCase();
@@ -23,7 +24,7 @@ export function openStore(path) {
     CREATE TABLE IF NOT EXISTS scans(user_id TEXT REFERENCES users(id),scan_id TEXT,captured TEXT,received TEXT,device TEXT,report TEXT,counts TEXT,applied TEXT,PRIMARY KEY(user_id,scan_id));`);
   db.exec('CREATE TABLE IF NOT EXISTS customizations(user_id TEXT PRIMARY KEY REFERENCES users(id),data TEXT NOT NULL)');
   db.exec('CREATE TABLE IF NOT EXISTS tokens(hash TEXT PRIMARY KEY,user_id TEXT REFERENCES users(id),kind TEXT,expires INTEGER)');
-  for(const column of ['email TEXT','email_verified INTEGER DEFAULT 0','newsletter INTEGER DEFAULT 0','newsletter_at TEXT','trial_ends TEXT','stripe_customer TEXT','stripe_subscription TEXT','sub_status TEXT','sub_plan TEXT','sub_until INTEGER','sub_checked INTEGER'])
+  for(const column of ['terms_at TEXT','terms_version TEXT','email TEXT','email_verified INTEGER DEFAULT 0','newsletter INTEGER DEFAULT 0','newsletter_at TEXT','trial_ends TEXT','stripe_customer TEXT','stripe_subscription TEXT','sub_status TEXT','sub_plan TEXT','sub_until INTEGER','sub_checked INTEGER'])
     try{db.exec('ALTER TABLE users ADD COLUMN '+column);}catch(error){if(!/duplicate column/.test(error.message))throw error;}
   db.exec('CREATE UNIQUE INDEX IF NOT EXISTS users_email ON users(email COLLATE NOCASE) WHERE email IS NOT NULL');
   // Accounts created before billing existed get a full trial from the day billing ships.
@@ -91,6 +92,7 @@ export function openStore(path) {
       db.prepare('UPDATE users SET email=?,email_verified=CASE WHEN email=? COLLATE NOCASE THEN email_verified ELSE 0 END WHERE id=?').run(email,email,userId);
       return email;
     },
+    acceptTerms(userId) { db.prepare('UPDATE users SET terms_at=?,terms_version=? WHERE id=?').run(now(),termsVersion,userId); },
     setNewsletter(userId,value) { db.prepare('UPDATE users SET newsletter=?,newsletter_at=? WHERE id=?').run(value?1:0,now(),userId); },
     userByEmail(email) { return typeof email==='string'?db.prepare('SELECT id,name,email FROM users WHERE email=?').get(email.trim().toLowerCase()):null; },
     issueToken(userId,kind,ttl) { db.prepare('DELETE FROM tokens WHERE (user_id=? AND kind=?) OR expires<?').run(userId,kind,Date.now());const token=secret();db.prepare('INSERT INTO tokens VALUES(?,?,?,?)').run(hash(token),userId,kind,Date.now()+ttl);return token; },

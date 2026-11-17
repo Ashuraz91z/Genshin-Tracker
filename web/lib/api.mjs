@@ -67,7 +67,10 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
       const limitLogin=input=>limit(path+':'+String(input?.name??'').trim().toLowerCase(),10);
       if(method==='POST' && ['/api/register','/api/login','/api/device/pair','/api/device/login','/api/password/forgot'].includes(path))limit(path,path.endsWith('/login')?300:30);
       if(method==='POST' && ['/api/register','/api/login'].includes(path)) {
-        const input=await body();if(path==='/api/login')limitLogin(input);const account=path==='/api/register'?store.register(input.name,input.password,input.email,input.newsletter):store.login(input.name,input.password);
+        const input=await body();if(path==='/api/login')limitLogin(input);
+        if(path==='/api/register')need(input.terms===true,'Acceptez les conditions d’utilisation pour créer un compte.');
+        const account=path==='/api/register'?store.register(input.name,input.password,input.email,input.newsletter):store.login(input.name,input.password);
+        if(path==='/api/register'){store.acceptTerms(account.id);}
         if(path==='/api/register')await sendVerification(account,store.profile(account.id).email,origin);
         return json(200,{user:{name:account.name}},{'Set-Cookie':cookie(store.session(account))});
       }
@@ -82,6 +85,12 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
         }
         if(typeof input.newsletter==='boolean')store.setNewsletter(u.id,input.newsletter);
         return json(200,{profile:store.profile(u.id)});
+      }
+      if(method==='POST' && path==='/api/account/password') {
+        const u=requireUser(),input=await body();limit('password:'+u.id,10);
+        store.login(u.name,input.current??'');store.resetPassword(u.id,input.password);
+        // Every other session is closed; this browser gets a fresh one.
+        return json(200,{ok:true},{'Set-Cookie':cookie(store.session(u))});
       }
       if(method==='POST' && path==='/api/email/resend') {
         const u=requireUser(),profile=store.profile(u.id);limit('resend:'+u.id,3);
