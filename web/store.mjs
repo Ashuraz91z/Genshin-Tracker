@@ -3,6 +3,7 @@ import { createHash, randomBytes, scryptSync, timingSafeEqual } from 'node:crypt
 
 export const hash = value => createHash('sha256').update(value).digest('hex');
 export const secret = () => randomBytes(32).toString('base64url');
+export const trialDays = 14;
 import { Problem, need, validateScan } from './lib/scan.mjs';
 import { emptyCustomization, projectInventory, validateArtifactEdit, validateTeam } from './lib/customization.mjs';
 export { Problem, validateScan } from './lib/scan.mjs';
@@ -17,6 +18,10 @@ export function openStore(path) {
     CREATE TABLE IF NOT EXISTS accounts(user_id TEXT PRIMARY KEY REFERENCES users(id),data TEXT NOT NULL);
     CREATE TABLE IF NOT EXISTS scans(user_id TEXT REFERENCES users(id),scan_id TEXT,captured TEXT,received TEXT,device TEXT,report TEXT,counts TEXT,applied TEXT,PRIMARY KEY(user_id,scan_id));`);
   db.exec('CREATE TABLE IF NOT EXISTS customizations(user_id TEXT PRIMARY KEY REFERENCES users(id),data TEXT NOT NULL)');
+  for(const column of ['trial_ends TEXT','stripe_customer TEXT','stripe_subscription TEXT','sub_status TEXT','sub_plan TEXT','sub_until INTEGER','sub_checked INTEGER'])
+    try{db.exec('ALTER TABLE users ADD COLUMN '+column);}catch(error){if(!/duplicate column/.test(error.message))throw error;}
+  // Accounts created before billing existed get a full trial from the day billing ships.
+  db.prepare('UPDATE users SET trial_ends=? WHERE trial_ends IS NULL').run(new Date(Date.now()+trialDays*864e5).toISOString());
   const customization=userId=>{const row=db.prepare('SELECT data FROM customizations WHERE user_id=?').get(userId);return row?JSON.parse(row.data):emptyCustomization();};
   const saveCustomization=(userId,value)=>db.prepare('INSERT INTO customizations VALUES(?,?) ON CONFLICT(user_id) DO UPDATE SET data=excluded.data').run(userId,JSON.stringify(value));
   const now=()=>new Date().toISOString();
@@ -25,11 +30,11 @@ export function openStore(path) {
     db, close:()=>db.close(),
     register(name,password) {
       need(typeof name==='string' && /^[\p{L}\p{N}_ -]{3,32}$/u.test(name.trim()),'Pseudo : 3 à 32 lettres, chiffres, espaces ou tirets.');
-      need(typeof password==='string' && password.length>=6 && password.length<=128,'Mot de passe : 6 à 128 caractères.');
+      need(typeof password==='string' && password.length>=8 && password.length<=128,'Mot de passe : 8 à 128 caractères.');
       name=name.trim();
       if(db.prepare('SELECT id FROM users WHERE name=?').get(name)) throw new Problem('Ce pseudo est déjà utilisé.',409);
       const id=secret(), salt=secret(),digest=scryptSync(password,salt,64).toString('hex');
-      db.prepare('INSERT INTO users VALUES(?,?,?,?,?)').run(id,name,salt,digest,now());
+      db.prepare('INSERT INTO users(id,name,salt,password,created,trial_ends) VALUES(?,?,?,?,?,?)').run(id,name,salt,digest,now(),new Date(Date.now()+trialDays*864e5).toISOString());
       return {id,name};
     },
     login(name,password) {
@@ -39,7 +44,7 @@ export function openStore(path) {
       if(!user || !timingSafeEqual(digest,Buffer.from(user.password,'hex'))) throw new Problem('Pseudo ou mot de passe incorrect.',401);
       return {id:user.id,name:user.name};
     },
-    session(user) { const token=secret(); db.prepare('INSERT INTO sessions VALUES(?,?,?)').run(hash(token),user.id,Date.now()+7*864e5);return token; },
+    session(user) { const token=secret(); db.prepare('DELETE FROM sessions WHERE expires<?').run(Date.now()); db.prepare('INSERT INTO sessions VALUES(?,?,?)').run(hash(token),user.id,Date.now()+7*864e5);return token; },
     user(token) { return token?db.prepare('SELECT u.id,u.name FROM users u JOIN sessions s ON u.id=s.user_id WHERE s.hash=? AND s.expires>?').get(hash(token),Date.now()):null; },
     logout(token) { db.prepare('DELETE FROM sessions WHERE hash=?').run(hash(token??'')); },
     pair(user) {
@@ -71,6 +76,11 @@ export function openStore(path) {
       return {token,deviceId:id,accountId:user.id,username:user.name};
     },
     device(token) { return token?db.prepare('SELECT id,user_id,name FROM devices WHERE token=?').get(hash(token)):null; },
+    billing(userId) { return db.prepare('SELECT trial_ends,stripe_customer,stripe_subscription,sub_status,sub_plan,sub_until,sub_checked FROM users WHERE id=?').get(userId); },
+    checkedBilling(userId) { db.prepare('UPDATE users SET sub_checked=? WHERE id=?').run(Date.now(),userId); },
+    setBilling(userId,{customer=null,subscription=null,status=null,plan=null,until=null}) {
+      db.prepare('UPDATE users SET stripe_customer=COALESCE(?,stripe_customer),stripe_subscription=?,sub_status=?,sub_plan=?,sub_until=?,sub_checked=? WHERE id=?').run(customer,subscription,status,plan,until,Date.now(),userId);
+    },
     revoke(user,id) { db.prepare('DELETE FROM devices WHERE id=? AND user_id=?').run(id,user.id); },
     account(user) {
       const row=db.prepare('SELECT data FROM accounts WHERE user_id=?').get(user.id);

@@ -1,0 +1,1 @@
+export default function robots(){return {rules:{userAgent:'*',allow:'/',disallow:['/api/','/app','/characters','/inventory','/teams','/advice','/collection','/sync']},sitemap:'https://genshin.lux-audere.com/sitemap.xml'};}

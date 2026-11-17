@@ -88,9 +88,9 @@ test('SQLite records survive opening a second store on the same database',async 
 
  test('registration accepts six characters, rejects five and preserves login',async t=>{
   const {request}=await setup(t);
-  assert.equal((await request('/api/register',{method:'POST',data:{name:'Court',password:'12345'}})).status,400);
-  assert.equal((await request('/api/register',{method:'POST',data:{name:'SixChars',password:'123456'}})).status,200);
-  assert.equal((await request('/api/login',{method:'POST',data:{name:'SixChars',password:'123456'}})).status,200);
+  assert.equal((await request('/api/register',{method:'POST',data:{name:'Court',password:'1234567'}})).status,400);
+  assert.equal((await request('/api/register',{method:'POST',data:{name:'SixChars',password:'12345678'}})).status,200);
+  assert.equal((await request('/api/login',{method:'POST',data:{name:'SixChars',password:'12345678'}})).status,200);
 });
 
 test('guest GOOD import validates all categories locally and replaces rather than merges',()=>{
