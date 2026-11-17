@@ -48,6 +48,6 @@ export default function Settings({account,busy,initialTab,onClose,onSaveEmail,on
         <p className="muted">Paiement et factures gérés par Stripe. <Link href="/conditions-utilisation" onClick={onClose}>Conditions</Link></p></section>}
       {tab==='display'&&<Display/>}
     </div>
-    {account&&<div className="settings-footer"><button className="text-button" onClick={onLogout}>{account.guest?'Effacer la session visiteur':'Se déconnecter'}</button></div>}
+    {account&&<div className="settings-footer"><span className="settings-links"><Link className="text-button" href="/aide" onClick={onClose}>Aide et contact</Link>{account.user.admin&&<Link className="text-button" href="/admin">Administration ↗</Link>}</span><button className="text-button" onClick={onLogout}>{account.guest?'Effacer la session visiteur':'Se déconnecter'}</button></div>}
   </Modal>;
 }

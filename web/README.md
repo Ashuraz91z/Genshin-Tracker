@@ -68,6 +68,8 @@ Pour une installation Node sans Docker : dossier de travail `web`, installation 
 | `PUBLIC_URL` | Origine publique exacte, par exemple `https://genshin.example.com` |
 | `DATABASE_PATH` | Chemin absolu vers le SQLite persistant |
 | `DOWNLOAD_PATH` | Chemin absolu vers le ZIP Kamera FR proposé au téléchargement |
+| `ADMIN_EMAILS` | E-mails confirmés des administrateurs (panel `/admin`), séparés par des virgules |
+| `SUPPORT_EMAIL` | Destinataire des demandes de `/aide` (par défaut `contact@genshin-tracker.com`) |
 
 Le mode `npm start` lance le serveur standalone avec `HOSTNAME` (par défaut `0.0.0.0`, ou la valeur de l’ancien `HOST` si elle est définie) et le port `PORT` (3000 par défaut) ; placer un reverse proxy HTTPS devant et limiter l'accès direct au port. Le mode dev écoute uniquement sur `127.0.0.1`. Le lanceur conserve explicitement le chemin `web/data/tracker.sqlite`, même si le serveur standalone change de dossier de travail. Les chemins `DATABASE_PATH` et `DOWNLOAD_PATH` relatifs sont résolus par rapport à `web/`, comme avant la migration.
 

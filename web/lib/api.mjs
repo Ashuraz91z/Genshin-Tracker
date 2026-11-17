@@ -10,7 +10,7 @@ import { billingView, pickSubscription, prices, stripeClient, subscriptionState 
 
 const securityHeaders={'X-Content-Type-Options':'nosniff','Referrer-Policy':'same-origin','X-Frame-Options':'DENY',
   'Content-Security-Policy':"default-src 'none'; script-src 'self'; frame-ancestors 'none'; base-uri 'none'"};
-export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',download=resolve('../dist/GenshinTracker-KameraFR-0.4.1.zip'),publicDirectory=resolve('public'),stripe=stripeClient(process.env.STRIPE_SECRET_KEY),mailer=createMailer()}={}) {
+export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',download=resolve('../dist/GenshinTracker-KameraFR-0.4.1.zip'),publicDirectory=resolve('public'),stripe=stripeClient(process.env.STRIPE_SECRET_KEY),mailer=createMailer(),adminEmails=process.env.ADMIN_EMAILS??'',supportEmail=process.env.SUPPORT_EMAIL??'contact@genshin-tracker.com'}={}) {
   const publicOrigin=publicUrl?new URL(publicUrl).origin:null;
   if(publicOrigin && !publicOrigin.startsWith('https://') && !/^http:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/.test(publicOrigin))throw new Error('PUBLIC_URL doit utiliser HTTPS hors localhost.');
   mkdirSync(dirname(dbPath),{recursive:true,mode:0o700});
@@ -39,8 +39,11 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
   }
   const sendVerification=(user,email,origin)=>sendMail(email,mails.verify(user.name,origin+'/api/email/verify?token='+store.issueToken(user.id,'verify',2*864e5)));
   const paid=async userId=>{if(!(await billing(userId)).active)throw new Problem('Votre essai gratuit est terminé. Choisissez une formule pour continuer.',402);};
+  // Admins are listed by e-mail and must have confirmed it: a pseudo could be registered by anyone first.
+  const admins=new Set(adminEmails.split(',').map(x=>x.trim().toLowerCase()).filter(Boolean));
+  const isAdmin=u=>{if(!u||!admins.size)return false;const p=store.profile(u.id);return p.emailVerified&&admins.has(p.email);};
   const cookie=(token,remove=false)=>`gt_session=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${remove?0:604800}${secure?'; Secure':''}`;
-  async function handle(request) {
+  async function route(request,ctx) {
     try {
       const path=new URL(request.url).pathname,method=request.method,host=request.headers.get('host')??new URL(request.url).host;
       if(!publicOrigin && !/^(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/.test(host))throw new Problem('Configurer PUBLIC_URL avant un accès distant.',403);
@@ -50,7 +53,7 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
         if(!['/api/device/pair','/api/device/login','/api/sync'].includes(path) && requestOrigin!==origin)throw new Problem('Origine de requête requise.',403);
       }
       const session=(request.headers.get('cookie')??'').split(';').map(x=>x.trim()).find(x=>x.startsWith('gt_session='))?.slice(11);
-      const user=store.user(session);
+      const user=store.user(session);ctx.userId=user?.id;
       const requireUser=()=>{if(!user)throw new Problem('Connectez-vous pour accéder à votre compte.',401);return user;};
       async function body() {
         if(!(request.headers.get('content-type')??'').startsWith('application/json'))throw new Problem('Format JSON requis.',415);
@@ -70,12 +73,12 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
         const input=await body();if(path==='/api/login')limitLogin(input);
         if(path==='/api/register')need(input.terms===true,'Acceptez les conditions d’utilisation pour créer un compte.');
         const account=path==='/api/register'?store.register(input.name,input.password,input.email,input.newsletter):store.login(input.name,input.password);
-        if(path==='/api/register'){store.acceptTerms(account.id);}
+        ctx.userId=account.id;if(path==='/api/register'){store.acceptTerms(account.id);}
         if(path==='/api/register')await sendVerification(account,store.profile(account.id).email,origin);
         return json(200,{user:{name:account.name}},{'Set-Cookie':cookie(store.session(account))});
       }
       if(method==='POST' && path==='/api/logout'){store.logout(session);return json(200,{ok:true},{'Set-Cookie':cookie('',true)});}
-      if(method==='GET' && path==='/api/account'){const u=requireUser(),plan=await billing(u.id);return json(200,plan.active?{...store.account(u),billing:plan}:{user:{name:u.name},billing:plan,locked:true});}
+      if(method==='GET' && path==='/api/account'){const u=requireUser(),plan=await billing(u.id);const admin=isAdmin(u);if(!plan.active)return json(200,{user:{name:u.name,admin},billing:plan,locked:true});const account=store.account(u);return json(200,{...account,user:{...account.user,admin},billing:plan});}
       if(method==='POST' && path==='/api/account/email') {
         const u=requireUser(),input=await body(),current=store.profile(u.id);
         if(typeof input.email==='string'&&input.email.trim().toLowerCase()!==current.email) {
@@ -158,7 +161,7 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
       if(method==='POST' && path==='/api/sync') {
         const authorization=request.headers.get('authorization')??'',device=store.device(authorization.startsWith('Bearer ')?authorization.slice(7):null);
         if(!device)throw new Problem('Appareil non associé ou accès révoqué.',401);
-        await paid(device.user_id);
+        ctx.userId=device.user_id;await paid(device.user_id);
         return json(200,store.sync(device.user_id,device.name,await body(),device.id));
       }
       if(method==='POST' && path==='/api/import'){const u=requireUser();await paid(u.id);const input=await body();input.scanId??=secret();input.capturedAt??=new Date().toISOString();return json(200,store.sync(u.id,'Import manuel',input,undefined,input.replaceInventory===true));}
@@ -166,6 +169,58 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
       if(method==='DELETE'&&/^\/api\/manual-artifacts\/[^/]+$/.test(path)){await paid(requireUser().id);return json(200,store.removeArtifact(user,decodeURIComponent(path.split('/').pop())));}
       if(method==='POST'&&path==='/api/teams'){await paid(requireUser().id);return json(200,store.saveTeam(user,await body()));}
       if(method==='DELETE'&&/^\/api\/teams\/[^/]+$/.test(path)){await paid(requireUser().id);return json(200,store.removeTeam(user,decodeURIComponent(path.split('/').pop())));}
+      if(method==='POST' && path==='/api/events') {
+        const input=await body();limit('events:'+(user?.id??'guest'),2000);
+        need(Array.isArray(input.events)&&input.events.length<=50,'Événements invalides.');
+        for(const e of input.events)if(['click','page','error'].includes(e?.kind)&&typeof e.name==='string'&&e.name)store.record(user?.id,e.kind,e.name,null,typeof e.detail==='string'?e.detail:null);
+        return json(200,{ok:true});
+      }
+      if(path==='/api/support' && method==='GET')return json(200,{tickets:store.tickets(requireUser().id)});
+      if(path==='/api/support' && method==='POST') {
+        const input=await body();limit('support:'+(user?.id??'guest'),user?5:30);
+        if(input.website)return json(200,{ok:true}); // honeypot field, invisible to people
+        const ticket=store.openTicket({userId:user?.id??null,name:user?.name??input.name,email:(user&&store.profile(user.id).email)||input.email,subject:input.subject,body:input.body});
+        await sendMail(supportEmail,mails.ticket(ticket,input.body.trim(),origin+'/admin?ticket='+ticket.id));
+        return json(200,{ok:true,email:ticket.email});
+      }
+      if(method==='POST' && /^\/api\/support\/[^/]+$/.test(path)) {
+        const u=requireUser(),input=await body(),ticket=store.ticket(decodeURIComponent(path.split('/').pop()));limit('support:'+u.id,10);
+        if(ticket?.user_id!==u.id)throw new Problem('Demande introuvable.',404);
+        store.reply(ticket.id,'user',input.body,'open');
+        await sendMail(supportEmail,mails.ticket(ticket,String(input.body).trim(),origin+'/admin?ticket='+ticket.id));
+        return json(200,{tickets:store.tickets(u.id)});
+      }
+      if(path==='/api/admin'||path.startsWith('/api/admin/')) {
+        const u=requireUser();if(!isAdmin(u))throw new Problem('Accès réservé à l’administration.',403);
+        if(method==='GET'&&path==='/api/admin') {
+          // Pull payment failures from Stripe so the list is fresh even for users who have not come back.
+          let stripeError=null;
+          if(stripe)try{
+            const seen=new Set(),bad=['past_due','unpaid','incomplete'];
+            for(const status of bad)for(const s of (await stripe('GET','subscriptions',{status,limit:100})).data){const id=s.metadata?.user_id;if(id&&store.billing(id)){store.setBilling(id,subscriptionState(s));seen.add(id);}}
+            for(const row of store.db.prepare(`SELECT id,stripe_subscription FROM users WHERE sub_status IN ('past_due','unpaid','incomplete')`).all())if(!seen.has(row.id))await refreshBilling(row.id,row.stripe_subscription);
+          }catch(error){stripeError=error.message;}
+          return json(200,{...store.adminOverview(),stripe:!!stripe,stripeError,mail:!!mailer});
+        }
+        const [,,,kind,id]=path.split('/'),target=decodeURIComponent(id??'');
+        if(kind==='tickets'&&id) {
+          const ticket=store.ticket(target);if(!ticket)throw new Problem('Demande introuvable.',404);
+          if(method==='GET')return json(200,ticket);
+          const input=await body();
+          if(input.body!==undefined){store.reply(target,'admin',input.body,'answered');await sendMail(ticket.email,mails.reply(ticket.name,ticket.subject,String(input.body).trim(),origin+'/aide'));}
+          if(input.status!==undefined)store.setTicketStatus(target,input.status);
+          return json(200,store.ticket(target));
+        }
+        if(kind==='users'&&id&&method==='POST') {
+          const input=await body(),row=store.billing(target);if(!row)throw new Problem('Compte introuvable.',404);
+          if(target===u.id&&['disable','delete'].includes(input.action))throw new Problem('Impossible sur votre propre compte.',409);
+          const actions={extend:()=>store.extendTrial(target,input.days),disable:()=>store.setDisabled(target,true),enable:()=>store.setDisabled(target,false),logout:()=>store.closeSessions(target),
+            verify:()=>store.verifyEmail(target),delete:()=>store.deleteUser(target),billing:async()=>{if(!stripe)throw new Problem('Stripe non configuré.',404);await refreshBilling(target,row.stripe_subscription);}};
+          need(Object.hasOwn(actions,input.action),'Action inconnue.');await actions[input.action]();
+          return json(200,{ok:true});
+        }
+        throw new Problem('Route introuvable.',404);
+      }
       if(method==='GET' && path==='/api/catalogue')return new Response(await readFile(join(publicDirectory,'assets/catalogue.json')),{headers:{...securityHeaders,'Content-Type':'application/json','Cache-Control':'public,max-age=3600'}});
       if(method==='GET' && path==='/api/download') {
         const info=await stat(/* turbopackIgnore: true */ download).catch(()=>null);
@@ -175,9 +230,16 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
       }
       throw new Problem('Route introuvable.',404);
     } catch(error) {
-      if(error.status)return json(error.status,{error:error.message});
+      ctx.error=error.message;if(error.status)return json(error.status,{error:error.message});
       console.error('Erreur serveur',error.message);return json(500,{error:'Erreur interne. Vos données précédentes sont conservées.'});
     }
+  }
+  // Every write and every failure is logged as a usage event; reads that succeed (polling) are not.
+  async function handle(request) {
+    const ctx={},response=await route(request,ctx),{pathname}=new URL(request.url);
+    if(pathname!=='/api/events'&&!pathname.startsWith('/api/admin')&&(request.method!=='GET'||response.status>=400))
+      try{store.record(ctx.userId,'api',request.method+' '+pathname.replace(/\/[A-Za-z0-9_-]{20,}/g,'/:id'),response.status,ctx.error);}catch(error){console.error('[events]',error.message);}
+    return response;
   }
   return {handle,store,close:()=>store.close()};
 }

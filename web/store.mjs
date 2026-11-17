@@ -24,7 +24,11 @@ export function openStore(path) {
     CREATE TABLE IF NOT EXISTS scans(user_id TEXT REFERENCES users(id),scan_id TEXT,captured TEXT,received TEXT,device TEXT,report TEXT,counts TEXT,applied TEXT,PRIMARY KEY(user_id,scan_id));`);
   db.exec('CREATE TABLE IF NOT EXISTS customizations(user_id TEXT PRIMARY KEY REFERENCES users(id),data TEXT NOT NULL)');
   db.exec('CREATE TABLE IF NOT EXISTS tokens(hash TEXT PRIMARY KEY,user_id TEXT REFERENCES users(id),kind TEXT,expires INTEGER)');
-  for(const column of ['terms_at TEXT','terms_version TEXT','email TEXT','email_verified INTEGER DEFAULT 0','newsletter INTEGER DEFAULT 0','newsletter_at TEXT','trial_ends TEXT','stripe_customer TEXT','stripe_subscription TEXT','sub_status TEXT','sub_plan TEXT','sub_until INTEGER','sub_checked INTEGER'])
+  // Support threads and usage events keep no foreign key: they outlive a deleted account (user_id set to NULL).
+  db.exec(`CREATE TABLE IF NOT EXISTS events(at INTEGER,user_id TEXT,kind TEXT,name TEXT,status INTEGER,detail TEXT);CREATE INDEX IF NOT EXISTS events_at ON events(at);
+    CREATE TABLE IF NOT EXISTS tickets(id TEXT PRIMARY KEY,user_id TEXT,name TEXT,email TEXT,subject TEXT,status TEXT,created TEXT,updated TEXT);
+    CREATE TABLE IF NOT EXISTS ticket_messages(ticket_id TEXT REFERENCES tickets(id) ON DELETE CASCADE,at TEXT,author TEXT,body TEXT);`);
+  for(const column of ['terms_at TEXT','terms_version TEXT','email TEXT','email_verified INTEGER DEFAULT 0','newsletter INTEGER DEFAULT 0','newsletter_at TEXT','trial_ends TEXT','stripe_customer TEXT','stripe_subscription TEXT','sub_status TEXT','sub_plan TEXT','sub_until INTEGER','sub_checked INTEGER','disabled INTEGER DEFAULT 0'])
     try{db.exec('ALTER TABLE users ADD COLUMN '+column);}catch(error){if(!/duplicate column/.test(error.message))throw error;}
   db.exec('CREATE UNIQUE INDEX IF NOT EXISTS users_email ON users(email COLLATE NOCASE) WHERE email IS NOT NULL');
   // Accounts created before billing existed get a full trial from the day billing ships.
@@ -51,10 +55,11 @@ export function openStore(path) {
       const user=db.prepare('SELECT * FROM users WHERE name=?').get(name.trim());
       const digest=scryptSync(password,user?.salt??'dummy-salt-for-timing',64);
       if(!user || !timingSafeEqual(digest,Buffer.from(user.password,'hex'))) throw new Problem('Pseudo ou mot de passe incorrect.',401);
+      if(user.disabled===1) throw new Problem('Ce compte est suspendu. Écrivez-nous depuis la page Aide et contact.',403);
       return {id:user.id,name:user.name};
     },
     session(user) { const token=secret(); db.prepare('DELETE FROM sessions WHERE expires<?').run(Date.now()); db.prepare('INSERT INTO sessions VALUES(?,?,?)').run(hash(token),user.id,Date.now()+7*864e5);return token; },
-    user(token) { return token?db.prepare('SELECT u.id,u.name FROM users u JOIN sessions s ON u.id=s.user_id WHERE s.hash=? AND s.expires>?').get(hash(token),Date.now()):null; },
+    user(token) { return token?db.prepare('SELECT u.id,u.name FROM users u JOIN sessions s ON u.id=s.user_id WHERE s.hash=? AND s.expires>? AND COALESCE(u.disabled,0)=0').get(hash(token),Date.now()):null; },
     logout(token) { db.prepare('DELETE FROM sessions WHERE hash=?').run(hash(token??'')); },
     pair(user) {
       db.prepare('DELETE FROM pairs WHERE user_id=? OR expires<?').run(user.id,Date.now());
@@ -84,7 +89,7 @@ export function openStore(path) {
       db.prepare('INSERT INTO devices VALUES(?,?,?,?,?,?)').run(id,user.id,name.trim(),hash(token),now(),null);
       return {token,deviceId:id,accountId:user.id,username:user.name};
     },
-    device(token) { return token?db.prepare('SELECT id,user_id,name FROM devices WHERE token=?').get(hash(token)):null; },
+    device(token) { return token?db.prepare('SELECT d.id,d.user_id,d.name FROM devices d JOIN users u ON u.id=d.user_id WHERE d.token=? AND COALESCE(u.disabled,0)=0').get(hash(token)):null; },
     profile(userId) { const row=db.prepare('SELECT email,email_verified,newsletter FROM users WHERE id=?').get(userId);return {email:row.email,emailVerified:row.email_verified===1,newsletter:row.newsletter===1}; },
     setEmail(userId,email) {
       email=validEmail(email);
@@ -112,6 +117,61 @@ export function openStore(path) {
     checkedBilling(userId) { db.prepare('UPDATE users SET sub_checked=? WHERE id=?').run(Date.now(),userId); },
     setBilling(userId,{customer=null,subscription=null,status=null,plan=null,until=null}) {
       db.prepare('UPDATE users SET stripe_customer=COALESCE(?,stripe_customer),stripe_subscription=?,sub_status=?,sub_plan=?,sub_until=?,sub_checked=? WHERE id=?').run(customer,subscription,status,plan,until,Date.now(),userId);
+    },
+    record(userId,kind,name,status=null,detail=null) { db.prepare('INSERT INTO events VALUES(?,?,?,?,?,?)').run(Date.now(),userId??null,kind,String(name).slice(0,120),status,detail==null?null:String(detail).slice(0,500)); },
+    openTicket({userId=null,name,email,subject,body}) {
+      need(typeof subject==='string'&&subject.trim().length>=3&&subject.length<=120,'Sujet : 3 à 120 caractères.');
+      need(typeof body==='string'&&body.trim().length>=10&&body.length<=5000,'Message : 10 à 5000 caractères.');
+      need(typeof name==='string'&&name.trim().length>0&&name.length<=64,'Indiquez votre nom ou pseudo.');
+      const id=secret(),at=now();email=validEmail(email);
+      db.prepare('INSERT INTO tickets VALUES(?,?,?,?,?,?,?,?)').run(id,userId,name.trim(),email,subject.trim(),'open',at,at);
+      db.prepare('INSERT INTO ticket_messages VALUES(?,?,?,?)').run(id,at,'user',body.trim());
+      return {id,email,name:name.trim(),subject:subject.trim()};
+    },
+    ticket(id) { const t=db.prepare('SELECT * FROM tickets WHERE id=?').get(id);return t&&{...t,messages:db.prepare('SELECT at,author,body FROM ticket_messages WHERE ticket_id=? ORDER BY at').all(id)}; },
+    tickets(userId) { return db.prepare('SELECT id FROM tickets WHERE user_id=? ORDER BY updated DESC LIMIT 50').all(userId).map(t=>this.ticket(t.id)); },
+    reply(id,author,body,status) {
+      need(typeof body==='string'&&body.trim().length>0&&body.length<=5000,'Message : 1 à 5000 caractères.');
+      const at=now();db.prepare('INSERT INTO ticket_messages VALUES(?,?,?,?)').run(id,at,author,body.trim());
+      db.prepare('UPDATE tickets SET status=?,updated=? WHERE id=?').run(status,at,id);
+    },
+    setTicketStatus(id,status) { need(['open','answered','closed'].includes(status),'Statut inconnu.');db.prepare('UPDATE tickets SET status=? WHERE id=?').run(status,id); },
+    extendTrial(userId,days) {
+      need(Number.isInteger(days)&&days>=1&&days<=365,'Durée : 1 à 365 jours.');
+      const row=db.prepare('SELECT trial_ends FROM users WHERE id=?').get(userId);
+      db.prepare('UPDATE users SET trial_ends=? WHERE id=?').run(new Date(Math.max(Date.parse(row.trial_ends)||0,Date.now())+days*864e5).toISOString(),userId);
+    },
+    setDisabled(userId,value) { db.prepare('UPDATE users SET disabled=? WHERE id=?').run(value?1:0,userId);if(value)db.prepare('DELETE FROM sessions WHERE user_id=?').run(userId); },
+    closeSessions(userId) { db.prepare('DELETE FROM sessions WHERE user_id=?').run(userId); },
+    deleteUser(userId) {
+      db.exec('BEGIN IMMEDIATE');
+      try {
+        for(const table of ['sessions','pairs','devices','accounts','scans','customizations','tokens','events'])db.prepare(`DELETE FROM ${table} WHERE user_id=?`).run(userId);
+        db.prepare('UPDATE tickets SET user_id=NULL WHERE user_id=?').run(userId);db.prepare('DELETE FROM users WHERE id=?').run(userId);db.exec('COMMIT');
+      } catch(error){db.exec('ROLLBACK');throw error;}
+    },
+    adminOverview() {
+      const day=864e5,since=Date.now()-30*day;
+      db.prepare('DELETE FROM events WHERE at<?').run(Date.now()-90*day);
+      const users=db.prepare(`SELECT u.id,u.name,u.email,u.email_verified,u.newsletter,u.created,u.trial_ends,u.stripe_customer,u.sub_status,u.sub_plan,u.sub_until,COALESCE(u.disabled,0) disabled,
+        (SELECT COUNT(*) FROM devices d WHERE d.user_id=u.id) devices,(SELECT MAX(received) FROM scans s WHERE s.user_id=u.id) last_scan,(SELECT COUNT(*) FROM scans s WHERE s.user_id=u.id) scans,
+        (SELECT MAX(at) FROM events e WHERE e.user_id=u.id) last_seen,(SELECT COUNT(*) FROM events e WHERE e.user_id=u.id AND e.at>? AND (e.status>=400 OR e.kind='error')) problems
+        FROM users u ORDER BY u.created DESC`).all(Date.now()-7*day);
+      const names=Object.fromEntries(users.map(u=>[u.id,u.name]));
+      const errors=db.prepare(`SELECT at,user_id,kind,name,status,detail FROM events WHERE at>? AND (kind='error' OR status>=500 OR (status>=400 AND status NOT IN (401,402,404) AND name NOT LIKE '%/login' AND name NOT LIKE '%/register')) ORDER BY at DESC LIMIT 200`).all(since)
+        .map(e=>({...e,user:names[e.user_id]??null}));
+      const scans=db.prepare('SELECT user_id,scan_id,received,device,report,counts,applied FROM scans ORDER BY received DESC LIMIT 300').all().map(s=>{
+        const report=JSON.parse(s.report),applied=JSON.parse(s.applied),issues=[];
+        if(report.errors?.length)issues.push(report.errors.length+' erreur(s) de lecture');
+        if(report.rejectedArtifacts)issues.push(report.rejectedArtifacts+' artéfact(s) rejeté(s)');
+        if(report.partialCharacters?.length)issues.push(report.partialCharacters.length+' personnage(s) incomplet(s)');
+        for(const [category,value] of Object.entries(applied))if(['empty_scan','older_scan','preserved_previous'].includes(value))issues.push(category+' : '+value);
+        return {user:names[s.user_id]??null,user_id:s.user_id,received:s.received,device:s.device,status:report.status,counts:JSON.parse(s.counts),issues,sample:(report.errors??[]).slice(0,3)};
+      }).filter(s=>s.issues.length).slice(0,100);
+      const usage=db.prepare(`SELECT kind,name,COUNT(*) count,COUNT(DISTINCT user_id) users,MAX(at) last FROM events WHERE at>? AND kind IN ('click','page','api') AND COALESCE(status,200)<400 GROUP BY kind,name ORDER BY count DESC LIMIT 150`).all(since);
+      const daily=db.prepare(`SELECT CAST(at/? AS INTEGER) day,COUNT(DISTINCT user_id) users,COUNT(*) events,SUM(kind='error' OR status>=500) errors FROM events WHERE at>? GROUP BY day ORDER BY day`).all(day,since).map(d=>({...d,day:new Date(d.day*day).toISOString().slice(0,10)}));
+      const tickets=db.prepare('SELECT t.*,(SELECT COUNT(*) FROM ticket_messages m WHERE m.ticket_id=t.id) messages FROM tickets t ORDER BY (status=\'open\') DESC,updated DESC LIMIT 200').all();
+      return {users,errors,scans,usage,daily,tickets};
     },
     revoke(user,id) { db.prepare('DELETE FROM devices WHERE id=? AND user_id=?').run(id,user.id); },
     account(user) {

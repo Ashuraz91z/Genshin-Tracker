@@ -57,6 +57,8 @@ npm start
 | `DOWNLOAD_PATH` | Chemin du ZIP Kamera FR servi au téléchargement, si vous proposez le compagnon. |
 | `PORT` | Port du serveur autonome ; 3000 par défaut. |
 | `HOST` / `HOSTNAME` | Interface d’écoute du serveur. |
+| `ADMIN_EMAILS` | Adresses e-mail (séparées par des virgules) des comptes administrateurs. L’adresse doit être confirmée ; le panel est sur `/admin`. |
+| `SUPPORT_EMAIL` | Boîte qui reçoit les demandes de la page `/aide` ; `contact@genshin-tracker.com` par défaut. |
 
 Le volume SQLite contient les comptes, sessions, appareils associés et inventaires. Gardez le même `DATABASE_PATH` lors d’une mise à jour et effectuez une sauvegarde cohérente. **Ne supprimez pas la base ou le volume Docker pour déployer une nouvelle version.** N’ajoutez ni base utilisateur, ni export privé, ni `.env`, ni secret au dépôt.
 
