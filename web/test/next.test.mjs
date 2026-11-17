@@ -44,6 +44,17 @@ test('Next production preserves existing accounts and device keys, serves all pa
     const sources=[...html.matchAll(/(?:src|href)="([^" ]*\/_next\/(?:static|[^" ]+)[^" ]*)"/g)].map(m=>m[1]);
     assert.ok(sources.length>0);for(const asset of sources.slice(0,4)){const r=await fetch(new URL(asset,url));assert.equal(r.status,200,asset);await r.arrayBuffer();}
   }
+  for(const [page,title] of [['/mentions-legales','Mentions légales'],['/confidentialite','Confidentialité'],['/cookies','Cookies et stockage local'],['/conditions-utilisation','Conditions d’utilisation']]) {
+    const response=await fetch(url+page);assert.equal(response.status,200,page);const html=await response.text();
+    assert.ok(html.includes('<h1>'+title+'</h1>'),page);
+    assert.ok(html.includes('mailto:contact@lux-audere.com'),page);
+    for(const href of ['/mentions-legales','/confidentialite','/cookies','/conditions-utilisation'])assert.ok(html.includes('href="'+href+'"'),page+' missing '+href);
+    assert.ok(!/À (?:compléter|renseigner)|\[SIRET\]/i.test(html),'Unfinished legal page');
+  }
+  for(const page of ['/','/app']) {
+    const html=await (await fetch(url+page)).text();
+    assert.ok(html.includes('href="/confidentialite"'),'Privacy must be accessible before login');
+  }
   assert.equal((await fetch(url+'/not-a-page')).status,404);
   assert.equal((await fetch(url+'/api/not-a-route')).status,404);
   const references=await call('/api/catalogue');assert.equal(references.body.characters.KamisatoAyaka.name,'Kamisato Ayaka');

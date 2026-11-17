@@ -1,0 +1,25 @@
+.shell{max-width:960px;margin:0 auto;padding:28px 32px 40px;min-width:0}
+.header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;padding-bottom:26px;border-bottom:1px solid var(--line)}
+.brand{font-weight:700;letter-spacing:.03em;color:var(--text)}
+.links{display:flex;flex-direction:row;flex-wrap:wrap;gap:8px 20px;align-items:center;font-size:12px;line-height:1.7;min-width:0}
+.links a{color:var(--muted);padding:4px 0}
+.links a:hover,.article a:hover{color:var(--gold)}
+.links a:focus-visible,.article a:focus-visible,.header a:focus-visible{outline:2px solid var(--gold);outline-offset:4px;border-radius:2px}
+.main{padding:42px 0 12px}
+.article{font-size:15px;line-height:1.85;overflow-wrap:anywhere}
+.article h1{font-size:clamp(28px,5vw,42px);line-height:1.2;letter-spacing:-1px;margin:0 0 18px;color:var(--text)}
+.article h2{font-size:21px;line-height:1.4;margin:36px 0 12px;color:var(--text)}
+.article p{margin:12px 0;font-size:inherit;line-height:inherit;max-width:76ch}
+.article ul{padding-left:22px;margin:14px 0;display:grid;gap:8px}
+.article a{color:var(--gold);text-decoration:underline;text-underline-offset:3px}
+.article dl{display:grid;grid-template-columns:190px minmax(0,1fr);gap:12px 24px;margin:24px 0}
+.article dt{font-weight:600;color:var(--text)}
+.article dd{margin:0}
+.date{font-size:12px!important;color:var(--muted)}
+.notice{padding:16px 20px;background:var(--surface);border:1px solid var(--border);border-radius:14px}
+.table{overflow-x:auto;margin:20px 0}
+.table table{width:100%;min-width:540px;border-collapse:collapse;font-size:13px}
+.table th,.table td{text-align:left;vertical-align:top;padding:12px;border-bottom:1px solid var(--line);white-space:normal}
+.table th{color:var(--text)}
+.footer{display:block;border-top:1px solid var(--line);padding:24px 0 0;margin-top:36px}
+@media(max-width:600px){.shell{padding:22px 20px 30px}.main{padding:30px 0 8px}.article{font-size:14px}.article dl{grid-template-columns:1fr;gap:4px}.article dd{margin-bottom:12px}.links{gap:6px 14px;font-size:11px}}
