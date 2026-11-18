@@ -11,6 +11,7 @@ import CharacterDetails from './CharacterDetails';
 import ArtifactEditor from './ArtifactEditor';
 import Teams from './Teams';
 import Checkout from './Checkout';
+import { push as track } from './Telemetry';
 import AuthScreen from './AuthScreen';
 import QuickSearch from './QuickSearch';
 import FarmToday from './FarmToday';
@@ -75,7 +76,7 @@ export default function Tracker({view,characterKey}) {
   useEffect(()=>{if(!notice)return;const timer=setTimeout(()=>setNotice(null),6500);return()=>clearTimeout(timer);},[notice]);
   async function authenticate(event) {
     event.preventDefault();setBusy(true);setAuthError('');const form=new FormData(event.currentTarget);
-    try{await api(signup?'/api/register':'/api/login',{method:'POST',body:JSON.stringify({name:form.get('username'),password:form.get('password'),...(signup?{email:form.get('email'),newsletter:consent.newsletter,terms:consent.terms}:{})})});epoch.current++;const fresh=await refresh();if(signup&&fresh?.billing?.enabled)setModal('welcome');else notify('Bienvenue dans votre carnet d’aventure.');}
+    try{await api(signup?'/api/register':'/api/login',{method:'POST',body:JSON.stringify({name:form.get('username'),password:form.get('password'),...(signup?{email:form.get('email'),newsletter:consent.newsletter,terms:consent.terms}:{})})});epoch.current++;const fresh=await refresh();if(signup&&fresh?.billing?.enabled){setModal('welcome');track('page','/fenetre-abonnement-inscription');}else notify('Bienvenue dans votre carnet d’aventure.');}
     catch(error){setAuthError(error.message);}finally{setBusy(false);}
   }
   async function pair(force=false) {
