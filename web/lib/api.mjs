@@ -10,7 +10,7 @@ import { billingView, pickSubscription, prices, stripeClient, subscriptionState 
 
 const securityHeaders={'X-Content-Type-Options':'nosniff','Referrer-Policy':'same-origin','X-Frame-Options':'DENY',
   'Content-Security-Policy':"default-src 'none'; script-src 'self'; frame-ancestors 'none'; base-uri 'none'"};
-export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',download=resolve('../dist/GenshinTracker-KameraFR-0.4.1.zip'),publicDirectory=resolve('public'),stripe=stripeClient(process.env.STRIPE_SECRET_KEY),mailer=createMailer(),adminEmails=process.env.ADMIN_EMAILS??'',supportEmail=process.env.SUPPORT_EMAIL??'contact@genshin-tracker.com'}={}) {
+export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',download=resolve('../dist/GenshinTracker-KameraFR-0.4.1.zip'),publicDirectory=resolve('public'),stripe=stripeClient(process.env.STRIPE_SECRET_KEY),mailer=createMailer(),publishableKey=process.env.STRIPE_PUBLISHABLE_KEY??'',adminEmails=process.env.ADMIN_EMAILS??'',supportEmail=process.env.SUPPORT_EMAIL??'contact@genshin-tracker.com'}={}) {
   const publicOrigin=publicUrl?new URL(publicUrl).origin:null;
   if(publicOrigin && !publicOrigin.startsWith('https://') && !/^http:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/.test(publicOrigin))throw new Error('PUBLIC_URL doit utiliser HTTPS hors localhost.');
   mkdirSync(dirname(dbPath),{recursive:true,mode:0o700});
@@ -130,10 +130,12 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
         if(path==='/api/billing/checkout') {
           need(Object.hasOwn(prices,input.plan),'Formule inconnue.');
           if(billingView(row).subscribed)throw new Problem('Vous êtes déjà abonné. Gérez votre formule depuis votre compte.',409);
-          const session=await stripe('POST','checkout/sessions',{mode:'subscription',locale:'fr',line_items:[{price:prices[input.plan],quantity:1}],client_reference_id:u.id,customer:row.stripe_customer??undefined,customer_email:row.stripe_customer?undefined:store.profile(u.id).email??undefined,
-            subscription_data:{metadata:{user_id:u.id},trial_end:Date.parse(row.trial_ends)-Date.now()>2*864e5?Math.floor(Date.parse(row.trial_ends)/1000):undefined},allow_promotion_codes:true,success_url:origin+'/app?abonnement=ok&session={CHECKOUT_SESSION_ID}',cancel_url:origin+'/app',
+          // Embedded in the site once the publishable key is set; Stripe-hosted page otherwise.
+          const embedded=/^pk_(live|test)_/.test(publishableKey);
+          const session=await stripe('POST','checkout/sessions',{mode:'subscription',...(embedded?{ui_mode:'embedded_page',return_url:origin+'/app?abonnement=ok&session={CHECKOUT_SESSION_ID}'}:{success_url:origin+'/app?abonnement=ok&session={CHECKOUT_SESSION_ID}',cancel_url:origin+'/app'}),locale:'fr',line_items:[{price:prices[input.plan],quantity:1}],client_reference_id:u.id,customer:row.stripe_customer??undefined,customer_email:row.stripe_customer?undefined:store.profile(u.id).email??undefined,
+            subscription_data:{metadata:{user_id:u.id},trial_end:Date.parse(row.trial_ends)-Date.now()>2*864e5?Math.floor(Date.parse(row.trial_ends)/1000):undefined},allow_promotion_codes:true,
             custom_text:{submit:{message:'Abonnement sans engagement, résiliable à tout moment depuis votre compte. En vous abonnant, vous acceptez les conditions d’utilisation de Genshin Tracker.'}}});
-          return json(200,{url:session.url});
+          return json(200,embedded?{clientSecret:session.client_secret,publishableKey}:{url:session.url});
         }
         if(path==='/api/billing/confirm') {
           need(typeof input.session==='string'&&/^cs_[A-Za-z0-9_]{1,200}$/.test(input.session),'Session de paiement invalide.');

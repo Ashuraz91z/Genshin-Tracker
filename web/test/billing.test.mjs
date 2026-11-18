@@ -60,3 +60,19 @@ test('the free trial needs a confirmed e-mail once mail is configured',async t=>
   api.store.verifyEmail(api.store.userByEmail('essai@example.com').id);
   assert.equal((await call('/api/pair','POST',{})).status,200);
 });
+
+test('checkout is embedded in the site once a publishable key is configured',async t=>{
+  const folder=mkdtempSync(join(tmpdir(),'gt-billing-')),calls=[];
+  const stripe=async(method,path,params)=>{calls.push([path,params]);return path==='checkout/sessions'?{client_secret:'cs_secret_1',url:null}:{data:[]};};
+  const api=createApi({dbPath:join(folder,'t.sqlite'),stripe,publishableKey:'pk_test_123'});
+  t.after(()=>{api.close();rmSync(folder,{recursive:true,force:true});});
+  let cookie;
+  const call=async(path,method='GET',data)=>{const r=await api.handle(new Request('http://localhost'+path,{method,headers:{host:'localhost',origin:'http://localhost',...(cookie?{cookie}:{}),...(data?{'content-type':'application/json'}:{})},body:data&&JSON.stringify(data)}));
+    const setCookie=r.headers.get('set-cookie');if(setCookie)cookie=setCookie.split(';')[0];return {status:r.status,body:await r.json()};};
+  await call('/api/register','POST',{name:'Integre',password:'long-enough-password',email:'integre@example.com',terms:true});
+  const result=await call('/api/billing/checkout','POST',{plan:'month'});
+  assert.deepEqual(result.body,{clientSecret:'cs_secret_1',publishableKey:'pk_test_123'});
+  const params=calls.find(c=>c[0]==='checkout/sessions')[1];
+  assert.equal(params.ui_mode,'embedded_page');assert.match(params.return_url,/abonnement=ok&session=\{CHECKOUT_SESSION_ID\}$/);
+  assert.equal(params.success_url,undefined);assert.equal(params.cancel_url,undefined);
+});

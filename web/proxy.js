@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 export function proxy(request) {
   const nonce=Buffer.from(crypto.getRandomValues(new Uint8Array(16))).toString('base64');
   const development=process.env.NODE_ENV==='development';
-  const csp=`default-src 'self'; script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'wasm-unsafe-eval'${development?" 'unsafe-eval'":''}; style-src 'self' ${development?"'unsafe-inline'":`'nonce-${nonce}'`}; img-src 'self' data:; font-src 'self'; worker-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'`;
+  const csp=`default-src 'self'; script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'wasm-unsafe-eval'${development?" 'unsafe-eval'":''}; style-src 'self' ${development?"'unsafe-inline'":`'nonce-${nonce}'`}; img-src 'self' data: https://*.stripe.com; font-src 'self'; worker-src 'self'; connect-src 'self' https://api.stripe.com https://checkout.stripe.com https://*.link.com; frame-src https://js.stripe.com https://*.js.stripe.com https://checkout.stripe.com https://hooks.stripe.com https://*.link.com; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'`;
   const headers=new Headers(request.headers);headers.set('x-nonce',nonce);headers.set('Content-Security-Policy',csp);
   const response=NextResponse.next({request:{headers}});response.headers.set('Content-Security-Policy',csp);return response;
 }

@@ -6,8 +6,8 @@ import styles from './landing.module.css';
 const description='Suivez vos personnages, artéfacts et armes Genshin Impact, importez votre inventaire avec un scanner Windows et composez vos équipes. Essai gratuit de 14 jours, sans carte bancaire.';
 export const metadata={title:'Genshin Tracker — Suivi de compte, inventaire et équipes Genshin Impact',description,alternates:{canonical:'/'},
   openGraph:{type:'website',locale:'fr_FR',siteName:'Genshin Tracker',title:'Genshin Tracker — Votre compte Genshin Impact, en clair',description,url:'/'},twitter:{card:'summary',title:'Genshin Tracker',description}};
-const plans=[{id:'month',name:'Mensuel',price:'1,99 €',period:'par mois',note:'Sans engagement. Résiliable en deux clics.'},{id:'year',name:'Annuel',price:'9,99 €',period:'par an',note:'Soit 0,83 € par mois : 58 % moins cher que le mensuel.',featured:true}];
-const included=['Synchronisation automatique des scans Kamera FR','Inventaire conservé et corrigible sur le serveur','Équipes, rotations et estimations de dégâts','Conseils de progression et matériaux à farmer','Export de vos données au format GOOD, à tout moment'];
+import { plans as allPlans, included } from '../lib/plans.mjs';
+const plans=[...allPlans].reverse();
 const faq=[['Faut-il une carte bancaire pour l’essai ?','Non. Créez un compte avec un pseudo et un mot de passe : vous avez 14 jours d’accès complet, sans moyen de paiement. Rien n’est prélevé automatiquement à la fin de l’essai.'],
   ['Que se passe-t-il après les 14 jours ?','Votre carnet est mis en pause, vos données restent conservées. Choisissez une formule quand vous voulez pour tout retrouver.'],
   ['Puis-je résilier à tout moment ?','Oui, depuis « Mon compte » sur le site. L’accès reste ouvert jusqu’à la fin de la période déjà payée.'],
