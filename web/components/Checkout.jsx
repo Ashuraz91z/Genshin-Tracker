@@ -28,7 +28,7 @@ export default function Checkout({billing,request}) {
     catch(e){setError(e.message);setBusy(false);}
   }
   if(session)return <div className="checkout">
-    <div className="checkout-summary"><button className="text-button" onClick={()=>setSession(null)}><span className="flip"><Icon name="chevron"/></span>Changer de formule</button><span>Formule {chosen.name.toLowerCase()} · <strong>{chosen.price}</strong> {chosen.period}</span></div>
+    <div className="checkout-summary"><button className="text-button" onClick={()=>setSession(null)}><span className="flip"><Icon name="chevron"/></span>Changer de formule</button><span>Abonnement {chosen.name.toLowerCase()} · <strong>{chosen.price}</strong> {chosen.period}</span></div>
     {busy&&<p className="checkout-loading" role="status">Ouverture du paiement sécurisé…</p>}
     <div ref={frame} className="checkout-frame"/>
   </div>;

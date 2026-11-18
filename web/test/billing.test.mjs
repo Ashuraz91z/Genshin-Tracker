@@ -37,7 +37,7 @@ test('trial grants access, expiry locks the account, checkout + confirm unlock i
   const checkout=await call('/api/billing/checkout','POST',{plan:'year'});
   assert.equal(checkout.body.url,'https://checkout.stripe.com/c/pay/cs_test');
   const params=calls.find(c=>c[1]==='checkout/sessions')[2];
-  assert.equal(params.client_reference_id,userId);assert.equal(params.subscription_data.metadata.user_id,userId);assert.equal(params.line_items[0].price,'price_1Ucn6rRgFbPfVITSjwOsIRzx');assert.equal(params.customer_email,'abonne@example.com');
+  assert.equal(params.client_reference_id,userId);assert.equal(params.subscription_data.metadata.user_id,userId);assert.equal(params.line_items[0].price,'price_1UdG0mRgFbPfVITSq2JF7Ac0');assert.equal(params.customer_email,'abonne@example.com');
 
   assert.equal((await call('/api/billing/confirm','POST',{session:'cs_ok'})).body.billing.subscribed,true);
   account=await call('/api/account');assert.ok(account.body.data);assert.equal(account.body.billing.plan,'month');

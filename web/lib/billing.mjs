@@ -1,5 +1,5 @@
 // Stripe over plain fetch: no SDK needed for four endpoints.
-export const prices={month:'price_1Ucn6rRgFbPfVITSRJX1V2T5',year:'price_1Ucn6rRgFbPfVITSjwOsIRzx'};
+export const prices={month:'price_1Ucn6rRgFbPfVITSRJX1V2T5',year:'price_1UdG0mRgFbPfVITSq2JF7Ac0'};
 const active=['active','trialing','past_due'];
 function form(value,prefix='',out=new URLSearchParams()) {
   for(const [key,item] of Object.entries(value)){if(item===undefined||item===null)continue;const name=prefix?`${prefix}[${key}]`:key;if(typeof item==='object')form(item,name,out);else out.append(name,String(item));}
