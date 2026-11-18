@@ -6,7 +6,7 @@ import styles from './support.module.css';
 const day=864e5,bad=['past_due','unpaid','incomplete'];
 const when=value=>value?new Date(value).toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'}):'—';
 const ago=value=>{if(!value)return 'jamais';const m=Math.round((Date.now()-new Date(value))/6e4);return m<60?`il y a ${Math.max(m,1)} min`:m<1440?`il y a ${Math.round(m/60)} h`:`il y a ${Math.round(m/1440)} j`;};
-const kindLabel={page:'Page',click:'Bouton',api:'Action serveur',error:'Navigateur'};
+const kindLabel={page:'Page',click:'Bouton',api:'Action serveur',error:'Navigateur (non vérifié)'};
 const statusLabel={open:'À traiter',answered:'Répondu',closed:'Fermé'};
 async function api(path,options={}) {
   const response=await fetch(path,{credentials:'same-origin',cache:'no-store',...options,headers:{'Content-Type':'application/json'}});
@@ -19,7 +19,7 @@ function access(u) {
   if(Date.parse(u.trial_ends)>Date.now())return [`Essai · ${Math.ceil((Date.parse(u.trial_ends)-Date.now())/day)} j`,'info'];
   return ['Sans accès','muted'];
 }
-const tabs=[['overview','Vue d’ensemble'],['users','Utilisateurs'],['payments','Paiements'],['problems','Problèmes'],['usage','Utilisation'],['support','Support']];
+const tabs=[['overview','Vue d’ensemble'],['users','Utilisateurs'],['payments','Paiements'],['problems','Problèmes'],['usage','Utilisation'],['support','Support'],['audit','Journal']];
 
 export default function Admin() {
   const [data,setData]=useState(null),[error,setError]=useState(null),[tab,setTab]=useState('overview'),[query,setQuery]=useState(''),[filter,setFilter]=useState('all');
@@ -124,6 +124,8 @@ export default function Admin() {
       <section className={styles.card}><h2>Les plus utilisés (30 j)</h2>{(()=>{const rows=data.usage.filter(u=>u.kind===usageKind),max=Math.max(1,...rows.map(r=>r.count));return rows.length?<div className={styles.tableWrap}><table className={styles.table}><thead><tr><th>Nom</th><th>Utilisations</th><th>Utilisateurs</th><th>Dernière</th></tr></thead><tbody>
         {rows.map(r=><tr key={r.name}><td>{r.name}</td><td><span className={styles.meter}><span style={{width:`${r.count/max*100}%`}}/></span>{r.count}</td><td>{r.users}</td><td>{ago(r.last)}</td></tr>)}</tbody></table></div>:<p className={styles.empty}>Pas encore de données.</p>;})()}</section></section>}
 
+    {tab==='audit'&&<section className={styles.card}><h2>Actions de l’administration</h2>{data.audit?.length?<div className={styles.tableWrap}><table className={styles.table}><thead><tr><th>Quand</th><th>Admin</th><th>Action</th><th>Cible</th></tr></thead><tbody>
+      {data.audit.map((a,i)=><tr key={i}><td>{when(a.at)}</td><td>{a.user??'compte supprimé'}</td><td><code>{a.name}</code></td><td>{a.detail}</td></tr>)}</tbody></table></div>:<p className={styles.empty}>Aucune action enregistrée.</p>}</section>}
     {tab==='support'&&<section className={styles.supportLayout}>
       <aside className={styles.card}><h2>Demandes</h2><ul className={styles.ticketList}>{data.tickets.map(t=><li key={t.id}><button aria-current={t.id===ticketId} onClick={()=>setTicketId(t.id)}><strong>{t.subject}</strong><small>{t.name} · {ago(t.updated)}</small><span className={`${styles.badge} ${styles[t.status]}`}>{statusLabel[t.status]}</span></button></li>)}</ul>{!data.tickets.length&&<p className={styles.empty}>Aucune demande.</p>}</aside>
       <section className={styles.card}>{ticket?<>

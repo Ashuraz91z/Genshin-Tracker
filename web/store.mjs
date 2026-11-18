@@ -107,6 +107,11 @@ export function openStore(path) {
       if(row)db.prepare('DELETE FROM tokens WHERE hash=?').run(hash(token));
       return row?.user_id??null;
     },
+    // An unconfirmed holder does not own an address: free it for an account that will confirm it.
+    releaseEmail(email) {
+      for(const {id} of db.prepare('SELECT id FROM users WHERE email=? AND COALESCE(email_verified,0)=0').all(String(email).trim().toLowerCase())){
+        db.prepare('UPDATE users SET email=NULL WHERE id=?').run(id);db.prepare("DELETE FROM tokens WHERE user_id=? AND kind='verify'").run(id);}
+    },
     verifyEmail(userId) { db.prepare('UPDATE users SET email_verified=1 WHERE id=?').run(userId); },
     resetPassword(userId,password) {
       need(typeof password==='string' && password.length>=8 && password.length<=128,'Mot de passe : 8 à 128 caractères.');
@@ -123,6 +128,8 @@ export function openStore(path) {
       need(typeof subject==='string'&&subject.trim().length>=3&&subject.length<=120,'Sujet : 3 à 120 caractères.');
       need(typeof body==='string'&&body.trim().length>=10&&body.length<=5000,'Message : 10 à 5000 caractères.');
       need(typeof name==='string'&&name.trim().length>0&&name.length<=64,'Indiquez votre nom ou pseudo.');
+      // Subject and name end up in mail headers: no control characters (CR/LF header injection).
+      const line=value=>value.replace(/[\u0000-\u001f\u007f]+/g,' ').trim();subject=line(subject);name=line(name);
       const id=secret(),at=now();email=validEmail(email);
       db.prepare('INSERT INTO tickets VALUES(?,?,?,?,?,?,?,?)').run(id,userId,name.trim(),email,subject.trim(),'open',at,at);
       db.prepare('INSERT INTO ticket_messages VALUES(?,?,?,?)').run(id,at,'user',body.trim());
@@ -152,7 +159,7 @@ export function openStore(path) {
     },
     adminOverview() {
       const day=864e5,since=Date.now()-30*day;
-      db.prepare('DELETE FROM events WHERE at<?').run(Date.now()-90*day);
+      db.prepare("DELETE FROM events WHERE at<? AND kind<>'admin'").run(Date.now()-90*day);
       const users=db.prepare(`SELECT u.id,u.name,u.email,u.email_verified,u.newsletter,u.created,u.trial_ends,u.stripe_customer,u.sub_status,u.sub_plan,u.sub_until,COALESCE(u.disabled,0) disabled,
         (SELECT COUNT(*) FROM devices d WHERE d.user_id=u.id) devices,(SELECT MAX(received) FROM scans s WHERE s.user_id=u.id) last_scan,(SELECT COUNT(*) FROM scans s WHERE s.user_id=u.id) scans,
         (SELECT MAX(at) FROM events e WHERE e.user_id=u.id) last_seen,(SELECT COUNT(*) FROM events e WHERE e.user_id=u.id AND e.at>? AND (e.status>=400 OR e.kind='error')) problems
@@ -171,7 +178,8 @@ export function openStore(path) {
       const usage=db.prepare(`SELECT kind,name,COUNT(*) count,COUNT(DISTINCT user_id) users,MAX(at) last FROM events WHERE at>? AND kind IN ('click','page','api') AND COALESCE(status,200)<400 GROUP BY kind,name ORDER BY count DESC LIMIT 150`).all(since);
       const daily=db.prepare(`SELECT CAST(at/? AS INTEGER) day,COUNT(DISTINCT user_id) users,COUNT(*) events,SUM(kind='error' OR status>=500) errors FROM events WHERE at>? GROUP BY day ORDER BY day`).all(day,since).map(d=>({...d,day:new Date(d.day*day).toISOString().slice(0,10)}));
       const tickets=db.prepare('SELECT t.*,(SELECT COUNT(*) FROM ticket_messages m WHERE m.ticket_id=t.id) messages FROM tickets t ORDER BY (status=\'open\') DESC,updated DESC LIMIT 200').all();
-      return {users,errors,scans,usage,daily,tickets};
+      const audit=db.prepare(`SELECT at,user_id,name,detail FROM events WHERE kind='admin' ORDER BY at DESC LIMIT 200`).all().map(e=>({...e,user:names[e.user_id]??null}));
+      return {users,errors,scans,usage,daily,tickets,audit};
     },
     revoke(user,id) { db.prepare('DELETE FROM devices WHERE id=? AND user_id=?').run(id,user.id); },
     account(user) {

@@ -56,3 +56,26 @@ test('admin: access by confirmed e-mail, support thread, user actions, usage eve
   assert.equal(overview.users.length,1);
   assert.equal(overview.tickets.length,2,'support history survives account deletion');
 });
+
+test('admin hardening: e-mail squat released, admin actions logged, header-safe tickets',async t=>{
+  const folder=mkdtempSync(join(tmpdir(),'gt-admin-')),sent=[];
+  const api=createApi({dbPath:join(folder,'t.sqlite'),mailer:async mail=>{sent.push(mail);},adminEmails:'boss@example.com',supportEmail:'support@example.com'});
+  t.after(()=>{api.close();rmSync(folder,{recursive:true,force:true});});
+  const call=async(path,{method='GET',data,cookie}={})=>{const r=await api.handle(new Request('http://localhost'+path,{method,headers:{host:'localhost',origin:'http://localhost',...(cookie?{cookie}:{}),...(data?{'content-type':'application/json'}:{})},body:data&&JSON.stringify(data)}));
+    return {status:r.status,cookie:r.headers.get('set-cookie')?.split(';')[0],body:await r.json()};};
+  const squat=await call('/api/register',{method:'POST',data:{name:'Squat',password:'long-password-1',email:'boss@example.com',terms:true}});
+  const boss=await call('/api/register',{method:'POST',data:{name:'Boss',password:'long-password-1',email:'BOSS@example.com',terms:true}});
+  assert.equal(boss.status,200,'an unconfirmed squatter does not block the admin address');
+  assert.equal(api.store.userByEmail('boss@example.com').name,'Boss');
+  api.store.verifyEmail(api.store.userByEmail('boss@example.com').id);
+  assert.equal((await call('/api/register',{method:'POST',data:{name:'Squat2',password:'long-password-1',email:'boss@example.com',terms:true}})).status,409,'a confirmed admin address stays taken');
+  assert.equal((await call('/api/account',{cookie:squat.cookie})).body.user.admin,false);
+
+  await call('/api/support',{method:'POST',data:{name:'A\r\nBcc: x@evil.test',email:'anon@example.com',subject:'Hi\r\nBcc: x@evil.test',body:'Bonjour, une question.'}});
+  assert.ok(!/[\r\n]/.test(sent.at(-1).subject),'no line break reaches the Subject header');
+
+  const squatId=api.store.db.prepare("SELECT id FROM users WHERE name='Squat'").get().id;
+  await call('/api/admin/users/'+squatId,{method:'POST',data:{action:'disable'},cookie:boss.cookie});
+  const {audit}=(await call('/api/admin',{cookie:boss.cookie})).body;
+  assert.equal(audit[0].name,'user:disable');assert.equal(audit[0].user,'Boss');
+});

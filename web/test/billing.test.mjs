@@ -47,3 +47,16 @@ test('trial grants access, expiry locks the account, checkout + confirm unlock i
   subscription.status='canceled';api.store.db.prepare('UPDATE users SET sub_checked=0').run();
   assert.equal((await call('/api/account')).body.locked,true);
 });
+
+test('the free trial needs a confirmed e-mail once mail is configured',async t=>{
+  const folder=mkdtempSync(join(tmpdir(),'gt-billing-'));
+  const api=createApi({dbPath:join(folder,'t.sqlite'),stripe:async()=>({data:[]}),mailer:async()=>{}});
+  t.after(()=>{api.close();rmSync(folder,{recursive:true,force:true});});
+  let cookie;
+  const call=async(path,method='GET',data)=>{const r=await api.handle(new Request('http://localhost'+path,{method,headers:{host:'localhost',origin:'http://localhost',...(cookie?{cookie}:{}),...(data?{'content-type':'application/json'}:{})},body:data&&JSON.stringify(data)}));
+    const setCookie=r.headers.get('set-cookie');if(setCookie)cookie=setCookie.split(';')[0];return {status:r.status,body:await r.json()};};
+  await call('/api/register','POST',{name:'Essai',password:'long-enough-password',email:'essai@example.com',terms:true});
+  assert.equal((await call('/api/pair','POST',{})).status,403);
+  api.store.verifyEmail(api.store.userByEmail('essai@example.com').id);
+  assert.equal((await call('/api/pair','POST',{})).status,200);
+});

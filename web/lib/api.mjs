@@ -38,7 +38,9 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
     try{await mailer({to,...mail});}catch(error){console.error('[mail]',error.message);}
   }
   const sendVerification=(user,email,origin)=>sendMail(email,mails.verify(user.name,origin+'/api/email/verify?token='+store.issueToken(user.id,'verify',2*864e5)));
-  const paid=async userId=>{if(!(await billing(userId)).active)throw new Problem('Votre essai gratuit est terminé. Choisissez une formule pour continuer.',402);};
+  const paid=async userId=>{const plan=await billing(userId);if(!plan.active)throw new Problem('Votre essai gratuit est terminé. Choisissez une formule pour continuer.',402);
+    // One trial per real inbox (no throwaway-address trial farms); only enforced once mails can actually be sent.
+    if(plan.trial&&mailer&&!store.profile(userId).emailVerified)throw new Problem('Confirmez votre adresse e-mail (lien reçu à l’inscription, renvoyable depuis votre compte) pour utiliser l’essai gratuit.',403);};
   // Admins are listed by e-mail and must have confirmed it: a pseudo could be registered by anyone first.
   const admins=new Set(adminEmails.split(',').map(x=>x.trim().toLowerCase()).filter(Boolean));
   const isAdmin=u=>{if(!u||!admins.size)return false;const p=store.profile(u.id);return p.emailVerified&&admins.has(p.email);};
@@ -72,6 +74,7 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
       if(method==='POST' && ['/api/register','/api/login'].includes(path)) {
         const input=await body();if(path==='/api/login')limitLogin(input);
         if(path==='/api/register')need(input.terms===true,'Acceptez les conditions d’utilisation pour créer un compte.');
+        if(path==='/api/register'&&admins.has(String(input.email??'').trim().toLowerCase()))store.releaseEmail(input.email);
         const account=path==='/api/register'?store.register(input.name,input.password,input.email,input.newsletter):store.login(input.name,input.password);
         ctx.userId=account.id;if(path==='/api/register'){store.acceptTerms(account.id);}
         if(path==='/api/register')await sendVerification(account,store.profile(account.id).email,origin);
@@ -84,6 +87,7 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
         if(typeof input.email==='string'&&input.email.trim().toLowerCase()!==current.email) {
           // A stolen session must not be enough to redirect password resets to another inbox.
           if(current.email)store.login(u.name,input.password??'');
+          if(admins.has(input.email.trim().toLowerCase()))store.releaseEmail(input.email);
           await sendVerification(u,store.setEmail(u.id,input.email),origin);
         }
         if(typeof input.newsletter==='boolean')store.setNewsletter(u.id,input.newsletter);
@@ -170,7 +174,7 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
       if(method==='POST'&&path==='/api/teams'){await paid(requireUser().id);return json(200,store.saveTeam(user,await body()));}
       if(method==='DELETE'&&/^\/api\/teams\/[^/]+$/.test(path)){await paid(requireUser().id);return json(200,store.removeTeam(user,decodeURIComponent(path.split('/').pop())));}
       if(method==='POST' && path==='/api/events') {
-        const input=await body();limit('events:'+(user?.id??'guest'),2000);
+        const input=await body();limit('events:'+(user?.id??'guest'),300);
         need(Array.isArray(input.events)&&input.events.length<=50,'Événements invalides.');
         for(const e of input.events)if(['click','page','error'].includes(e?.kind)&&typeof e.name==='string'&&e.name)store.record(user?.id,e.kind,e.name,null,typeof e.detail==='string'?e.detail:null);
         return json(200,{ok:true});
@@ -203,12 +207,14 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
           return json(200,{...store.adminOverview(),stripe:!!stripe,stripeError,mail:!!mailer});
         }
         const [,,,kind,id]=path.split('/'),target=decodeURIComponent(id??'');
+        // Audit trail of every admin write (kept past the 90-day event purge).
+        const audit=(action,detail)=>store.record(u.id,'admin',action,null,detail);
         if(kind==='tickets'&&id) {
           const ticket=store.ticket(target);if(!ticket)throw new Problem('Demande introuvable.',404);
           if(method==='GET')return json(200,ticket);
           const input=await body();
-          if(input.body!==undefined){store.reply(target,'admin',input.body,'answered');await sendMail(ticket.email,mails.reply(ticket.name,ticket.subject,String(input.body).trim(),origin+'/aide'));}
-          if(input.status!==undefined)store.setTicketStatus(target,input.status);
+          if(input.body!==undefined){store.reply(target,'admin',input.body,'answered');audit('ticket:reply',target);await sendMail(ticket.email,mails.reply(ticket.name,ticket.subject,String(input.body).trim(),origin+'/aide'));}
+          if(input.status!==undefined){store.setTicketStatus(target,input.status);audit('ticket:'+input.status,target);}
           return json(200,store.ticket(target));
         }
         if(kind==='users'&&id&&method==='POST') {
@@ -216,7 +222,9 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
           if(target===u.id&&['disable','delete'].includes(input.action))throw new Problem('Impossible sur votre propre compte.',409);
           const actions={extend:()=>store.extendTrial(target,input.days),disable:()=>store.setDisabled(target,true),enable:()=>store.setDisabled(target,false),logout:()=>store.closeSessions(target),
             verify:()=>store.verifyEmail(target),delete:()=>store.deleteUser(target),billing:async()=>{if(!stripe)throw new Problem('Stripe non configuré.',404);await refreshBilling(target,row.stripe_subscription);}};
-          need(Object.hasOwn(actions,input.action),'Action inconnue.');await actions[input.action]();
+          need(Object.hasOwn(actions,input.action),'Action inconnue.');
+          const who=store.profile(target).email??target;await actions[input.action]();
+          audit('user:'+input.action,input.action==='extend'?`${who} +${input.days} j`:who);
           return json(200,{ok:true});
         }
         throw new Problem('Route introuvable.',404);
