@@ -37,7 +37,7 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
     if(!mailer){console.info('[mail] SMTP non configuré, message non envoyé :',mail.subject);return;}
     try{await mailer({to,...mail});}catch(error){console.error('[mail]',error.message);}
   }
-  const sendVerification=(user,email,origin)=>sendMail(email,mails.verify(user.name,origin+'/api/email/verify?token='+store.issueToken(user.id,'verify',2*864e5)));
+  const sendVerification=(user,email,origin,welcome)=>sendMail(email,mails.verify(user.name,origin+'/api/email/verify?token='+store.issueToken(user.id,'verify',2*864e5),welcome));
   const paid=async userId=>{const plan=await billing(userId);if(!plan.active)throw new Problem('Votre essai gratuit est terminé. Choisissez une formule pour continuer.',402);
     // One trial per real inbox (no throwaway-address trial farms); only enforced once mails can actually be sent.
     if(plan.trial&&mailer&&!store.profile(userId).emailVerified)throw new Problem('Confirmez votre adresse e-mail (lien reçu à l’inscription, renvoyable depuis votre compte) pour utiliser l’essai gratuit.',403);};
@@ -77,7 +77,7 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
         if(path==='/api/register'&&admins.has(String(input.email??'').trim().toLowerCase()))store.releaseEmail(input.email);
         const account=path==='/api/register'?store.register(input.name,input.password,input.email,input.newsletter):store.login(input.name,input.password);
         ctx.userId=account.id;if(path==='/api/register'){store.acceptTerms(account.id);}
-        if(path==='/api/register')await sendVerification(account,store.profile(account.id).email,origin);
+        if(path==='/api/register')await sendVerification(account,store.profile(account.id).email,origin,true);
         return json(200,{user:{name:account.name}},{'Set-Cookie':cookie(store.session(account))});
       }
       if(method==='POST' && path==='/api/logout'){store.logout(session);return json(200,{ok:true},{'Set-Cookie':cookie('',true)});}
