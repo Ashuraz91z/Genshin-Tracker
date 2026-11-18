@@ -6,9 +6,9 @@ import styles from './support.module.css';
 const faq=[
   ['Mon import ne fonctionne pas','Vérifiez que le fichier est un export au format GOOD (.json) de moins de 16 Mo. Si Kamera affiche des erreurs de lecture, relancez le scan avec le jeu en 1920×1080, en français, et sans fenêtre par-dessus. Le journal de la page Synchronisation détaille ce qui a été reçu ou conservé.'],
   ['Kamera n’arrive pas à se connecter','Générez un nouveau code dans Synchronisation (il expire après 10 minutes), ou connectez-vous directement avec votre pseudo et votre mot de passe dans l’onglet Connexion de l’application.'],
-  ['Mon paiement a échoué','Ouvrez Paramètres › Abonnement › « Gérer mon abonnement » pour mettre à jour votre carte. Votre carnet reste conservé pendant ce temps.'],
-  ['Comment résilier ?','Paramètres › Abonnement › « Gérer mon abonnement ». La résiliation prend effet à la fin de la période déjà payée.'],
-  ['Je n’ai pas reçu l’e-mail de confirmation','Regardez dans les indésirables, puis utilisez « Renvoyer le lien de confirmation » dans Paramètres › Compte.']
+  ['Mon paiement a échoué','Ouvrez Paramètres › Abonnement › « Moyen de paiement et factures » pour mettre à jour votre carte. Votre carnet reste conservé pendant ce temps.'],
+  ['Comment résilier ?','Paramètres › Abonnement › « Résilier mon abonnement », puis confirmez. La résiliation est sans frais, prend effet à la fin de la période déjà payée et vous est confirmée par e-mail.'],
+  ['Je n’ai pas reçu l’e-mail de confirmation','Regardez dans les indésirables, puis utilisez « Renvoyer le lien de confirmation » dans Paramètres › Profil.']
 ];
 const when=value=>new Date(value).toLocaleString('fr-FR',{dateStyle:'medium',timeStyle:'short'});
 const statusLabel={open:'En attente de réponse',answered:'Répondu',closed:'Fermé'};

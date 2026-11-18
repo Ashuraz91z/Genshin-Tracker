@@ -93,6 +93,27 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
         if(typeof input.newsletter==='boolean')store.setNewsletter(u.id,input.newsletter);
         return json(200,{profile:store.profile(u.id)});
       }
+      if(method==='POST' && path==='/api/account/name') {
+        const u=requireUser(),input=await body();limit('name:'+u.id,10);
+        return json(200,{name:store.rename(u.id,input.name)});
+      }
+      if(method==='POST' && path==='/api/account/sessions') {
+        // Signs out every other browser; this one gets a fresh session.
+        const u=requireUser();store.closeSessions(u.id);return json(200,{ok:true},{'Set-Cookie':cookie(store.session(u))});
+      }
+      if(method==='GET' && path==='/api/account/export') {
+        const u=requireUser();
+        return json(200,store.exportData(u),{'Content-Disposition':`attachment; filename="genshin-tracker-compte-${new Date().toISOString().slice(0,10)}.json"`});
+      }
+      if(method==='POST' && path==='/api/account/delete') {
+        const u=requireUser(),input=await body();limit('delete:'+u.id,5);
+        store.login(u.name,input.password??'');
+        const row=store.billing(u.id);
+        // Stop billing before the data goes: a deleted account must never be charged again.
+        if(stripe&&row.stripe_subscription&&['active','trialing','past_due','unpaid','incomplete'].includes(row.sub_status))await stripe('DELETE','subscriptions/'+encodeURIComponent(row.stripe_subscription));
+        store.deleteUser(u.id);
+        return json(200,{ok:true},{'Set-Cookie':cookie('',true)});
+      }
       if(method==='POST' && path==='/api/account/password') {
         const u=requireUser(),input=await body();limit('password:'+u.id,10);
         store.login(u.name,input.current??'');store.resetPassword(u.id,input.password);
@@ -143,6 +164,15 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
           if(session.client_reference_id!==u.id)throw new Problem('Session de paiement introuvable.',404);
           if(session.subscription)await refreshBilling(u.id,session.subscription);
           return json(200,{billing:await billing(u.id)});
+        }
+        if(path==='/api/billing/cancel') {
+          // Résiliation en ligne (Code de la consommation, L215-1-1) : effective at period end, confirmed by e-mail.
+          if(!row.stripe_subscription||!billingView(row).subscribed)throw new Problem('Aucun abonnement en cours à résilier.',409);
+          const resume=input.resume===true;
+          store.setBilling(u.id,subscriptionState(await stripe('POST','subscriptions/'+encodeURIComponent(row.stripe_subscription),{cancel_at_period_end:!resume})));
+          const plan=await billing(u.id);
+          if(!resume){const profile=store.profile(u.id);if(profile.email)await sendMail(profile.email,mails.cancel(u.name,new Date(plan.until).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'}),origin+'/parametres#abonnement'));}
+          return json(200,{billing:plan});
         }
         if(path==='/api/billing/portal') {
           if(!row.stripe_customer)throw new Problem('Aucun abonnement à gérer pour ce compte.',404);

@@ -28,7 +28,7 @@ export function openStore(path) {
   db.exec(`CREATE TABLE IF NOT EXISTS events(at INTEGER,user_id TEXT,kind TEXT,name TEXT,status INTEGER,detail TEXT);CREATE INDEX IF NOT EXISTS events_at ON events(at);
     CREATE TABLE IF NOT EXISTS tickets(id TEXT PRIMARY KEY,user_id TEXT,name TEXT,email TEXT,subject TEXT,status TEXT,created TEXT,updated TEXT);
     CREATE TABLE IF NOT EXISTS ticket_messages(ticket_id TEXT REFERENCES tickets(id) ON DELETE CASCADE,at TEXT,author TEXT,body TEXT);`);
-  for(const column of ['terms_at TEXT','terms_version TEXT','email TEXT','email_verified INTEGER DEFAULT 0','newsletter INTEGER DEFAULT 0','newsletter_at TEXT','trial_ends TEXT','stripe_customer TEXT','stripe_subscription TEXT','sub_status TEXT','sub_plan TEXT','sub_until INTEGER','sub_checked INTEGER','disabled INTEGER DEFAULT 0'])
+  for(const column of ['terms_at TEXT','terms_version TEXT','email TEXT','email_verified INTEGER DEFAULT 0','newsletter INTEGER DEFAULT 0','newsletter_at TEXT','trial_ends TEXT','stripe_customer TEXT','stripe_subscription TEXT','sub_status TEXT','sub_plan TEXT','sub_until INTEGER','sub_checked INTEGER','sub_cancel INTEGER DEFAULT 0','disabled INTEGER DEFAULT 0'])
     try{db.exec('ALTER TABLE users ADD COLUMN '+column);}catch(error){if(!/duplicate column/.test(error.message))throw error;}
   db.exec('CREATE UNIQUE INDEX IF NOT EXISTS users_email ON users(email COLLATE NOCASE) WHERE email IS NOT NULL');
   // Accounts created before billing existed get a full trial from the day billing ships.
@@ -97,6 +97,19 @@ export function openStore(path) {
       db.prepare('UPDATE users SET email=?,email_verified=CASE WHEN email=? COLLATE NOCASE THEN email_verified ELSE 0 END WHERE id=?').run(email,email,userId);
       return email;
     },
+    rename(userId,name) {
+      need(typeof name==='string' && /^[\p{L}\p{N}_ -]{3,32}$/u.test(name.trim()),'Pseudo : 3 à 32 lettres, chiffres, espaces ou tirets.');
+      name=name.trim();
+      if(db.prepare('SELECT id FROM users WHERE name=? AND id<>?').get(name,userId)) throw new Problem('Ce pseudo est déjà utilisé.',409);
+      db.prepare('UPDATE users SET name=? WHERE id=?').run(name,userId);return name;
+    },
+    // Everything stored about one account (GDPR art. 15 and 20), secrets and hashes excluded.
+    exportData(user) {
+      const u=db.prepare('SELECT name,email,email_verified,newsletter,newsletter_at,created,terms_at,terms_version,trial_ends,sub_status,sub_plan,sub_until FROM users WHERE id=?').get(user.id);
+      const {data,customizations,devices,scans}=this.account(user);
+      return {exportedAt:now(),account:{...u,email_verified:u.email_verified===1,newsletter:u.newsletter===1,sub_until:u.sub_until?new Date(u.sub_until).toISOString():null},
+        inventory:data,customizations,devices,scans,support:this.tickets(user.id)};
+    },
     acceptTerms(userId) { db.prepare('UPDATE users SET terms_at=?,terms_version=? WHERE id=?').run(now(),termsVersion,userId); },
     setNewsletter(userId,value) { db.prepare('UPDATE users SET newsletter=?,newsletter_at=? WHERE id=?').run(value?1:0,now(),userId); },
     userByEmail(email) { return typeof email==='string'?db.prepare('SELECT id,name,email FROM users WHERE email=?').get(email.trim().toLowerCase()):null; },
@@ -118,10 +131,10 @@ export function openStore(path) {
       const salt=secret();db.prepare('UPDATE users SET salt=?,password=? WHERE id=?').run(salt,scryptSync(password,salt,64).toString('hex'),userId);
       db.prepare('DELETE FROM sessions WHERE user_id=?').run(userId);
     },
-    billing(userId) { return db.prepare('SELECT trial_ends,stripe_customer,stripe_subscription,sub_status,sub_plan,sub_until,sub_checked FROM users WHERE id=?').get(userId); },
+    billing(userId) { return db.prepare('SELECT trial_ends,stripe_customer,stripe_subscription,sub_status,sub_plan,sub_until,sub_checked,sub_cancel FROM users WHERE id=?').get(userId); },
     checkedBilling(userId) { db.prepare('UPDATE users SET sub_checked=? WHERE id=?').run(Date.now(),userId); },
-    setBilling(userId,{customer=null,subscription=null,status=null,plan=null,until=null}) {
-      db.prepare('UPDATE users SET stripe_customer=COALESCE(?,stripe_customer),stripe_subscription=?,sub_status=?,sub_plan=?,sub_until=?,sub_checked=? WHERE id=?').run(customer,subscription,status,plan,until,Date.now(),userId);
+    setBilling(userId,{customer=null,subscription=null,status=null,plan=null,until=null,cancel=false}) {
+      db.prepare('UPDATE users SET stripe_customer=COALESCE(?,stripe_customer),stripe_subscription=?,sub_status=?,sub_plan=?,sub_until=?,sub_cancel=?,sub_checked=? WHERE id=?').run(customer,subscription,status,plan,until,cancel?1:0,Date.now(),userId);
     },
     record(userId,kind,name,status=null,detail=null) { db.prepare('INSERT INTO events VALUES(?,?,?,?,?,?)').run(Date.now(),userId??null,kind,String(name).slice(0,120),status,detail==null?null:String(detail).slice(0,500)); },
     openTicket({userId=null,name,email,subject,body}) {

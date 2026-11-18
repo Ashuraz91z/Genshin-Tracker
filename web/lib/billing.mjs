@@ -18,10 +18,10 @@ export function stripeClient(key,fetchImpl=fetch) {
 export function subscriptionState(subscription) {
   if(!subscription)return {};
   const item=subscription.items?.data?.[0];
-  return {customer:subscription.customer,subscription:subscription.id,status:subscription.status,plan:item?.price?.recurring?.interval??null,until:(item?.current_period_end??subscription.current_period_end??0)*1000};
+  return {customer:subscription.customer,subscription:subscription.id,status:subscription.status,plan:item?.price?.recurring?.interval??null,until:(item?.current_period_end??subscription.current_period_end??0)*1000,cancel:!!(subscription.cancel_at_period_end||subscription.cancel_at)};
 }
 export const pickSubscription=list=>list.find(s=>active.includes(s.status))??list[0];
 export function billingView(row,now=Date.now()) {
   const trial=Date.parse(row.trial_ends)>now,subscribed=active.includes(row.sub_status)&&row.sub_until>now;
-  return {enabled:true,active:trial||subscribed,trial:trial&&!subscribed,trialEnds:row.trial_ends,subscribed,status:row.sub_status,plan:row.sub_plan,until:row.sub_until?new Date(row.sub_until).toISOString():null,manageable:!!row.stripe_customer};
+  return {enabled:true,active:trial||subscribed,trial:trial&&!subscribed,trialEnds:row.trial_ends,subscribed,status:row.sub_status,plan:row.sub_plan,until:row.sub_until?new Date(row.sub_until).toISOString():null,manageable:!!row.stripe_customer,canceling:subscribed&&row.sub_cancel===1};
 }
