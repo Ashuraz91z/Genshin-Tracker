@@ -35,7 +35,7 @@ test('Next production preserves existing accounts and device keys, serves all pa
   let previousNonce;
   for(const page of ['/','/app','/characters','/characters/KamisatoAyaka','/inventory','/teams','/sync']) {
     const response=await fetch(url+page);assert.equal(response.status,200,page);const html=await response.text();
-    assert.ok(html.includes('GENSHIN'));if(page==='/'){assert.ok(html.includes('Votre aventure.'));assert.ok(html.includes('href="/app"'));assert.ok(!html.includes('auth-form'));}else assert.ok(html.includes('Ouverture de votre carnet'));
+    assert.ok(html.includes('GENSHIN'));if(page==='/'){assert.ok(html.includes('Quoi farmer aujourd’hui'));assert.ok(html.includes('href="/app"'));assert.ok(!html.includes('auth-form'));}else assert.ok(html.includes('Ouverture de votre carnet'));
     const csp=response.headers.get('content-security-policy'),nonce=csp?.match(/'nonce-([^']+)'/)?.[1];
     assert.ok(nonce,'Production page missing CSP nonce');assert.notEqual(nonce,previousNonce);previousNonce=nonce;
     assert.ok(!csp.includes("'unsafe-inline'")&&!csp.includes("'unsafe-eval'"));
