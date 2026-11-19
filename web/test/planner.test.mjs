@@ -29,3 +29,18 @@ test('team recommendations follow the box and advise the main team',()=>{
  assert.ok(recos.some(t=>t.id==='taser'&&t.coverage===1));assert.ok(recos.every(t=>t.picked.every(k=>box.characters.some(c=>c.key===k))));
  const advice=adviseTeam(['Xiangling','Bennett','Beidou','Fischl'],box,catalogue);assert.ok(advice.archetype);assert.equal(advice.invest.length,4);
 });
+
+test('inventory scenario uses the best unequipped pieces and survives misread substats',()=>{
+ const piece=(slotKey,mainStatKey,location,cr,extra={})=>({setKey:'EmblemOfSeveredFate',slotKey,rarity:5,level:20,mainStatKey,location,lock:false,substats:[{key:'critRate_',value:cr},{key:'critDMG_',value:14},{key:'def_',value:5},{key:'enerRech_',value:6}],...extra});
+ const mains={flower:'hp',plume:'atk',sands:'atk_',goblet:'hydro_dmg_',circlet:'hp_'};
+ const worn=Object.entries(mains).map(([s,m])=>piece(s,m,'Xingqiu',3));
+ worn[2].substats=worn[2].substats.slice(0,3); // +20 piece read with a missing substat
+ const better=piece('flower','hp','',10),spare=piece('plume','atk','',9);
+ const data={characters:[{key:'Xingqiu',level:80,ascension:5,constellation:6,talent:{auto:1,skill:6,burst:6}},{key:'Yelan',level:80,ascension:5,constellation:0,talent:{auto:1,skill:6,burst:6}}],weapons:[{key:'SacrificialSword',level:90,ascension:6,refinement:5,location:'Xingqiu',lock:false}],artifacts:[...worn,better,spare],materials:{}};
+ const d=scenarioData('inventory',['Xingqiu','Yelan'],data,catalogue,metadata,planner,{});
+ const mine=d.artifacts.filter(a=>a.location==='Xingqiu');
+ assert.equal(mine.length,5);assert.equal(mine.find(a=>a.slotKey==='flower').substats[0].value,10,'unequipped better flower picked');
+ assert.equal(d.artifacts.filter(a=>a.slotKey==='plume'&&a.substats[0]?.value===9).length,1,'a piece is never used twice');
+ assert.ok(mine.every(a=>a.substats.length===4));
+ assert.deepEqual(buildSimulation({characters:['Xingqiu'],duration:20,enemyLevel:100,resistance:10,iterations:20,energy:'normal',rotation:''},d,catalogue,metadata).issues,[]);
+});

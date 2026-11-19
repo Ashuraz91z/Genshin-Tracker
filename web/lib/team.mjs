@@ -1,6 +1,6 @@
 import { characterEquipment, elementName } from './collection.mjs';
 import { critValue } from './insights.mjs';
-import { substatLimits } from './customization.mjs';
+import { substatLimits, minimumSubstats } from './customization.mjs';
 // ponytail: rôles saisis à la main pour les soutiens connus ; à compléter à chaque nouveau personnage.
 const healers=['Bennett','Barbara','SangonomiyaKokomi','Qiqi','Jean','Diona','Noelle','Baizhu','Yaoyao','KukiShinobu','Charlotte','Dori','Sigewinne','Xianyun','Mika','Xilonen','Chevreuse','Kaveh','Furina','Escoffier','Aino','Lauma'];
 const shielders=['Zhongli','Diona','Noelle','Layla','Thoma','Kirara','Beidou','Xinyan','Yanfei','Citlali','LanYan','Candace'];
@@ -58,6 +58,21 @@ function upgradedPiece(a) {
   }
   return {...a,level:max,substats:subs};
 }
+// Pièce scannée avec une sous-statistique illisible : on complète par une statistique neutre plutôt que de bloquer.
+function complete(a) {
+  const subs=a.substats.map(s=>({...s}));
+  for(const key of ['atk_','enerRech_','eleMas','hp_','def_','atk','hp','def'])if(subs.length<minimumSubstats(a.rarity,a.level)&&key!==a.mainStatKey&&!subs.some(s=>s.key===key))subs.push({key,value:avgRoll[key]??0});
+  return {...a,substats:subs};
+}
+// Meilleures pièces de tout l'inventaire (équipées ou non) : bonus 4 pièces du set visé si possible, puis meilleure valeur CRIT une fois renforcées.
+// ponytail: les premiers membres de l'équipe choisissent en premier ; un vrai optimiseur répartirait les pièces entre eux.
+function inventoryPieces(set,mains,artifacts,used) {
+  const fit=slots.map(s=>artifacts.map((a,i)=>({i,a})).filter(x=>x.a.slotKey===s&&x.a.mainStatKey===mains[s]&&x.a.rarity>=4&&!used.has(x.i)).map(x=>({...x,piece:upgradedPiece(complete(x.a))})).map(x=>({...x,score:critValue(x.piece)})).sort((a,b)=>b.score-a.score));
+  const any=fit.map(l=>l[0]),inSet=fit.map(l=>l.find(x=>x.a.setKey===set));
+  let best=any,total=-1;
+  if(inSet.filter(Boolean).length>=4)for(let off=0;off<5;off++){const combo=inSet.map((x,j)=>j===off?any[j]:x);if(combo.some(x=>!x))continue;const sum=combo.reduce((n,x)=>n+x.score,0);if(sum>total){total=sum;best=combo;}}
+  return best;
+}
 export function weaponChoices(key,data,catalogue,metadata,mode) {
   const type=catalogue.characters?.[key]?.weapon;
   if(mode==='ideal')return Object.entries(catalogue.weapons??{}).filter(([k,w])=>w.weapon===type&&metadata.weapons[k]).map(([k,w])=>({key:k,name:w.name,rarity:w.rarity}));
@@ -71,7 +86,7 @@ export function defaultWeapon(key,data,catalogue,metadata,planner,mode,taken=[])
 }
 // Construit un relevé virtuel pour un scénario, puis réutilise buildSimulation sans modification.
 export function scenarioData(mode,keys,data,catalogue,metadata,planner,options={}) {
-  const next={...data,characters:data.characters.map(c=>({...c})),weapons:data.weapons.map(w=>({...w})),artifacts:data.artifacts.map(a=>({...a}))},taken=[];
+  const next={...data,characters:data.characters.map(c=>({...c})),weapons:data.weapons.map(w=>({...w})),artifacts:data.artifacts.map(a=>({...a}))},taken=[],usedPieces=new Set(),copies=next.artifacts;
   for(const key of keys.filter(Boolean)){
     const char=next.characters.find(c=>c.key===key);if(!char)continue;const o=options[key]??{};
     Object.assign(char,{level:90,ascension:6,talent:{auto:10,skill:10,burst:10}});
@@ -86,7 +101,9 @@ export function scenarioData(mode,keys,data,catalogue,metadata,planner,options={
     const element=elementDmg[elementName(catalogue.characters?.[key]?.element)]??'atk_';
     const mains={flower:'hp',plume:'atk',sands:bySlot.sands?.mainStatKey??'atk_',goblet:bySlot.goblet?.mainStatKey??element,circlet:bySlot.circlet?.mainStatKey??'critRate_'};
     const upgrade=mode==='inventory'&&o.artifacts!=='farmed';
-    next.artifacts.push(...slots.map(s=>upgrade&&bySlot[s]?upgradedPiece(bySlot[s]):farmedPiece(set,s,mains[s],key)));
+    const owned=upgrade?inventoryPieces(set,mains,data.artifacts,usedPieces):[];
+    owned.forEach(x=>{if(x){usedPieces.add(x.i);next.artifacts=next.artifacts.filter(a=>a!==copies[x.i]);}});
+    next.artifacts.push(...slots.map((s,j)=>owned[j]?{...owned[j].piece,location:key}:farmedPiece(set,s,mains[s],key)));
   }
   return next;
 }
