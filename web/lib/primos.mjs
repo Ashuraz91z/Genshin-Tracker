@@ -30,3 +30,14 @@ export function forecast({primos=0,fates=0,target,settings={}},now=new Date()) {
   const totalPrimos=Number(primos)+rows.reduce((a,r)=>a+r.primos,0),totalFates=Number(fates)+rows.reduce((a,r)=>a+r.fates,0);
   return {days,rows,totalPrimos,totalFates,wishes:Math.floor(totalPrimos/160)+totalFates};
 }
+// Banners change at each version (every 42 days) and at phase 2 (20 days later).
+// Anchor: version 7.2 started on 4 Nov 2026; update it if HoYoverse shifts the calendar.
+const anchor=new Date(2026,10,4);
+export function nextBanners(now=new Date(),count=4) {
+  const out=[];
+  for(let k=0;out.length<count;k++){const v=new Date(anchor.getFullYear(),anchor.getMonth(),anchor.getDate()+42*k);
+    for(const [offset,phase] of [[0,'Nouvelle version'],[20,'Phase 2']]){const d=new Date(v.getFullYear(),v.getMonth(),v.getDate()+offset);if(d>now&&out.length<count)out.push({date:d,label:phase});}}
+  return out;
+}
+// Worst case for the banner's 5★: 90 wishes to hard pity, twice if the 50/50 is not guaranteed.
+export const wishesToGuarantee=(pity=0,guaranteed=false)=>Math.max(0,(guaranteed?90:180)-pity);
