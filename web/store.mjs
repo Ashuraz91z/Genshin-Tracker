@@ -28,7 +28,7 @@ export function openStore(path) {
   db.exec(`CREATE TABLE IF NOT EXISTS events(at INTEGER,user_id TEXT,kind TEXT,name TEXT,status INTEGER,detail TEXT);CREATE INDEX IF NOT EXISTS events_at ON events(at);
     CREATE TABLE IF NOT EXISTS tickets(id TEXT PRIMARY KEY,user_id TEXT,name TEXT,email TEXT,subject TEXT,status TEXT,created TEXT,updated TEXT);
     CREATE TABLE IF NOT EXISTS ticket_messages(ticket_id TEXT REFERENCES tickets(id) ON DELETE CASCADE,at TEXT,author TEXT,body TEXT);`);
-  for(const column of ['terms_at TEXT','terms_version TEXT','email TEXT','email_verified INTEGER DEFAULT 0','newsletter INTEGER DEFAULT 0','newsletter_at TEXT','trial_ends TEXT','stripe_customer TEXT','stripe_subscription TEXT','sub_status TEXT','sub_plan TEXT','sub_until INTEGER','sub_checked INTEGER','sub_cancel INTEGER DEFAULT 0','disabled INTEGER DEFAULT 0'])
+  for(const column of ['terms_at TEXT','terms_version TEXT','email TEXT','email_verified INTEGER DEFAULT 0','newsletter INTEGER DEFAULT 0','newsletter_at TEXT','trial_ends TEXT','stripe_customer TEXT','stripe_subscription TEXT','sub_status TEXT','sub_plan TEXT','sub_until INTEGER','sub_checked INTEGER','sub_cancel INTEGER DEFAULT 0','sub_reminded INTEGER','disabled INTEGER DEFAULT 0'])
     try{db.exec('ALTER TABLE users ADD COLUMN '+column);}catch(error){if(!/duplicate column/.test(error.message))throw error;}
   db.exec('CREATE UNIQUE INDEX IF NOT EXISTS users_email ON users(email COLLATE NOCASE) WHERE email IS NOT NULL');
   // Accounts created before billing existed get a full trial from the day billing ships.
@@ -132,6 +132,9 @@ export function openStore(path) {
       db.prepare('DELETE FROM sessions WHERE user_id=?').run(userId);
     },
     billing(userId) { return db.prepare('SELECT trial_ends,stripe_customer,stripe_subscription,sub_status,sub_plan,sub_until,sub_checked,sub_cancel FROM users WHERE id=?').get(userId); },
+    // Annual plans renewing in 31–45 days whose reminder for this period is not sent yet (art. L215-1 Code de la consommation).
+    renewalsDue(now=Date.now()) { return db.prepare(`SELECT id,name,email,stripe_subscription,sub_until FROM users WHERE sub_plan='year' AND sub_status='active' AND COALESCE(sub_cancel,0)=0 AND email IS NOT NULL AND sub_until BETWEEN ? AND ? AND (sub_reminded IS NULL OR sub_reminded<>sub_until)`).all(now+31*864e5,now+45*864e5); },
+    reminded(userId,until) { db.prepare('UPDATE users SET sub_reminded=? WHERE id=?').run(until,userId); },
     checkedBilling(userId) { db.prepare('UPDATE users SET sub_checked=? WHERE id=?').run(Date.now(),userId); },
     setBilling(userId,{customer=null,subscription=null,status=null,plan=null,until=null,cancel=false}) {
       db.prepare('UPDATE users SET stripe_customer=COALESCE(?,stripe_customer),stripe_subscription=?,sub_status=?,sub_plan=?,sub_until=?,sub_cancel=?,sub_checked=? WHERE id=?').run(customer,subscription,status,plan,until,cancel?1:0,Date.now(),userId);

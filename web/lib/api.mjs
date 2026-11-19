@@ -6,6 +6,7 @@ import { prepareDatabase } from './storage.mjs';
 import { need } from './scan.mjs';
 import { createMailer, mails } from './mail.mjs';
 import { openStore, Problem, secret } from '../store.mjs';
+import { plans } from './plans.mjs';
 import { billingView, pickSubscription, prices, stripeClient, subscriptionState } from './billing.mjs';
 
 const securityHeaders={'X-Content-Type-Options':'nosniff','Referrer-Policy':'same-origin','X-Frame-Options':'DENY',
@@ -281,9 +282,27 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
       try{store.record(ctx.userId,'api',request.method+' '+pathname.replace(/\/[A-Za-z0-9_-]{20,}/g,'/:id'),response.status,ctx.error);}catch(error){console.error('[events]',error.message);}
     return response;
   }
-  return {handle,store,close:()=>store.close()};
+  // Re-checks each candidate with Stripe first: a reminder must never announce a renewal that will not happen.
+  async function sendRenewalReminders(now=Date.now()) {
+    if(!stripe)return 0;
+    let sent=0;const price=plans.find(plan=>plan.id==='year').price,origin=publicOrigin??'https://genshin-tracker.com';
+    for(const row of store.renewalsDue(now))try{
+      await refreshBilling(row.id,row.stripe_subscription);const fresh=store.billing(row.id);
+      if(fresh.sub_plan!=='year'||fresh.sub_status!=='active'||fresh.sub_cancel===1||fresh.sub_until!==row.sub_until)continue;
+      await sendMail(row.email,mails.renewal(row.name,new Date(row.sub_until).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'}),price,origin+'/parametres#abonnement'));
+      store.reminded(row.id,row.sub_until);sent++;
+    }catch(error){console.error('[renewal]',error.message);}
+    return sent;
+  }
+  return {handle,store,sendRenewalReminders,close:()=>store.close()};
 }
 const key=Symbol.for('genshin.api');
 export function getApi() {
-  return globalThis[key]??=createApi({dbPath:prepareDatabase(),publicUrl:process.env.PUBLIC_URL??'',download:process.env.DOWNLOAD_PATH??undefined});
+  if(!globalThis[key]){
+    globalThis[key]=createApi({dbPath:prepareDatabase(),publicUrl:process.env.PUBLIC_URL??'',download:process.env.DOWNLOAD_PATH??undefined});
+    // ponytail: in-process timer, fine for one server; move to a cron if the site ever runs on several.
+    const run=()=>globalThis[key].sendRenewalReminders().catch(error=>console.error('[renewal]',error.message));
+    setTimeout(run,60e3).unref();setInterval(run,6*36e5).unref();
+  }
+  return globalThis[key];
 }

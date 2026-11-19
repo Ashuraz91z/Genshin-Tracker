@@ -43,6 +43,6 @@ export default function Checkout({billing,request}) {
     <button className="button primary full checkout-cta" disabled={busy} onClick={pay}>{busy?'Ouverture…':trialEnds?'Continuer sans payer aujourd’hui':`Continuer · ${chosen.price} ${chosen.period}`}<Icon name="chevron"/></button>
     <p className="checkout-note">{trialEnds?<>Rien n’est prélevé avant le <strong>{trialEnds}</strong>, à la fin de votre essai. Puis {chosen.price} {chosen.period}.</>:<>Accès immédiat après le paiement.</>}</p>
     <ul className="checkout-trust"><li><Icon name="shield"/>Paiement sécurisé par Stripe</li><li><Icon name="refresh"/>Sans engagement, résiliable en deux clics</li><li><Icon name="box"/>Vos données restent conservées</li></ul>
-    <small className="checkout-legal">Prix TTC. En continuant, vous acceptez les <Link href="/conditions-utilisation">conditions d’utilisation</Link>.</small>
+    <small className="checkout-legal">TVA non applicable, art. 293 B du CGI. En continuant, vous acceptez les <Link href="/conditions-utilisation">conditions d’utilisation</Link>.</small>
   </div>;
 }
