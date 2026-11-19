@@ -3,3 +3,4 @@ Illustrations : URLs HoYoverse/mihoyo présentes dans ce référentiel, fichiers
 Panorama céleste : illustration SVG originale pour cette interface.
 Illustrations complémentaires : https://github.com/MadeBaruna/paimon-moe/tree/4b873a6decad0384665084c69e9927a9fa266555/static/images (miroir des illustrations du jeu, droits HoYoverse).
 Images manquantes : https://enka.network/ui/ et https://gi.yatta.moe/assets/UI/ ; identifiants et icônes manquants vérifiés via https://gi.yatta.moe/api/v2/en/avatar/<id>.
+Accueil (cartes du haut de page) : illustrations de vœu https://enka.network/ui/UI_Gacha_AvatarImg_<Nom>.png, recadrées et converties en WebP (droits HoYoverse).

@@ -41,3 +41,11 @@
 @media(max-width:600px){.visual{height:450px}.farm li span{font-size:9px}}
 .portraits{padding-bottom:170px}@media(max-width:600px){.portraits{padding-bottom:160px}}
 @media(max-width:600px){.visual{height:auto;flex-direction:column;padding-top:34px}.portraits{padding-bottom:0}.portraits img{height:210px}.portraits img:nth-child(2){height:260px}.farm{position:relative;left:auto;right:auto;bottom:auto;width:100%;margin-top:-36px}.caption{position:static;margin-top:12px}}
+
+/* Hero cards: gacha splash crops (480x640), fanned behind the farm preview. */
+.portraits{align-items:flex-start;padding:28px 0 0;height:100%}
+.portraits img,.portraits img:nth-child(2){width:min(34%,200px);height:auto;aspect-ratio:3/4;object-fit:cover;border-radius:22px;border:1px solid var(--border);box-shadow:0 18px 40px #05091a55;filter:none;margin:0}
+.portraits img:nth-child(1){transform:translate(14%,34px) rotate(-7deg)}
+.portraits img:nth-child(2){position:relative;z-index:1;width:min(38%,228px)}
+.portraits img:nth-child(3){transform:translate(-14%,34px) rotate(7deg)}
+@media(max-width:600px){.portraits{height:auto;padding-top:24px}.portraits img,.portraits img:nth-child(2){height:auto}.portraits img:nth-child(2){width:38%}.farm{margin-top:-60px}}
