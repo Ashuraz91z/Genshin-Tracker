@@ -48,3 +48,13 @@
 .summary div{padding:14px;border:1px solid var(--border);border-radius:14px}
 .summary strong{font-size:22px;display:block}
 .summary span{color:var(--muted);font-size:12px}
+.farmLead{margin:0 0 16px;font-size:14px;color:var(--text)}
+.farmGroup+.farmGroup{margin-top:18px}
+.farmGroup h3{margin:0 0 8px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.farmList{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.farmList li{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border:1px solid var(--border);border-radius:14px;min-width:0}
+.farmList li>div{display:grid;gap:2px;min-width:0}
+.farmList strong{font-size:15px;color:var(--text)}
+.farmList span,.farmList small{font-size:12px;color:var(--muted)}
+.farmList img{flex:none;border-radius:8px}
+.farmList .who img{border-radius:50%}

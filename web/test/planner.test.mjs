@@ -11,7 +11,7 @@ test('planner costs, domain days, guide, team analysis and damage scenarios',()=
  const book=planner.characters.Bennett.talentBook;assert.equal(book,'TeachingsOfResistance');assert.ok(openOn(planner.materialDays[book],0));assert.ok(!openOn(planner.materialDays[book],1));
  const needs=characterNeeds(data.characters[0],planner.characters.Bennett);assert.ok(needs.Mora>0&&needs.CrownOfInsight===3);
  assert.equal(shortfall(needs,data.materials).find(n=>n.key==='TeachingsOfResistance').missing,0);
- assert.ok(farmPlan(data,catalogue,planner,2).some(g=>g.key===book&&g.who.includes('Bennett')));
+ assert.ok(farmPlan(data,catalogue,planner,2).some(g=>g.key===book&&g.who.includes('Bennett')&&g.kind==='talent'&&!g.place.includes(' : ')));
  assert.ok(upgradeGuide(data.characters[0],data,catalogue,planner).steps.some(s=>s.area==='Artéfacts'));
  const a=analyzeTeam(['Bennett','Xiangling'],data,catalogue);assert.ok(a.good.some(t=>t.includes('Bennett')));assert.ok(a.bad.some(t=>t.includes('incomplète')));
  const team={characters:['Bennett'],duration:20,enemyLevel:100,resistance:10,iterations:20,energy:'normal',rotation:''};

@@ -46,8 +46,8 @@ export function upgradeGuide(character,data,catalogue,planner,day=new Date().get
 }
 export function farmPlan(data,catalogue,planner,day=new Date().getDay()) {
   const groups={};
-  const push=(material,who)=>{const info=planner.materialDays[material];if(!info)return;const g=groups[material]??={key:material,name:catalogue.materials?.[material]?.name??material,image:catalogue.materials?.[material]?.image,...info,today:openOn(info,day),who:[]};if(!g.who.includes(who))g.who.push(who);};
-  for(const c of data.characters){const plan=planner.characters?.[c.key];if(plan?.talentBook&&['auto','skill','burst'].some(t=>(c.talent?.[t]??10)<10))push(plan.talentBook,c.key);}
-  for(const w of data.weapons)if(w.location&&(w.ascension??6)<6)push(planner.weapons?.[w.key]?.material,w.location);
+  const push=(material,who,kind)=>{const info=planner.materialDays[material];if(!info)return;const g=groups[material]??={key:material,kind,name:catalogue.materials?.[material]?.name??material,image:catalogue.materials?.[material]?.image,...info,place:info.domain.split(' : ').pop(),today:openOn(info,day),who:[]};if(!g.who.includes(who))g.who.push(who);};
+  for(const c of data.characters){const plan=planner.characters?.[c.key];if(plan?.talentBook&&['auto','skill','burst'].some(t=>(c.talent?.[t]??10)<10))push(plan.talentBook,c.key,'talent');}
+  for(const w of data.weapons)if(w.location&&(w.ascension??6)<6)push(planner.weapons?.[w.key]?.material,w.location,'weapon');
   return Object.values(groups).sort((a,b)=>b.today-a.today||b.who.length-a.who.length);
 }
