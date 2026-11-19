@@ -1,20 +1,31 @@
 import Link from 'next/link';
+import { headers } from 'next/headers';
 import Icon from '../components/Icon';
 import LegalLinks from '../components/LegalLinks';
 import styles from './landing.module.css';
 
 const description='Suivez vos personnages, artéfacts et armes Genshin Impact, importez votre inventaire avec un scanner Windows et composez vos équipes. Essai gratuit de 14 jours, sans carte bancaire.';
 export const metadata={title:'Genshin Tracker — Suivi de compte, inventaire et équipes Genshin Impact',description,alternates:{canonical:'/'},
-  openGraph:{type:'website',locale:'fr_FR',siteName:'Genshin Tracker',title:'Genshin Tracker — Votre compte Genshin Impact, en clair',description,url:'/'},twitter:{card:'summary',title:'Genshin Tracker',description}};
+  openGraph:{type:'website',locale:'fr_FR',siteName:'Genshin Tracker',title:'Genshin Tracker — Votre compte Genshin Impact, en clair',description,url:'/'},twitter:{card:'summary_large_image',title:'Genshin Tracker',description}};
 import { plans as allPlans, included } from '../lib/plans.mjs';
 const plans=[...allPlans].reverse();
-const faq=[['Faut-il une carte bancaire pour l’essai ?','Non. Créez un compte avec un pseudo et un mot de passe : vous avez 14 jours d’accès complet, sans moyen de paiement. Rien n’est prélevé automatiquement à la fin de l’essai.'],
+const faq=[['Qu’est-ce que Genshin Tracker ?','Un carnet en ligne pour suivre son compte Genshin Impact : personnages, armes, artéfacts et matériaux, équipes et estimation des dégâts de rotation, conseils de progression et matériaux à farmer. Le site est en français.'],
+  ['Comment importer mon inventaire Genshin ?','Lancez Kamera FR, le scanner Windows gratuit fourni avec le service : il lit les menus du jeu par captures d’écran et envoie le relevé à votre carnet. Vos données s’exportent à tout moment au format GOOD.'],
+  ['Faut-il une carte bancaire pour l’essai ?','Non. Créez un compte avec un pseudo et un mot de passe : vous avez 14 jours d’accès complet, sans moyen de paiement. Rien n’est prélevé automatiquement à la fin de l’essai.'],
   ['Que se passe-t-il après les 14 jours ?','Votre carnet est mis en pause, vos données restent conservées. Choisissez une formule quand vous voulez pour tout retrouver.'],
   ['Puis-je résilier à tout moment ?','Oui, depuis « Mon compte » sur le site. L’accès reste ouvert jusqu’à la fin de la période déjà payée.'],
   ['Mon compte HoYoverse est-il en danger ?','Le site ne demande jamais vos identifiants HoYoverse. Kamera FR lit les menus du jeu sur votre PC, à partir de captures d’écran.'],
   ['Le code est-il vraiment libre ?','Oui, sous licence AGPL-3.0. Vous payez le service hébergé, la synchronisation et la conservation de vos données, pas le code.']];
 const features=[['users','Vos personnages, dans le détail.','Retrouvez leurs niveaux, talents et constellations. Consultez leur équipement et complétez ce qui manque.'],['box','Un inventaire qui devient lisible.','Explorez vos armes, artéfacts et matériaux. Filtrez votre collection et corrigez les relevés à la main.'],['sword','Des équipes à votre image.','Réunissez vos compagnons et estimez les dégâts d’une rotation, avec les hypothèses du calcul à portée de vue.']];
-export default function Page(){return <div className={styles.landing}>
+const site='https://genshin-tracker.com';
+const jsonLd=JSON.stringify([
+  {'@context':'https://schema.org','@type':'WebApplication',name:'Genshin Tracker',url:site,inLanguage:'fr',applicationCategory:'GameApplication',operatingSystem:'Web, Windows (scanner Kamera FR)',description,license:'https://www.gnu.org/licenses/agpl-3.0.html',
+    publisher:{'@type':'Organization',name:'Lux Audere',url:'https://lux-audere.com'},
+    offers:allPlans.map(plan=>({'@type':'Offer',name:plan.name,price:plan.price.replace(/[^\d,]/g,'').replace(',','.'),priceCurrency:'EUR',url:site+'/#tarifs'}))},
+  {'@context':'https://schema.org','@type':'FAQPage',mainEntity:faq.map(([name,text])=>({'@type':'Question',name,acceptedAnswer:{'@type':'Answer',text}}))}
+]).replace(/</g,'\\u003c');
+export default async function Page(){const nonce=(await headers()).get('x-nonce');return <div className={styles.landing}>
+  <script nonce={nonce} type="application/ld+json" dangerouslySetInnerHTML={{__html:jsonLd}}/>
   <a className="skip" href="#contenu">Aller au contenu</a>
   <header className={styles.header}><Link href="/" className={styles.brand} aria-label="Genshin Tracker, accueil"><img src="/assets/mark.svg" width="36" height="36" alt=""/><span>GENSHIN<small>TRACKER</small></span></Link><nav aria-label="Navigation du site"><a href="#possibilites">Les possibilités</a><a href="#comment">Comment ça marche</a><a href="#tarifs">Tarifs</a></nav><Link href="/app" className="button secondary">Essai gratuit <Icon name="chevron"/></Link></header>
   <main id="contenu" className={styles.main}>
@@ -29,7 +40,7 @@ export default function Page(){return <div className={styles.landing}>
     <section className={styles.cta}><span className="eyebrow">LE VOYAGE CONTINUE</span><h2>Votre prochaine aventure<br/>commence avec un peu de clarté.</h2><p>14 jours d’accès complet, sans carte bancaire.</p><Link href="/app" className="button primary">Commencer mon essai gratuit <Icon name="chevron"/></Link></section>
   </main><footer id="site-footer" className={styles.footer}>
     <div className={styles.footerTop}>
-      <div className={styles.footerIntro}><Link href="/" className={styles.footerBrand}><img src="/assets/mark.svg" alt="" width="32" height="32"/><span>Genshin Tracker</span></Link><p>Votre aventure, à votre rythme.</p><p>Le code reste libre.<br/>Le service hébergé : essai gratuit de 14 jours, puis dès 9,99 € par an.</p></div>
+      <div className={styles.footerIntro}><Link href="/" className={styles.footerBrand}><img src="/assets/mark.svg" alt="" width="32" height="32"/><span>Genshin Tracker</span></Link><p>Votre aventure, à votre rythme.</p><p>Le code reste libre.<br/>Le service hébergé : essai gratuit de 14 jours, puis {allPlans.find(plan=>plan.id==='month').price} par mois ou {allPlans.find(plan=>plan.id==='year').price} par an.</p></div>
       <div className={styles.footerColumn}><h2>Le projet</h2><a href="https://github.com/Ashuraz91z/Genshin-Tracker" target="_blank" rel="noreferrer">GitHub du projet ↗</a><a href="https://donate.stripe.com/7sYcN7blUaiE2ldgCK4gg00" target="_blank" rel="noreferrer">Soutenir le projet (don) ↗</a><a href="/licenses/agpl-3.0.txt">Licence du site · AGPL-3.0</a><span>Kamera FR, adapté d’<a href="https://github.com/Andrewthe13th/Inventory_Kamera" target="_blank" rel="noreferrer">Inventory Kamera ↗</a><br/><a href="/licenses/inventory-kamera.txt">Licence du scanner · MIT</a></span></div>
       <div className={styles.footerColumn}><h2>Informations</h2><LegalLinks/></div>
     </div>
