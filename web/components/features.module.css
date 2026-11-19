@@ -58,3 +58,11 @@
 .farmList span,.farmList small{font-size:12px;color:var(--muted)}
 .farmList img{flex:none;border-radius:8px}
 .farmList .who img{border-radius:50%}
+.farmTeams{display:flex;flex-wrap:wrap;gap:10px 14px;margin:0 0 14px}
+.farmTeams label{display:grid;gap:4px;font-size:12px;color:var(--muted);min-width:180px}
+.farmGroup>summary{cursor:pointer;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);min-height:44px;display:flex;align-items:center}
+.farmLater{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.farmLater li{display:grid;grid-template-columns:110px minmax(0,1fr);gap:2px 12px;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px}
+.farmLater li>span{grid-row:span 2;color:var(--gold);font-size:12px}
+.farmLater small{color:var(--muted)}
+.farmLabel{margin:6px 0 4px;font-size:12px;color:var(--muted)}

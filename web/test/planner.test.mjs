@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { characterNeeds, shortfall, openOn, farmPlan, upgradeGuide } from '../lib/planner.mjs';
+import { characterNeeds, shortfall, openOn, goalPlan, goals, upgradeGuide } from '../lib/planner.mjs';
 import { analyzeTeam, scenarioData } from '../lib/team.mjs';
 import { buildSimulation } from '../lib/simulation.mjs';
 const j=p=>JSON.parse(readFileSync(new URL(p,import.meta.url)));
@@ -11,7 +11,11 @@ test('planner costs, domain days, guide, team analysis and damage scenarios',()=
  const book=planner.characters.Bennett.talentBook;assert.equal(book,'TeachingsOfResistance');assert.ok(openOn(planner.materialDays[book],0));assert.ok(!openOn(planner.materialDays[book],1));
  const needs=characterNeeds(data.characters[0],planner.characters.Bennett);assert.ok(needs.Mora>0&&needs.CrownOfInsight===3);
  assert.equal(shortfall(needs,data.materials).find(n=>n.key==='TeachingsOfResistance').missing,0);
- assert.ok(farmPlan(data,catalogue,planner,2).some(g=>g.key===book&&g.who.includes('Bennett')&&g.kind==='talent'&&!g.place.includes(' : ')));
+ const all=goalPlan(data,catalogue,planner,null,goals.all.target,2);assert.ok(all.today.some(g=>g.key===book&&g.who.includes('Bennett')&&g.kind==='talent'&&!g.place.includes(' : ')));
+ assert.ok(goalPlan(data,catalogue,planner,null,goals.all.target,1).later.some(g=>g.key===book),'closed domains move to other days');
+ assert.ok(all.other.every(g=>g.key!=='Mora'&&!planner.materialDays[g.key]&&g.missing>0),'day-bound materials stay out of the any-day list');
+ assert.equal(goalPlan(data,catalogue,planner,['Xiangling'],goals.theater.target,2).today.length,0,'theater targets are lower, Xiangling is done');
+ assert.ok(goalPlan(data,catalogue,planner,['Bennett'],goals.abyss.target,2).today.some(g=>g.key===book),'abyss pushes Bennett skill 6 to 9');
  assert.ok(upgradeGuide(data.characters[0],data,catalogue,planner).steps.some(s=>s.area==='Artéfacts'));
  const a=analyzeTeam(['Bennett','Xiangling'],data,catalogue);assert.ok(a.good.some(t=>t.includes('Bennett')));assert.ok(a.bad.some(t=>t.includes('incomplète')));
  const team={characters:['Bennett'],duration:20,enemyLevel:100,resistance:10,iterations:20,energy:'normal',rotation:''};

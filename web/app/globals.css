@@ -257,7 +257,6 @@ kbd{font:inherit;font-size:10px;border:1px solid var(--border);border-radius:4px
 .loadout-artifacts img,.loadout-artifacts .loadout-empty{width:100%;max-width:34px;height:auto;aspect-ratio:1}
 .loadout-artifacts small{font-size:10px;font-variant-numeric:tabular-nums}
 .farm-today{scroll-margin-top:24px;border:1px solid color-mix(in srgb,var(--gold) 45%,var(--border))}
-.farm-scope{display:grid;gap:4px;font-size:12px;color:var(--muted);min-width:200px}
 .primos-summary{display:grid;gap:4px;margin-bottom:18px}
 .primos-summary strong{font-size:30px;letter-spacing:-.5px;color:var(--text)}
 .primos-summary span{font-size:13px;color:var(--muted)}

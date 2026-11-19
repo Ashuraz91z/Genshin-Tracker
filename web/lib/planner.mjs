@@ -6,10 +6,11 @@ export const openOn=(info,day)=>day===0||info.days.includes(day);
 export const daysLabel=info=>info.days.map(d=>dayNames[d]).join(' / ')+' / Dimanche';
 const add=(totals,items)=>{for(const i of items)totals[i.key]=(totals[i.key]??0)+i.count;return totals;};
 // ponytail: niveaux de personnage et d'arme via livres/minerais d'EXP non comptés, seulement élévations + aptitudes.
+const talentTarget=(target,t)=>typeof target.talent==='number'?target.talent:target.talent[t];
 export function characterNeeds(character,plan,target={ascension:6,talent:10}) {
   const totals={};if(!plan)return totals;
   for(let a=character.ascension??0;a<target.ascension;a++)add(totals,plan.ascension[a]??[]);
-  for(const t of ['auto','skill','burst'])for(let lvl=(character.talent?.[t]??1);lvl<target.talent;lvl++)add(totals,plan.talents?.[lvl-1]??[]);
+  for(const t of ['auto','skill','burst'])for(let lvl=(character.talent?.[t]??1);lvl<talentTarget(target,t);lvl++)add(totals,plan.talents?.[lvl-1]??[]);
   return totals;
 }
 export function weaponNeeds(weapon,plan){const totals={};for(let a=weapon.ascension??0;a<6;a++)add(totals,plan?.ascension[a]??[]);return totals;}
@@ -44,10 +45,30 @@ export function upgradeGuide(character,data,catalogue,planner,day=new Date().get
   const missing=needs.filter(n=>n.missing>0).sort((a,b)=>b.missing-a.missing).map(n=>({...n,name:name(n.key),image:catalogue.materials?.[n.key]?.image,farm:planner.materialDays[n.key]}));
   return {steps:steps.sort((a,b)=>b.priority-a.priority),missing,needs:needs.length,mora:characterNeeds(character,plan).Mora??0,book:book?{...book,name:name(plan.talentBook),today:openOn(book,day)}:null};
 }
-export function farmPlan(data,catalogue,planner,day=new Date().getDay()) {
-  const groups={};
-  const push=(material,who,kind)=>{const info=planner.materialDays[material];if(!info)return;const g=groups[material]??={key:material,kind,name:catalogue.materials?.[material]?.name??material,image:catalogue.materials?.[material]?.image,...info,place:info.domain.split(' : ').pop(),today:openOn(info,day),who:[]};if(!g.who.includes(who))g.who.push(who);};
-  for(const c of data.characters){const plan=planner.characters?.[c.key];if(plan?.talentBook&&['auto','skill','burst'].some(t=>(c.talent?.[t]??10)<10))push(plan.talentBook,c.key,'talent');}
-  for(const w of data.weapons)if(w.location&&(w.ascension??6)<6)push(planner.weapons?.[w.key]?.material,w.location,'weapon');
-  return Object.values(groups).sort((a,b)=>b.today-a.today||b.who.length-a.who.length);
+
+// Objectifs : quelles équipes compter et jusqu'où les monter.
+// ponytail: cibles fixes par mode (hypothèses de jeu courantes), à rendre réglables si les joueurs le demandent.
+export const goals={
+  all:{label:'Tous mes personnages',teams:0,target:{ascension:6,talent:10}},
+  story:{label:'Histoire',teams:1,target:{ascension:6,talent:{auto:6,skill:6,burst:6}},hint:'une équipe principale, niveau 80 à 90 et aptitudes 6'},
+  abyss:{label:'Abysse',teams:2,target:{ascension:6,talent:{auto:6,skill:9,burst:9}},hint:'deux équipes complètes, compétence et déchaînement à 9'},
+  theater:{label:'Théâtre',teams:3,target:{ascension:5,talent:{auto:1,skill:6,burst:6}},hint:'beaucoup de personnages utilisables, niveau 80 et aptitudes 6'},
+};
+export function goalPlan(data,catalogue,planner,keys,target,day=new Date().getDay()) {
+  const chars=keys?data.characters.filter(c=>keys.includes(c.key)):data.characters,own=new Set(chars.map(c=>c.key));
+  const weapons=data.weapons.filter(w=>own.has(w.location)&&(w.ascension??6)<6);
+  const name=k=>catalogue.materials?.[k]?.name??k,dated={},other={},artifacts={};
+  const push=(bag,key,who,extra)=>{const g=bag[key]??={key,name:name(key),image:catalogue.materials?.[key]?.image,who:[],...extra};if(!g.who.includes(who))g.who.push(who);return g;};
+  for(const c of chars){
+    const plan=planner.characters?.[c.key];if(!plan)continue;
+    if(plan.talentBook&&['auto','skill','burst'].some(t=>(c.talent?.[t]??1)<talentTarget(target,t))){const info=planner.materialDays[plan.talentBook];info&&push(dated,plan.talentBook,c.key,{kind:'talent',...info,place:info.domain.split(' : ').pop()});}
+    for(const n of shortfall(characterNeeds(c,plan,target),data.materials))if(n.missing&&n.key!=='Mora'&&!planner.materialDays[n.key])push(other,n.key,c.key,{missing:0}).missing+=n.missing;
+    const pieces=Object.values(characterEquipment(data,catalogue,c.key).slots).flat(),sets={};pieces.forEach(a=>sets[a.setKey]=(sets[a.setKey]??0)+1);
+    const main=Object.entries(sets).sort((a,b)=>b[1]-a[1])[0]?.[0],domain=main&&planner.artifactDomains?.[main]?.[0];
+    if(domain&&(pieces.length<5||pieces.some(a=>critValue(a)<15))){const g=push(artifacts,domain,c.key,{place:domain.split(' : ').pop(),sets:[]});const set=catalogue.artifacts?.[main]?.name??main;if(!g.sets.includes(set))g.sets.push(set);}
+  }
+  for(const w of weapons){const m=planner.weapons?.[w.key]?.material,info=m&&planner.materialDays[m];if(info)push(dated,m,w.location,{kind:'weapon',...info,place:info.domain.split(' : ').pop()});}
+  const byWho=(a,b)=>b.who.length-a.who.length;
+  const all=Object.values(dated).sort(byWho);
+  return {today:all.filter(g=>openOn(g,day)),later:all.filter(g=>!openOn(g,day)),other:Object.values(other).sort((a,b)=>byWho(a,b)||b.missing-a.missing),artifacts:Object.values(artifacts).sort(byWho),count:chars.length};
 }
