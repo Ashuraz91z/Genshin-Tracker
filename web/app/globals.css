@@ -271,3 +271,5 @@ kbd{font:inherit;font-size:10px;border:1px solid var(--border);border-radius:4px
 .primos-ok{color:var(--mint);font-weight:600}
 .primos-short{color:var(--gold);font-weight:600}
 .primos-guaranteed{align-self:end;font-size:12px}
+
+.dev-banner{position:sticky;top:0;z-index:1000;padding:4px 12px;background:#b45309;color:#fff;font:600 13px/1.4 system-ui,sans-serif;text-align:center}
