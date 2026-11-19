@@ -78,7 +78,34 @@ Ouvrez **http://127.0.0.1:8788**. Un clone privé nécessite un accès au dépô
 - [Provenance des composants et des données](UPSTREAM.md)
 - [Notes techniques historiques](docs/HISTORIQUE.md)
 
-Pour signaler un problème, ouvrez une [issue](https://github.com/Ashuraz91z/Genshin-Tracker/issues) avec les étapes, la version et le résultat attendu. Retirez les données personnelles des captures et journaux. Pour un problème de sécurité ou d’accès à un compte, écrivez à **contact@lux-audere.com** sans publier de mot de passe ni de clé d’appareil.
+Pour signaler un problème, ouvrez une [issue](https://github.com/Ashuraz91z/Genshin-Tracker/issues) avec les étapes, la version et le résultat attendu. Retirez les données personnelles des captures et journaux. Pour un problème de sécurité ou d’accès à un compte, écrivez à **contact@genshin-tracker.com** sans publier de mot de passe ni de clé d’appareil.
+
+## Où va l’argent
+
+Genshin Tracker n’est pas fait pour gagner de l’argent. L’objectif est d’**équilibrer les comptes** : l’abonnement (1,99 € par mois ou 14,99 € par an, après 14 jours d’essai gratuit) et les dons servent à payer ce que le site coûte, et tout le reste est **réinvesti dans le projet**.
+
+Ce que l’argent paie aujourd’hui :
+
+- l’hébergement du site et le nom de domaine ;
+- l’envoi des e-mails du compte (confirmation, mot de passe oublié) ;
+- les frais de paiement prélevés par Stripe.
+
+Le code reste libre (AGPL-3.0) : chacun peut l’héberger gratuitement chez soi.
+
+## Feuille de route
+
+Les prochaines étapes, financées au fur et à mesure par les abonnements et les dons :
+
+| Palier | Ce qui sera fait |
+| --- | --- |
+| **100 € récoltés** | Compte développeur Apple (environ 99 € par an) pour sortir une application iPhone. |
+| Paliers suivants | Annoncés ici dès qu’ils seront fixés. |
+
+En continu, sans palier :
+
+- mise à jour des données du jeu et du simulateur à chaque nouvelle version de Genshin ;
+- lecture automatique de l’UID Genshin par le scanner Kamera FR ;
+- lettre d’information pour les comptes qui l’ont acceptée.
 
 ## Limites à connaître
 

@@ -30,7 +30,7 @@ namespace InventoryKamera
         {
             lock (ConfigLock) return File.Exists(ConfigPath) ? JsonConvert.DeserializeObject<Connection>(File.ReadAllText(ConfigPath)) : null;
         }
-        internal static string SiteUrl => Load()?.Url ?? "https://genshin.lux-audere.com";
+        internal static string SiteUrl => Load()?.Url ?? "https://genshin-tracker.com";
         internal static string AccountName => Load()?.Username;
         private static string ValidateUrl(string input)
         {
