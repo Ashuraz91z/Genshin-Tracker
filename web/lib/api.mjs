@@ -35,7 +35,7 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
   }
   async function sendMail(to,mail) {
     if(!mailer){console.info('[mail] SMTP non configuré, message non envoyé :',mail.subject);return;}
-    try{await mailer({to,...mail});}catch(error){console.error('[mail]',error.message);}
+    try{const info=await mailer({to,...mail});console.info('[mail] accepté par le SMTP :',mail.subject,'→ @'+String(to).split('@').pop(),info?.response??'',info?.rejected?.length?'refusé : '+info.rejected.length:'');}catch(error){console.error('[mail]',error.message);}
   }
   const sendVerification=(user,email,origin,welcome)=>sendMail(email,mails.verify(user.name,origin+'/api/email/verify?token='+store.issueToken(user.id,'verify',2*864e5),welcome));
   const paid=async userId=>{const plan=await billing(userId);if(!plan.active)throw new Problem('Votre essai gratuit est terminé. Choisissez une formule pour continuer.',402);

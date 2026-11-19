@@ -7,7 +7,7 @@ import LegalLinks from './LegalLinks';
 const benefits=[['users','Vos personnages en détail','Niveaux, talents, constellations et équipement.'],['refresh','Synchronisé avec Kamera','Un scan sur PC, et votre carnet se met à jour.'],['sword','Des équipes à votre image','Composez et estimez vos rotations.']];
 
 // Focused entry screen: no app chrome until there is an account to show.
-export default function AuthScreen({signup,setSignup,consent,setConsent,busy,error,onSubmit,onForgot,onImport}) {
+export default function AuthScreen({signup,setSignup,consent,setConsent,busy,error,onSubmit,onForgot}) {
   const [showPassword,setShowPassword]=useState(false);
   const mode=next=>{if(next!==signup)setSignup(next);};
   return <div className="auth-screen">
@@ -43,9 +43,6 @@ export default function AuthScreen({signup,setSignup,consent,setConsent,busy,err
           </div>}
           <button className="button primary full auth-submit" disabled={busy}>{busy?(signup?'Création du compte…':'Connexion…'):signup?'Créer mon compte gratuitement':'Se connecter'}</button>
         </form>
-        <div className="auth-divider"><span>ou</span></div>
-        <div className="auth-guest"><button type="button" className="button secondary full" disabled={busy} onClick={onImport}><Icon name="upload"/>Essayer sans compte, avec un fichier</button>
-          <details><summary>Quel fichier ?</summary><p>Le fichier d’inventaire (.json, format GOOD) créé par Kamera FR ou un scanner compatible. Il reste dans cet onglet, rien n’est envoyé au serveur. Pas encore de fichier ? <a href="/api/download">Télécharger Kamera FR pour Windows</a>.</p></details></div>
       </section>
     </main>
     <footer className="auth-footer"><LegalLinks/></footer>

@@ -64,8 +64,8 @@ function Subscription({billing,api,notify,onBilling,onChoose,onManage}) {
 }
 
 export default function Settings({account,api,notify,setAccount,onLogout,onDeleted,onChooseBilling,onManageBilling,onPair,onRevoke,onExportGood,activity}) {
-  const signed=!account.guest,user=account.user,billing=account.billing,devices=account.devices??[],scans=account.scans??[];
-  const sections=[...(signed?[['profil','Profil','users'],...(billing?.enabled?[['abonnement','Abonnement','star']]:[]),['securite','Sécurité','shield'],['appareils','Appareils et journal','monitor']]:[]),['donnees','Données et confidentialité','download'],['affichage','Affichage','sun']];
+  const user=account.user,billing=account.billing,devices=account.devices??[],scans=account.scans??[];
+  const sections=[['profil','Profil','users'],...(billing?.enabled?[['abonnement','Abonnement','star']]:[]),['securite','Sécurité','shield'],['appareils','Appareils et journal','monitor'],['donnees','Données et confidentialité','download'],['affichage','Affichage','sun']];
   const [active,setActive]=useState(sections[0][0]),[busy,setBusy]=useState(''),[email,setEmail]=useState(user.email??''),[deleting,setDeleting]=useState(false);
   useEffect(()=>{
     const observer=new IntersectionObserver(entries=>{const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top)[0];if(visible)setActive(visible.target.id);},{rootMargin:'-20% 0px -60% 0px'});
@@ -92,15 +92,15 @@ export default function Settings({account,api,notify,setAccount,onLogout,onDelet
   const lastSync=devices.map(d=>d.last_seen).filter(Boolean).sort().at(-1);
 
   return <div className="settings-page">
-    <div className="page-heading"><div><span className="eyebrow">VOTRE ESPACE</span><h1>Paramètres</h1><p>{signed?<>Connecté en tant que <strong>{user.name}</strong>{user.email&&<> · {user.email}</>}</>:'Mode visiteur : vos données restent dans ce navigateur.'}</p></div></div>
+    <div className="page-heading"><div><span className="eyebrow">VOTRE ESPACE</span><h1>Paramètres</h1><p>Connecté en tant que <strong>{user.name}</strong>{user.email&&<> · {user.email}</>}</p></div></div>
     <div className="settings-layout">
       <nav className="settings-nav" aria-label="Rubriques des paramètres">{sections.map(([id,label,icon])=><a key={id} href={'#'+id} aria-current={active===id?'true':undefined} onClick={()=>setActive(id)}><Icon name={icon}/>{label}</a>)}
-        <div className="settings-nav-footer"><Link href="/aide"><Icon name="bulb"/>Aide et contact</Link>{user.admin&&<Link href="/admin"><Icon name="dashboard"/>Administration</Link>}<button type="button" onClick={onLogout}><Icon name="chevron"/>{signed?'Se déconnecter':'Effacer la session visiteur'}</button></div>
+        <div className="settings-nav-footer"><Link href="/aide"><Icon name="bulb"/>Aide et contact</Link>{user.admin&&<Link href="/admin"><Icon name="dashboard"/>Administration</Link>}<button type="button" onClick={onLogout}><Icon name="chevron"/>Se déconnecter</button></div>
       </nav>
       <div className="settings-content">
-        {!signed&&<section className="settings-card"><header><span className="settings-card-icon"><Icon name="users"/></span><div><h2>Créer un compte</h2><p>Gardez votre carnet sur tous vos appareils, reliez Kamera et retrouvez vos équipes. 14 jours d’essai, sans carte.</p></div></header><div className="settings-actions"><button className="button primary" onClick={onLogout}>Créer un compte ou se connecter</button></div></section>}
+        {!<section className="settings-card"><header><span className="settings-card-icon"><Icon name="users"/></span><div><h2>Créer un compte</h2><p>Gardez votre carnet sur tous vos appareils, reliez Kamera et retrouvez vos équipes. 14 jours d’essai, sans carte.</p></div></header><div className="settings-actions"><button className="button primary" onClick={onLogout}>Créer un compte ou se connecter</button></div></section>}
 
-        {signed&&<Card id="profil" icon="users" title="Profil" description="Ce qui vous identifie sur Genshin Tracker.">
+        {<Card id="profil" icon="users" title="Profil" description="Ce qui vous identifie sur Genshin Tracker.">
           <form className="settings-row" onSubmit={saveName}><div className="settings-row-label"><label htmlFor="settings-name"><strong>Pseudo</strong></label><small>C’est aussi votre identifiant de connexion.</small></div>
             <div className="settings-row-control inline-form"><input id="settings-name" name="name" defaultValue={user.name} key={user.name} minLength="3" maxLength="32" required autoComplete="username"/><button className="button secondary" disabled={busy==='name'}>{busy==='name'?'…':'Enregistrer'}</button></div></form>
           <form className="settings-row" onSubmit={saveEmail}><div className="settings-row-label"><label htmlFor="settings-email"><strong>Adresse e-mail</strong></label><small>Pour récupérer votre mot de passe et recevoir vos factures.</small></div>
@@ -110,9 +110,9 @@ export default function Settings({account,api,notify,setAccount,onLogout,onDelet
           <Row label="Newsletter" hint="Nouveautés du site et conseils de progression. Désinscription à tout moment."><input className="switch" type="checkbox" aria-label="Recevoir la newsletter" checked={!!user.newsletter} disabled={busy==='newsletter'} onChange={e=>setNewsletter(e.target.checked)}/></Row>
         </Card>}
 
-        {signed&&billing?.enabled&&<Subscription billing={billing} api={api} notify={notify} onBilling={plan=>setAccount(current=>({...current,billing:plan}))} onChoose={onChooseBilling} onManage={onManageBilling}/>}
+        {billing?.enabled&&<Subscription billing={billing} api={api} notify={notify} onBilling={plan=>setAccount(current=>({...current,billing:plan}))} onChoose={onChooseBilling} onManage={onManageBilling}/>}
 
-        {signed&&<Card id="securite" icon="shield" title="Sécurité" description="Mot de passe et sessions ouvertes.">
+        {<Card id="securite" icon="shield" title="Sécurité" description="Mot de passe et sessions ouvertes.">
           <form className="settings-form" onSubmit={changePassword}><h3>Changer de mot de passe</h3>
             <div className="field-grid"><label>Mot de passe actuel<input name="current" type="password" autoComplete="current-password" maxLength="128" required/></label>
               <label>Nouveau mot de passe<input name="password" type="password" autoComplete="new-password" minLength="8" maxLength="128" required placeholder="8 caractères minimum"/></label>
@@ -121,7 +121,7 @@ export default function Settings({account,api,notify,setAccount,onLogout,onDelet
           <Row label="Sessions ouvertes" hint="Déconnecte tous les autres navigateurs. Vos PC associés à Kamera restent reliés."><button className="button secondary" disabled={busy==='sessions'} onClick={signOutOthers}>Déconnecter les autres navigateurs</button></Row>
         </Card>}
 
-        {signed&&<Card id="appareils" icon="monitor" title="Appareils et journal" description="Les PC reliés à Kamera et l’historique technique de vos relevés.">
+        {<Card id="appareils" icon="monitor" title="Appareils et journal" description="Les PC reliés à Kamera et l’historique technique de vos relevés.">
           <div className="settings-subhead"><h3>PC associés</h3><button className="button secondary" onClick={onPair}><Icon name="link"/>Associer un PC</button></div>
           {devices.length?<ul className="device-list">{devices.map(d=><li key={d.id}><Icon name="monitor"/><div><strong>{d.name}</strong><small>Associé le {date(d.created)} · dernier envoi {d.last_seen?date(d.last_seen):'jamais'}</small></div><button className="button secondary" onClick={()=>onRevoke(d.id)}>Dissocier</button></li>)}</ul>:<p className="settings-empty">Aucun PC associé pour l’instant.</p>}
           <dl className="tech-facts"><div><dt>Dernier envoi</dt><dd>{lastSync?date(lastSync):'—'}</dd></div><div><dt>Relevés reçus</dt><dd>{scans.length}{scans.length>=30?'+':''}</dd></div><div><dt>Données mises à jour</dt><dd>{date(account.data?.updatedAt)}</dd></div><div><dt>Format</dt><dd>GOOD</dd></div></dl>
@@ -130,19 +130,19 @@ export default function Settings({account,api,notify,setAccount,onLogout,onDelet
 
         <Card id="donnees" icon="download" title="Données et confidentialité" description="Récupérez vos données à tout moment.">
           <Row label="Inventaire au format GOOD" hint="Réutilisable ici ou dans Genshin Optimizer."><button className="button secondary" disabled={!account.data?.updatedAt} onClick={onExportGood}><Icon name="download"/>Télécharger</button></Row>
-          {signed&&<Row label="Toutes mes données" hint="Compte, inventaire, équipes, appareils, relevés et demandes d’aide, en JSON."><a className="button secondary" href="/api/account/export" download><Icon name="download"/>Exporter</a></Row>}
+          {<Row label="Toutes mes données" hint="Compte, inventaire, équipes, appareils, relevés et demandes d’aide, en JSON."><a className="button secondary" href="/api/account/export" download><Icon name="download"/>Exporter</a></Row>}
           <p className="settings-note">Ce que nous conservons et pourquoi : <Link href="/confidentialite">politique de confidentialité</Link>.</p>
         </Card>
 
         <Display/>
 
-        {signed&&<section className="settings-card danger" id="suppression" aria-labelledby="suppression-title"><header><span className="settings-card-icon"><Icon name="shield"/></span><div><h2 id="suppression-title">Supprimer mon compte</h2><p>Définitif : le compte et toutes ses données sont effacés.</p></div></header>
+        {<section className="settings-card danger" id="suppression" aria-labelledby="suppression-title"><header><span className="settings-card-icon"><Icon name="shield"/></span><div><h2 id="suppression-title">Supprimer mon compte</h2><p>Définitif : le compte et toutes ses données sont effacés.</p></div></header>
           {deleting?<form className="confirm-panel" onSubmit={deleteAccount}><ul><li>Votre carnet, vos inventaires, équipes et PC associés sont effacés immédiatement.</li>{billing?.subscribed&&<li>Votre abonnement est arrêté tout de suite : aucun autre paiement ne sera prélevé.</li>}<li>Cette action est irréversible. Pensez à <a href="/api/account/export" download>exporter vos données</a> avant.</li></ul>
             <label className="field-label" htmlFor="delete-password">Mot de passe, pour confirmer</label><input id="delete-password" name="password" type="password" required autoComplete="current-password" maxLength="128"/>
             <div className="settings-actions"><button className="button danger" disabled={busy==='delete'}>{busy==='delete'?'Suppression…':'Supprimer définitivement'}</button><button type="button" className="button secondary" onClick={()=>setDeleting(false)}>Annuler</button></div></form>
           :<div className="settings-actions"><button className="button secondary danger-outline" onClick={()=>setDeleting(true)}>Supprimer mon compte…</button></div>}
         </section>}
-        <div className="settings-mobile-footer"><Link className="button secondary" href="/aide">Aide et contact</Link>{user.admin&&<Link className="button secondary" href="/admin">Administration</Link>}<button className="button secondary danger-outline" onClick={onLogout}>{signed?'Se déconnecter':'Effacer la session visiteur'}</button></div>
+        <div className="settings-mobile-footer"><Link className="button secondary" href="/aide">Aide et contact</Link>{user.admin&&<Link className="button secondary" href="/admin">Administration</Link>}<button className="button secondary danger-outline" onClick={onLogout}>Se déconnecter</button></div>
       </div>
     </div>
   </div>;
