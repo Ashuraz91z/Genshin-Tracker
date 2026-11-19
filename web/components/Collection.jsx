@@ -14,7 +14,11 @@ export function Empty({title,description,onPair}) {
 const slotOrder=['flower','plume','sands','goblet','circlet'];
 // Weapon + the 5 artifact slots as thumbnails; a dashed square marks what the scan could not identify.
 export function Loadout({equipment}) {
-  return <div className="character-loadout">{[equipment.weapons[0],...slotOrder.map(slot=>equipment.slots[slot][0])].map((item,i)=>item?.image?<img key={i} src={item.image} alt="" title={item.name} width="34" height="34" loading="lazy" className={`rarity-${item.rarity}${i===0?' loadout-weapon':''}`}/>:<span key={i} className={`loadout-empty${i===0?' loadout-weapon':''}`} title={i===0?'Arme non identifiée':'Artéfact non identifié'}/>)}</div>;
+  const weapon=equipment.weapons[0],thumb=(item,label)=>item?.image?<img src={item.image} alt="" title={item.name} width="34" height="34" loading="lazy" className={`rarity-${item.rarity}`}/>:<span className="loadout-empty" title={label}/>;
+  return <div className="character-loadout">
+    <div className="loadout-weapon">{thumb(weapon,'Arme non identifiée')}<span><strong>{weapon?weapon.name:'Arme non identifiée'}</strong>{weapon&&<small>Niv. {weapon.level} · R{weapon.refinement??1}</small>}</span></div>
+    <div className="loadout-artifacts">{slotOrder.map(slot=>{const item=equipment.slots[slot][0];return <span key={slot}>{thumb(item,'Artéfact non identifié')}<small>{item?'+'+(item.level??0):'—'}</small></span>;})}</div>
+  </div>;
 }
 export function CharacterCard({character,reference={},equipment,onClick}) {
   const name=reference.name??character.key;
