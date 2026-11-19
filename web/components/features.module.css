@@ -57,6 +57,8 @@
 .farmList strong{font-size:15px;color:var(--text)}
 .farmList span,.farmList small{font-size:12px;color:var(--muted)}
 .farmList img{flex:none;border-radius:8px}
+.farmList .rarity{color:var(--gold);font-size:11px;letter-spacing:1px;line-height:1}
+.farmList .farmTime{color:var(--text)}
 .farmList .who img{border-radius:50%}
 .farmTeams{display:flex;flex-wrap:wrap;gap:10px 14px;margin:0 0 14px}
 .farmTeams label{display:grid;gap:4px;font-size:12px;color:var(--muted);min-width:180px}

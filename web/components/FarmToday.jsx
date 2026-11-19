@@ -3,11 +3,13 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import s from './features.module.css';
 import usePlanner from './usePlanner';
-import { goalPlan, goals, dayNames } from '../lib/planner.mjs';
+import { goalPlan, goals, dayNames, farmEstimate } from '../lib/planner.mjs';
 import Select from './Select';
 const kinds=[['talent','Livres d’aptitudes','pour les aptitudes de'],['weapon','Matériaux d’arme','pour l’arme de']];
 const store='genshin-tracker-farm-goal';
-const count=n=>n+(n>1?' personnages':' personnage');
+const count=n=>n+(n>1?' personnages':' personnage'),fmt=n=>n.toLocaleString('fr-FR');
+const stars=r=>r?<span className={s.rarity} aria-label={r+' étoiles'}>{'★'.repeat(r)}</span>:null;
+const estimate=e=>e.runs?`≈ ${fmt(e.runs)} combat${e.runs>1?'s':''} · ${fmt(e.resin)} résine · ${fmt(e.days)} jour${e.days>1?'s':''} de résine`:e.kills?`≈ ${fmt(e.kills)} ennemis à vaincre`:null;
 export default function FarmToday({data,catalogue,teams=[]}) {
   const planner=usePlanner(),today=new Date().getDay(),[day,setDay]=useState(today),[goal,setGoal]=useState('all'),[picked,setPicked]=useState([]);
   useEffect(()=>{try{const v=JSON.parse(localStorage.getItem(store)??'null');if(v?.goal&&goals[v.goal]){setGoal(v.goal);setPicked(v.picked??[]);}}catch{}},[]);
@@ -30,7 +32,7 @@ export default function FarmToday({data,catalogue,teams=[]}) {
     {kinds.map(([kind,title,purpose])=>{const items=plan.today.filter(g=>g.kind===kind);return items.length>0&&<div key={kind} className={s.farmGroup}><h3>{title} · ouvert {when}</h3>
       <ul className={s.farmList}>{items.map(g=><li key={g.key}>{g.image&&<img src={g.image} width="44" height="44" alt="" loading="lazy"/>}<div><strong>{g.place}</strong><span>{g.name}</span><small>{purpose} {count(g.who.length)}</small>{who(g.who)}</div></li>)}</ul></div>;})}
     {plan.artifacts.length>0&&<div className={s.farmGroup}><h3>Artéfacts · tous les jours</h3><ul className={s.farmList}>{plan.artifacts.slice(0,4).map(g=><li key={g.key}><div><strong>{g.place}</strong><span>{g.sets.join(', ')}</span><small>pièces faibles ou manquantes chez {count(g.who.length)}</small>{who(g.who)}</div></li>)}</ul></div>}
-    {plan.other.length>0&&<div className={s.farmGroup}><h3>Boss et ressources du monde · tous les jours</h3><ul className={s.farmList}>{plan.other.slice(0,8).map(g=><li key={g.key}>{g.image&&<img src={g.image} width="44" height="44" alt="" loading="lazy"/>}<div><strong>{g.name}</strong><small>il en manque {g.missing} · {count(g.who.length)}</small>{who(g.who)}</div></li>)}</ul></div>}
+    {plan.other.length>0&&<div className={s.farmGroup}><h3>Boss et ressources du monde · tous les jours</h3><ul className={s.farmList}>{plan.other.slice(0,8).map(g=>{const e=farmEstimate(planner.drops?.[g.key],g.missing),r=catalogue.materials?.[g.key]?.rarity;return <li key={g.key}>{g.image&&<img src={g.image} width="44" height="44" alt="" loading="lazy"/>}<div><strong>{g.name}</strong>{stars(r)}<small>il en manque {fmt(g.missing)} · {count(g.who.length)}</small>{e?<span>{e.where}</span>:r===0&&<span>Spécialité locale : à ramasser dans le monde</span>}{e&&estimate(e)&&<span className={s.farmTime}>{estimate(e)}</span>}{who(g.who)}</div></li>;})}</ul><p className="muted">Temps estimés au niveau du monde 8 (rang d’aventure 55 et plus), sans compter la synthèse. Plus bas, les boss donnent moins et les matériaux 3★ des ennemis ne tombent que sur les ennemis de niveau 60 et plus.</p></div>}
     {plan.later.length>0&&<details className={s.farmGroup}><summary>Les autres jours ({plan.later.length})</summary><ul className={s.farmLater}>{plan.later.map(g=><li key={g.key}><span>{days(g)}</span><strong>{g.place}</strong><small>{g.name} · {count(g.who.length)}</small></li>)}</ul></details>}
   </section>;
 }

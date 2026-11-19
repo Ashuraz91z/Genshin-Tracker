@@ -44,3 +44,11 @@ test('inventory scenario uses the best unequipped pieces and survives misread su
  assert.ok(mine.every(a=>a.substats.length===4));
  assert.deepEqual(buildSimulation({characters:['Xingqiu'],duration:20,enemyLevel:100,resistance:10,iterations:20,energy:'normal',rotation:''},d,catalogue,metadata).issues,[]);
 });
+
+test('farmEstimate turns average drops into runs, resin and days', async () => {
+  const { farmEstimate } = await import('../lib/planner.mjs');
+  assert.deepEqual(farmEstimate([{n:'Arbre congelé',c:2.556,b:1}],46),{where:'Boss : Arbre congelé',runs:18,resin:720,days:4});
+  assert.deepEqual(farmEstimate([{n:'Pilleur',c:0.084,b:0}],10),{where:'Ennemis : Pilleur',kills:120});
+  assert.deepEqual(farmEstimate([{n:'Stormterror',c:null,b:2}],3),{where:'Boss hebdomadaire : Stormterror'});
+  assert.equal(farmEstimate(undefined,3),null);
+});

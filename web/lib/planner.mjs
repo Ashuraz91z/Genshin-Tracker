@@ -72,3 +72,11 @@ export function goalPlan(data,catalogue,planner,keys,target,day=new Date().getDa
   const all=Object.values(dated).sort(byWho);
   return {today:all.filter(g=>openOn(g,day)),later:all.filter(g=>!openOn(g,day)),other:Object.values(other).sort((a,b)=>byWho(a,b)||b.missing-a.missing),artifacts:Object.values(artifacts).sort(byWho),count:chars.length};
 }
+// Moyennes genshin-db au niveau du monde 8 (RA 55+). Boss normal : 40 résine ; la résine remonte de 180 par jour.
+export function farmEstimate(sources=[],missing) {
+  const best=sources[0];if(!best)return null;
+  const label=best.b===2?'Boss hebdomadaire':best.b?'Boss':'Ennemis',where=label+' : '+sources.map(s=>s.n).join(', ');
+  if(!best.c||!missing)return {where};
+  const n=Math.ceil(missing/best.c);
+  return best.b?{where,runs:n,resin:n*40,days:Math.ceil(n*40/180)}:{where,kills:n};
+}

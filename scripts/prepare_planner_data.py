@@ -1,5 +1,5 @@
 """Génère web/public/assets/planner.json depuis un checkout genshin-db :
-coûts d'élévation/aptitudes, jours des donjons et donjons d'artéfacts.
+coûts d'élévation/aptitudes, jours des donjons, donjons d'artéfacts et ennemis qui donnent chaque matériau.
 Usage : python3 scripts/prepare_planner_data.py /chemin/vers/genshin-db"""
 import importlib.util
 import json
@@ -55,7 +55,18 @@ for stem, d in load('English', 'domains').items():
         if reward.get('rarity', 0) >= 4 and 'count' not in reward:
             artifact_domains.setdefault(ref.good(reward['name']), set()).add(name)
 
+# Qui le donne (count = moyenne par ennemi/combat, mesurée par genshin-db au niveau du monde 8).
+used = {i['key'] for e in [*characters.values(), *weapons.values()] for lvl in e['ascension'] + e.get('talents', []) for i in lvl}
+drops, fr_enemies = {}, load('French', 'enemies')
+for stem, e in load('English', 'enemies').items():
+    weekly = any(r['name'] == 'Dream Solvent' for r in e.get('rewardPreview', []))  # seuls les boss hebdo en donnent
+    for r in e.get('rewardPreview', []):
+        key = ref.good(r['name'])
+        if key in used and 'rarity' not in r:
+            drops.setdefault(key, []).append({'n': fr_enemies.get(stem, e)['name'], 'c': r.get('count'), 'b': 2 if weekly else int(e.get('enemyType') == 'BOSS')})
+material_info = {k: sorted(v, key=lambda s: (-(s['c'] or 0), s['b'] == 2))[:3] for k, v in drops.items()}
+
 out = {'materialDays': domains, 'characters': characters, 'weapons': weapons,
-       'artifactDomains': {k: sorted(v) for k, v in artifact_domains.items()}}
+       'artifactDomains': {k: sorted(v) for k, v in artifact_domains.items()}, 'drops': material_info}
 (root / 'web/public/assets/planner.json').write_text(json.dumps(out, ensure_ascii=False, separators=(',', ':')))
 print(len(characters), 'personnages,', len(weapons), 'armes,', len(domains), 'matériaux de donjon,', len(artifact_domains), 'sets')
