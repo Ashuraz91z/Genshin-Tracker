@@ -10,7 +10,7 @@ import { billingView, pickSubscription, prices, stripeClient, subscriptionState 
 
 const securityHeaders={'X-Content-Type-Options':'nosniff','Referrer-Policy':'same-origin','X-Frame-Options':'DENY',
   'Content-Security-Policy':"default-src 'none'; script-src 'self'; frame-ancestors 'none'; base-uri 'none'"};
-export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',download=resolve('../dist/GenshinTracker-KameraFR-0.4.1.zip'),publicDirectory=resolve('public'),stripe=stripeClient(process.env.STRIPE_SECRET_KEY),mailer=createMailer(),publishableKey=process.env.STRIPE_PUBLISHABLE_KEY??'',adminEmails=process.env.ADMIN_EMAILS??'',supportEmail=process.env.SUPPORT_EMAIL??'contact@genshin-tracker.com'}={}) {
+export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',download=resolve('../dist/GenshinTracker-KameraFR-0.4.2.zip'),publicDirectory=resolve('public'),stripe=stripeClient(process.env.STRIPE_SECRET_KEY),mailer=createMailer(),publishableKey=process.env.STRIPE_PUBLISHABLE_KEY??'',adminEmails=process.env.ADMIN_EMAILS??'',supportEmail=process.env.SUPPORT_EMAIL??'contact@genshin-tracker.com'}={}) {
   const publicOrigin=publicUrl?new URL(publicUrl).origin:null;
   if(publicOrigin && !publicOrigin.startsWith('https://') && !/^http:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/.test(publicOrigin))throw new Error('PUBLIC_URL doit utiliser HTTPS hors localhost.');
   mkdirSync(dirname(dbPath),{recursive:true,mode:0o700});
@@ -266,7 +266,7 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
         const info=await stat(/* turbopackIgnore: true */ download).catch(()=>null);
         if(!info?.isFile())throw new Problem('Le paquet Windows n’est pas disponible sur ce serveur.',404);
         return new Response(Readable.toWeb(createReadStream(/* turbopackIgnore: true */ download)),{headers:{...securityHeaders,'Content-Type':'application/zip','Content-Length':String(info.size),
-          'Content-Disposition':'attachment; filename="GenshinTracker-KameraFR-0.4.1.zip"','Cache-Control':'no-store'}});
+          'Content-Disposition':'attachment; filename="GenshinTracker-KameraFR-0.4.2.zip"','Cache-Control':'no-store'}});
       }
       throw new Problem('Route introuvable.',404);
     } catch(error) {

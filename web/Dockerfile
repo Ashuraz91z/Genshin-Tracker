@@ -10,7 +10,7 @@ FROM node:24-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 HOSTNAME=0.0.0.0 PORT=8788 DATABASE_PATH=/data/tracker.sqlite DOWNLOAD_PATH=/app/downloads/kamera.zip
 COPY --from=builder /app/.next/standalone ./
-COPY dist/GenshinTracker-KameraFR-0.4.1.zip ./downloads/kamera.zip
+COPY dist/GenshinTracker-KameraFR-0.4.2.zip ./downloads/kamera.zip
 RUN mkdir -p /data && chown node:node /data
 USER node
 EXPOSE 8788

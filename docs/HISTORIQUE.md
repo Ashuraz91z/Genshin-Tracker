@@ -134,3 +134,9 @@ Le serveur peut reprendre les anciens fichiers contenant des artéfacts invalide
 - La lecture du propriétaire accepte désormais « Équipé par Sangonomiya Kokomi » sans deux-points, pour les armes comme pour les artéfacts ; les libellés avec deux-points restent reconnus.
 - Garder « Lier les armes » et « Lier les artéfacts » cochés. Un ancien GOOD dont `location` est vide ne permet pas de retrouver rétroactivement les propriétaires : refaire uniquement les catégories Armes / Artéfacts suffit.
 - Extraire le ZIP 0.4.1 complet. Les données du compte sur le site et l’association de l’appareil sont conservées. Le correctif ne change pas la base de données.
+
+### Nouvelle adresse du site — Kamera FR 0.4.2 / site 0.6.1
+
+- L’adresse proposée par défaut est désormais `https://genshin-tracker.com` ; l’ancienne adresse `genshin.lux-audere.com` ne répond plus.
+- Une adresse déjà enregistrée dans Kamera est conservée : si elle pointe vers genshin-tracker.com, la mise à jour n’est pas nécessaire.
+- Site : simulateur gcsim 2.50.0, crédits des composants dans les mentions légales.

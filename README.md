@@ -98,8 +98,18 @@ Les prochaines étapes, financées au fur et à mesure par les abonnements et le
 
 | Palier | Ce qui sera fait |
 | --- | --- |
+| **25 € récoltés** | Compte développeur Google Play (environ 25 €, payé une seule fois) pour sortir une application Android. |
 | **100 € récoltés** | Compte développeur Apple (environ 99 € par an) pour sortir une application iPhone. |
 | Paliers suivants | Annoncés ici dès qu’ils seront fixés. |
+
+Fonctionnalités prévues dès que les fonds permettront de payer ce qu’elles coûtent chaque mois :
+
+| Fonctionnalité | Pourquoi elle coûte |
+| --- | --- |
+| **Assistant IA** qui répond à partir de votre compte (« qui monter en premier ? », « que me manque-t-il pour ce personnage ? ») | Chaque question est facturée par le fournisseur d’IA. |
+| **Rappels par e-mail ou notification** (résine pleine, fin de bannière, domaine du jour) | Envoi de messages en grand nombre. |
+| **Scan depuis le téléphone** à partir de captures d’écran, sans PC Windows | La lecture des images se fait sur un serveur plus puissant. |
+| **Sauvegardes automatiques hors serveur** des comptes | Stockage externe payé au mois. |
 
 En continu, sans palier :
 
