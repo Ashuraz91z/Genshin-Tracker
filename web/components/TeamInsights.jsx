@@ -46,6 +46,6 @@ export default function TeamInsights({draft,data,catalogue,metadata}) {
           <label>Raffinement (tout le jeu)<Select value={opts[k]?.refinement??''} onChange={e=>member(k,'refinement',e.target.value||undefined)}><option value="">Comme le réglage global</option>{[1,2,3,4,5].map(n=><option key={n} value={n}>R{n}</option>)}</Select></label>
           <label>Set farmé<Select value={opts[k]?.set??''} onChange={e=>member(k,'set',e.target.value)}><option value="">Set actuel majoritaire</option>{sets.map(x=><option key={x} value={x}>{catalogue.artifacts[x].name}</option>)}</Select></label></div>;})}</div></details>}
     {analysis.info.map(t=><p className="simulation-note" key={t}>{t}</p>)}
-    <p className="simulation-note">Estimations gcsim {metadata?.version??''} dans votre navigateur, avec la rotation et les hypothèses de l’éditeur ci-dessous. La rotation de base n’est pas optimisée : comparez surtout les trois niveaux entre eux. L’EXP des personnages et des armes n’est pas comptée dans les coûts.</p>
+    <p className="simulation-note">Estimations du moteur libre <a href="https://github.com/genshinsim/gcsim" target="_blank" rel="noreferrer">gcsim</a> {metadata?.version??''} (contributeurs de gcsim, AGPL-3.0), calculées dans votre navigateur, avec la rotation et les hypothèses de l’éditeur ci-dessous. La rotation de base n’est pas optimisée : comparez surtout les trois niveaux entre eux. L’EXP des personnages et des armes n’est pas comptée dans les coûts.</p>
   </section>;
 }

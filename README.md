@@ -92,8 +92,10 @@ Le scanner automatise la navigation dans les menus. Le projet ne dispose pas d�
 | --- | --- |
 | Site web et outils propres au projet | [GNU AGPL-3.0 uniquement](LICENSE) |
 | Kamera FR et ses adaptations d’Inventory Kamera | [MIT](InventoryKamera-FR/LICENSE) |
+| Moteur de simulation gcsim 2.50.0 (contributeurs de gcsim, non modifié) | [AGPL-3.0](web/public/simulator/LICENSE-gcsim.txt), code antérieur [MIT](web/public/simulator/LICENSE-gcsim-MIT.txt) |
+| Référentiel genshin-db (theBowja et contributeurs) | [MIT](licenses/genshin-db-MIT.txt) |
 | Autres composants, référentiels et modèles OCR | [Notices tierces](licenses/) et [provenance](UPSTREAM.md) |
 
-Merci aux projets [Inventory Kamera](https://github.com/Andrewthe13th/Inventory_Kamera), [genshin-db](https://github.com/theBowja/genshin-db), [Tesseract](https://github.com/tesseract-ocr/tesseract) et [gcsim](https://github.com/genshinsim/gcsim). Les versions et notices utilisées figurent dans le dépôt.
+Merci aux projets [Inventory Kamera](https://github.com/Andrewthe13th/Inventory_Kamera), [genshin-db](https://github.com/theBowja/genshin-db), [Tesseract](https://github.com/tesseract-ocr/tesseract) et [gcsim](https://github.com/genshinsim/gcsim). Les versions et notices utilisées figurent dans le dépôt ; la liste complète des composants et de leurs auteurs est aussi sur le site, dans [Mentions légales › Crédits](https://genshin-tracker.com/mentions-legales#credits).
 
 **Un projet Lux Audere.** Genshin Tracker n’est ni affilié ni approuvé par HoYoverse. Genshin Impact, ses marques et ses illustrations appartiennent à leurs ayants droit ; les licences du code ne modifient pas ces droits.

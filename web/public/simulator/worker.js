@@ -1,4 +1,4 @@
-/* Adapter for the independently built MIT gcsim v2.47.2 engine. See SOURCES.md. */
+/* Adapter for gcsim v2.50.0 (AGPL-3.0, by the gcsim contributors), built unmodified from upstream. See SOURCES.md. */
 importScripts('/simulator/wasm_exec.js');
 let engine;
 async function load(){
@@ -15,6 +15,6 @@ onmessage=async event=>{
    const sample=decoded(simulate());decoded(aggregate(sample));
    if((i+1)%10===0)postMessage({progress:i+1});
   }
-  const output=decoded(flush());postMessage({done:true,stats:output.stats});
+  const output=decoded(flush());postMessage({done:true,stats:JSON.parse(output.result).statistics});
  }catch(error){postMessage({error:error.message??String(error)});}
 };

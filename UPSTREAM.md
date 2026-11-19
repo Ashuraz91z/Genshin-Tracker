@@ -13,3 +13,4 @@ Origines des composants et versions de départ. Les mentions de versions ci-dess
 - Version 0.2.2 : site Node/SQLite, synchronisation par appareil, interface WinForms revue et direction UI/UX Pro Max. Aucun hébergement de production configuré.
 
 - Version 0.3.0 : connexion directe au compte du tracker avec clé Windows persistante, lecture du compte distant, bilans par catégorie et journal des étapes. Site 0.4.0 avec diagnostics d’import et remplacement manuel explicite.
+- gcsim : https://github.com/genshinsim/gcsim ; v2.50.0, commit `b107b5dc5cb88977bed5270e5d83e64934730d4d`, compilé sans modification en WebAssembly (Go 1.27.4). AGPL-3.0 depuis le 19/09/2026 ; v2.47.2 et antérieures sous MIT (notice conservée).

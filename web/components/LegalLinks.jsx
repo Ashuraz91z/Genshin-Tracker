@@ -7,6 +7,7 @@ export default function LegalLinks() {
     <Link href="/confidentialite">Confidentialité</Link>
     <Link href="/cookies">Cookies et stockage local</Link>
     <Link href="/conditions-utilisation">Conditions d’utilisation</Link>
+    <Link href="/mentions-legales#credits">Crédits et licences</Link>
     <Link href="/aide">Aide et contact</Link>
   </nav>;
 }
