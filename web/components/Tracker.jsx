@@ -57,6 +57,7 @@ export default function Tracker({view,characterKey}) {
       .finally(()=>{if(alive)setLoading(false);});
     return()=>{alive=false;epoch.current++;};
   },[]);
+  useEffect(()=>{if(new URLSearchParams(location.search).has('connexion'))setSignup(false);},[]);// "Se connecter" links open the login tab
   useEffect(()=>{if(!account)return;const timer=setInterval(()=>{if(!document.hidden)refresh(true);},5000);return()=>clearInterval(timer);},[account?.user.name]);
   useEffect(()=>{
     const params=new URLSearchParams(window.location.search),session=params.get('session'),email=params.get('email');

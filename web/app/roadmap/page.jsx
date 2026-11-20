@@ -14,7 +14,7 @@ const floating=['TeachingsOfContention','TeachingsOfJustice','TeachingsOfOrder']
 
 export default function Page(){return <div className={`${landing.landing} ${styles.page}`}>
   <a className="skip" href="#contenu">Aller au contenu</a>
-  <header className={landing.header}><Link href="/" className={landing.brand} aria-label="Genshin Tracker, accueil"><img src="/assets/mark.svg" width="36" height="36" alt=""/><span>GENSHIN<small>TRACKER</small></span></Link><nav aria-label="Navigation du site"><Link href="/#possibilites">Les possibilités</Link><Link href="/#tarifs">Tarifs</Link><Link href="/roadmap" aria-current="page">Roadmap</Link></nav><Link href="/app" className="button secondary">Essai gratuit <Icon name="chevron"/></Link></header>
+  <header className={landing.header}><Link href="/" className={landing.brand} aria-label="Genshin Tracker, accueil"><img src="/assets/mark.svg" width="36" height="36" alt=""/><span>GENSHIN<small>TRACKER</small></span></Link><nav aria-label="Navigation du site"><Link href="/#possibilites">Les possibilités</Link><Link href="/#tarifs">Tarifs</Link><Link href="/roadmap" aria-current="page">Roadmap</Link></nav><div className={landing.headerActions}><Link href="/app?connexion" className="text-button">Se connecter</Link><Link href="/app" className="button primary">Essai gratuit <Icon name="chevron"/></Link></div></header>
   <main id="contenu" className={landing.main}>
     <section className={styles.hero} aria-labelledby="roadmap-title">
       <div className={styles.sky} aria-hidden="true"><span className={styles.ring}/><span className={styles.ring}/>{floating.map(key=><img key={key} src={`/assets/materials/${key}.png`} alt="" width="56" height="56"/>)}</div>
