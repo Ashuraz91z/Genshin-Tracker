@@ -17,7 +17,7 @@ async function api(path,options={}) {
   const result=await response.json();if(!response.ok){const error=new Error(result.error??'Une erreur est survenue.');error.status=response.status;throw error;}return result;
 }
 
-export default function Help() {
+export default function Help({idea=false}) {
   const [tickets,setTickets]=useState(null),[signedIn,setSignedIn]=useState(false),[busy,setBusy]=useState(false),[notice,setNotice]=useState(null);
   const load=()=>api('/api/support').then(r=>{setTickets(r.tickets);setSignedIn(true);}).catch(()=>setSignedIn(false));
   useEffect(()=>{load();},[]);
@@ -28,6 +28,19 @@ export default function Help() {
       setNotice({text:result.email?`Message envoyé. Nous vous répondrons à ${result.email}.`:'Réponse envoyée.'});}
     catch(error){setNotice({text:error.message,error:true});}finally{setBusy(false);}
   }
+  const form=<>
+    {!signedIn&&<p>Vous avez un compte ? <Link href="/app">Connectez-vous</Link> pour suivre vos demandes et nos réponses {idea?<>dans <Link href="/aide">Aide et contact</Link></>:'ici'}. Sinon, nous vous répondrons par e-mail.</p>}
+    <form className={styles.form} onSubmit={e=>send(e,'/api/support',f=>({...Object.fromEntries(f),...(idea&&{subject:'Idée : '+f.get('subject')})}))}>
+      {!signedIn&&<div className={styles.row}><div><label htmlFor="help-name">Nom ou pseudo</label><input id="help-name" name="name" autoComplete="nickname" maxLength="64" required/></div>
+        <div><label htmlFor="help-email">Adresse e-mail</label><input id="help-email" name="email" type="email" autoComplete="email" maxLength="254" required/></div></div>}
+      <label htmlFor="help-subject">{idea?'Fonctionnalité souhaitée':'Sujet'}</label><input id="help-subject" name="subject" minLength="3" maxLength={idea?113:120} required placeholder={idea?'Ex. : comparer deux artéfacts':'Ex. : mon import ne passe pas'}/>
+      <label htmlFor="help-body">{idea?'À quoi elle vous servirait':'Message'}</label><textarea id="help-body" name="body" rows="6" minLength="10" maxLength="5000" required placeholder={idea?'Décrivez ce que vous aimeriez faire et dans quelle situation de jeu.':'Décrivez ce que vous faisiez et ce qui s’est passé.'}/>
+      <input className={styles.trap} name="website" tabIndex="-1" autoComplete="off" aria-hidden="true"/>
+      <button className="button primary" disabled={busy}>{busy?'Envoi…':idea?'Proposer cette idée':'Envoyer'}</button>
+    </form>
+    {notice&&<p role="status" className={notice.error?styles.error:styles.ok}>{notice.text}</p>}
+  </>;
+  if(idea)return form;
   return <>
     <h1>Aide et contact</h1>
     <p>Les réponses aux questions fréquentes, et un formulaire pour nous écrire si quelque chose ne fonctionne pas.</p>
@@ -42,15 +55,6 @@ export default function Help() {
     </details>)}</div></>}
 
     <h2>Nous écrire</h2>
-    {!signedIn&&<p>Vous avez un compte ? <Link href="/app">Connectez-vous</Link> pour suivre vos demandes et nos réponses ici. Sinon, nous vous répondrons par e-mail.</p>}
-    <form className={styles.form} onSubmit={e=>send(e,'/api/support',f=>Object.fromEntries(f))}>
-      {!signedIn&&<div className={styles.row}><div><label htmlFor="help-name">Nom ou pseudo</label><input id="help-name" name="name" autoComplete="nickname" maxLength="64" required/></div>
-        <div><label htmlFor="help-email">Adresse e-mail</label><input id="help-email" name="email" type="email" autoComplete="email" maxLength="254" required/></div></div>}
-      <label htmlFor="help-subject">Sujet</label><input id="help-subject" name="subject" minLength="3" maxLength="120" required placeholder="Ex. : mon import ne passe pas"/>
-      <label htmlFor="help-body">Message</label><textarea id="help-body" name="body" rows="6" minLength="10" maxLength="5000" required placeholder="Décrivez ce que vous faisiez et ce qui s’est passé."/>
-      <input className={styles.trap} name="website" tabIndex="-1" autoComplete="off" aria-hidden="true"/>
-      <button className="button primary" disabled={busy}>{busy?'Envoi…':'Envoyer'}</button>
-    </form>
-    {notice&&<p role="status" className={notice.error?styles.error:styles.ok}>{notice.text}</p>}
+    {form}
   </>;
 }

@@ -44,7 +44,7 @@ test('Next production preserves existing accounts and device keys, serves all pa
     const sources=[...html.matchAll(/(?:src|href)="([^" ]*\/_next\/(?:static|[^" ]+)[^" ]*)"/g)].map(m=>m[1]);
     assert.ok(sources.length>0);for(const asset of sources.slice(0,4)){const r=await fetch(new URL(asset,url));assert.equal(r.status,200,asset);await r.arrayBuffer();}
   }
-  for(const [page,title] of [['/mentions-legales','Mentions légales'],['/confidentialite','Confidentialité'],['/cookies','Cookies et stockage local'],['/conditions-utilisation','Conditions d’utilisation'],['/aide','Aide et contact']]) {
+  for(const [page,title] of [['/mentions-legales','Mentions légales'],['/confidentialite','Confidentialité'],['/cookies','Cookies et stockage local'],['/conditions-utilisation','Conditions d’utilisation'],['/aide','Aide et contact'],['/roadmap','Feuille de route']]) {
     const response=await fetch(url+page);assert.equal(response.status,200,page);const html=await response.text();
     assert.ok(html.includes('<h1>'+title+'</h1>'),page);
     assert.ok(html.includes('href="/aide"'),page);
