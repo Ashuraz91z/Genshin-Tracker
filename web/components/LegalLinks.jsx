@@ -8,7 +8,7 @@ export default function LegalLinks() {
     <Link href="/cookies">Cookies et stockage local</Link>
     <Link href="/conditions-utilisation">Conditions d’utilisation</Link>
     <Link href="/mentions-legales#credits">Crédits et licences</Link>
-    <Link href="/roadmap">Feuille de route</Link>
+    <Link href="/roadmap">Roadmap</Link>
     <Link href="/aide">Aide et contact</Link>
   </nav>;
 }

@@ -33,7 +33,7 @@ test('Next production preserves existing accounts and device keys, serves all pa
   const desktopAccount=await call('/api/device/account',{session:null,token:device.token,origin:false});assert.equal(desktopAccount.status,200);assert.equal(desktopAccount.body.user.name,'Migration');
   const before=await call('/api/account');assert.equal(before.status,200);assert.equal(before.body.user.name,'Migration');
   let previousNonce;
-  for(const page of ['/','/app','/characters','/characters/KamisatoAyaka','/inventory','/teams','/sync']) {
+  for(const page of ['/','/app','/characters','/characters/KamisatoAyaka','/inventory','/teams','/sync','/roadmap']) {
     const response=await fetch(url+page);assert.equal(response.status,200,page);const html=await response.text();
     assert.ok(html.includes('GENSHIN'));if(page==='/'){assert.ok(html.includes('Quoi farmer aujourd’hui'));assert.ok(html.includes('href="/app"'));assert.ok(!html.includes('auth-form'));}else assert.ok(html.includes('Ouverture de votre carnet'));
     const csp=response.headers.get('content-security-policy'),nonce=csp?.match(/'nonce-([^']+)'/)?.[1];
@@ -44,7 +44,7 @@ test('Next production preserves existing accounts and device keys, serves all pa
     const sources=[...html.matchAll(/(?:src|href)="([^" ]*\/_next\/(?:static|[^" ]+)[^" ]*)"/g)].map(m=>m[1]);
     assert.ok(sources.length>0);for(const asset of sources.slice(0,4)){const r=await fetch(new URL(asset,url));assert.equal(r.status,200,asset);await r.arrayBuffer();}
   }
-  for(const [page,title] of [['/mentions-legales','Mentions légales'],['/confidentialite','Confidentialité'],['/cookies','Cookies et stockage local'],['/conditions-utilisation','Conditions d’utilisation'],['/aide','Aide et contact'],['/roadmap','Feuille de route']]) {
+  for(const [page,title] of [['/mentions-legales','Mentions légales'],['/confidentialite','Confidentialité'],['/cookies','Cookies et stockage local'],['/conditions-utilisation','Conditions d’utilisation'],['/aide','Aide et contact']]) {
     const response=await fetch(url+page);assert.equal(response.status,200,page);const html=await response.text();
     assert.ok(html.includes('<h1>'+title+'</h1>'),page);
     assert.ok(html.includes('href="/aide"'),page);
