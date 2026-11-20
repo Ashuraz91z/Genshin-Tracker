@@ -18,31 +18,30 @@ export default function Page(){return <div className={`${landing.landing} ${styl
   <main id="contenu" className={landing.main}>
     <section className={styles.hero} aria-labelledby="roadmap-title">
       <div className={styles.sky} aria-hidden="true"><span className={styles.ring}/><span className={styles.ring}/>{floating.map(key=><img key={key} src={`/assets/materials/${key}.png`} alt="" width="56" height="56"/>)}</div>
-      <span className="pill"><span className="status-dot"/>Roadmap · mise à jour en novembre 2026</span>
       <h1 id="roadmap-title">La suite du <em>voyage.</em></h1>
       <p>Genshin Tracker n’est pas fait pour gagner de l’argent. Les abonnements et les dons paient le site, et tout le reste revient au carnet. Voici ce qu’ils financeront ensuite.</p>
       <div className={styles.actions}><a href="#idee" className="button primary">Proposer une idée <Icon name="bulb"/></a><a href="https://donate.stripe.com/7sYcN7blUaiE2ldgCK4gg00" target="_blank" rel="noreferrer" className="text-button">Soutenir le projet ↗</a></div>
     </section>
 
     <section className={styles.block} aria-labelledby="now-title">
-      <span className="eyebrow">EN CE MOMENT</span><h2 id="now-title">Ce qui avance en continu</h2>
+      <h2 id="now-title">À chaque mise à jour</h2>
       <div className={styles.now}>{now.map(([icon,title,text])=><article key={title} className={styles.reveal}><span className={styles.live}>En cours</span><span className={landing.symbol}><Icon name={icon}/></span><h3>{title}</h3><p>{text}</p></article>)}</div>
     </section>
 
     <section className={styles.block} aria-labelledby="steps-title">
-      <span className="eyebrow">LES PROCHAINES ÉTAPES</span><h2 id="steps-title">Un palier atteint,<br/>une plateforme de plus.</h2>
+      <span className="eyebrow">LES PROCHAINES ÉTAPES</span><h2 id="steps-title">Chaque palier débloque une plateforme</h2>
       <p className={styles.lead}>Chaque palier correspond à ce que les abonnements et les dons auront réuni. Quand il est atteint, on le lance.</p>
       <ol className={styles.path}>{steps.map(([tier,title,text],i)=><li key={title} className={styles.reveal} style={{'--i':i}}><span className={styles.node} aria-hidden="true">{i+1}</span><div><strong className={styles.tier}>{tier}</strong><h3>{title}</h3><p>{text}</p></div></li>)}</ol>
     </section>
 
     <section className={styles.block} aria-labelledby="later-title">
-      <span className="eyebrow">QUAND LES FONDS SUIVRONT</span><h2 id="later-title">Les gros chantiers</h2>
+      <h2 id="later-title">Quand les abonnements suivront</h2>
       <p className={styles.lead}>Ces fonctions coûtent chaque mois. Elles arriveront quand les abonnements couvriront ce coût, pas avant : pas de fonction lancée puis coupée.</p>
       <div className={styles.later}>{later.map(([icon,title,text,cost])=><article key={title} className={styles.reveal}><span className={landing.symbol}><Icon name={icon}/></span><h3>{title}</h3><p>{text}</p><small><strong>Pourquoi ça coûte :</strong> {cost}</small></article>)}</div>
     </section>
 
     <section id="idee" className={styles.idea} aria-labelledby="idea-title">
-      <div className={styles.ideaCopy}><span className={landing.symbol}><Icon name="bulb"/></span><span className="eyebrow">VOTRE AVIS COMPTE</span><h2 id="idea-title">Demander une fonctionnalité</h2><p>Il vous manque quelque chose pour préparer vos sessions ? Décrivez-le. Chaque idée est lue par une personne, et les plus demandées passent en priorité.</p><ul><li><Icon name="check"/>Réponse par e-mail ou dans Aide et contact</li><li><Icon name="check"/>Sans compte, il suffit d’une adresse e-mail</li></ul></div>
+      <div className={styles.ideaCopy}><span className={landing.symbol}><Icon name="bulb"/></span><h2 id="idea-title">Demander une fonctionnalité</h2><p>Il vous manque quelque chose pour préparer vos sessions ? Décrivez-le. Chaque idée est lue par une personne, et les plus demandées passent en priorité.</p><ul><li><Icon name="check"/>Réponse par e-mail ou dans Aide et contact</li><li><Icon name="check"/>Sans compte, il suffit d’une adresse e-mail</li></ul></div>
       <div className={styles.ideaForm}><Help idea/></div>
     </section>
   </main>
