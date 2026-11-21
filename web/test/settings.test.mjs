@@ -41,6 +41,13 @@ test('settings: rename, sign out others, export, cancel/resume with e-mail, dele
   r=await call('/api/billing/cancel',{method:'POST',data:{resume:true},cookie:fresh});
   assert.equal(r.body.billing.canceling,false);assert.equal(cancel,false);
 
+  api.store.db.prepare('INSERT INTO accounts VALUES(?,?)').run(id,JSON.stringify({characters:[{key:'Furina'}],weapons:[],artifacts:[],materials:{},updatedAt:'2026-11-01'}));
+  api.store.db.prepare('INSERT INTO scans(user_id,scan_id) VALUES(?,?)').run(id,'s1');
+  assert.equal((await call('/api/account/reset',{method:'POST',data:{password:'wrong'},cookie:fresh})).status,401);
+  assert.equal((await call('/api/account/reset',{method:'POST',data:{password:'long-password-1'},cookie:fresh})).status,200);
+  const wiped=(await call('/api/account',{cookie:fresh})).body;
+  assert.equal(wiped.data.characters.length,0,'inventory wiped');assert.equal(wiped.scans.length,0,'scan history wiped');assert.equal(wiped.user.name,'Nouveau','account kept');
+
   assert.equal((await call('/api/account/delete',{method:'POST',data:{password:'wrong'},cookie:fresh})).status,401);
   assert.equal((await call('/api/account/delete',{method:'POST',data:{password:'long-password-1'},cookie:fresh})).status,200);
   assert.ok(calls.some(([m,p])=>m==='DELETE'&&p==='subscriptions/sub_9'),'subscription stopped before deletion');

@@ -106,6 +106,11 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
         const u=requireUser();
         return json(200,store.exportData(u),{'Content-Disposition':`attachment; filename="genshin-tracker-compte-${new Date().toISOString().slice(0,10)}.json"`});
       }
+      if(method==='POST' && path==='/api/account/reset') {
+        const u=requireUser(),input=await body();limit('reset:'+u.id,5);
+        store.login(u.name,input.password??'');store.resetData(u.id);
+        return json(200,{ok:true});
+      }
       if(method==='POST' && path==='/api/account/delete') {
         const u=requireUser(),input=await body();limit('delete:'+u.id,5);
         store.login(u.name,input.password??'');

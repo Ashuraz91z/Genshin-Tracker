@@ -63,10 +63,10 @@ function Subscription({billing,api,notify,onBilling,onChoose,onManage}) {
   </Card>;
 }
 
-export default function Settings({account,api,notify,setAccount,onLogout,onDeleted,onChooseBilling,onManageBilling,onPair,onRevoke,onExportGood,activity}) {
+export default function Settings({account,api,notify,setAccount,onLogout,onDeleted,onReset,onChooseBilling,onManageBilling,onPair,onRevoke,onExportGood,activity}) {
   const user=account.user,billing=account.billing,devices=account.devices??[],scans=account.scans??[];
   const sections=[['profil','Profil','users'],...(billing?.enabled?[['abonnement','Abonnement','star']]:[]),['securite','Sécurité','shield'],['appareils','Appareils et journal','monitor'],['donnees','Données et confidentialité','download'],['affichage','Affichage','sun']];
-  const [active,setActive]=useState(sections[0][0]),[busy,setBusy]=useState(''),[email,setEmail]=useState(user.email??''),[deleting,setDeleting]=useState(false);
+  const [active,setActive]=useState(sections[0][0]),[busy,setBusy]=useState(''),[email,setEmail]=useState(user.email??''),[deleting,setDeleting]=useState(false),[resetting,setResetting]=useState(false);
   useEffect(()=>{
     const observer=new IntersectionObserver(entries=>{const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top)[0];if(visible)setActive(visible.target.id);},{rootMargin:'-20% 0px -60% 0px'});
     sections.forEach(([id])=>{const el=document.getElementById(id);if(el)observer.observe(el);});
@@ -87,6 +87,7 @@ export default function Settings({account,api,notify,setAccount,onLogout,onDelet
     run('password',async()=>{await post('/api/account/password',{current,password});form.reset();},'Mot de passe mis à jour. Les autres navigateurs ont été déconnectés.');
   }
   const signOutOthers=()=>run('sessions',()=>post('/api/account/sessions',{}),'Les autres navigateurs ont été déconnectés.');
+  async function resetData(e) {e.preventDefault();const {password}=field(e);if(await run('reset',()=>post('/api/account/reset',{password}),'Toutes vos données importées ont été effacées.')){setResetting(false);onReset();}}
   async function deleteAccount(e) {e.preventDefault();const {password}=field(e);if(await run('delete',()=>post('/api/account/delete',{password})))onDeleted();}
   const emailChanged=email.trim().toLowerCase()!==(user.email??'');
   const lastSync=devices.map(d=>d.last_seen).filter(Boolean).sort().at(-1);
@@ -135,6 +136,13 @@ export default function Settings({account,api,notify,setAccount,onLogout,onDelet
         </Card>
 
         <Display/>
+
+        <section className="settings-card danger" id="reinitialiser" aria-labelledby="reset-title"><header><span className="settings-card-icon"><Icon name="shield"/></span><div><h2 id="reset-title">Effacer toutes mes données</h2><p>Repartez de zéro : tous vos imports sont supprimés, le compte reste.</p></div></header>
+          {resetting?<form className="confirm-panel" onSubmit={resetData}><ul><li>Personnages, armes, artéfacts, matériaux, équipes et journal des relevés sont effacés.</li><li>Votre compte, votre abonnement et vos PC associés sont conservés : un prochain relevé Kamera ou import GOOD remplira à nouveau le carnet.</li><li>Irréversible. Pensez à <a href="/api/account/export" download>exporter vos données</a> avant.</li></ul>
+            <label className="field-label" htmlFor="reset-password">Mot de passe, pour confirmer</label><input id="reset-password" name="password" type="password" required autoComplete="current-password" maxLength="128"/>
+            <div className="settings-actions"><button className="button danger" disabled={busy==='reset'}>{busy==='reset'?'Effacement…':'Tout effacer'}</button><button type="button" className="button secondary" onClick={()=>setResetting(false)}>Annuler</button></div></form>
+          :<div className="settings-actions"><button className="button secondary danger-outline" onClick={()=>setResetting(true)}>Effacer toutes mes données…</button></div>}
+        </section>
 
         {<section className="settings-card danger" id="suppression" aria-labelledby="suppression-title"><header><span className="settings-card-icon"><Icon name="shield"/></span><div><h2 id="suppression-title">Supprimer mon compte</h2><p>Définitif : le compte et toutes ses données sont effacés.</p></div></header>
           {deleting?<form className="confirm-panel" onSubmit={deleteAccount}><ul><li>Votre carnet, vos inventaires, équipes et PC associés sont effacés immédiatement.</li>{billing?.subscribed&&<li>Votre abonnement est arrêté tout de suite : aucun autre paiement ne sera prélevé.</li>}<li>Cette action est irréversible. Pensez à <a href="/api/account/export" download>exporter vos données</a> avant.</li></ul>

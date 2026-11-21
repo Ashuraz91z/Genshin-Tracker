@@ -166,6 +166,12 @@ export function openStore(path) {
     },
     setDisabled(userId,value) { db.prepare('UPDATE users SET disabled=? WHERE id=?').run(value?1:0,userId);if(value)db.prepare('DELETE FROM sessions WHERE user_id=?').run(userId); },
     closeSessions(userId) { db.prepare('DELETE FROM sessions WHERE user_id=?').run(userId); },
+    // Wipes every import (inventory, scan history, teams and edits); the account and paired PCs stay.
+    resetData(userId) {
+      db.exec('BEGIN IMMEDIATE');
+      try{for(const table of ['accounts','scans','customizations'])db.prepare(`DELETE FROM ${table} WHERE user_id=?`).run(userId);db.exec('COMMIT');}
+      catch(error){db.exec('ROLLBACK');throw error;}
+    },
     deleteUser(userId) {
       db.exec('BEGIN IMMEDIATE');
       try {
