@@ -163,7 +163,7 @@ export default async function Page() {
       <div className={styles.footerTop}>
         <div className={styles.footerIntro}><Link href={L('/')} className={styles.footerBrand}><img src="/assets/mark.svg" alt="" width="32" height="32" /><span>Genshin Tracker</span></Link><p>{c.footerTag}</p><p>{c.footerFree}<br />{c.footerHosted(monthPrice, yearPrice)}</p></div>
         <div className={styles.footerColumn}><h2>{c.projectTitle}</h2><a href="https://github.com/Ashuraz91z/Genshin-Tracker" target="_blank" rel="noreferrer">{c.github}</a><a href="https://donate.stripe.com/7sYcN7blUaiE2ldgCK4gg00" target="_blank" rel="noreferrer">{c.donate}</a><Link href={L('/roadmap')}>{c.roadmapIdeas}</Link><a href="/licenses/agpl-3.0.txt">{c.siteLicense}</a><span>{c.kameraFrom}<a href="https://github.com/Andrewthe13th/Inventory_Kamera" target="_blank" rel="noreferrer">Inventory Kamera ↗</a><br /><a href="/licenses/inventory-kamera.txt">{c.scannerLicense}</a></span></div>
-        <div className={styles.footerColumn}><h2>{c.infoTitle}</h2><LegalLinks /></div>
+        <div className={styles.footerColumn}><h2>{c.infoTitle}</h2><LegalLinks locale={locale} /></div>
       </div>
       <div className={styles.footerBottom}><div><span>© 2026 Lux Audere</span><p>{c.notAffiliated}</p></div><a href="#contenu" className={styles.backToTop}>{c.backTop}</a></div>
     </footer>
