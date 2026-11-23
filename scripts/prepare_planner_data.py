@@ -3,7 +3,9 @@ coûts d'élévation/aptitudes, jours des donjons, donjons d'artéfacts et ennem
 Usage : python3 scripts/prepare_planner_data.py /chemin/vers/genshin-db"""
 import importlib.util
 import json
+import subprocess
 import sys
+import urllib.request
 from pathlib import Path
 
 root = Path(__file__).resolve().parents[1]
@@ -63,8 +65,28 @@ for stem, e in load('English', 'enemies').items():
     for r in e.get('rewardPreview', []):
         key = ref.good(r['name'])
         if key in used and 'rarity' not in r:
-            drops.setdefault(key, []).append({'n': fr_enemies.get(stem, e)['name'], 'c': r.get('count'), 'b': 2 if weekly else int(e.get('enemyType') == 'BOSS')})
+            drops.setdefault(key, []).append({'n': fr_enemies.get(stem, e)['name'], 'c': r.get('count'), 'b': 2 if weekly else int(e.get('enemyType') == 'BOSS'), 'i': stem})
 material_info = {k: sorted(v, key=lambda s: (-(s['c'] or 0), s['b'] == 2))[:3] for k, v in drops.items()}
+
+# Icônes rondes des ennemis : web/public/assets/enemies/<id>.webp (enka, sinon yatta ; 96 px via cwebp).
+icons, icon_dir = json.loads((data / 'image/enemies.json').read_text()), root / 'web/public/assets/enemies'
+icon_dir.mkdir(exist_ok=True)
+for s in (s for v in material_info.values() for s in v):
+    stem = s.pop('i')
+    file, target, raw = icons.get(stem, {}).get('filename_icon'), icon_dir / f'{stem}.webp', icon_dir / f'{stem}.png'
+    if file and not target.exists():
+        for url in ('https://enka.network/ui/' + file + '.png', 'https://gi.yatta.moe/assets/UI/monster/' + file + '.png', 'https://gi.yatta.moe/assets/UI/' + file + '.png'):
+            try:
+                with urllib.request.urlopen(urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'}), timeout=15) as r:
+                    raw.write_bytes(r.read())
+                subprocess.run(['cwebp', '-quiet', '-q', '82', '-resize', '96', '96', str(raw), '-o', str(target)], check=True)
+                break
+            except Exception:
+                pass
+            finally:
+                raw.unlink(missing_ok=True)
+    if target.exists():
+        s['i'] = stem
 
 out = {'materialDays': domains, 'characters': characters, 'weapons': weapons,
        'artifactDomains': {k: sorted(v) for k, v in artifact_domains.items()}, 'drops': material_info}

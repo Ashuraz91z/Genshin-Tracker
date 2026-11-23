@@ -69,6 +69,10 @@
 .farmList span{font-size:13px;color:color-mix(in srgb,var(--tone) 55%,var(--text))}
 .farmList small{font-size:12px;color:var(--muted)}
 .farmList img{flex:none;border-radius:12px;padding:4px;background:color-mix(in srgb,var(--tone) 20%,var(--surface));box-shadow:0 0 0 1px color-mix(in srgb,var(--tone) 30%,transparent)}
+.farmList .foes{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:4px}
+.farmList .foes em{flex-basis:100%;font-style:normal;font-size:12px;color:var(--muted)}
+.farmList .foes img{width:40px;height:40px;padding:0;border-radius:50%;object-fit:cover;background:radial-gradient(circle at 50% 35%,color-mix(in srgb,var(--tone) 30%,var(--surface)),color-mix(in srgb,var(--tone) 12%,var(--surface)));box-shadow:0 0 0 2px color-mix(in srgb,var(--tone) 60%,transparent)}
+.farmList .foes b{font-weight:500;font-size:12px;color:var(--text)}
 .farmList .rarity{color:#e0a21e;font-size:12px;letter-spacing:1px;line-height:1}
 .farmList .farmTime{display:inline-block;justify-self:start;margin-top:4px;padding:2px 8px;border-radius:8px;font-size:12px;color:var(--text);background:color-mix(in srgb,var(--tone) 14%,transparent)}
 .farmList .who img{border-radius:50%;padding:0;background:var(--surface);box-shadow:0 0 0 2px color-mix(in srgb,var(--tone) 55%,transparent)}
