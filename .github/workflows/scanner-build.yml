@@ -29,7 +29,7 @@ jobs:
         uses: microsoft/setup-msbuild@v2
 
       - name: Restore NuGet packages
-        run: msbuild InventoryKamera.csproj /t:Restore /p:Configuration=Release
+        run: msbuild InventoryKamera.FR.csproj /t:Restore /p:Configuration=Release
 
       - name: Build scanner (Release)
-        run: msbuild InventoryKamera.csproj /t:Build /p:Configuration=Release /m /v:minimal
+        run: msbuild InventoryKamera.FR.csproj /t:Build /p:Configuration=Release /m /v:minimal

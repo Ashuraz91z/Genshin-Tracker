@@ -136,8 +136,6 @@
   <ItemGroup>
     <Compile Include="game\Artifact.cs" />
     <Compile Include="scraping\FrenchRecognition.cs" />
-    <Compile Include="scraping\EnglishRecognition.cs" />
-    <Compile Include="game\GameLanguage.cs" />
     <Compile Include="data\ScanReport.cs" />
     <Compile Include="data\ClientSync.cs" />
     <Compile Include="ui\main\MainForm.Design.cs" />
