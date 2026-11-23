@@ -60,21 +60,23 @@
 .farmGroup[data-tone=later]{--tone:#5b7bd5}
 .farmGroup h3,.farmGroup>summary{display:inline-flex;align-items:center;gap:8px;margin:0 0 12px;padding:6px 14px;border-radius:999px;font-size:13px;font-weight:650;letter-spacing:.01em;color:color-mix(in srgb,var(--tone) 72%,var(--text));background:color-mix(in srgb,var(--tone) 15%,transparent);border:1px solid color-mix(in srgb,var(--tone) 35%,transparent)}
 .farmGroup h3::before,.farmGroup>summary::before{content:'';width:9px;height:9px;border-radius:50%;background:var(--tone);box-shadow:0 0 0 3px color-mix(in srgb,var(--tone) 25%,transparent)}
-.farmList{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
-.farmList li{position:relative;display:flex;align-items:flex-start;gap:12px;padding:14px 14px 14px 18px;border:1px solid color-mix(in srgb,var(--tone) 28%,var(--border));border-radius:16px;min-width:0;overflow:hidden;background:linear-gradient(160deg,color-mix(in srgb,var(--tone) 13%,var(--surface)),color-mix(in srgb,var(--tone) 4%,var(--surface)));transition:transform .18s,box-shadow .18s}
+.farmList{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.farmList li{position:relative;display:flex;align-items:flex-start;gap:12px;padding:18px 18px 18px 22px;border:1px solid color-mix(in srgb,var(--tone) 28%,var(--border));border-radius:16px;min-width:0;overflow:hidden;background:linear-gradient(160deg,color-mix(in srgb,var(--tone) 13%,var(--surface)),color-mix(in srgb,var(--tone) 4%,var(--surface)));transition:transform .18s,box-shadow .18s}
 .farmList li::before{content:'';position:absolute;inset:0 auto 0 0;width:4px;background:var(--tone)}
 .farmList li:hover{transform:translateY(-2px);box-shadow:0 10px 24px color-mix(in srgb,var(--tone) 18%,transparent)}
-.farmList li>div{display:grid;gap:3px;min-width:0}
+.farmList li>div{display:grid;gap:4px;min-width:0;flex:1}
 .farmList strong{font-size:15px;font-weight:650;color:var(--text)}
 .farmList span{font-size:13px;color:color-mix(in srgb,var(--tone) 55%,var(--text))}
 .farmList small{font-size:12px;color:var(--muted)}
 .farmList img{flex:none;border-radius:12px;padding:4px;background:color-mix(in srgb,var(--tone) 20%,var(--surface));box-shadow:0 0 0 1px color-mix(in srgb,var(--tone) 30%,transparent)}
-.farmList .foes{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:4px}
-.farmList .foes em{flex-basis:100%;font-style:normal;font-size:12px;color:var(--muted)}
+.farmList .foes{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:10px 0 4px}
+.farmList .foes em,.farmList .who em{flex-basis:100%;margin-bottom:2px;letter-spacing:.03em;font-style:normal;font-size:12px;color:var(--muted)}
 .farmList .foes img{width:40px;height:40px;padding:0;border-radius:50%;object-fit:cover;background:radial-gradient(circle at 50% 35%,color-mix(in srgb,var(--tone) 30%,var(--surface)),color-mix(in srgb,var(--tone) 12%,var(--surface)));box-shadow:0 0 0 2px color-mix(in srgb,var(--tone) 60%,transparent)}
 .farmList .foes b{font-weight:500;font-size:12px;color:var(--text)}
 .farmList .rarity{color:#e0a21e;font-size:12px;letter-spacing:1px;line-height:1}
-.farmList .farmTime{display:inline-block;justify-self:start;margin-top:4px;padding:2px 8px;border-radius:8px;font-size:12px;color:var(--text);background:color-mix(in srgb,var(--tone) 14%,transparent)}
+.farmList .farmTime{display:inline-block;justify-self:start;margin-top:6px;padding:2px 8px;border-radius:8px;font-size:12px;color:var(--text);background:color-mix(in srgb,var(--tone) 14%,transparent)}
+.farmList .who{gap:8px;margin-top:12px;padding-top:12px;border-top:1px dashed color-mix(in srgb,var(--tone) 35%,var(--border))}
+.farmList .who small{align-self:center;font-weight:600}
 .farmList .who img{border-radius:50%;padding:0;background:var(--surface);box-shadow:0 0 0 2px color-mix(in srgb,var(--tone) 55%,transparent)}
 .farmTeams{display:flex;flex-wrap:wrap;gap:10px 14px;margin:0 0 14px}
 .farmTeams label{display:grid;gap:4px;font-size:12px;color:var(--muted);min-width:180px}
@@ -86,3 +88,4 @@
 .farmLater small{color:var(--muted)}
 .farmLabel{margin:6px 0 6px;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
 @media (prefers-reduced-motion:reduce){.farmList li{transition:none}.farmList li:hover{transform:none}}
+.farmGroup>p{margin-top:14px}

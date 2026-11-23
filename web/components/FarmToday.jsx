@@ -20,7 +20,7 @@ export default function FarmToday({data,catalogue,teams=[]}) {
   const keys=mode.teams&&slots?[...new Set(chosen.flatMap(t=>t.characters))]:null;
   const plan=goalPlan(data,catalogue,planner,keys,mode.target,day),top=plan.today[0];
   const name=k=>catalogue.characters?.[k]?.name??k,when=day===today?'aujourd’hui':dayNames[day].toLowerCase();
-  const who=list=><span className={s.who}>{list.slice(0,6).map(k=><Link key={k} href={'/characters/'+encodeURIComponent(k)} title={name(k)} aria-label={name(k)}>{catalogue.characters?.[k]?.portrait?<img src={catalogue.characters[k].portrait} width="28" height="28" alt=""/>:name(k)}</Link>)}{list.length>6&&<small>+{list.length-6}</small>}</span>;
+  const who=list=><span className={s.who}><em>Pour</em>{list.slice(0,6).map(k=><Link key={k} href={'/characters/'+encodeURIComponent(k)} title={name(k)} aria-label={name(k)}>{catalogue.characters?.[k]?.portrait?<img src={catalogue.characters[k].portrait} width="28" height="28" alt=""/>:name(k)}</Link>)}{list.length>6&&<small>+{list.length-6}</small>}</span>;
   const days=g=>g.days.map(d=>dayNames[d].slice(0,3)).join(', ')+', Dim';
   return <section className="panel farm-today" id="farm" aria-label="Quoi farmer"><div className="section-heading"><div><span className="eyebrow">VOTRE PRIORITÉ DU JOUR</span><h2>Quoi farmer {when}</h2></div></div>
     <p className={s.farmLabel} id="farm-goal">Objectif</p><div className={s.days} role="group" aria-labelledby="farm-goal">{Object.entries(goals).map(([k,g])=><button key={k} aria-pressed={k===goal} onClick={()=>save(k,picked)}>{g.label}</button>)}</div>
