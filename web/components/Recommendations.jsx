@@ -14,7 +14,7 @@ export default function Recommendations({data,catalogue,teams,onSave}) {
   const team=teams.find(t=>t.id===main),keys=team?.characters??auto,advice=adviseTeam(keys,data,catalogue);
   const recos=recommendTeams(data,catalogue,12).filter(t=>!onlyComplete||t.coverage===1);
   async function add(t){setError('');try{await onSave({name:t.name,characters:t.picked,duration:20,enemyLevel:100,resistance:10,iterations:100,rotation:'',energy:'normal'});setSaved(p=>({...p,[t.id]:true}));}catch(e){setError(e.message);}}
-  return <section>
+  return <section style={{marginBottom:24}}>
     <section className="panel"><div className="section-heading"><div><span className="eyebrow">VOTRE ÉQUIPE PRINCIPALE</span><h2>{team?.name??'Vos 4 personnages les plus investis'}</h2></div>
       <label className="select-label">Équipe principale<select value={team?main:'auto'} onChange={e=>choose(e.target.value)}><option value="auto">Automatique (plus investis)</option>{teams.map(t=><option key={t.id} value={t.id}>{t.name}</option>)}</select></label></div>
       <Portraits keys={keys} catalogue={catalogue}/>
