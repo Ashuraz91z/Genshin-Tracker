@@ -10,7 +10,7 @@ const fold=t=>t.normalize('NFD').replace(/\p{M}/gu,'').toLowerCase();
 const group=teams=>Object.values(teams.reduce((acc,t)=>{const id=t.members.map(m=>m.key).sort().join();const g=acc[id]??={...t,id,guides:[]};if(!g.guides.some(x=>x.character===t.character))g.guides.push({character:t.character,url:t.url});if((tierRank[t.tier]??9)<(tierRank[g.tier]??9))g.tier=t.tier;return acc;},{}));
 // Équipes recommandées par genshin-builds.com (public/assets/teams-genshin-builds.json, régénéré par scripts/fetch-teams.mjs).
 export default function SourcedTeams({data,catalogue,onSave}){
-  const [onlyComplete,setOnlyComplete]=useState(false),[query,setQuery]=useState(''),[limit,setLimit]=useState(first),[gb,setGb]=useState(null),[saved,setSaved]=useState({}),[error,setError]=useState('');
+  const [onlyComplete,setOnlyComplete]=useState(true),[query,setQuery]=useState(''),[limit,setLimit]=useState(first),[gb,setGb]=useState(null),[saved,setSaved]=useState({}),[error,setError]=useState('');
   useEffect(()=>{fetch('/assets/teams-genshin-builds.json').then(r=>{if(!r.ok)throw Error('Équipes recommandées indisponibles pour le moment.');return r.json();}).then(d=>setGb({...d,teams:group(d.teams)})).catch(e=>setError(e.message));},[]);
   useEffect(()=>setLimit(first),[query,onlyComplete]);
   const owned=new Set(data.characters.map(c=>c.key)),name=k=>catalogue.characters?.[k]?.name??k,q=fold(query.trim());
@@ -36,6 +36,6 @@ export default function SourcedTeams({data,catalogue,onSave}){
       {t.guides.length===1?<a className="text-button" href={t.url} target="_blank" rel="noreferrer">Guide sur genshin-builds.com ↗<span className="sr-only"> (nouvel onglet)</span></a>:<p className="muted" style={{margin:0,fontSize:13}}>Guides sur genshin-builds.com : {t.guides.map((g,i)=><span key={g.url}>{i>0&&' · '}<a className="text-button inline" href={g.url} target="_blank" rel="noreferrer">{name(g.character)} ↗<span className="sr-only"> (nouvel onglet)</span></a></span>)}</p>}
       <button className="button secondary" disabled={saved[t.id]} onClick={()=>add(t)}>{saved[t.id]?'Ajoutée à vos équipes ✓':'Ajouter à mes équipes'}</button></article>)}</div>
     {list.length>limit&&<button className="button secondary" style={{marginTop:12}} onClick={()=>setLimit(n=>n+12)}>Afficher 12 équipes de plus ({list.length-limit} restantes)</button>}
-    {gb&&!list.length&&<p className="muted" style={{marginTop:12}}>{q?`Aucune équipe avec « ${query.trim()} ».`:'Aucune de ces équipes n’est complète avec vos personnages pour l’instant.'}</p>}
+    {gb&&!list.length&&<p className="muted" style={{marginTop:12}}>{q?`Aucune équipe${onlyComplete?' que vous pouvez former':''} avec « ${query.trim()} ».`:'Aucune de ces équipes n’est complète avec vos personnages pour l’instant.'}{onlyComplete&&' Décochez « Seulement celles que je peux former » pour voir les autres.'}</p>}
   </section>;
 }
