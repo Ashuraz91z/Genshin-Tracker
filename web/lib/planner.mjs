@@ -55,11 +55,17 @@ export const goals={
   theater:{label:'Théâtre',teams:3,target:{ascension:5,talent:{auto:1,skill:6,burst:6}},hint:'beaucoup de personnages utilisables, niveau 80 et aptitudes 6'},
 };
 // Épreuve conseillée : la plus haute qui donne encore la meilleure rareté qui manque ([numéro, rang d'aventure]).
-export function domainTier(tiers,rarity){if(!tiers?.length||!rarity)return null;const t=tiers.filter(x=>x[2]===rarity).pop()??tiers.at(-1);return [t[0],t[1]];}
+// RA minimum prouvé par le compte : chaque palier d'élévation (perso ou arme) demande un RA (15, 25, 30, 35, 40, 50).
+const ascensionRank=[0,15,25,30,35,40,50];
+export const estimateRank=data=>Math.max(0,...[...(data.characters??[]),...(data.weapons??[])].map(x=>ascensionRank[x.ascension??0]??0));
+// Si l'épreuve idéale demande plus que le RA estimé, on donne aussi la meilleure épreuve sûrement ouverte (3e valeur).
+export function domainTier(tiers,rarity,rank=0){if(!tiers?.length||!rarity)return null;const t=tiers.filter(x=>x[2]===rarity).pop()??tiers.at(-1);
+  const open=rank&&t[1]>rank?tiers.filter(x=>x[1]<=rank).pop()?.[0]??null:null;return [t[0],t[1],open];}
 export function goalPlan(data,catalogue,planner,keys,target,day=new Date().getDay()) {
   const chars=keys?data.characters.filter(c=>keys.includes(c.key)):data.characters,own=new Set(chars.map(c=>c.key));
   const weapons=data.weapons.filter(w=>own.has(w.location)&&(w.ascension??6)<6);
   const name=k=>catalogue.materials?.[k]?.name??k,dated={},other={},artifacts={};
+  const rank=estimateRank(data);
   const family=(g,needs)=>{for(const [k,n] of Object.entries(needs))if(planner.materialDays[k]?.domain===g.domain)g.needs[k]=(g.needs[k]??0)+n;};
   const push=(bag,key,who,extra)=>{const g=bag[key]??={key,name:name(key),image:catalogue.materials?.[key]?.image,who:[],...extra};if(!g.who.includes(who))g.who.push(who);return g;};
   for(const c of chars){
@@ -72,11 +78,11 @@ export function goalPlan(data,catalogue,planner,keys,target,day=new Date().getDa
     if(domain&&(pieces.length<5||pieces.some(a=>critValue(a)<15))){const g=push(artifacts,domain,c.key,{place:domain.split(' : ').pop(),sets:[]});const set=catalogue.artifacts?.[main]?.name??main;if(!g.sets.includes(set))g.sets.push(set);}
   }
   for(const w of weapons){const m=planner.weapons?.[w.key]?.material,info=m&&planner.materialDays[m];if(info)family(push(dated,m,w.location,{kind:'weapon',...info,place:info.domain.split(' : ').pop(),needs:{}}),weaponNeeds(w,planner.weapons[w.key]));}
-  for(const g of Object.values(dated)){const miss=shortfall(g.needs,data.materials).filter(n=>n.missing).map(n=>({...n,rarity:catalogue.materials?.[n.key]?.rarity??0})).sort((a,b)=>b.rarity-a.rarity||b.missing-a.missing);g.short=miss[0]??null;g.tier=domainTier(planner.domainTiers?.[g.domain],g.short?.rarity);delete g.needs;}
-  for(const g of Object.values(artifacts))g.tier=domainTier(planner.domainTiers?.[g.key],5);
+  for(const g of Object.values(dated)){const miss=shortfall(g.needs,data.materials).filter(n=>n.missing).map(n=>({...n,rarity:catalogue.materials?.[n.key]?.rarity??0})).sort((a,b)=>b.rarity-a.rarity||b.missing-a.missing);g.short=miss[0]??null;g.tier=domainTier(planner.domainTiers?.[g.domain],g.short?.rarity,rank);delete g.needs;}
+  for(const g of Object.values(artifacts))g.tier=domainTier(planner.domainTiers?.[g.key],5,rank);
   const byWho=(a,b)=>b.who.length-a.who.length;
   const all=Object.values(dated).sort(byWho);
-  return {today:all.filter(g=>openOn(g,day)),later:all.filter(g=>!openOn(g,day)),other:Object.values(other).sort((a,b)=>byWho(a,b)||b.missing-a.missing),artifacts:Object.values(artifacts).sort(byWho),count:chars.length};
+  return {rank,today:all.filter(g=>openOn(g,day)),later:all.filter(g=>!openOn(g,day)),other:Object.values(other).sort((a,b)=>byWho(a,b)||b.missing-a.missing),artifacts:Object.values(artifacts).sort(byWho),count:chars.length};
 }
 // Moyennes genshin-db au niveau du monde 8 (RA 55+). Boss normal : 40 résine ; la résine remonte de 180 par jour.
 export function farmEstimate(sources=[],missing) {

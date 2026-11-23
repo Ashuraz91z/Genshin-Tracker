@@ -56,9 +56,18 @@ test('farmEstimate turns average drops into runs, resin and days', async () => {
 test('domainTier picks the highest tier that still drops the rarest missing book', async () => {
   const { domainTier } = await import('../lib/planner.mjs');
   const talent=[['I',25,2],['II',28,3],['III',36,3],['IV',45,4]];
-  assert.deepEqual(domainTier(talent,2),['I',25]);
-  assert.deepEqual(domainTier(talent,3),['III',36]);
-  assert.deepEqual(domainTier(talent,4),['IV',45]);
+  assert.deepEqual(domainTier(talent,2),['I',25,null]);
+  assert.deepEqual(domainTier(talent,3),['III',36,null]);
+  assert.deepEqual(domainTier(talent,4),['IV',45,null]);
+  assert.deepEqual(domainTier(talent,4,50),['IV',45,null],'RA 50 opens everything');
+  assert.deepEqual(domainTier(talent,4,35),['IV',45,'II'],'RA 35: tier IV maybe locked, II is surely open');
   assert.equal(domainTier(talent,0),null,'nothing missing, no tier');
   assert.equal(domainTier(undefined,3),null);
+});
+
+test('estimateRank reads the minimum adventure rank from ascensions', async () => {
+  const { estimateRank } = await import('../lib/planner.mjs');
+  assert.equal(estimateRank({characters:[{ascension:4}],weapons:[{ascension:5}]}),40);
+  assert.equal(estimateRank({characters:[{ascension:6}]}),50);
+  assert.equal(estimateRank({characters:[],weapons:[]}),0);
 });
