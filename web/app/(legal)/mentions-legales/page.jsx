@@ -1,8 +1,11 @@
 import Link from 'next/link';
+import { headers } from 'next/headers';
 import styles from '../../../components/legal.module.css';
+import { localeFromHeaders, localePath } from '../../../lib/i18n.mjs';
 
 export const metadata={title:'Mentions légales — Genshin Tracker'};
-export default function Page() {
+
+function French(L = h => h) {
   return <>
     <h1>Mentions légales</h1><p className={styles.date}>Dernière mise à jour : 19 novembre 2026</p>
     <h2>Éditeur du site</h2>
@@ -22,4 +25,32 @@ export default function Page() {
     <h2>Données personnelles et utilisation</h2><p>Consultez la <Link href="/confidentialite">politique de confidentialité</Link>, les informations sur les <Link href="/cookies">cookies et stockages locaux</Link> et les <Link href="/conditions-utilisation">conditions d’utilisation</Link>.</p>
     <h2>Signaler un problème</h2><p>Pour une erreur, un contenu portant atteinte à vos droits ou une demande concernant le site, écrivez à <a href="mailto:contact@genshin-tracker.com">contact@genshin-tracker.com</a> en précisant la page et le problème rencontré. N’envoyez pas de mot de passe, de clé d’appareil ni de justificatif d’identité sans demande justifiée.</p>
   </>;
+}
+
+function English(L) {
+  return <>
+    <h1>Legal notice</h1><p className={styles.date}>Last updated: 19 November 2026</p>
+    <p className={styles.notice}>This English version is a translation for convenience. The French version is the reference text and prevails in case of difference.</p>
+    <h2>Publisher of the site</h2>
+    <dl><dt>Identity</dt><dd>Lucas Fernandes — sole trader (EI)</dd><dt>Trading name</dt><dd>Lux Audere</dd><dt>SIREN</dt><dd>930 334 248</dd><dt>SIRET of head office</dt><dd>930 334 248 00018</dd><dt>Registration</dt><dd>National business register (RNE), since 25 June 2024</dd><dt>Business address</dt><dd>128 avenue Jean Jaurès, 91200 Athis-Mons, France</dd><dt>Contact</dt><dd><a href="mailto:contact@genshin-tracker.com">contact@genshin-tracker.com</a></dd><dt>Phone</dt><dd><a href="tel:+33759945525">+33 7 59 94 55 25</a></dd><dt>Publication director</dt><dd>Lucas Fernandes</dd></dl>
+    <h2>Hosting</h2>
+    <p>Hostinger — HOSTINGER INTERNATIONAL LIMITED, 61 Lordou Vironos, 6023 Larnaca, Cyprus.</p>
+    <p>Network operations centre (NOC) technical contact: <a href="tel:+13024640055">+1 302 464 0055</a>. This technical contact does not replace online customer support.</p>
+    <p>Site and contact: <a href="https://www.hostinger.com/contact" target="_blank" rel="noreferrer">hostinger.com</a>. Contractual information: <a href="https://www.hostinger.com/legal/terms-of-service" target="_blank" rel="noreferrer">Hostinger terms</a>.</p>
+    <h2>Source code and intellectual property</h2>
+    <p>The original code of the site and the tools specific to the project are distributed under the <a href="/licenses/agpl-3.0.txt">GNU AGPL version 3 only</a>. The Windows companion Kamera FR remains under the MIT license; it adapts <a href="https://github.com/Andrewthe13th/Inventory_Kamera" target="_blank" rel="noreferrer">Inventory Kamera</a>, whose <a href="/licenses/inventory-kamera.txt">original notices</a> are kept. Third-party components remain subject to their own licenses, detailed <a href="#credits">below</a>.</p>
+    <p>The complete source code of the service is public: <a href="https://github.com/Ashuraz91z/Genshin-Tracker" target="_blank" rel="noreferrer">Ashuraz91z/Genshin-Tracker</a> on GitHub. You may read, download, modify and host it yourself under the terms of the AGPL. A copy can also be requested at <a href="mailto:contact@genshin-tracker.com?subject=Genshin%20Tracker%20source%20code">contact@genshin-tracker.com</a>.</p>
+    <p>Genshin Impact, its trademarks, characters and illustrations belong to their rights holders, including HoYoverse / Cognosphere. These elements do not become free because the code is licensed. This community project is neither affiliated with nor approved by HoYoverse.</p>
+    <h2 id="credits">Components, data and authors</h2>
+    <p>The site relies on open-source projects. Thanks to their authors. Each line states what the component does here, who created it and under which license it is used.</p>
+    <div className={styles.table}><table><caption>Third-party components used by Genshin Tracker</caption><thead><tr><th scope="col">Component</th><th scope="col">Use on the site</th><th scope="col">Authors</th><th scope="col">License</th></tr></thead><tbody><tr><th scope="row"><a href="https://github.com/theBowja/genshin-db" target="_blank" rel="noreferrer">genshin-db</a></th><td>French and English names, statistics, materials, upgrade costs and domain calendar (game version 7.2).</td><td>theBowja and contributors</td><td><a href="/licenses/genshin-db.txt">MIT</a></td></tr><tr><th scope="row"><a href="https://github.com/genshinsim/gcsim" target="_blank" rel="noreferrer">gcsim 2.50.0</a></th><td>Team damage simulation, run in your browser. Unmodified version; code before version 2.48 also remains under MIT.</td><td>gcsim contributors</td><td><a href="/simulator/LICENSE-gcsim.txt">AGPL-3.0</a></td></tr><tr><th scope="row"><a href="https://go.dev/" target="_blank" rel="noreferrer">Go</a></th><td>Runs gcsim in the browser. Notices for the Go modules used are gathered in the <a href="/simulator/THIRD-PARTY-NOTICES.txt">engine’s third-party notices</a>.</td><td>The Go Authors</td><td><a href="/simulator/LICENSE-go.txt">BSD-3-Clause</a></td></tr><tr><th scope="row"><a href="https://github.com/Andrewthe13th/Inventory_Kamera" target="_blank" rel="noreferrer">Inventory Kamera</a></th><td>Base of the Kamera FR Windows companion that reads the inventory in the game.</td><td>Andrewthe13th and contributors</td><td><a href="/licenses/inventory-kamera.txt">MIT</a></td></tr><tr><th scope="row"><a href="https://github.com/tesseract-ocr/tesseract" target="_blank" rel="noreferrer">Tesseract and tessdata_fast</a></th><td>Text recognition of captures in Kamera FR (French and English models).</td><td>Google and Tesseract contributors</td><td><a href="/licenses/tessdata-apache-2.0.txt">Apache-2.0</a></td></tr><tr><th scope="row"><a href="https://nextjs.org/" target="_blank" rel="noreferrer">Next.js</a></th><td>Site framework.</td><td>Vercel, Inc.</td><td><a href="/licenses/dependances-web.txt">MIT</a></td></tr><tr><th scope="row"><a href="https://react.dev/" target="_blank" rel="noreferrer">React</a></th><td>Interface rendering.</td><td>Meta Platforms, Inc. and affiliates</td><td><a href="/licenses/dependances-web.txt">MIT</a></td></tr><tr><th scope="row"><a href="https://www.radix-ui.com/" target="_blank" rel="noreferrer">Radix UI Select</a></th><td>Drop-down lists.</td><td>WorkOS</td><td><a href="/licenses/dependances-web.txt">MIT</a></td></tr><tr><th scope="row"><a href="https://github.com/pacocoursey/cmdk" target="_blank" rel="noreferrer">cmdk</a></th><td>Quick search.</td><td>Paco Coursey</td><td><a href="/licenses/dependances-web.txt">MIT</a></td></tr><tr><th scope="row"><a href="https://github.com/theKashey/get-nonce" target="_blank" rel="noreferrer">get-nonce</a></th><td>Style security (CSP).</td><td>Anton Korzunov</td><td><a href="/licenses/dependances-web.txt">MIT</a></td></tr><tr><th scope="row"><a href="https://nodemailer.com/" target="_blank" rel="noreferrer">Nodemailer</a></th><td>Sending account emails.</td><td>Andris Reinman</td><td><a href="/licenses/dependances-web.txt">MIT-0</a></td></tr></tbody></table></div>
+    <p>Game illustrations: retrieved from genshin-db, the mirror <a href="https://github.com/MadeBaruna/paimon-moe" target="_blank" rel="noreferrer">Paimon.moe</a> (MadeBaruna), <a href="https://enka.network/" target="_blank" rel="noreferrer">Enka.Network</a> and <a href="https://gi.yatta.moe/" target="_blank" rel="noreferrer">Project Amber</a>. These sites only relay them: the illustrations belong to HoYoverse. Primogem estimates and the banner calendar are calculated by the site from the game’s version schedule.</p>
+    <h2>Personal data and use</h2><p>See the <Link href={L('/confidentialite')}>privacy policy</Link>, the information on <Link href={L('/cookies')}>cookies and local storage</Link>, and the <Link href={L('/conditions-utilisation')}>terms of use</Link>.</p>
+    <h2>Reporting a problem</h2><p>For an error, content infringing your rights or a request about the site, write to <a href="mailto:contact@genshin-tracker.com">contact@genshin-tracker.com</a>, stating the page and the problem. Do not send any password, device key or proof of identity unless specifically requested.</p>
+  </>;
+}
+
+export default async function Page() {
+  const locale = localeFromHeaders(await headers()), L = href => localePath(locale, href);
+  return locale === 'en' ? English(L) : French(L);
 }

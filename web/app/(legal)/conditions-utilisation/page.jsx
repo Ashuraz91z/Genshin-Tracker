@@ -1,8 +1,11 @@
 import Link from 'next/link';
+import { headers } from 'next/headers';
 import styles from '../../../components/legal.module.css';
+import { localeFromHeaders, localePath } from '../../../lib/i18n.mjs';
 
 export const metadata={title:'Conditions d’utilisation — Genshin Tracker'};
-export default function Page() {
+
+function French(L = h => h) {
   return <>
     <h1>Conditions d’utilisation</h1><p className={styles.date}>Version du 17 novembre 2026 (abonnements)</p>
     <p>Genshin Tracker est un carnet de progression et d’inventaire proposé par Lucas Fernandes, entrepreneur individuel sous le nom commercial Lux Audere. Les coordonnées de l’exploitant figurent dans les <Link href="/mentions-legales">mentions légales</Link>. Contact : <a href="mailto:contact@genshin-tracker.com">contact@genshin-tracker.com</a>.</p>
@@ -23,4 +26,33 @@ export default function Page() {
     <h2>Licences et ressources du jeu</h2><p>La licence du code et les droits des composants et illustrations sont détaillés dans les <Link href="/mentions-legales">mentions légales</Link>. Le projet est indépendant de HoYoverse. Les présentes conditions n’interdisent pas les usages du code autorisés par les licences applicables, notamment l’auto-hébergement.</p>
     <h2>Évolution et litiges</h2><p>La version applicable est datée en tête de cette page. Une évolution substantielle des conditions du service sera portée à votre connaissance ; aucun abonnement ne vous sera imposé du seul fait d’une mise à jour. En cas de désaccord, contactez-nous pour rechercher une solution. Le droit français s’applique sous réserve des protections impératives dont bénéficie un consommateur dans son pays de résidence ; aucune compétence exclusive d’un tribunal français n’est imposée au consommateur.</p>
   </>;
+}
+
+function English(L) {
+  return <>
+    <h1>Terms of use</h1><p className={styles.date}>Version of 17 November 2026 (subscriptions)</p>
+    <p className={styles.notice}>This English version is a translation for convenience. The French version is the reference text and prevails in case of difference.</p>
+    <p>Genshin Tracker is a progression and inventory notebook offered by Lucas Fernandes, a sole trader trading as Lux Audere. The operator’s details are in the <Link href={L('/mentions-legales')}>legal notice</Link>. Contact: <a href="mailto:contact@genshin-tracker.com">contact@genshin-tracker.com</a>.</p>
+    <h2>Service offered</h2><p>The site lets you view an inventory file exported by Kamera FR or a compatible scanner (.json file in GOOD format), link the Windows companion, keep an inventory, correct equipment, and prepare teams or simulations. An account is required to use the service.</p>
+    <h2>Free trial, subscription and payment</h2>
+    <p><strong>Trial.</strong> Each new account gets 14 days of full access to the hosted service, with no payment method. Nothing is charged at the end of the trial: access to the notebook, sync and edits is suspended until you subscribe to a plan. Account data is kept under the <Link href={L('/confidentialite')}>privacy policy</Link>.</p>
+    <p><strong>Plans.</strong> Monthly at €1.99 per month or annual at €14.99 per year, net prices: no VAT charged, French VAT exemption under article 293 B of the CGI. Both plans give access to the same features. The subscription renews automatically at each due date for the same period, at the price in force; any price change is announced at least 30 days before the relevant due date. For the annual plan, an email reminds you, at the earliest three months and at the latest one month before the due date, of the renewal date and of the option not to renew. If you subscribe during your trial, the first payment falls due at the end of the trial.</p>
+    <p><strong>Payment.</strong> Payment is made on a secure Stripe page. Genshin Tracker does not receive or keep your bank details. A receipt is sent to the email address given at payment. If a payment fails, access may be suspended after Stripe’s reminders.</p>
+    <p><strong>Cancellation.</strong> You can cancel at any time, free of charge, from Settings › Subscription › “Cancel my subscription”. A confirmation is sent to you by email. Cancellation takes effect at the end of the period already paid, at no cost; the current period is not refunded, except where you exercise the right of withdrawal or the law provides otherwise.</p>
+    <p><strong>Right of withdrawal.</strong> If you are a consumer, you have 14 days from subscribing to withdraw, without giving a reason, by writing to <a href="mailto:contact@genshin-tracker.com?subject=Withdrawal%20Genshin%20Tracker">contact@genshin-tracker.com</a> with your username. By asking for immediate access to the service, you agree that it begins during this period: a refund is then made within 14 days, less the amount proportional to the service provided up to your request.</p>
+    <h2>Account and security</h2><p>Choose a password specific to the tracker and keep it secret, along with device keys and pairing codes. Do not use your HoYoverse password. Do not send game credentials. You can unlink a device from Sync and ask us to close your account at the contact address. If you are a minor, have your legal representative assist you where necessary.</p>
+    <h2>Your imports and devices</h2><p>Only import files and data you are allowed to use. OCR scanning may be incomplete or incorrect; check the results and keep the exports you need. Manually replacing an inventory may remove items missing from the imported file: the interface asks for this choice explicitly. A local export and a scan report are separate files.</p>
+    <p>The Windows companion navigates the game’s menus and reads captures locally. Follow its instructions and the rules that apply to the game. The project’s independence is neither an authorization from HoYoverse nor a guarantee that no sanction will be applied. Do not use the scanner during an action that requires control of the mouse or keyboard.</p>
+    <h2>Use of the site</h2><p>It is forbidden to access other people’s accounts, to try to bypass authentication, to send malicious content, or to deliberately overload the service. Proportionate measures may be taken to protect users and the availability of the service. If you have a problem or a contested restriction, contact us.</p>
+    <h2>Results, availability and liability</h2><p>Recommendations and simulations depend on the imported data, the reference data and the engine’s assumptions. They guarantee neither in-game results nor completeness of progression. The service may suffer interruptions and maintenance operations; no permanent availability is promised for this version.</p>
+    <p>These statements do not remove users’ mandatory rights or the operator’s liability where the law provides for it. Warranty clauses of software licenses do not replace the obligations that may apply to a service sold to a consumer.</p>
+    <h2>Personal data</h2><p>The purposes, recipients, retention criteria and ways to exercise your rights are explained in the <Link href={L('/confidentialite')}>privacy policy</Link>. Agreeing to these terms is not consent to advertising processing. How trackers work is described on the <Link href={L('/cookies')}>cookies and local storage</Link> page.</p>
+    <h2>Licenses and game resources</h2><p>The code license and the rights of the components and illustrations are detailed in the <Link href={L('/mentions-legales')}>legal notice</Link>. The project is independent of HoYoverse. These terms do not prohibit uses of the code allowed by the applicable licenses, including self-hosting.</p>
+    <h2>Changes and disputes</h2><p>The applicable version is dated at the top of this page. A substantial change to the terms of the service will be brought to your attention; no subscription will be imposed on you merely because of an update. In case of disagreement, contact us to look for a solution. French law applies, subject to the mandatory protections a consumer enjoys in their country of residence; no exclusive jurisdiction of a French court is imposed on consumers.</p>
+  </>;
+}
+
+export default async function Page() {
+  const locale = localeFromHeaders(await headers()), L = href => localePath(locale, href);
+  return locale === 'en' ? English(L) : French(L);
 }

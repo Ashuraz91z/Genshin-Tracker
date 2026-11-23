@@ -1,8 +1,11 @@
 import Link from 'next/link';
+import { headers } from 'next/headers';
 import styles from '../../../components/legal.module.css';
+import { localeFromHeaders, localePath } from '../../../lib/i18n.mjs';
 
 export const metadata={title:'Confidentialité — Genshin Tracker'};
-export default function Page() {
+
+function French(L = h => h) {
   return <>
     <h1>Confidentialité</h1><p className={styles.date}>Dernière mise à jour : 17 novembre 2026</p>
     <p>Cette politique concerne le service Genshin Tracker exploité par Lucas Fernandes, entrepreneur individuel sous le nom commercial Lux Audere, responsable du traitement. Coordonnées : 128 avenue Jean Jaurès, 91200 Athis-Mons, France ; <a href="mailto:contact@genshin-tracker.com">contact@genshin-tracker.com</a>. Voir les <Link href="/mentions-legales">mentions légales</Link>.</p>
@@ -27,4 +30,37 @@ export default function Page() {
     <p>Le bouton « Télécharger mes données » exporte la collection dans un fichier d’inventaire .json au format GOOD, compatible avec d’autres outils Genshin. Pour les autres données personnelles du compte, une demande à l’adresse de contact reste possible. La déconnexion du site ne supprime pas le compte et la révocation d’un appareil n’efface pas les scans déjà reçus.</p>
     <h2>Évolution de cette politique</h2><p>Nous mettrons cette page à jour si le service, les données utilisées ou les prestataires changent. Toute nouvelle finalité ou utilisation de traceurs nécessitant un consentement fera l’objet de l’information ou du choix requis avant sa mise en œuvre.</p>
   </>;
+}
+
+function English(L) {
+  return <>
+    <h1>Privacy policy</h1><p className={styles.date}>Last updated: 17 November 2026</p>
+    <p className={styles.notice}>This English version is a translation for convenience. The French version is the reference text and prevails in case of difference.</p>
+    <p>This policy covers the Genshin Tracker service operated by Lucas Fernandes, a sole trader trading as Lux Audere, data controller. Contact details: 128 avenue Jean Jaurès, 91200 Athis-Mons, France; <a href="mailto:contact@genshin-tracker.com">contact@genshin-tracker.com</a>. See the <Link href={L('/mentions-legales')}>legal notice</Link>.</p>
+    <h2>What we use</h2>
+    <ul><li><strong>Account:</strong> username, email address, email confirmation status, date and version of the terms accepted, internal identifier, creation date and a secure fingerprint of the password.</li><li><strong>Newsletter:</strong> your subscription choice and its date, only if you ticked the corresponding box.</li><li><strong>Subscription:</strong> Stripe customer identifier, plan, status and renewal date.</li><li><strong>Sign-in:</strong> session and device identifiers, PC name, creation and last sync dates. The session cookie and the companion key give access to your account.</li><li><strong>Operation:</strong> pages opened, names of the buttons used, actions sent to the server with their result, and technical errors, linked to your account if you are signed in. What you type is never stored. This data is only used to spot and fix problems (legitimate interest, Article 6(1)(f) GDPR) and is deleted after 90 days.</li><li><strong>Support:</strong> name, email address and messages sent from the <Link href={L('/aide')}>Help and contact</Link> page, and our replies.</li><li><strong>Notebook:</strong> characters, weapons, artifacts, materials, corrections, teams, rotations and scan reports that you import or sync. Reports may contain file names or error messages: check them before sending.</li><li><strong>Site access:</strong> the host and its content delivery network process the technical data needed to serve requests and for security, such as IP address, date, requested URL and browser information.</li><li><strong>Contact:</strong> your email address and the content of exchanges when you write to us.</li></ul>
+    <p>The scanner does not ask for your HoYoverse password. The tracker password must not be the same as your game account password. OCR captures and diagnostic files from the companion stay on your PC, unless you send them yourself to get help.</p>
+    <h2>Purposes and legal bases</h2>
+    <ul><li><strong>Providing the notebook and syncing your data:</strong> performing the service you request, under Article 6(1)(b) GDPR.</li><li><strong>Protecting the service and accounts:</strong> legitimate interest in preventing unauthorized access and abuse, under Article 6(1)(f) GDPR.</li><li><strong>Using your email address for the account:</strong> confirming the address, password reset links, and passing it to Stripe for receipts and invoices, under performance of the service (Article 6(1)(b) GDPR).</li><li><strong>Sending the newsletter:</strong> only with your consent (Article 6(1)(a) GDPR), withdrawable at any time from “My account” or with the unsubscribe link in each email, without affecting the rest of the service.</li><li><strong>Answering messages and rights requests:</strong> carrying out the measures requested or complying with our legal obligations, depending on the nature of the request.</li></ul>
+    <p>A username, an email address and a password are needed to create an account, which is itself needed to use the site. Inventory files are optional, but needed to display your collection. Data is not used for targeted advertising or for automated decisions producing legal effects. Game recommendations and simulations are indicative only.</p>
+    <h2>Preferences</h2>
+    <p>Appearance preferences are saved locally at your request. The <Link href={L('/cookies')}>durations and ways to delete local storage</Link> are described separately.</p>
+    <h2>Recipients, hosting and transfers</h2>
+    <p>The service operator may access data to run the service and provide support. Hostinger provides hosting and delivery of the site; our email providers process the messages you send us and the emails sent by the service (confirmation, password, newsletter). Subscriptions and donations are paid on a Stripe page, which processes your payment data under its <a href="https://stripe.com/privacy" target="_blank" rel="noreferrer">privacy policy</a>. We receive the amount, name and email address shown, and we keep on the account the Stripe customer identifier, the plan, its status and renewal date in order to open access to the service (performance of the contract). Accounting records are kept for ten years under our legal obligations. Your inventory is not published in any gallery and we do not sell your data. Clicking an external link takes you off the site.</p>
+    <p>Hostinger operates with entities and subcontractors located in several countries. Technical or support operations may involve access from outside the European Economic Area; the applicable conditions and safeguards, including standard contractual clauses where necessary, are described in its <a href="https://www.hostinger.com/legal/dpa" target="_blank" rel="noreferrer">data processing agreement</a>. You may ask us for information about the providers actually used for this service. We do not present this service as hosted or accessible only from France.</p>
+    <h2>Retention</h2>
+    <p>Notebook data, teams, linked devices and scan history are kept for as long as the account exists so that your tracking works. Showing only the latest scans in the journal is not deleting older reports. You can ask us to close the account and erase this data at the address below; no fixed period for automatic deletion of inactive accounts is currently announced.</p>
+    <p>The sign-in session is valid for seven days and a pairing code for ten minutes. A device key is valid until it is revoked. These validity periods do not describe a backup retention period. Security backups and technical logs follow separate retention cycles that depend on hosting; their details for this service can be obtained on request. Support exchanges are kept as long as needed to handle the request and, if a dispute requires it, for the corresponding legal period.</p>
+    <p>Deleting data on the server does not erase inventory files, captures, exports or backups you have kept on your computer. Any retention required to comply with a legal obligation or to defend a right is limited to those purposes.</p>
+    <h2>Your rights and how to exercise them</h2>
+    <p>Under the conditions set by the GDPR, you may request access, rectification, erasure, restriction, objection for processing based on legitimate interest, and portability of the relevant data. Write to <a href="mailto:contact@genshin-tracker.com?subject=Personal%20data%20Genshin%20Tracker">contact@genshin-tracker.com</a> with your username and your request. Do not send an identity document unprompted; we will only ask for the items needed if there is reasonable doubt about who is asking.</p>
+    <p>We normally answer within one month of receiving the request. The GDPR allows extensions for some complex requests, and you will be told if this applies. You may lodge a complaint with the <a href="https://www.cnil.fr/en/file-a-complaint" target="_blank" rel="noreferrer">CNIL</a> or with the competent supervisory authority in your country.</p>
+    <p>The “Download my data” button exports your collection as a .json inventory file in GOOD format, compatible with other Genshin tools. For other personal data in the account, you can still send a request to the contact address. Signing out of the site does not delete the account, and revoking a device does not erase scans already received.</p>
+    <h2>Changes to this policy</h2><p>We will update this page if the service, the data used or the providers change. Any new purpose or use of trackers requiring consent will be notified or subject to the required choice before it is implemented.</p>
+  </>;
+}
+
+export default async function Page() {
+  const locale = localeFromHeaders(await headers()), L = href => localePath(locale, href);
+  return locale === 'en' ? English(L) : French(L);
 }
