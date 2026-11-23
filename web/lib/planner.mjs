@@ -54,20 +54,26 @@ export const goals={
   abyss:{label:'Abysse',teams:2,target:{ascension:6,talent:{auto:6,skill:9,burst:9}},hint:'deux équipes complètes, compétence et déchaînement à 9'},
   theater:{label:'Théâtre',teams:3,target:{ascension:5,talent:{auto:1,skill:6,burst:6}},hint:'beaucoup de personnages utilisables, niveau 80 et aptitudes 6'},
 };
+// Épreuve conseillée : la plus haute qui donne encore la meilleure rareté qui manque ([numéro, rang d'aventure]).
+export function domainTier(tiers,rarity){if(!tiers?.length||!rarity)return null;const t=tiers.filter(x=>x[2]===rarity).pop()??tiers.at(-1);return [t[0],t[1]];}
 export function goalPlan(data,catalogue,planner,keys,target,day=new Date().getDay()) {
   const chars=keys?data.characters.filter(c=>keys.includes(c.key)):data.characters,own=new Set(chars.map(c=>c.key));
   const weapons=data.weapons.filter(w=>own.has(w.location)&&(w.ascension??6)<6);
   const name=k=>catalogue.materials?.[k]?.name??k,dated={},other={},artifacts={};
+  const family=(g,needs)=>{for(const [k,n] of Object.entries(needs))if(planner.materialDays[k]?.domain===g.domain)g.needs[k]=(g.needs[k]??0)+n;};
   const push=(bag,key,who,extra)=>{const g=bag[key]??={key,name:name(key),image:catalogue.materials?.[key]?.image,who:[],...extra};if(!g.who.includes(who))g.who.push(who);return g;};
   for(const c of chars){
     const plan=planner.characters?.[c.key];if(!plan)continue;
-    if(plan.talentBook&&['auto','skill','burst'].some(t=>(c.talent?.[t]??1)<talentTarget(target,t))){const info=planner.materialDays[plan.talentBook];info&&push(dated,plan.talentBook,c.key,{kind:'talent',...info,place:info.domain.split(' : ').pop()});}
-    for(const n of shortfall(characterNeeds(c,plan,target),data.materials))if(n.missing&&n.key!=='Mora'&&!planner.materialDays[n.key])push(other,n.key,c.key,{missing:0}).missing+=n.missing;
+    const needs=characterNeeds(c,plan,target);
+    if(plan.talentBook&&['auto','skill','burst'].some(t=>(c.talent?.[t]??1)<talentTarget(target,t))){const info=planner.materialDays[plan.talentBook];info&&family(push(dated,plan.talentBook,c.key,{kind:'talent',...info,place:info.domain.split(' : ').pop(),needs:{}}),needs);}
+    for(const n of shortfall(needs,data.materials))if(n.missing&&n.key!=='Mora'&&!planner.materialDays[n.key])push(other,n.key,c.key,{missing:0}).missing+=n.missing;
     const pieces=Object.values(characterEquipment(data,catalogue,c.key).slots).flat(),sets={};pieces.forEach(a=>sets[a.setKey]=(sets[a.setKey]??0)+1);
     const main=Object.entries(sets).sort((a,b)=>b[1]-a[1])[0]?.[0],domain=main&&planner.artifactDomains?.[main]?.[0];
     if(domain&&(pieces.length<5||pieces.some(a=>critValue(a)<15))){const g=push(artifacts,domain,c.key,{place:domain.split(' : ').pop(),sets:[]});const set=catalogue.artifacts?.[main]?.name??main;if(!g.sets.includes(set))g.sets.push(set);}
   }
-  for(const w of weapons){const m=planner.weapons?.[w.key]?.material,info=m&&planner.materialDays[m];if(info)push(dated,m,w.location,{kind:'weapon',...info,place:info.domain.split(' : ').pop()});}
+  for(const w of weapons){const m=planner.weapons?.[w.key]?.material,info=m&&planner.materialDays[m];if(info)family(push(dated,m,w.location,{kind:'weapon',...info,place:info.domain.split(' : ').pop(),needs:{}}),weaponNeeds(w,planner.weapons[w.key]));}
+  for(const g of Object.values(dated)){const miss=shortfall(g.needs,data.materials).filter(n=>n.missing).map(n=>({...n,rarity:catalogue.materials?.[n.key]?.rarity??0})).sort((a,b)=>b.rarity-a.rarity||b.missing-a.missing);g.short=miss[0]??null;g.tier=domainTier(planner.domainTiers?.[g.domain],g.short?.rarity);delete g.needs;}
+  for(const g of Object.values(artifacts))g.tier=domainTier(planner.domainTiers?.[g.key],5);
   const byWho=(a,b)=>b.who.length-a.who.length;
   const all=Object.values(dated).sort(byWho);
   return {today:all.filter(g=>openOn(g,day)),later:all.filter(g=>!openOn(g,day)),other:Object.values(other).sort((a,b)=>byWho(a,b)||b.missing-a.missing),artifacts:Object.values(artifacts).sort(byWho),count:chars.length};

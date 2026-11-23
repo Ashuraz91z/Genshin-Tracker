@@ -78,6 +78,9 @@
 .farmList .place{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:2px 0 4px;font-size:12px}
 .farmList .place>span{display:inline-flex;align-items:center;gap:4px;color:var(--muted)}
 .farmList .place svg.icon{width:14px;height:14px}
+.farmList .tier{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px;margin:4px 0 6px;padding:8px 10px;border-radius:12px;background:color-mix(in srgb,var(--tone) 14%,transparent);border:1px solid color-mix(in srgb,var(--tone) 35%,transparent)}
+.farmList .tier b{font-size:14px;font-weight:700;color:color-mix(in srgb,var(--tone) 75%,var(--text))}
+.farmList .tier small{color:var(--text);opacity:.8}
 .farmList .rarity{color:#e0a21e;font-size:12px;letter-spacing:1px;line-height:1}
 .farmList .farmTime{display:inline-block;justify-self:start;margin-top:6px;padding:2px 8px;border-radius:8px;font-size:12px;color:var(--text);background:color-mix(in srgb,var(--tone) 14%,transparent)}
 .farmList .who{gap:8px;margin-top:12px;padding-top:12px;border-top:1px dashed color-mix(in srgb,var(--tone) 35%,var(--border))}

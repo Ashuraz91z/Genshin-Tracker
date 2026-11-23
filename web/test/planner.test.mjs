@@ -52,3 +52,13 @@ test('farmEstimate turns average drops into runs, resin and days', async () => {
   assert.deepEqual(farmEstimate([{n:'Stormterror',c:null,b:2}],3),{where:'Boss hebdomadaire : Stormterror'});
   assert.equal(farmEstimate(undefined,3),null);
 });
+
+test('domainTier picks the highest tier that still drops the rarest missing book', async () => {
+  const { domainTier } = await import('../lib/planner.mjs');
+  const talent=[['I',25,2],['II',28,3],['III',36,3],['IV',45,4]];
+  assert.deepEqual(domainTier(talent,2),['I',25]);
+  assert.deepEqual(domainTier(talent,3),['III',36]);
+  assert.deepEqual(domainTier(talent,4),['IV',45]);
+  assert.equal(domainTier(talent,0),null,'nothing missing, no tier');
+  assert.equal(domainTier(undefined,3),null);
+});

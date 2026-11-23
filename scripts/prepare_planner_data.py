@@ -95,7 +95,19 @@ for d in fr_domains.values():
     if d.get('regionName') and d.get('entranceName'):
         places.setdefault(base, [d['regionName'], d['entranceName']])
 
-out = {'domainPlaces': places, 'materialDays': domains, 'characters': characters, 'weapons': weapons,
+# Épreuves de chaque donjon : [numéro, rang d'aventure requis, meilleure rareté donnée].
+rarity = {ref.good(m['name']): m.get('rarity') or 0 for m in materials.values()}
+tiers = {}
+for stem, d in load('English', 'domains').items():
+    fr = fr_domains.get(stem, d)['name']
+    base, num = fr.rsplit(' ', 1)
+    if num.strip('IV') or not d.get('unlockRank'):
+        continue
+    top = max([r['rarity'] if 'rarity' in r else rarity.get(ref.good(r['name']), 0) for r in d.get('rewardPreview', []) if 'count' not in r] or [0])
+    tiers.setdefault(base, []).append([num, d['unlockRank'], top])
+tiers = {k: sorted(v, key=lambda x: x[1]) for k, v in tiers.items()}
+
+out = {'domainPlaces': places, 'domainTiers': tiers, 'materialDays': domains, 'characters': characters, 'weapons': weapons,
        'artifactDomains': {k: sorted(v) for k, v in artifact_domains.items()}, 'drops': material_info}
 (root / 'web/public/assets/planner.json').write_text(json.dumps(out, ensure_ascii=False, separators=(',', ':')))
 print(len(characters), 'personnages,', len(weapons), 'armes,', len(domains), 'matériaux de donjon,', len(artifact_domains), 'sets')
