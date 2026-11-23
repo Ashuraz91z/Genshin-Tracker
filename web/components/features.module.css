@@ -58,6 +58,8 @@
 .farmGroup[data-tone=artifact]{--tone:#e0457b}
 .farmGroup[data-tone=world]{--tone:#119e9e}
 .farmGroup[data-tone=later]{--tone:#5b7bd5}
+.farmList li[data-foe=mob]{--tone:#3a9d4f}
+.farmList li[data-foe=weekly]{--tone:#d0503c}
 .farmGroup h3,.farmGroup>summary{display:inline-flex;align-items:center;gap:8px;margin:0 0 12px;padding:6px 14px;border-radius:999px;font-size:13px;font-weight:650;letter-spacing:.01em;color:color-mix(in srgb,var(--tone) 72%,var(--text));background:color-mix(in srgb,var(--tone) 15%,transparent);border:1px solid color-mix(in srgb,var(--tone) 35%,transparent)}
 .farmGroup h3::before,.farmGroup>summary::before{content:'';width:9px;height:9px;border-radius:50%;background:var(--tone);box-shadow:0 0 0 3px color-mix(in srgb,var(--tone) 25%,transparent)}
 .farmList{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
@@ -89,3 +91,26 @@
 .farmLabel{margin:6px 0 6px;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
 @media (prefers-reduced-motion:reduce){.farmList li{transition:none}.farmList li:hover{transform:none}}
 .farmGroup>p{margin-top:14px}
+/* Mode clair : teintes plus franches sur le fond blanc. */
+:global(:root[data-theme=light]) .farmLead{background:linear-gradient(110deg,#ffe2b3,#ffd0de);border-color:#f0a93b99}
+:global(:root[data-theme=light]) .farmGroup h3,:global(:root[data-theme=light]) .farmGroup>summary{background:color-mix(in srgb,var(--tone) 24%,#fff);border-color:color-mix(in srgb,var(--tone) 55%,transparent);color:color-mix(in srgb,var(--tone) 60%,#1a1f33)}
+:global(:root[data-theme=light]) .farmList li{background:linear-gradient(160deg,color-mix(in srgb,var(--tone) 26%,#fff),color-mix(in srgb,var(--tone) 9%,#fff));border-color:color-mix(in srgb,var(--tone) 45%,transparent);box-shadow:0 4px 14px color-mix(in srgb,var(--tone) 14%,transparent)}
+:global(:root[data-theme=light]) .farmList span{color:color-mix(in srgb,var(--tone) 65%,#1a1f33)}
+:global(:root[data-theme=light]) .farmList img{background:color-mix(in srgb,var(--tone) 30%,#fff)}
+:global(:root[data-theme=light]) .farmList .foes img{background:radial-gradient(circle at 50% 35%,color-mix(in srgb,var(--tone) 22%,#fff),color-mix(in srgb,var(--tone) 45%,#fff));box-shadow:0 0 0 2px var(--tone)}
+:global(:root[data-theme=light]) .farmList .who img{box-shadow:0 0 0 2px color-mix(in srgb,var(--tone) 80%,transparent)}
+:global(:root[data-theme=light]) .farmList .who{border-top-color:color-mix(in srgb,var(--tone) 55%,transparent)}
+:global(:root[data-theme=light]) .farmList .farmTime{background:color-mix(in srgb,var(--tone) 24%,#fff)}
+:global(:root[data-theme=light]) .farmLater li{background:color-mix(in srgb,var(--tone) 14%,#fff)}
+@media (prefers-color-scheme:light){
+:global(:root:not([data-theme=dark])) .farmLead{background:linear-gradient(110deg,#ffe2b3,#ffd0de);border-color:#f0a93b99}
+:global(:root:not([data-theme=dark])) .farmGroup h3,:global(:root:not([data-theme=dark])) .farmGroup>summary{background:color-mix(in srgb,var(--tone) 24%,#fff);border-color:color-mix(in srgb,var(--tone) 55%,transparent);color:color-mix(in srgb,var(--tone) 60%,#1a1f33)}
+:global(:root:not([data-theme=dark])) .farmList li{background:linear-gradient(160deg,color-mix(in srgb,var(--tone) 26%,#fff),color-mix(in srgb,var(--tone) 9%,#fff));border-color:color-mix(in srgb,var(--tone) 45%,transparent);box-shadow:0 4px 14px color-mix(in srgb,var(--tone) 14%,transparent)}
+:global(:root:not([data-theme=dark])) .farmList span{color:color-mix(in srgb,var(--tone) 65%,#1a1f33)}
+:global(:root:not([data-theme=dark])) .farmList img{background:color-mix(in srgb,var(--tone) 30%,#fff)}
+:global(:root:not([data-theme=dark])) .farmList .foes img{background:radial-gradient(circle at 50% 35%,color-mix(in srgb,var(--tone) 22%,#fff),color-mix(in srgb,var(--tone) 45%,#fff));box-shadow:0 0 0 2px var(--tone)}
+:global(:root:not([data-theme=dark])) .farmList .who img{box-shadow:0 0 0 2px color-mix(in srgb,var(--tone) 80%,transparent)}
+:global(:root:not([data-theme=dark])) .farmList .who{border-top-color:color-mix(in srgb,var(--tone) 55%,transparent)}
+:global(:root:not([data-theme=dark])) .farmList .farmTime{background:color-mix(in srgb,var(--tone) 24%,#fff)}
+:global(:root:not([data-theme=dark])) .farmLater li{background:color-mix(in srgb,var(--tone) 14%,#fff)}
+}
