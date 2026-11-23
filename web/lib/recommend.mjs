@@ -38,7 +38,7 @@ export function recommendTeams(data,catalogue,limit=8) {
     a.slots.forEach(slot=>{const i=slot.findIndex(k=>owned.has(k)&&!picked.includes(k));if(i<0){missing.push(slot.filter(k=>!picked.includes(k)));return;}picked.push(slot[i]);preference+=1-i/slot.length;});
     const coverage=picked.length/4,build=picked.length?picked.reduce((s,k)=>s+scores.get(k),0)/picked.length:0;
     const core=owned.has(a.slots[0][0])||a.slots[0].some(k=>owned.has(k));
-    return {...a,picked,missing,coverage,build:Math.round(build),score:Math.round((a.power??1)*(core?coverage*55+preference/4*15+build*0.3:coverage*30))};
+    return {...a,picked,missing,coverage,build:Math.round(build),score:Math.min(100,Math.round((a.power??1)*(core?coverage*55+preference/4*15+build*0.3:coverage*30)))};
   }).filter(t=>t.picked.length>=2).sort((a,b)=>b.score-a.score).slice(0,limit);
 }
 export function adviseTeam(keys,data,catalogue) {

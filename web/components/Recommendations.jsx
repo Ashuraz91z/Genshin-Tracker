@@ -6,7 +6,7 @@ import { recommendTeams, adviseTeam, buildScore } from '../lib/recommend.mjs';
 const storageKey='gt-main-team';
 function Portraits({keys,catalogue}) {return <div className={s.who}>{keys.map(k=><Link key={k} href={'/characters/'+encodeURIComponent(k)} title={catalogue.characters?.[k]?.name??k}>{catalogue.characters?.[k]?.portrait?<img src={catalogue.characters[k].portrait} width="48" height="48" alt={catalogue.characters[k].name??k}/>:k}</Link>)}</div>;}
 export default function Recommendations({data,catalogue,teams,onSave}) {
-  const [main,setMain]=useState('auto'),[onlyComplete,setOnlyComplete]=useState(false),[saved,setSaved]=useState({}),[error,setError]=useState('');
+  const [main,setMain]=useState('auto'),[onlyComplete,setOnlyComplete]=useState(true),[saved,setSaved]=useState({}),[error,setError]=useState('');
   useEffect(()=>{try{const v=localStorage.getItem(storageKey);if(v)setMain(v);}catch{}},[]);
   const choose=v=>{setMain(v);try{localStorage.setItem(storageKey,v);}catch{}};
   const name=k=>catalogue.characters?.[k]?.name??k;
@@ -27,7 +27,7 @@ export default function Recommendations({data,catalogue,teams,onSave}) {
       <p className="muted">Classement : couverture de l’archétype avec vos personnages, préférence des choix et niveau d’investissement actuel. Liste d’archétypes interne, inspirée des équipes communautaires courantes.</p>
       {error&&<p className="field-error" role="alert">{error}</p>}
       <div className={s.members} style={{marginTop:12}}>{recos.map((t,i)=><article className={s.member} key={t.id}><header><span className={`${s.tag} ${t.coverage===1?s.low:s.mid}`}>#{i+1} · {t.tag}</span>{t.name}</header><Portraits keys={t.picked} catalogue={catalogue}/><p className="muted" style={{margin:0,fontSize:13}}>{t.text}</p>
-        <div className={s.bar}><i style={{width:Math.min(100,t.score)+'%'}}/></div><small className="muted">Score {t.score} · investissement moyen {t.build}/100</small>
+        <div className={s.bar}><i style={{width:Math.min(100,t.score)+'%'}}/></div><small className="muted">Score {t.score}/100 · investissement moyen {t.build}/100</small>
         {t.missing.length>0&&<small className="field-error">Il manque : {t.missing.map(m=>m.slice(0,3).map(name).join(' ou ')).join(' · ')}</small>}
         <button className="button secondary" disabled={saved[t.id]} onClick={()=>add(t)}>{saved[t.id]?'Ajoutée à vos équipes ✓':'Ajouter à mes équipes'}</button></article>)}</div>
       {!recos.length&&<p className="muted">Aucune équipe d’archétype ne correspond encore à votre box. Décochez « complètes uniquement » ou importez vos personnages.</p>}</section>
