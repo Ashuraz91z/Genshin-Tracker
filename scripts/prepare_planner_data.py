@@ -88,7 +88,14 @@ for s in (s for v in material_info.values() for s in v):
     if target.exists():
         s['i'] = stem
 
-out = {'materialDays': domains, 'characters': characters, 'weapons': weapons,
+# Où se trouve chaque donjon : nom sans numéro (I, II…) -> [région, entrée].
+places = {}
+for d in fr_domains.values():
+    base = d['name'].rsplit(' ', 1)[0] if d['name'].rsplit(' ', 1)[-1].strip('IV') == '' else d['name']
+    if d.get('regionName') and d.get('entranceName'):
+        places.setdefault(base, [d['regionName'], d['entranceName']])
+
+out = {'domainPlaces': places, 'materialDays': domains, 'characters': characters, 'weapons': weapons,
        'artifactDomains': {k: sorted(v) for k, v in artifact_domains.items()}, 'drops': material_info}
 (root / 'web/public/assets/planner.json').write_text(json.dumps(out, ensure_ascii=False, separators=(',', ':')))
 print(len(characters), 'personnages,', len(weapons), 'armes,', len(domains), 'matériaux de donjon,', len(artifact_domains), 'sets')

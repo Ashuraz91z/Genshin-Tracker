@@ -75,6 +75,11 @@
 .farmList .foes em,.farmList .who em{flex-basis:100%;margin-bottom:2px;letter-spacing:.03em;font-style:normal;font-size:12px;color:var(--muted)}
 .farmList .foes img{width:40px;height:40px;padding:0;border-radius:50%;object-fit:cover;background:radial-gradient(circle at 50% 35%,color-mix(in srgb,var(--tone) 30%,var(--surface)),color-mix(in srgb,var(--tone) 12%,var(--surface)));box-shadow:0 0 0 2px color-mix(in srgb,var(--tone) 60%,transparent)}
 .farmList .foes b{font-weight:500;font-size:12px;color:var(--text)}
+.farmList .place{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:2px 0 4px;font-size:12px}
+.farmList .place>span{display:inline-flex;align-items:center;gap:4px;color:var(--muted)}
+.farmList .place a{display:inline-flex;align-items:center;gap:4px;min-height:28px;padding:2px 10px;border-radius:999px;font-weight:600;color:color-mix(in srgb,var(--tone) 70%,var(--text));background:color-mix(in srgb,var(--tone) 16%,transparent);border:1px solid color-mix(in srgb,var(--tone) 40%,transparent)}
+.farmList .place a:hover{background:color-mix(in srgb,var(--tone) 28%,transparent)}
+.farmList .place svg.icon{width:14px;height:14px}
 .farmList .rarity{color:#e0a21e;font-size:12px;letter-spacing:1px;line-height:1}
 .farmList .farmTime{display:inline-block;justify-self:start;margin-top:6px;padding:2px 8px;border-radius:8px;font-size:12px;color:var(--text);background:color-mix(in srgb,var(--tone) 14%,transparent)}
 .farmList .who{gap:8px;margin-top:12px;padding-top:12px;border-top:1px dashed color-mix(in srgb,var(--tone) 35%,var(--border))}
