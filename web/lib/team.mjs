@@ -107,3 +107,13 @@ export function scenarioData(mode,keys,data,catalogue,metadata,planner,options={
   }
   return next;
 }
+// Résumé en français d'une composition, sans équipement : résonance, réactions et survie.
+export function teamSummary(keys,catalogue){
+  const els=keys.map(k=>elementName(catalogue.characters?.[k]?.element)),counts={};els.forEach(e=>counts[e]=(counts[e]??0)+1);
+  const res=Object.entries(counts).filter(([e,n])=>n>=2&&resonances[e]).map(([e])=>resonances[e].split(' :')[0]);
+  const found=reactions.filter(([pair])=>pair.every(e=>counts[e])).map(([,label])=>label.split(' (')[0]);
+  if(counts['Anémo']&&Object.keys(counts).some(e=>['Pyro','Hydro','Électro','Cryo'].includes(e)))found.push('Dispersion');
+  if(counts['Géo']&&Object.keys(counts).length>1)found.push('Cristallisation');
+  const sustain=keys.filter(k=>healers.includes(k)||shielders.includes(k)).map(k=>catalogue.characters?.[k]?.name??k);
+  return [res.length&&'Résonance : '+res.join(', '),found.length&&'Réactions : '+found.join(', '),sustain.length&&'Survie : '+sustain.join(', ')].filter(Boolean).join(' · ');
+}

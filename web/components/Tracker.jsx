@@ -10,6 +10,7 @@ import LegalLinks from './LegalLinks';
 import CharacterDetails from './CharacterDetails';
 import ArtifactEditor from './ArtifactEditor';
 import Teams from './Teams';
+import SourcedTeams from './SourcedTeams';
 import Checkout from './Checkout';
 import { push as track } from './Telemetry';
 import AuthScreen from './AuthScreen';
@@ -142,6 +143,7 @@ export default function Tracker({view,characterKey}) {
         {view==='characters'&&!characterKey&&<section><div className="collection-toolbar"><label className="search-field"><Icon name="search"/><input type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Rechercher un personnage…" aria-label="Rechercher un personnage"/></label><label className="select-label">Élément<Select value={element} onChange={e=>setElement(e.target.value)}><option value="">Tous les éléments</option>{elements.map(e=><option key={e}>{e}</option>)}</Select></label><label className="select-label">Rareté<Select value={characterRarity} onChange={e=>setCharacterRarity(e.target.value)}><option value="">Toutes</option><option value="5">5 étoiles</option><option value="4">4 étoiles</option></Select></label><label className="select-label">Trier par<Select value={characterSort} onChange={e=>setCharacterSort(e.target.value)}><option value="level">Niveau</option><option value="rarity">Rareté</option><option value="name">Nom A → Z</option></Select></label><span className="muted">{characters.length} personnage{characters.length!==1?'s':''}</span></div><div className="characters-grid">{characters.length?characterCards(characters):<Empty title={data.characters.length?'Aucun personnage trouvé':'Votre équipe vous attend'} description={data.characters.length?'Essayez un autre nom ou un autre élément.':'Lancez un scan des personnages dans Kamera pour retrouver votre équipe ici.'} onPair={data.characters.length?undefined:pair}/>}</div></section>}
         {view==='characters'&&characterKey&&(selectedCharacter?<CharacterDetails character={selectedCharacter} reference={reference} data={data} catalogue={catalogue} onEdit={(slotKey,initial)=>setArtifactEdit({characterKey,slotKey,initial,initialSource:account.customizations?.artifacts.find(a=>a.id===initial?.manualId)?.source})}/>:<Empty title="Personnage absent du relevé" description="Retournez à la collection pour choisir un personnage importé."/>)}
         {view==='teams'&&!(account.customizations?.teams??[]).length&&<Recommendations data={data} catalogue={catalogue} teams={[]} onSave={team=>customize('team',team)}/>}
+        {view==='teams'&&<SourcedTeams data={data} catalogue={catalogue} onSave={team=>customize('team',team)}/>}
         {view==='teams'&&<Teams data={data} catalogue={catalogue} teams={account.customizations?.teams??[]} onSave={team=>customize('team',team)} onRemove={id=>customize('removeTeam',{id})}/>}
         {view==='advice'&&<Recommendations data={data} catalogue={catalogue} teams={account.customizations?.teams??[]} onSave={team=>customize('team',team)}/>}
         {view==='collection'&&<GameCollection data={data} catalogue={catalogue}/>}

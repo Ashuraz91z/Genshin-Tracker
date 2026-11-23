@@ -1,0 +1,4941 @@
+{
+ "source": "https://genshin-builds.com/fr/teams",
+ "fetchedAt": "2026-11-23",
+ "teams": [
+  {
+   "id": "valeriy",
+   "character": "Valeriy",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/valeriy",
+   "members": [
+    {
+     "key": "Cyno",
+     "role": "DPS principal",
+     "weapons": [
+      "StaffOfTheScarletSands",
+      "Deathmatch",
+      "SacrificersStaff"
+     ]
+    },
+    {
+     "key": "Mitya",
+     "role": "DPS secondaire",
+     "weapons": [
+      "StarsealedEdict",
+      "DawningFrost",
+      "WintersHeavyHeart"
+     ]
+    },
+    {
+     "key": "Odette",
+     "role": "DPS secondaire",
+     "weapons": [
+      "WhitelakeFrostfeather",
+      "ExaiphanesBlade",
+      "Emberwell"
+     ]
+    },
+    {
+     "key": "Valeriy",
+     "role": "Soutien",
+     "weapons": [
+      "FavoniusSword",
+      "FinaleOfTheDeep"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "lohen",
+   "character": "Lohen",
+   "tier": "S",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/lohen",
+   "members": [
+    {
+     "key": "Lohen",
+     "role": "DPS principal",
+     "weapons": []
+    },
+    {
+     "key": "Nicole",
+     "role": "DPS secondaire",
+     "weapons": []
+    },
+    {
+     "key": "Durin",
+     "role": "DPS secondaire",
+     "weapons": []
+    },
+    {
+     "key": "Citlali",
+     "role": "Soutien",
+     "weapons": []
+    }
+   ]
+  },
+  {
+   "id": "freminet",
+   "character": "Freminet",
+   "tier": "B",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/freminet",
+   "members": [
+    {
+     "key": "Freminet",
+     "role": "DPS principal",
+     "weapons": [
+      "SongOfBrokenPines",
+      "SnowTombedStarsilver"
+     ]
+    },
+    {
+     "key": "Xingqiu",
+     "role": "DPS secondaire",
+     "weapons": []
+    },
+    {
+     "key": "Fischl",
+     "role": "DPS secondaire",
+     "weapons": []
+    },
+    {
+     "key": "Mika",
+     "role": "Soutien",
+     "weapons": []
+    }
+   ]
+  },
+  {
+   "id": "mitya",
+   "character": "Mitya",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/mitya",
+   "members": [
+    {
+     "key": "Sandrone",
+     "role": "DPS principal",
+     "weapons": [
+      "ATeaspoonOfTranscendence"
+     ]
+    },
+    {
+     "key": "Mitya",
+     "role": "DPS secondaire",
+     "weapons": [
+      "StarsealedEdict"
+     ]
+    },
+    {
+     "key": "Odette",
+     "role": "Soutien",
+     "weapons": [
+      "WhitelakeFrostfeather",
+      "ExaiphanesBlade"
+     ]
+    },
+    {
+     "key": "Alyosha",
+     "role": "Soutien",
+     "weapons": [
+      "SymphonistOfScents"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "vesna",
+   "character": "Vesna",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/vesna",
+   "members": [
+    {
+     "key": "Vesna",
+     "role": "DPS principal",
+     "weapons": [
+      "BeyondTheChrysalis",
+      "NewBough"
+     ]
+    },
+    {
+     "key": "Odette",
+     "role": "Soutien",
+     "weapons": [
+      "WhitelakeFrostfeather",
+      "SilverLight"
+     ]
+    },
+    {
+     "key": "Vodyanitsa",
+     "role": "Soutien",
+     "weapons": [
+      "HymnOfTheMaelstrom",
+      "ThrillingTalesOfDragonSlayers"
+     ]
+    },
+    {
+     "key": "TravelerCryo",
+     "role": "DPS secondaire",
+     "weapons": [
+      "ExaiphanesBlade"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "vodyanitsa",
+   "character": "Vodyanitsa",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/vodyanitsa",
+   "members": [
+    {
+     "key": "Vesna",
+     "role": "DPS principal",
+     "weapons": [
+      "BeyondTheChrysalis",
+      "NewBough"
+     ]
+    },
+    {
+     "key": "Odette",
+     "role": "Soutien",
+     "weapons": [
+      "WhitelakeFrostfeather",
+      "SilverLight"
+     ]
+    },
+    {
+     "key": "Vodyanitsa",
+     "role": "Soutien",
+     "weapons": [
+      "HymnOfTheMaelstrom",
+      "ThrillingTalesOfDragonSlayers"
+     ]
+    },
+    {
+     "key": "TravelerCryo",
+     "role": "DPS secondaire",
+     "weapons": [
+      "ExaiphanesBlade"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "odette",
+   "character": "Odette",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/odette",
+   "members": [
+    {
+     "key": "Sandrone",
+     "role": "DPS principal",
+     "weapons": [
+      "ATeaspoonOfTranscendence",
+      "LithicBlade"
+     ]
+    },
+    {
+     "key": "YaeMiko",
+     "role": "DPS secondaire",
+     "weapons": [
+      "KagurasVerity",
+      "TheWidsith"
+     ]
+    },
+    {
+     "key": "Odette",
+     "role": "Soutien",
+     "weapons": [
+      "WhitelakeFrostfeather",
+      "Emberwell"
+     ]
+    },
+    {
+     "key": "Alyosha",
+     "role": "Soutien",
+     "weapons": [
+      "SymphonistOfScents",
+      "Frostbreath"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "sandrone",
+   "character": "Sandrone",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/sandrone",
+   "members": [
+    {
+     "key": "Sandrone",
+     "role": "DPS principal",
+     "weapons": [
+      "ATeaspoonOfTranscendence",
+      "MailedFlower",
+      "LithicBlade"
+     ]
+    },
+    {
+     "key": "YaeMiko",
+     "role": "DPS secondaire",
+     "weapons": [
+      "KagurasVerity",
+      "TheWidsith"
+     ]
+    },
+    {
+     "key": "Zhongli",
+     "role": "Soutien",
+     "weapons": [
+      "FavoniusLance"
+     ]
+    },
+    {
+     "key": "Qiqi",
+     "role": "Soutien",
+     "weapons": [
+      "FavoniusSword"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "linnea",
+   "character": "Linnea",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/linnea",
+   "members": [
+    {
+     "key": "Zibai",
+     "role": "DPS principal",
+     "weapons": [
+      "LightbearingMoonshard",
+      "FluteOfEzpitzal"
+     ]
+    },
+    {
+     "key": "Linnea",
+     "role": "Soutien",
+     "weapons": [
+      "GoldenFrostboundOath",
+      "FavoniusWarbow"
+     ]
+    },
+    {
+     "key": "Columbina",
+     "role": "DPS secondaire",
+     "weapons": [
+      "NocturnesCurtainCall",
+      "SacrificialJade"
+     ]
+    },
+    {
+     "key": "Gorou",
+     "role": "Soutien",
+     "weapons": [
+      "FavoniusWarbow"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "varka",
+   "character": "Varka",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/varka",
+   "members": [
+    {
+     "key": "Varka",
+     "role": "DPS principal",
+     "weapons": [
+      "GestOfTheMightyWolf",
+      "SerpentSpine"
+     ]
+    },
+    {
+     "key": "Ifa",
+     "role": "Soutien",
+     "weapons": [
+      "WanderingEvenstar"
+     ]
+    },
+    {
+     "key": "Durin",
+     "role": "Soutien",
+     "weapons": [
+      "AthameArtis",
+      "FavoniusSword"
+     ]
+    },
+    {
+     "key": "Bennett",
+     "role": "Soutien",
+     "weapons": [
+      "MistsplitterReforged",
+      "TheAlleyFlash"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "zibai",
+   "character": "Zibai",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/zibai",
+   "members": [
+    {
+     "key": "Zibai",
+     "role": "DPS principal",
+     "weapons": [
+      "LightbearingMoonshard",
+      "FluteOfEzpitzal"
+     ]
+    },
+    {
+     "key": "Illuga",
+     "role": "Soutien",
+     "weapons": [
+      "DragonsBane"
+     ]
+    },
+    {
+     "key": "Columbina",
+     "role": "DPS secondaire",
+     "weapons": [
+      "NocturnesCurtainCall",
+      "SacrificialJade"
+     ]
+    },
+    {
+     "key": "Gorou",
+     "role": "Soutien",
+     "weapons": [
+      "FavoniusWarbow"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "columbina",
+   "character": "Columbina",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/columbina",
+   "members": [
+    {
+     "key": "Nefer",
+     "role": "DPS principal",
+     "weapons": [
+      "ReliquaryOfTruth",
+      "DawningFrost"
+     ]
+    },
+    {
+     "key": "Lauma",
+     "role": "Soutien",
+     "weapons": [
+      "NightweaversLookingGlass",
+      "EtherlightSpindlelute"
+     ]
+    },
+    {
+     "key": "Yaoyao",
+     "role": "Soutien",
+     "weapons": [
+      "DialoguesOfTheDesertSages"
+     ]
+    },
+    {
+     "key": "Columbina",
+     "role": "DPS secondaire",
+     "weapons": [
+      "NocturnesCurtainCall",
+      "SacrificialJade"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "jahoda",
+   "character": "Jahoda",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/jahoda",
+   "members": [
+    {
+     "key": "Flins",
+     "role": "DPS principal",
+     "weapons": [
+      "BloodsoakedRuins",
+      "Deathmatch"
+     ]
+    },
+    {
+     "key": "Aino",
+     "role": "Soutien",
+     "weapons": [
+      "FlameForgedInsight"
+     ]
+    },
+    {
+     "key": "Jahoda",
+     "role": "Soutien",
+     "weapons": [
+      "ElegyForTheEnd",
+      "FavoniusWarbow"
+     ]
+    },
+    {
+     "key": "Ineffa",
+     "role": "Soutien",
+     "weapons": [
+      "FracturedHalo",
+      "BalladOfTheFjords"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "durin",
+   "character": "Durin",
+   "tier": "S",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/durin",
+   "members": [
+    {
+     "key": "Venti",
+     "role": "DPS principal",
+     "weapons": [
+      "TheDaybreakChronicles",
+      "Rust"
+     ]
+    },
+    {
+     "key": "Faruzan",
+     "role": "Soutien",
+     "weapons": [
+      "ElegyForTheEnd",
+      "FavoniusWarbow"
+     ]
+    },
+    {
+     "key": "Durin",
+     "role": "Soutien",
+     "weapons": [
+      "AthameArtis",
+      "WolfFang"
+     ]
+    },
+    {
+     "key": "Bennett",
+     "role": "Soutien",
+     "weapons": [
+      "AquilaFavonia",
+      "TheAlleyFlash"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aino",
+   "character": "Aino",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/aino",
+   "members": [
+    {
+     "key": "HuTao",
+     "role": "DPS principal",
+     "weapons": [
+      "StaffOfHoma",
+      "BalladOfTheFjords"
+     ]
+    },
+    {
+     "key": "Aino",
+     "role": "Soutien",
+     "weapons": [
+      "FlameForgedInsight"
+     ]
+    },
+    {
+     "key": "Furina",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SplendorOfTranquilWaters",
+      "FavoniusSword"
+     ]
+    },
+    {
+     "key": "Citlali",
+     "role": "Soutien",
+     "weapons": [
+      "StarcallersWatch",
+      "PrototypeAmber"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ineffa",
+   "character": "Ineffa",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/ineffa",
+   "members": [
+    {
+     "key": "Neuvillette",
+     "role": "DPS principal",
+     "weapons": [
+      "TomeOfTheEternalFlow",
+      "SacrificialJade"
+     ]
+    },
+    {
+     "key": "Furina",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SplendorOfTranquilWaters",
+      "FavoniusSword"
+     ]
+    },
+    {
+     "key": "Xilonen",
+     "role": "Soutien",
+     "weapons": [
+      "PeakPatrolSong",
+      "FavoniusSword"
+     ]
+    },
+    {
+     "key": "Ineffa",
+     "role": "Soutien",
+     "weapons": [
+      "FracturedHalo",
+      "BalladOfTheFjords"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "dahlia",
+   "character": "Dahlia",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/dahlia",
+   "members": [
+    {
+     "key": "Skirk",
+     "role": "DPS principal",
+     "weapons": [
+      "Azurelight",
+      "CalamityOfEshu"
+     ]
+    },
+    {
+     "key": "Dahlia",
+     "role": "Soutien",
+     "weapons": [
+      "FavoniusSword"
+     ]
+    },
+    {
+     "key": "Furina",
+     "role": "DPS secondaire",
+     "weapons": [
+      "FreedomSworn",
+      "FavoniusSword"
+     ]
+    },
+    {
+     "key": "Escoffier",
+     "role": "Soutien",
+     "weapons": [
+      "SymphonistOfScents",
+      "FavoniusLance"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ifa",
+   "character": "Ifa",
+   "tier": "S",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/ifa",
+   "members": [
+    {
+     "key": "Ifa",
+     "role": "DPS principal",
+     "weapons": [
+      "SunnyMorningSleepIn",
+      "WanderingEvenstar"
+     ]
+    },
+    {
+     "key": "Ororon",
+     "role": "Soutien",
+     "weapons": [
+      "ElegyForTheEnd",
+      "FavoniusWarbow"
+     ]
+    },
+    {
+     "key": "Xingqiu",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SacrificialSword"
+     ]
+    },
+    {
+     "key": "Sucrose",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SunnyMorningSleepIn",
+      "SacrificialFragments"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "escoffier",
+   "character": "Escoffier",
+   "tier": "S",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/escoffier",
+   "members": [
+    {
+     "key": "KamisatoAyaka",
+     "role": "DPS principal",
+     "weapons": [
+      "MistsplitterReforged",
+      "FinaleOfTheDeep"
+     ]
+    },
+    {
+     "key": "Shenhe",
+     "role": "DPS secondaire",
+     "weapons": [
+      "CalamityQueller",
+      "FavoniusLance"
+     ]
+    },
+    {
+     "key": "Furina",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SplendorOfTranquilWaters",
+      "FavoniusSword"
+     ]
+    },
+    {
+     "key": "Escoffier",
+     "role": "Soutien",
+     "weapons": [
+      "SymphonistOfScents",
+      "FavoniusLance"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "iansan",
+   "character": "Iansan",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/iansan",
+   "members": [
+    {
+     "key": "Varesa",
+     "role": "DPS principal",
+     "weapons": [
+      "VividNotions",
+      "TheWidsith"
+     ]
+    },
+    {
+     "key": "Mavuika",
+     "role": "DPS secondaire",
+     "weapons": [
+      "AThousandBlazingSuns",
+      "SerpentSpine"
+     ]
+    },
+    {
+     "key": "Chevreuse",
+     "role": "Soutien",
+     "weapons": [
+      "FavoniusLance"
+     ]
+    },
+    {
+     "key": "Iansan",
+     "role": "Soutien",
+     "weapons": [
+      "FavoniusLance"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "varesa",
+   "character": "Varesa",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/varesa",
+   "members": [
+    {
+     "key": "Varesa",
+     "role": "DPS principal",
+     "weapons": [
+      "VividNotions",
+      "TheWidsith"
+     ]
+    },
+    {
+     "key": "Mavuika",
+     "role": "DPS secondaire",
+     "weapons": [
+      "AThousandBlazingSuns",
+      "SerpentSpine"
+     ]
+    },
+    {
+     "key": "Chevreuse",
+     "role": "Soutien",
+     "weapons": [
+      "SymphonistOfScents",
+      "FavoniusLance"
+     ]
+    },
+    {
+     "key": "Iansan",
+     "role": "Soutien",
+     "weapons": [
+      "SymphonistOfScents",
+      "FavoniusLance"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "yumemizuki_mizuki",
+   "character": "YumemizukiMizuki",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/yumemizuki_mizuki",
+   "members": [
+    {
+     "key": "YumemizukiMizuki",
+     "role": "DPS principal",
+     "weapons": [
+      "SunnyMorningSleepIn",
+      "FruitOfFulfillment"
+     ]
+    },
+    {
+     "key": "Furina",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SplendorOfTranquilWaters",
+      "FavoniusSword"
+     ]
+    },
+    {
+     "key": "Ororon",
+     "role": "Soutien",
+     "weapons": [
+      "ElegyForTheEnd",
+      "FavoniusWarbow"
+     ]
+    },
+    {
+     "key": "Venti",
+     "role": "DPS secondaire",
+     "weapons": [
+      "ElegyForTheEnd",
+      "FavoniusWarbow"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "citlali",
+   "character": "Citlali",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/citlali",
+   "members": [
+    {
+     "key": "Skirk",
+     "role": "DPS principal",
+     "weapons": [
+      "Azurelight",
+      "CalamityOfEshu"
+     ]
+    },
+    {
+     "key": "Citlali",
+     "role": "Soutien",
+     "weapons": [
+      "StarcallersWatch",
+      "SacrificialFragments"
+     ]
+    },
+    {
+     "key": "Furina",
+     "role": "DPS secondaire",
+     "weapons": [
+      "FreedomSworn",
+      "FavoniusSword"
+     ]
+    },
+    {
+     "key": "Escoffier",
+     "role": "Soutien",
+     "weapons": [
+      "SymphonistOfScents",
+      "FavoniusLance"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "mavuika",
+   "character": "Mavuika",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/mavuika",
+   "members": [
+    {
+     "key": "Mavuika",
+     "role": "DPS principal",
+     "weapons": [
+      "AThousandBlazingSuns",
+      "SerpentSpine"
+     ]
+    },
+    {
+     "key": "Ororon",
+     "role": "Soutien",
+     "weapons": [
+      "ElegyForTheEnd",
+      "FavoniusWarbow"
+     ]
+    },
+    {
+     "key": "Chevreuse",
+     "role": "Soutien",
+     "weapons": [
+      "StaffOfHoma",
+      "FavoniusLance"
+     ]
+    },
+    {
+     "key": "Bennett",
+     "role": "Soutien",
+     "weapons": [
+      "MistsplitterReforged",
+      "TheAlleyFlash"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "lan_yan",
+   "character": "LanYan",
+   "tier": "S",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/lan_yan",
+   "members": [
+    {
+     "key": "LanYan",
+     "role": "DPS principal",
+     "weapons": [
+      "LostPrayerToTheSacredWinds",
+      "TheWidsith"
+     ]
+    },
+    {
+     "key": "Faruzan",
+     "role": "Soutien",
+     "weapons": [
+      "ElegyForTheEnd",
+      "FavoniusWarbow"
+     ]
+    },
+    {
+     "key": "Furina",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SplendorOfTranquilWaters",
+      "FavoniusSword"
+     ]
+    },
+    {
+     "key": "Xianyun",
+     "role": "Soutien",
+     "weapons": [
+      "CranesEchoingCall",
+      "FavoniusCodex"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "chasca",
+   "character": "Chasca",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/chasca",
+   "members": [
+    {
+     "key": "Chasca",
+     "role": "DPS principal",
+     "weapons": [
+      "AstralVulturesCrimsonPlumage",
+      "FlowerWreathedFeathers"
+     ]
+    },
+    {
+     "key": "Furina",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SplendorOfTranquilWaters",
+      "FavoniusSword"
+     ]
+    },
+    {
+     "key": "Yanfei",
+     "role": "Soutien",
+     "weapons": [
+      "PrototypeAmber",
+      "ThrillingTalesOfDragonSlayers"
+     ]
+    },
+    {
+     "key": "Bennett",
+     "role": "Soutien",
+     "weapons": [
+      "MistsplitterReforged",
+      "TheAlleyFlash"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ororon",
+   "character": "Ororon",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/ororon",
+   "members": [
+    {
+     "key": "Chasca",
+     "role": "DPS principal",
+     "weapons": [
+      "AstralVulturesCrimsonPlumage",
+      "FlowerWreathedFeathers"
+     ]
+    },
+    {
+     "key": "Furina",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SplendorOfTranquilWaters",
+      "FavoniusSword"
+     ]
+    },
+    {
+     "key": "Ororon",
+     "role": "Soutien",
+     "weapons": [
+      "FavoniusWarbow"
+     ]
+    },
+    {
+     "key": "Bennett",
+     "role": "Soutien",
+     "weapons": [
+      "MistsplitterReforged",
+      "TheAlleyFlash"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "jean",
+   "character": "Jean",
+   "tier": "S",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/jean",
+   "members": [
+    {
+     "key": "Keqing",
+     "role": "DPS principal",
+     "weapons": [
+      "MistsplitterReforged",
+      "TheBlackSword"
+     ]
+    },
+    {
+     "key": "Chongyun",
+     "role": "DPS secondaire",
+     "weapons": [
+      "WolfsGravestone",
+      "SerpentSpine"
+     ]
+    },
+    {
+     "key": "Diona",
+     "role": "Soutien",
+     "weapons": [
+      "SacrificialBow",
+      "FavoniusWarbow"
+     ]
+    },
+    {
+     "key": "Jean",
+     "role": "Soutien",
+     "weapons": [
+      "SkywardBlade",
+      "FavoniusSword"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "xilonen",
+   "character": "Xilonen",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/xilonen",
+   "members": [
+    {
+     "key": "Xilonen",
+     "role": "DPS principal",
+     "weapons": [
+      "PeakPatrolSong",
+      "FluteOfEzpitzal"
+     ]
+    },
+    {
+     "key": "Gorou",
+     "role": "Soutien",
+     "weapons": [
+      "FavoniusWarbow"
+     ]
+    },
+    {
+     "key": "Furina",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SplendorOfTranquilWaters",
+      "FavoniusSword"
+     ]
+    },
+    {
+     "key": "Xianyun",
+     "role": "Soutien",
+     "weapons": [
+      "CranesEchoingCall",
+      "OathswornEye"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "kachina",
+   "character": "Kachina",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/kachina",
+   "members": [
+    {
+     "key": "Mualani",
+     "role": "DPS principal",
+     "weapons": [
+      "SurfsUp",
+      "SacrificialJade"
+     ]
+    },
+    {
+     "key": "Kachina",
+     "role": "Soutien",
+     "weapons": [
+      "FavoniusLance"
+     ]
+    },
+    {
+     "key": "Xiangling",
+     "role": "DPS secondaire",
+     "weapons": [
+      "EngulfingLightning",
+      "FavoniusLance"
+     ]
+    },
+    {
+     "key": "Zhongli",
+     "role": "Soutien",
+     "weapons": [
+      "FavoniusLance"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "kinich",
+   "character": "Kinich",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/kinich",
+   "members": [
+    {
+     "key": "Kinich",
+     "role": "DPS principal",
+     "weapons": [
+      "FangOfTheMountainKing",
+      "SerpentSpine"
+     ]
+    },
+    {
+     "key": "Emilie",
+     "role": "DPS secondaire",
+     "weapons": [
+      "LumidouceElegy",
+      "Deathmatch"
+     ]
+    },
+    {
+     "key": "Xiangling",
+     "role": "Soutien",
+     "weapons": [
+      "EngulfingLightning",
+      "FavoniusLance"
+     ]
+    },
+    {
+     "key": "Bennett",
+     "role": "Soutien",
+     "weapons": [
+      "MistsplitterReforged",
+      "TheAlleyFlash"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "mualani",
+   "character": "Mualani",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/mualani",
+   "members": [
+    {
+     "key": "Mualani",
+     "role": "DPS principal",
+     "weapons": [
+      "SurfsUp",
+      "SacrificialJade"
+     ]
+    },
+    {
+     "key": "Xilonen",
+     "role": "Soutien",
+     "weapons": [
+      "PeakPatrolSong",
+      "FavoniusSword"
+     ]
+    },
+    {
+     "key": "Xiangling",
+     "role": "DPS secondaire",
+     "weapons": [
+      "EngulfingLightning",
+      "FavoniusLance"
+     ]
+    },
+    {
+     "key": "Zhongli",
+     "role": "Soutien",
+     "weapons": [
+      "FavoniusLance"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "sigewinne",
+   "character": "Sigewinne",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/sigewinne",
+   "members": [
+    {
+     "key": "Yelan",
+     "role": "DPS principal",
+     "weapons": [
+      "AquaSimulacra"
+     ]
+    },
+    {
+     "key": "KaedeharaKazuha",
+     "role": "Soutien",
+     "weapons": [
+      "XiphosMoonlight",
+      "FavoniusSword"
+     ]
+    },
+    {
+     "key": "Furina",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SplendorOfTranquilWaters",
+      "WolfFang"
+     ]
+    },
+    {
+     "key": "Sigewinne",
+     "role": "Soutien",
+     "weapons": [
+      "SilvershowerHeartstrings",
+      "RecurveBow"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "arlecchino",
+   "character": "Arlecchino",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/arlecchino",
+   "members": [
+    {
+     "key": "Arlecchino",
+     "role": "DPS principal",
+     "weapons": [
+      "CrimsonMoonsSemblance",
+      "Deathmatch"
+     ]
+    },
+    {
+     "key": "Citlali",
+     "role": "Soutien",
+     "weapons": [
+      "StarcallersWatch",
+      "ThrillingTalesOfDragonSlayers"
+     ]
+    },
+    {
+     "key": "Xilonen",
+     "role": "Soutien",
+     "weapons": [
+      "PeakPatrolSong",
+      "FavoniusSword"
+     ]
+    },
+    {
+     "key": "Bennett",
+     "role": "Soutien",
+     "weapons": [
+      "MistsplitterReforged",
+      "TheAlleyFlash"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "gaming",
+   "character": "Gaming",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/gaming",
+   "members": [
+    {
+     "key": "Gaming",
+     "role": "DPS principal",
+     "weapons": [
+      "RedhornStonethresher",
+      "SerpentSpine"
+     ]
+    },
+    {
+     "key": "Ganyu",
+     "role": "DPS secondaire",
+     "weapons": [
+      "HuntersPath",
+      "Hamayumi"
+     ]
+    },
+    {
+     "key": "Layla",
+     "role": "Soutien",
+     "weapons": [
+      "PrimordialJadeCutter",
+      "HarbingerOfDawn"
+     ]
+    },
+    {
+     "key": "Xianyun",
+     "role": "Soutien",
+     "weapons": [
+      "CranesEchoingCall",
+      "OathswornEye"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "charlotte",
+   "character": "Charlotte",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/charlotte",
+   "members": [
+    {
+     "key": "Neuvillette",
+     "role": "DPS principal",
+     "weapons": [
+      "TomeOfTheEternalFlow",
+      "SacrificialJade"
+     ]
+    },
+    {
+     "key": "Furina",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SplendorOfTranquilWaters",
+      "FleuveCendreFerryman"
+     ]
+    },
+    {
+     "key": "KaedeharaKazuha",
+     "role": "Soutien",
+     "weapons": [
+      "FreedomSworn",
+      "IronSting"
+     ]
+    },
+    {
+     "key": "Charlotte",
+     "role": "Soutien",
+     "weapons": [
+      "FavoniusCodex"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "lynette",
+   "character": "Lynette",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/lynette",
+   "members": [
+    {
+     "key": "Tartaglia",
+     "role": "DPS principal",
+     "weapons": [
+      "PolarStar",
+      "Rust"
+     ]
+    },
+    {
+     "key": "Xiangling",
+     "role": "DPS secondaire",
+     "weapons": [
+      "EngulfingLightning",
+      "TheCatch"
+     ]
+    },
+    {
+     "key": "Lynette",
+     "role": "Soutien",
+     "weapons": [
+      "FavoniusSword"
+     ]
+    },
+    {
+     "key": "Bennett",
+     "role": "Soutien",
+     "weapons": [
+      "SkywardBlade",
+      "FavoniusSword"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "kaveh",
+   "character": "Kaveh",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/kaveh",
+   "members": [
+    {
+     "key": "Kaveh",
+     "role": "DPS principal",
+     "weapons": [
+      "FavoniusGreatsword"
+     ]
+    },
+    {
+     "key": "Xingqiu",
+     "role": "DPS secondaire",
+     "weapons": [
+      "PrimordialJadeCutter",
+      "SacrificialSword"
+     ]
+    },
+    {
+     "key": "Nilou",
+     "role": "DPS secondaire",
+     "weapons": [
+      "KeyOfKhajNisut",
+      "TheDockhandsAssistant"
+     ]
+    },
+    {
+     "key": "Nahida",
+     "role": "DPS secondaire",
+     "weapons": [
+      "AThousandFloatingDreams",
+      "SolarPearl"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "alhaitham",
+   "character": "Alhaitham",
+   "tier": "S",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/alhaitham",
+   "members": [
+    {
+     "key": "Alhaitham",
+     "role": "DPS principal",
+     "weapons": [
+      "LightOfFoliarIncision",
+      "WolfFang"
+     ]
+    },
+    {
+     "key": "Lauma",
+     "role": "Soutien",
+     "weapons": [
+      "NightweaversLookingGlass",
+      "WanderingEvenstar"
+     ]
+    },
+    {
+     "key": "Xingqiu",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SacrificialSword"
+     ]
+    },
+    {
+     "key": "KukiShinobu",
+     "role": "Soutien",
+     "weapons": [
+      "KeyOfKhajNisut",
+      "XiphosMoonlight"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "wanderer",
+   "character": "Wanderer",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/wanderer",
+   "members": [
+    {
+     "key": "Wanderer",
+     "role": "DPS principal",
+     "weapons": [
+      "TulaytullahsRemembrance",
+      "TheWidsith"
+     ]
+    },
+    {
+     "key": "Xiangling",
+     "role": "DPS secondaire",
+     "weapons": [
+      "EngulfingLightning",
+      "TheCatch"
+     ]
+    },
+    {
+     "key": "Xingqiu",
+     "role": "DPS secondaire",
+     "weapons": [
+      "FavoniusSword"
+     ]
+    },
+    {
+     "key": "Bennett",
+     "role": "Soutien",
+     "weapons": [
+      "SapwoodBlade"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "nilou",
+   "character": "Nilou",
+   "tier": "A",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/nilou",
+   "members": [
+    {
+     "key": "Barbara",
+     "role": "DPS principal",
+     "weapons": [
+      "SacrificialFragments"
+     ]
+    },
+    {
+     "key": "Nilou",
+     "role": "DPS secondaire",
+     "weapons": [
+      "KeyOfKhajNisut",
+      "TheDockhandsAssistant"
+     ]
+    },
+    {
+     "key": "Collei",
+     "role": "DPS secondaire",
+     "weapons": [
+      "ElegyForTheEnd",
+      "SacrificialBow"
+     ]
+    },
+    {
+     "key": "TravelerDendro",
+     "role": "Soutien",
+     "weapons": [
+      "SkywardBlade",
+      "FavoniusSword"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "tighnari",
+   "character": "Tighnari",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/tighnari",
+   "members": [
+    {
+     "key": "Tighnari",
+     "role": "DPS principal",
+     "weapons": [
+      "HuntersPath",
+      "TheStringless"
+     ]
+    },
+    {
+     "key": "YaeMiko",
+     "role": "DPS secondaire",
+     "weapons": [
+      "KagurasVerity",
+      "TheWidsith"
+     ]
+    },
+    {
+     "key": "Nahida",
+     "role": "DPS secondaire",
+     "weapons": [
+      "AThousandFloatingDreams",
+      "SolarPearl"
+     ]
+    },
+    {
+     "key": "Zhongli",
+     "role": "Soutien",
+     "weapons": [
+      "StaffOfHoma",
+      "BlackTassel"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "shikanoin_heizou",
+   "character": "ShikanoinHeizou",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/shikanoin_heizou",
+   "members": [
+    {
+     "key": "ShikanoinHeizou",
+     "role": "DPS principal",
+     "weapons": [
+      "KagurasVerity",
+      "SolarPearl"
+     ]
+    },
+    {
+     "key": "Faruzan",
+     "role": "Soutien",
+     "weapons": [
+      "FavoniusWarbow"
+     ]
+    },
+    {
+     "key": "Yelan",
+     "role": "DPS secondaire",
+     "weapons": [
+      "AquaSimulacra",
+      "FavoniusWarbow"
+     ]
+    },
+    {
+     "key": "Bennett",
+     "role": "Soutien",
+     "weapons": [
+      "SapwoodBlade"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "kujou_sara",
+   "character": "KujouSara",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/kujou_sara",
+   "members": [
+    {
+     "key": "RaidenShogun",
+     "role": "DPS principal",
+     "weapons": [
+      "EngulfingLightning",
+      "TheCatch"
+     ]
+    },
+    {
+     "key": "Beidou",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SkywardPride",
+      "SerpentSpine"
+     ]
+    },
+    {
+     "key": "KujouSara",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SkywardHarp",
+      "TheStringless"
+     ]
+    },
+    {
+     "key": "Bennett",
+     "role": "Soutien",
+     "weapons": [
+      "SkywardBlade",
+      "FavoniusSword"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aloy",
+   "character": "Aloy",
+   "tier": "A",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/aloy",
+   "members": [
+    {
+     "key": "Aloy",
+     "role": "DPS principal",
+     "weapons": [
+      "AmosBow",
+      "Rust"
+     ]
+    },
+    {
+     "key": "Xiangling",
+     "role": "DPS secondaire",
+     "weapons": [
+      "EngulfingLightning",
+      "TheCatch"
+     ]
+    },
+    {
+     "key": "KaedeharaKazuha",
+     "role": "Soutien",
+     "weapons": [
+      "FreedomSworn",
+      "IronSting"
+     ]
+    },
+    {
+     "key": "Diona",
+     "role": "Soutien",
+     "weapons": [
+      "SacrificialBow",
+      "FavoniusWarbow"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "amber",
+   "character": "Amber",
+   "tier": "A",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/amber",
+   "members": [
+    {
+     "key": "Amber",
+     "role": "DPS principal",
+     "weapons": [
+      "ThunderingPulse",
+      "Rust"
+     ]
+    },
+    {
+     "key": "Xingqiu",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SacrificialSword"
+     ]
+    },
+    {
+     "key": "KaedeharaKazuha",
+     "role": "Soutien",
+     "weapons": [
+      "FreedomSworn",
+      "IronSting"
+     ]
+    },
+    {
+     "key": "Bennett",
+     "role": "Soutien",
+     "weapons": [
+      "SkywardBlade",
+      "FavoniusSword"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "keqing",
+   "character": "Keqing",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/keqing",
+   "members": [
+    {
+     "key": "Keqing",
+     "role": "DPS principal",
+     "weapons": [
+      "PrimordialJadeCutter",
+      "IronSting"
+     ]
+    },
+    {
+     "key": "Fischl",
+     "role": "DPS secondaire",
+     "weapons": [
+      "AquaSimulacra",
+      "TheStringless"
+     ]
+    },
+    {
+     "key": "Collei",
+     "role": "DPS secondaire",
+     "weapons": [
+      "ElegyForTheEnd",
+      "FavoniusWarbow"
+     ]
+    },
+    {
+     "key": "Zhongli",
+     "role": "Soutien",
+     "weapons": [
+      "StaffOfHoma",
+      "BlackTassel"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "klee",
+   "character": "Klee",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/klee",
+   "members": [
+    {
+     "key": "Klee",
+     "role": "DPS principal",
+     "weapons": [
+      "CashflowSupervision",
+      "TheWidsith"
+     ]
+    },
+    {
+     "key": "Xilonen",
+     "role": "Soutien",
+     "weapons": [
+      "PeakPatrolSong",
+      "FavoniusSword"
+     ]
+    },
+    {
+     "key": "Furina",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SplendorOfTranquilWaters",
+      "FavoniusSword"
+     ]
+    },
+    {
+     "key": "Bennett",
+     "role": "Soutien",
+     "weapons": [
+      "MistsplitterReforged",
+      "TheAlleyFlash"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "bennett",
+   "character": "Bennett",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/bennett",
+   "members": [
+    {
+     "key": "Tartaglia",
+     "role": "DPS principal",
+     "weapons": [
+      "PolarStar",
+      "Rust"
+     ]
+    },
+    {
+     "key": "Xiangling",
+     "role": "DPS secondaire",
+     "weapons": [
+      "EngulfingLightning",
+      "TheCatch"
+     ]
+    },
+    {
+     "key": "KaedeharaKazuha",
+     "role": "Soutien",
+     "weapons": [
+      "FreedomSworn",
+      "IronSting"
+     ]
+    },
+    {
+     "key": "Bennett",
+     "role": "Soutien",
+     "weapons": [
+      "SkywardBlade",
+      "FavoniusSword"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "chongyun",
+   "character": "Chongyun",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/chongyun",
+   "members": [
+    {
+     "key": "KamisatoAyaka",
+     "role": "DPS principal",
+     "weapons": [
+      "MistsplitterReforged",
+      "AmenomaKageuchi"
+     ]
+    },
+    {
+     "key": "Chongyun",
+     "role": "DPS secondaire",
+     "weapons": [
+      "WolfsGravestone",
+      "SerpentSpine"
+     ]
+    },
+    {
+     "key": "Xingqiu",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SacrificialSword"
+     ]
+    },
+    {
+     "key": "Jean",
+     "role": "Soutien",
+     "weapons": [
+      "SkywardBlade",
+      "FavoniusSword"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "kaeya",
+   "character": "Kaeya",
+   "tier": "B",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/kaeya",
+   "members": [
+    {
+     "key": "HuTao",
+     "role": "DPS principal",
+     "weapons": [
+      "StaffOfHoma",
+      "Deathmatch"
+     ]
+    },
+    {
+     "key": "Kaeya",
+     "role": "DPS secondaire",
+     "weapons": [
+      "PrimordialJadeCutter",
+      "TheBlackSword"
+     ]
+    },
+    {
+     "key": "Xingqiu",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SacrificialSword"
+     ]
+    },
+    {
+     "key": "Zhongli",
+     "role": "Soutien",
+     "weapons": [
+      "StaffOfHoma",
+      "BlackTassel"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "barbara",
+   "character": "Barbara",
+   "tier": "S",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/barbara",
+   "members": [
+    {
+     "key": "HuTao",
+     "role": "DPS principal",
+     "weapons": [
+      "StaffOfHoma",
+      "Deathmatch"
+     ]
+    },
+    {
+     "key": "Xiangling",
+     "role": "DPS secondaire",
+     "weapons": [
+      "EngulfingLightning",
+      "TheCatch"
+     ]
+    },
+    {
+     "key": "Venti",
+     "role": "DPS secondaire",
+     "weapons": [
+      "ElegyForTheEnd",
+      "Rust"
+     ]
+    },
+    {
+     "key": "Barbara",
+     "role": "Soutien",
+     "weapons": [
+      "EverlastingMoonglow",
+      "PrototypeAmber"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "traveler_cryo",
+   "character": "TravelerCryo",
+   "tier": "S",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/traveler_cryo",
+   "members": [
+    {
+     "key": "YumemizukiMizuki",
+     "role": "DPS principal",
+     "weapons": [
+      "SunnyMorningSleepIn",
+      "WanderingEvenstar"
+     ]
+    },
+    {
+     "key": "TravelerCryo",
+     "role": "DPS secondaire",
+     "weapons": [
+      "ExaiphanesBlade"
+     ]
+    },
+    {
+     "key": "Odette",
+     "role": "Soutien",
+     "weapons": [
+      "WhitelakeFrostfeather",
+      "Emberwell"
+     ]
+    },
+    {
+     "key": "Sucrose",
+     "role": "DPS secondaire",
+     "weapons": [
+      "AThousandFloatingDreams",
+      "SacrificialFragments"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "illuga",
+   "character": "Illuga",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/illuga",
+   "members": [
+    {
+     "key": "Zibai",
+     "role": "DPS principal",
+     "weapons": [
+      "LightbearingMoonshard",
+      "FluteOfEzpitzal"
+     ]
+    },
+    {
+     "key": "Illuga",
+     "role": "Soutien",
+     "weapons": [
+      "DragonsBane"
+     ]
+    },
+    {
+     "key": "Columbina",
+     "role": "DPS secondaire",
+     "weapons": [
+      "NocturnesCurtainCall",
+      "SacrificialJade"
+     ]
+    },
+    {
+     "key": "Gorou",
+     "role": "Soutien",
+     "weapons": [
+      "FavoniusWarbow"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "prune",
+   "character": "Prune",
+   "tier": null,
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/prune",
+   "members": [
+    {
+     "key": "Prune",
+     "role": "Buffer / DPS secondaire",
+     "weapons": [
+      "SkywardAtlas"
+     ]
+    },
+    {
+     "key": "Varka",
+     "role": "DPS principal",
+     "weapons": []
+    },
+    {
+     "key": "Venti",
+     "role": "DPS secondaire / Soutien",
+     "weapons": []
+    },
+    {
+     "key": "Klee",
+     "role": "DPS secondaire",
+     "weapons": []
+    }
+   ]
+  },
+  {
+   "id": "lauma",
+   "character": "Lauma",
+   "tier": "S",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/lauma",
+   "members": [
+    {
+     "key": "Alhaitham",
+     "role": "DPS principal",
+     "weapons": [
+      "LightOfFoliarIncision",
+      "WolfFang"
+     ]
+    },
+    {
+     "key": "Lauma",
+     "role": "Soutien",
+     "weapons": [
+      "NightweaversLookingGlass",
+      "WanderingEvenstar"
+     ]
+    },
+    {
+     "key": "Xingqiu",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SacrificialSword"
+     ]
+    },
+    {
+     "key": "KukiShinobu",
+     "role": "Soutien",
+     "weapons": [
+      "KeyOfKhajNisut",
+      "XiphosMoonlight"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "skirk",
+   "character": "Skirk",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/skirk",
+   "members": [
+    {
+     "key": "Skirk",
+     "role": "DPS principal",
+     "weapons": [
+      "Azurelight",
+      "TheBlackSword"
+     ]
+    },
+    {
+     "key": "Shenhe",
+     "role": "DPS secondaire",
+     "weapons": [
+      "CalamityQueller",
+      "FavoniusLance"
+     ]
+    },
+    {
+     "key": "Furina",
+     "role": "DPS secondaire",
+     "weapons": [
+      "FreedomSworn",
+      "FavoniusSword"
+     ]
+    },
+    {
+     "key": "Escoffier",
+     "role": "Soutien",
+     "weapons": [
+      "SymphonistOfScents",
+      "FavoniusLance"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "sethos",
+   "character": "Sethos",
+   "tier": "S",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/sethos",
+   "members": [
+    {
+     "key": "Sethos",
+     "role": "DPS principal",
+     "weapons": [
+      "AmosBow",
+      "ScionOfTheBlazingSun"
+     ]
+    },
+    {
+     "key": "KaedeharaKazuha",
+     "role": "Soutien",
+     "weapons": [
+      "FreedomSworn",
+      "IronSting"
+     ]
+    },
+    {
+     "key": "Fischl",
+     "role": "DPS secondaire",
+     "weapons": [
+      "AquaSimulacra",
+      "TheStringless"
+     ]
+    },
+    {
+     "key": "Kirara",
+     "role": "Soutien",
+     "weapons": [
+      "KeyOfKhajNisut",
+      "SapwoodBlade"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "chiori",
+   "character": "Chiori",
+   "tier": "S",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/chiori",
+   "members": [
+    {
+     "key": "Yoimiya",
+     "role": "DPS principal",
+     "weapons": [
+      "ThunderingPulse",
+      "Rust"
+     ]
+    },
+    {
+     "key": "Yelan",
+     "role": "DPS secondaire",
+     "weapons": [
+      "AquaSimulacra",
+      "FavoniusWarbow"
+     ]
+    },
+    {
+     "key": "Chiori",
+     "role": "DPS secondaire",
+     "weapons": [
+      "UrakuMisugiri",
+      "WolfFang"
+     ]
+    },
+    {
+     "key": "Zhongli",
+     "role": "Soutien",
+     "weapons": [
+      "StaffOfHoma",
+      "BlackTassel"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "xianyun",
+   "character": "Xianyun",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/xianyun",
+   "members": [
+    {
+     "key": "Xiao",
+     "role": "DPS principal",
+     "weapons": [
+      "PrimordialJadeWingedSpear",
+      "Deathmatch"
+     ]
+    },
+    {
+     "key": "Faruzan",
+     "role": "Soutien",
+     "weapons": [
+      "FavoniusWarbow"
+     ]
+    },
+    {
+     "key": "Furina",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SplendorOfTranquilWaters",
+      "FleuveCendreFerryman"
+     ]
+    },
+    {
+     "key": "Xianyun",
+     "role": "Soutien",
+     "weapons": [
+      "CranesEchoingCall",
+      "OathswornEye"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "furina",
+   "character": "Furina",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/furina",
+   "members": [
+    {
+     "key": "Clorinde",
+     "role": "DPS principal",
+     "weapons": [
+      "Absolution",
+      "TheBlackSword"
+     ]
+    },
+    {
+     "key": "Furina",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SplendorOfTranquilWaters",
+      "FleuveCendreFerryman"
+     ]
+    },
+    {
+     "key": "Nahida",
+     "role": "DPS secondaire",
+     "weapons": [
+      "AThousandFloatingDreams",
+      "WanderingEvenstar"
+     ]
+    },
+    {
+     "key": "Baizhu",
+     "role": "Soutien",
+     "weapons": [
+      "JadefallsSplendor",
+      "PrototypeAmber"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "wriothesley",
+   "character": "Wriothesley",
+   "tier": "S",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/wriothesley",
+   "members": [
+    {
+     "key": "Wriothesley",
+     "role": "DPS principal",
+     "weapons": [
+      "CashflowSupervision",
+      "TheWidsith"
+     ]
+    },
+    {
+     "key": "Furina",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SplendorOfTranquilWaters",
+      "FavoniusSword"
+     ]
+    },
+    {
+     "key": "Xilonen",
+     "role": "Soutien",
+     "weapons": [
+      "PeakPatrolSong",
+      "FavoniusSword"
+     ]
+    },
+    {
+     "key": "Charlotte",
+     "role": "Soutien",
+     "weapons": [
+      "FavoniusCodex",
+      "ThrillingTalesOfDragonSlayers"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "baizhu",
+   "character": "Baizhu",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/baizhu",
+   "members": [
+    {
+     "key": "KamisatoAyato",
+     "role": "DPS principal",
+     "weapons": [
+      "LightOfFoliarIncision",
+      "TheBlackSword"
+     ]
+    },
+    {
+     "key": "Nilou",
+     "role": "DPS secondaire",
+     "weapons": [
+      "KeyOfKhajNisut",
+      "TheDockhandsAssistant"
+     ]
+    },
+    {
+     "key": "Nahida",
+     "role": "DPS secondaire",
+     "weapons": [
+      "AThousandFloatingDreams",
+      "WanderingEvenstar"
+     ]
+    },
+    {
+     "key": "Baizhu",
+     "role": "Soutien",
+     "weapons": [
+      "JadefallsSplendor",
+      "PrototypeAmber"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "mika",
+   "character": "Mika",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/mika",
+   "members": [
+    {
+     "key": "Eula",
+     "role": "DPS principal",
+     "weapons": [
+      "SongOfBrokenPines",
+      "SerpentSpine"
+     ]
+    },
+    {
+     "key": "YaeMiko",
+     "role": "DPS secondaire",
+     "weapons": [
+      "KagurasVerity",
+      "TheWidsith"
+     ]
+    },
+    {
+     "key": "Nahida",
+     "role": "DPS secondaire",
+     "weapons": [
+      "AThousandFloatingDreams",
+      "SolarPearl"
+     ]
+    },
+    {
+     "key": "Mika",
+     "role": "Soutien",
+     "weapons": [
+      "FavoniusLance"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "faruzan",
+   "character": "Faruzan",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/faruzan",
+   "members": [
+    {
+     "key": "Wanderer",
+     "role": "DPS principal",
+     "weapons": [
+      "TulaytullahsRemembrance",
+      "TheWidsith"
+     ]
+    },
+    {
+     "key": "Faruzan",
+     "role": "Soutien",
+     "weapons": [
+      "FavoniusWarbow"
+     ]
+    },
+    {
+     "key": "Xingqiu",
+     "role": "DPS secondaire",
+     "weapons": [
+      "FavoniusSword"
+     ]
+    },
+    {
+     "key": "Bennett",
+     "role": "Soutien",
+     "weapons": [
+      "SapwoodBlade"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "layla",
+   "character": "Layla",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/layla",
+   "members": [
+    {
+     "key": "KamisatoAyaka",
+     "role": "DPS principal",
+     "weapons": [
+      "MistsplitterReforged",
+      "AmenomaKageuchi"
+     ]
+    },
+    {
+     "key": "Shenhe",
+     "role": "DPS secondaire",
+     "weapons": [
+      "CalamityQueller",
+      "WavebreakersFin"
+     ]
+    },
+    {
+     "key": "Xingqiu",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SacrificialSword"
+     ]
+    },
+    {
+     "key": "Layla",
+     "role": "Soutien",
+     "weapons": [
+      "PrimordialJadeCutter",
+      "HarbingerOfDawn"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "dori",
+   "character": "Dori",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/dori",
+   "members": [
+    {
+     "key": "RaidenShogun",
+     "role": "DPS principal",
+     "weapons": [
+      "EngulfingLightning",
+      "TheCatch"
+     ]
+    },
+    {
+     "key": "YaeMiko",
+     "role": "DPS secondaire",
+     "weapons": [
+      "KagurasVerity",
+      "TheWidsith"
+     ]
+    },
+    {
+     "key": "KujouSara",
+     "role": "Soutien",
+     "weapons": [
+      "SkywardHarp",
+      "TheStringless"
+     ]
+    },
+    {
+     "key": "Dori",
+     "role": "Soutien",
+     "weapons": [
+      "FavoniusGreatsword"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "kuki_shinobu",
+   "character": "KukiShinobu",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/kuki_shinobu",
+   "members": [
+    {
+     "key": "Cyno",
+     "role": "DPS principal",
+     "weapons": [
+      "StaffOfTheScarletSands",
+      "Deathmatch"
+     ]
+    },
+    {
+     "key": "Nahida",
+     "role": "DPS secondaire",
+     "weapons": [
+      "AThousandFloatingDreams",
+      "SolarPearl"
+     ]
+    },
+    {
+     "key": "Yelan",
+     "role": "DPS secondaire",
+     "weapons": [
+      "AquaSimulacra",
+      "FavoniusWarbow"
+     ]
+    },
+    {
+     "key": "KukiShinobu",
+     "role": "Soutien",
+     "weapons": [
+      "FreedomSworn",
+      "IronSting"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "shenhe",
+   "character": "Shenhe",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/shenhe",
+   "members": [
+    {
+     "key": "KamisatoAyaka",
+     "role": "DPS principal",
+     "weapons": [
+      "MistsplitterReforged",
+      "AmenomaKageuchi"
+     ]
+    },
+    {
+     "key": "Shenhe",
+     "role": "DPS secondaire",
+     "weapons": [
+      "CalamityQueller",
+      "WavebreakersFin"
+     ]
+    },
+    {
+     "key": "KaedeharaKazuha",
+     "role": "Soutien",
+     "weapons": [
+      "FreedomSworn",
+      "IronSting"
+     ]
+    },
+    {
+     "key": "SangonomiyaKokomi",
+     "role": "Soutien",
+     "weapons": [
+      "EverlastingMoonglow",
+      "ThrillingTalesOfDragonSlayers"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "thoma",
+   "character": "Thoma",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/thoma",
+   "members": [
+    {
+     "key": "KamisatoAyato",
+     "role": "DPS principal",
+     "weapons": [
+      "HaranGeppakuFutsu",
+      "TheBlackSword"
+     ]
+    },
+    {
+     "key": "Yelan",
+     "role": "DPS secondaire",
+     "weapons": [
+      "AquaSimulacra",
+      "FavoniusWarbow"
+     ]
+    },
+    {
+     "key": "Nahida",
+     "role": "DPS secondaire",
+     "weapons": [
+      "AThousandFloatingDreams",
+      "SolarPearl"
+     ]
+    },
+    {
+     "key": "Thoma",
+     "role": "Soutien",
+     "weapons": [
+      "RightfulReward"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "yoimiya",
+   "character": "Yoimiya",
+   "tier": "S",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/yoimiya",
+   "members": [
+    {
+     "key": "Yoimiya",
+     "role": "DPS principal",
+     "weapons": [
+      "ThunderingPulse",
+      "Rust"
+     ]
+    },
+    {
+     "key": "Xingqiu",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SacrificialSword"
+     ]
+    },
+    {
+     "key": "YunJin",
+     "role": "Soutien",
+     "weapons": [
+      "Deathmatch"
+     ]
+    },
+    {
+     "key": "Zhongli",
+     "role": "Soutien",
+     "weapons": [
+      "StaffOfHoma",
+      "BlackTassel"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "diluc",
+   "character": "Diluc",
+   "tier": "S",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/diluc",
+   "members": [
+    {
+     "key": "Diluc",
+     "role": "DPS principal",
+     "weapons": [
+      "WolfsGravestone",
+      "SerpentSpine"
+     ]
+    },
+    {
+     "key": "Xingqiu",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SacrificialSword"
+     ]
+    },
+    {
+     "key": "KaedeharaKazuha",
+     "role": "Soutien",
+     "weapons": [
+      "FreedomSworn",
+      "IronSting"
+     ]
+    },
+    {
+     "key": "Zhongli",
+     "role": "Soutien",
+     "weapons": [
+      "StaffOfHoma",
+      "BlackTassel"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "xiao",
+   "character": "Xiao",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/xiao",
+   "members": [
+    {
+     "key": "Xiao",
+     "role": "DPS principal",
+     "weapons": [
+      "PrimordialJadeWingedSpear",
+      "Deathmatch"
+     ]
+    },
+    {
+     "key": "Faruzan",
+     "role": "Soutien",
+     "weapons": [
+      "FavoniusWarbow"
+     ]
+    },
+    {
+     "key": "Bennett",
+     "role": "Soutien",
+     "weapons": [
+      "SkywardBlade",
+      "FavoniusSword"
+     ]
+    },
+    {
+     "key": "Zhongli",
+     "role": "Soutien",
+     "weapons": [
+      "StaffOfHoma",
+      "BlackTassel"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "fischl",
+   "character": "Fischl",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/fischl",
+   "members": [
+    {
+     "key": "Clorinde",
+     "role": "DPS principal",
+     "weapons": [
+      "Absolution",
+      "TheBlackSword"
+     ]
+    },
+    {
+     "key": "Fischl",
+     "role": "DPS secondaire",
+     "weapons": [
+      "AquaSimulacra",
+      "AlleyHunter"
+     ]
+    },
+    {
+     "key": "Mavuika",
+     "role": "DPS secondaire",
+     "weapons": [
+      "AThousandBlazingSuns",
+      "SerpentSpine"
+     ]
+    },
+    {
+     "key": "Chevreuse",
+     "role": "Soutien",
+     "weapons": [
+      "SymphonistOfScents",
+      "FavoniusLance"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hu_tao",
+   "character": "HuTao",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/hu_tao",
+   "members": [
+    {
+     "key": "HuTao",
+     "role": "DPS principal",
+     "weapons": [
+      "StaffOfHoma",
+      "Deathmatch"
+     ]
+    },
+    {
+     "key": "Xingqiu",
+     "role": "DPS secondaire",
+     "weapons": [
+      "PrimordialJadeCutter",
+      "SacrificialSword"
+     ]
+    },
+    {
+     "key": "KaedeharaKazuha",
+     "role": "Soutien",
+     "weapons": [
+      "FreedomSworn",
+      "IronSting"
+     ]
+    },
+    {
+     "key": "Zhongli",
+     "role": "Soutien",
+     "weapons": [
+      "StaffOfHoma",
+      "BlackTassel"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "eula",
+   "character": "Eula",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/eula",
+   "members": [
+    {
+     "key": "Eula",
+     "role": "DPS principal",
+     "weapons": [
+      "SongOfBrokenPines",
+      "SerpentSpine"
+     ]
+    },
+    {
+     "key": "Mika",
+     "role": "Soutien",
+     "weapons": [
+      "FavoniusLance"
+     ]
+    },
+    {
+     "key": "Rosaria",
+     "role": "DPS secondaire",
+     "weapons": [
+      "FavoniusLance"
+     ]
+    },
+    {
+     "key": "Bennett",
+     "role": "Soutien",
+     "weapons": [
+      "SkywardBlade",
+      "FavoniusSword"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "zhongli",
+   "character": "Zhongli",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/zhongli",
+   "members": [
+    {
+     "key": "Keqing",
+     "role": "DPS principal",
+     "weapons": [
+      "MistsplitterReforged",
+      "IronSting"
+     ]
+    },
+    {
+     "key": "Fischl",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SkywardHarp",
+      "TheStringless"
+     ]
+    },
+    {
+     "key": "TravelerDendro",
+     "role": "DPS secondaire",
+     "weapons": [
+      "FavoniusSword"
+     ]
+    },
+    {
+     "key": "Zhongli",
+     "role": "Soutien",
+     "weapons": [
+      "StaffOfHoma",
+      "BlackTassel"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "alyosha",
+   "character": "Alyosha",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/alyosha",
+   "members": [
+    {
+     "key": "Sandrone",
+     "role": "DPS principal",
+     "weapons": [
+      "ATeaspoonOfTranscendence",
+      "LithicBlade"
+     ]
+    },
+    {
+     "key": "YaeMiko",
+     "role": "DPS secondaire",
+     "weapons": [
+      "KagurasVerity",
+      "TheWidsith"
+     ]
+    },
+    {
+     "key": "Odette",
+     "role": "Soutien",
+     "weapons": [
+      "WhitelakeFrostfeather",
+      "Emberwell"
+     ]
+    },
+    {
+     "key": "Alyosha",
+     "role": "Soutien",
+     "weapons": [
+      "SymphonistOfScents",
+      "Frostbreath"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "emilie",
+   "character": "Emilie",
+   "tier": "S",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/emilie",
+   "members": [
+    {
+     "key": "Alhaitham",
+     "role": "DPS principal",
+     "weapons": [
+      "LightOfFoliarIncision",
+      "HarbingerOfDawn"
+     ]
+    },
+    {
+     "key": "Emilie",
+     "role": "DPS secondaire",
+     "weapons": [
+      "LumidouceElegy",
+      "Deathmatch"
+     ]
+    },
+    {
+     "key": "Xiangling",
+     "role": "DPS secondaire",
+     "weapons": [
+      "EngulfingLightning",
+      "FavoniusLance"
+     ]
+    },
+    {
+     "key": "Bennett",
+     "role": "Soutien",
+     "weapons": [
+      "MistsplitterReforged",
+      "TheAlleyFlash"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "clorinde",
+   "character": "Clorinde",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/clorinde",
+   "members": [
+    {
+     "key": "Clorinde",
+     "role": "DPS principal",
+     "weapons": [
+      "Absolution",
+      "TheBlackSword"
+     ]
+    },
+    {
+     "key": "Furina",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SplendorOfTranquilWaters",
+      "FavoniusSword"
+     ]
+    },
+    {
+     "key": "Nahida",
+     "role": "DPS secondaire",
+     "weapons": [
+      "AThousandFloatingDreams",
+      "WanderingEvenstar"
+     ]
+    },
+    {
+     "key": "Baizhu",
+     "role": "Soutien",
+     "weapons": [
+      "JadefallsSplendor",
+      "PrototypeAmber"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "chevreuse",
+   "character": "Chevreuse",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/chevreuse",
+   "members": [
+    {
+     "key": "Cyno",
+     "role": "DPS principal",
+     "weapons": [
+      "StaffOfTheScarletSands",
+      "Deathmatch"
+     ]
+    },
+    {
+     "key": "Chevreuse",
+     "role": "Soutien",
+     "weapons": [
+      "FavoniusLance",
+      "BlackTassel"
+     ]
+    },
+    {
+     "key": "Xiangling",
+     "role": "DPS secondaire",
+     "weapons": [
+      "EngulfingLightning",
+      "TheCatch"
+     ]
+    },
+    {
+     "key": "Bennett",
+     "role": "Soutien",
+     "weapons": [
+      "AquilaFavonia",
+      "FavoniusSword"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "navia",
+   "character": "Navia",
+   "tier": "S",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/navia",
+   "members": [
+    {
+     "key": "Navia",
+     "role": "DPS principal",
+     "weapons": [
+      "Verdict",
+      "SerpentSpine"
+     ]
+    },
+    {
+     "key": "Zhongli",
+     "role": "Soutien",
+     "weapons": [
+      "FavoniusLance"
+     ]
+    },
+    {
+     "key": "Xiangling",
+     "role": "DPS secondaire",
+     "weapons": [
+      "EngulfingLightning",
+      "TheCatch"
+     ]
+    },
+    {
+     "key": "Bennett",
+     "role": "Soutien",
+     "weapons": [
+      "AquilaFavonia",
+      "TheAlleyFlash"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "neuvillette",
+   "character": "Neuvillette",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/neuvillette",
+   "members": [
+    {
+     "key": "Neuvillette",
+     "role": "DPS principal",
+     "weapons": [
+      "TomeOfTheEternalFlow",
+      "SacrificialJade"
+     ]
+    },
+    {
+     "key": "Furina",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SplendorOfTranquilWaters",
+      "FleuveCendreFerryman"
+     ]
+    },
+    {
+     "key": "Nahida",
+     "role": "DPS secondaire",
+     "weapons": [
+      "AThousandFloatingDreams",
+      "SolarPearl"
+     ]
+    },
+    {
+     "key": "RaidenShogun",
+     "role": "DPS secondaire",
+     "weapons": [
+      "DragonsBane"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "kirara",
+   "character": "Kirara",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/kirara",
+   "members": [
+    {
+     "key": "KamisatoAyato",
+     "role": "DPS principal",
+     "weapons": [
+      "LightOfFoliarIncision",
+      "TheBlackSword"
+     ]
+    },
+    {
+     "key": "Nahida",
+     "role": "DPS secondaire",
+     "weapons": [
+      "AThousandFloatingDreams",
+      "WanderingEvenstar"
+     ]
+    },
+    {
+     "key": "KukiShinobu",
+     "role": "Soutien",
+     "weapons": [
+      "FreedomSworn",
+      "IronSting"
+     ]
+    },
+    {
+     "key": "Kirara",
+     "role": "Soutien",
+     "weapons": [
+      "KeyOfKhajNisut",
+      "SapwoodBlade"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "dehya",
+   "character": "Dehya",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/dehya",
+   "members": [
+    {
+     "key": "Ganyu",
+     "role": "DPS principal",
+     "weapons": [
+      "HuntersPath",
+      "Hamayumi"
+     ]
+    },
+    {
+     "key": "Dehya",
+     "role": "DPS secondaire",
+     "weapons": [
+      "FavoniusGreatsword"
+     ]
+    },
+    {
+     "key": "Nahida",
+     "role": "DPS secondaire",
+     "weapons": [
+      "WanderingEvenstar"
+     ]
+    },
+    {
+     "key": "Bennett",
+     "role": "Soutien",
+     "weapons": [
+      "AquilaFavonia",
+      "FavoniusSword"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "yaoyao",
+   "character": "Yaoyao",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/yaoyao",
+   "members": [
+    {
+     "key": "Alhaitham",
+     "role": "DPS principal",
+     "weapons": [
+      "LightOfFoliarIncision",
+      "HarbingerOfDawn"
+     ]
+    },
+    {
+     "key": "Xingqiu",
+     "role": "DPS secondaire",
+     "weapons": [
+      "FavoniusSword"
+     ]
+    },
+    {
+     "key": "RaidenShogun",
+     "role": "DPS secondaire",
+     "weapons": [
+      "DragonsBane"
+     ]
+    },
+    {
+     "key": "Yaoyao",
+     "role": "Soutien",
+     "weapons": [
+      "StaffOfHoma",
+      "BlackTassel"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "nahida",
+   "character": "Nahida",
+   "tier": "S",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/nahida",
+   "members": [
+    {
+     "key": "Nahida",
+     "role": "DPS principal",
+     "weapons": [
+      "AThousandFloatingDreams",
+      "SolarPearl"
+     ]
+    },
+    {
+     "key": "RaidenShogun",
+     "role": "DPS secondaire",
+     "weapons": [
+      "DragonsBane"
+     ]
+    },
+    {
+     "key": "KukiShinobu",
+     "role": "Soutien",
+     "weapons": [
+      "FreedomSworn",
+      "IronSting"
+     ]
+    },
+    {
+     "key": "Thoma",
+     "role": "Soutien",
+     "weapons": [
+      "KitainCrossSpear"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "candace",
+   "character": "Candace",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/candace",
+   "members": [
+    {
+     "key": "Zhongli",
+     "role": "DPS principal",
+     "weapons": [
+      "StaffOfHoma",
+      "Deathmatch"
+     ]
+    },
+    {
+     "key": "Candace",
+     "role": "Soutien",
+     "weapons": [
+      "StaffOfHoma",
+      "TheCatch"
+     ]
+    },
+    {
+     "key": "Yelan",
+     "role": "DPS secondaire",
+     "weapons": [
+      "AquaSimulacra",
+      "FavoniusWarbow"
+     ]
+    },
+    {
+     "key": "Xingqiu",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SacrificialSword"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "cyno",
+   "character": "Cyno",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/cyno",
+   "members": [
+    {
+     "key": "Cyno",
+     "role": "DPS principal",
+     "weapons": [
+      "StaffOfTheScarletSands",
+      "Deathmatch"
+     ]
+    },
+    {
+     "key": "Xingqiu",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SacrificialSword",
+      "FavoniusSword"
+     ]
+    },
+    {
+     "key": "Nahida",
+     "role": "Soutien",
+     "weapons": [
+      "AThousandFloatingDreams",
+      "SacrificialFragments"
+     ]
+    },
+    {
+     "key": "Thoma",
+     "role": "Soutien",
+     "weapons": [
+      "KitainCrossSpear",
+      "FavoniusLance"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "collei",
+   "character": "Collei",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/collei",
+   "members": [
+    {
+     "key": "SangonomiyaKokomi",
+     "role": "DPS principal",
+     "weapons": [
+      "EverlastingMoonglow",
+      "SacrificialFragments"
+     ]
+    },
+    {
+     "key": "Collei",
+     "role": "DPS secondaire",
+     "weapons": [
+      "ElegyForTheEnd",
+      "FavoniusWarbow"
+     ]
+    },
+    {
+     "key": "RaidenShogun",
+     "role": "DPS secondaire",
+     "weapons": [
+      "DragonsBane"
+     ]
+    },
+    {
+     "key": "TravelerDendro",
+     "role": "Soutien",
+     "weapons": [
+      "FavoniusSword"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "yelan",
+   "character": "Yelan",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/yelan",
+   "members": [
+    {
+     "key": "Arlecchino",
+     "role": "DPS principal",
+     "weapons": [
+      "CrimsonMoonsSemblance",
+      "Deathmatch"
+     ]
+    },
+    {
+     "key": "Yelan",
+     "role": "DPS secondaire",
+     "weapons": [
+      "AquaSimulacra",
+      "FavoniusWarbow"
+     ]
+    },
+    {
+     "key": "Zhongli",
+     "role": "Soutien",
+     "weapons": [
+      "StaffOfHoma",
+      "FavoniusLance"
+     ]
+    },
+    {
+     "key": "Bennett",
+     "role": "Soutien",
+     "weapons": [
+      "MistsplitterReforged",
+      "TheAlleyFlash"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "yun_jin",
+   "character": "YunJin",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/yun_jin",
+   "members": [
+    {
+     "key": "Yoimiya",
+     "role": "DPS principal",
+     "weapons": [
+      "ThunderingPulse",
+      "Rust"
+     ]
+    },
+    {
+     "key": "YunJin",
+     "role": "Soutien",
+     "weapons": [
+      "Deathmatch"
+     ]
+    },
+    {
+     "key": "Xingqiu",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SacrificialSword"
+     ]
+    },
+    {
+     "key": "Bennett",
+     "role": "Soutien",
+     "weapons": [
+      "SkywardBlade",
+      "FavoniusSword"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "sayu",
+   "character": "Sayu",
+   "tier": "S",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/sayu",
+   "members": [
+    {
+     "key": "Xiao",
+     "role": "DPS principal",
+     "weapons": [
+      "PrimordialJadeWingedSpear",
+      "Deathmatch"
+     ]
+    },
+    {
+     "key": "Chongyun",
+     "role": "DPS secondaire",
+     "weapons": [
+      "WolfsGravestone",
+      "SerpentSpine"
+     ]
+    },
+    {
+     "key": "Zhongli",
+     "role": "Soutien",
+     "weapons": [
+      "StaffOfHoma",
+      "BlackTassel"
+     ]
+    },
+    {
+     "key": "Sayu",
+     "role": "Soutien",
+     "weapons": [
+      "WolfsGravestone",
+      "Rainslasher"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "xiangling",
+   "character": "Xiangling",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/xiangling",
+   "members": [
+    {
+     "key": "Tartaglia",
+     "role": "DPS principal",
+     "weapons": [
+      "PolarStar",
+      "Rust"
+     ]
+    },
+    {
+     "key": "Xiangling",
+     "role": "DPS secondaire",
+     "weapons": [
+      "EngulfingLightning",
+      "TheCatch"
+     ]
+    },
+    {
+     "key": "KaedeharaKazuha",
+     "role": "Soutien",
+     "weapons": [
+      "FreedomSworn",
+      "IronSting"
+     ]
+    },
+    {
+     "key": "Bennett",
+     "role": "Soutien",
+     "weapons": [
+      "SkywardBlade",
+      "FavoniusSword"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "venti",
+   "character": "Venti",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/venti",
+   "members": [
+    {
+     "key": "YumemizukiMizuki",
+     "role": "DPS principal",
+     "weapons": [
+      "SunnyMorningSleepIn",
+      "FruitOfFulfillment"
+     ]
+    },
+    {
+     "key": "Furina",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SplendorOfTranquilWaters",
+      "FavoniusSword"
+     ]
+    },
+    {
+     "key": "Ororon",
+     "role": "Soutien",
+     "weapons": [
+      "ElegyForTheEnd",
+      "FavoniusWarbow"
+     ]
+    },
+    {
+     "key": "Venti",
+     "role": "DPS secondaire",
+     "weapons": [
+      "ElegyForTheEnd",
+      "FavoniusWarbow"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "rosaria",
+   "character": "Rosaria",
+   "tier": "S",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/rosaria",
+   "members": [
+    {
+     "key": "HuTao",
+     "role": "DPS principal",
+     "weapons": [
+      "StaffOfHoma",
+      "Deathmatch"
+     ]
+    },
+    {
+     "key": "Rosaria",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SkywardSpine",
+      "FavoniusLance"
+     ]
+    },
+    {
+     "key": "Xingqiu",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SacrificialSword"
+     ]
+    },
+    {
+     "key": "Zhongli",
+     "role": "Soutien",
+     "weapons": [
+      "StaffOfHoma",
+      "BlackTassel"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "qiqi",
+   "character": "Qiqi",
+   "tier": "A",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/qiqi",
+   "members": [
+    {
+     "key": "Razor",
+     "role": "DPS principal",
+     "weapons": [
+      "WolfsGravestone",
+      "PrototypeArchaic"
+     ]
+    },
+    {
+     "key": "Sucrose",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SkywardAtlas",
+      "SacrificialFragments"
+     ]
+    },
+    {
+     "key": "Qiqi",
+     "role": "Soutien",
+     "weapons": [
+      "SkywardBlade",
+      "FavoniusSword"
+     ]
+    },
+    {
+     "key": "Zhongli",
+     "role": "Soutien",
+     "weapons": [
+      "StaffOfHoma",
+      "BlackTassel"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "mona",
+   "character": "Mona",
+   "tier": "S",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/mona",
+   "members": [
+    {
+     "key": "Mona",
+     "role": "DPS principal",
+     "weapons": [
+      "LostPrayerToTheSacredWinds",
+      "TheWidsith"
+     ]
+    },
+    {
+     "key": "Xingqiu",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SacrificialSword"
+     ]
+    },
+    {
+     "key": "Jahoda",
+     "role": "Soutien",
+     "weapons": [
+      "ElegyForTheEnd",
+      "FavoniusWarbow"
+     ]
+    },
+    {
+     "key": "Ineffa",
+     "role": "Soutien",
+     "weapons": [
+      "FracturedHalo",
+      "BalladOfTheFjords"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ningguang",
+   "character": "Ningguang",
+   "tier": "S",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/ningguang",
+   "members": [
+    {
+     "key": "Xiao",
+     "role": "DPS principal",
+     "weapons": [
+      "PrimordialJadeWingedSpear",
+      "Deathmatch"
+     ]
+    },
+    {
+     "key": "Jean",
+     "role": "Soutien",
+     "weapons": [
+      "SkywardBlade",
+      "FavoniusSword"
+     ]
+    },
+    {
+     "key": "Ningguang",
+     "role": "DPS secondaire",
+     "weapons": [
+      "LostPrayerToTheSacredWinds",
+      "SolarPearl"
+     ]
+    },
+    {
+     "key": "Zhongli",
+     "role": "Soutien",
+     "weapons": [
+      "StaffOfHoma",
+      "BlackTassel"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "nicole",
+   "character": "Nicole",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/nicole",
+   "members": [
+    {
+     "key": "Varka",
+     "role": "DPS principal",
+     "weapons": [
+      "GestOfTheMightyWolf",
+      "SerpentSpine"
+     ]
+    },
+    {
+     "key": "Prune",
+     "role": "Soutien",
+     "weapons": [
+      "AngelosHeptades",
+      "OathswornEye"
+     ]
+    },
+    {
+     "key": "Nicole",
+     "role": "Soutien",
+     "weapons": [
+      "AngelosHeptades",
+      "FlowingPurity"
+     ]
+    },
+    {
+     "key": "Bennett",
+     "role": "Soutien",
+     "weapons": [
+      "MistsplitterReforged",
+      "TheAlleyFlash"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "flins",
+   "character": "Flins",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/flins",
+   "members": [
+    {
+     "key": "Flins",
+     "role": "DPS principal",
+     "weapons": [
+      "BloodsoakedRuins",
+      "Deathmatch"
+     ]
+    },
+    {
+     "key": "Aino",
+     "role": "Soutien",
+     "weapons": [
+      "FlameForgedInsight"
+     ]
+    },
+    {
+     "key": "Xilonen",
+     "role": "Soutien",
+     "weapons": [
+      "PeakPatrolSong",
+      "FluteOfEzpitzal"
+     ]
+    },
+    {
+     "key": "Ineffa",
+     "role": "Soutien",
+     "weapons": [
+      "FracturedHalo",
+      "BalladOfTheFjords"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "nefer",
+   "character": "Nefer",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/nefer",
+   "members": [
+    {
+     "key": "Nefer",
+     "role": "DPS principal",
+     "weapons": [
+      "ReliquaryOfTruth",
+      "DawningFrost"
+     ]
+    },
+    {
+     "key": "Lauma",
+     "role": "Soutien",
+     "weapons": [
+      "NightweaversLookingGlass",
+      "EtherlightSpindlelute"
+     ]
+    },
+    {
+     "key": "Yaoyao",
+     "role": "Soutien",
+     "weapons": [
+      "DialoguesOfTheDesertSages"
+     ]
+    },
+    {
+     "key": "Aino",
+     "role": "Soutien",
+     "weapons": [
+      "FlameForgedInsight"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "lyney",
+   "character": "Lyney",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/lyney",
+   "members": [
+    {
+     "key": "Lyney",
+     "role": "DPS principal",
+     "weapons": [
+      "TheFirstGreatMagic",
+      "ScionOfTheBlazingSun"
+     ]
+    },
+    {
+     "key": "Xiangling",
+     "role": "DPS secondaire",
+     "weapons": [
+      "EngulfingLightning",
+      "TheCatch"
+     ]
+    },
+    {
+     "key": "KaedeharaKazuha",
+     "role": "Soutien",
+     "weapons": [
+      "FreedomSworn",
+      "IronSting"
+     ]
+    },
+    {
+     "key": "Bennett",
+     "role": "Soutien",
+     "weapons": [
+      "AquilaFavonia",
+      "FavoniusSword"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "kamisato_ayato",
+   "character": "KamisatoAyato",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/kamisato_ayato",
+   "members": [
+    {
+     "key": "KamisatoAyato",
+     "role": "DPS principal",
+     "weapons": [
+      "HaranGeppakuFutsu",
+      "TheBlackSword"
+     ]
+    },
+    {
+     "key": "Nahida",
+     "role": "DPS secondaire",
+     "weapons": [
+      "AThousandFloatingDreams",
+      "SolarPearl"
+     ]
+    },
+    {
+     "key": "KaedeharaKazuha",
+     "role": "Soutien",
+     "weapons": [
+      "FreedomSworn",
+      "IronSting"
+     ]
+    },
+    {
+     "key": "KukiShinobu",
+     "role": "Soutien",
+     "weapons": [
+      "FreedomSworn",
+      "IronSting"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "gorou",
+   "character": "Gorou",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/gorou",
+   "members": [
+    {
+     "key": "AratakiItto",
+     "role": "DPS principal",
+     "weapons": [
+      "RedhornStonethresher",
+      "Whiteblind"
+     ]
+    },
+    {
+     "key": "Albedo",
+     "role": "DPS secondaire",
+     "weapons": [
+      "CinnabarSpindle",
+      "HarbingerOfDawn"
+     ]
+    },
+    {
+     "key": "Gorou",
+     "role": "Soutien",
+     "weapons": [
+      "FavoniusWarbow"
+     ]
+    },
+    {
+     "key": "Zhongli",
+     "role": "Soutien",
+     "weapons": [
+      "StaffOfHoma",
+      "BlackTassel"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "arataki_itto",
+   "character": "AratakiItto",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/arataki_itto",
+   "members": [
+    {
+     "key": "AratakiItto",
+     "role": "DPS principal",
+     "weapons": [
+      "RedhornStonethresher",
+      "Whiteblind"
+     ]
+    },
+    {
+     "key": "Albedo",
+     "role": "DPS secondaire",
+     "weapons": [
+      "CinnabarSpindle",
+      "HarbingerOfDawn"
+     ]
+    },
+    {
+     "key": "Gorou",
+     "role": "Soutien",
+     "weapons": [
+      "FavoniusWarbow"
+     ]
+    },
+    {
+     "key": "Zhongli",
+     "role": "Soutien",
+     "weapons": [
+      "StaffOfHoma",
+      "BlackTassel"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "sangonomiya_kokomi",
+   "character": "SangonomiyaKokomi",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/sangonomiya_kokomi",
+   "members": [
+    {
+     "key": "SangonomiyaKokomi",
+     "role": "DPS principal",
+     "weapons": [
+      "EverlastingMoonglow",
+      "PrototypeAmber"
+     ]
+    },
+    {
+     "key": "Nahida",
+     "role": "DPS secondaire",
+     "weapons": [
+      "AThousandFloatingDreams",
+      "SolarPearl"
+     ]
+    },
+    {
+     "key": "RaidenShogun",
+     "role": "DPS secondaire",
+     "weapons": [
+      "DragonsBane"
+     ]
+    },
+    {
+     "key": "KaedeharaKazuha",
+     "role": "Soutien",
+     "weapons": [
+      "FreedomSworn",
+      "IronSting"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "kamisato_ayaka",
+   "character": "KamisatoAyaka",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/kamisato_ayaka",
+   "members": [
+    {
+     "key": "KamisatoAyaka",
+     "role": "DPS principal",
+     "weapons": [
+      "MistsplitterReforged",
+      "AmenomaKageuchi"
+     ]
+    },
+    {
+     "key": "Ganyu",
+     "role": "DPS secondaire",
+     "weapons": [
+      "AmosBow",
+      "Hamayumi"
+     ]
+    },
+    {
+     "key": "KamisatoAyato",
+     "role": "DPS secondaire",
+     "weapons": [
+      "HaranGeppakuFutsu",
+      "TheBlackSword"
+     ]
+    },
+    {
+     "key": "SangonomiyaKokomi",
+     "role": "Soutien",
+     "weapons": [
+      "EverlastingMoonglow",
+      "ThrillingTalesOfDragonSlayers"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "razor",
+   "character": "Razor",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/razor",
+   "members": [
+    {
+     "key": "Razor",
+     "role": "DPS principal",
+     "weapons": [
+      "AThousandBlazingSuns",
+      "SerpentSpine"
+     ]
+    },
+    {
+     "key": "Durin",
+     "role": "Soutien",
+     "weapons": [
+      "AthameArtis",
+      "WolfFang"
+     ]
+    },
+    {
+     "key": "Chevreuse",
+     "role": "Soutien",
+     "weapons": [
+      "StaffOfHoma",
+      "FavoniusLance"
+     ]
+    },
+    {
+     "key": "Bennett",
+     "role": "Soutien",
+     "weapons": [
+      "AquilaFavonia",
+      "TheAlleyFlash"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "beidou",
+   "character": "Beidou",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/beidou",
+   "members": [
+    {
+     "key": "RaidenShogun",
+     "role": "DPS principal",
+     "weapons": [
+      "EngulfingLightning",
+      "TheCatch"
+     ]
+    },
+    {
+     "key": "Beidou",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SkywardPride",
+      "SerpentSpine"
+     ]
+    },
+    {
+     "key": "KujouSara",
+     "role": "Soutien",
+     "weapons": [
+      "SkywardHarp",
+      "TheStringless"
+     ]
+    },
+    {
+     "key": "Bennett",
+     "role": "Soutien",
+     "weapons": [
+      "SkywardBlade",
+      "FavoniusSword"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ganyu",
+   "character": "Ganyu",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/ganyu",
+   "members": [
+    {
+     "key": "KamisatoAyaka",
+     "role": "DPS principal",
+     "weapons": [
+      "MistsplitterReforged",
+      "AmenomaKageuchi"
+     ]
+    },
+    {
+     "key": "Ganyu",
+     "role": "DPS secondaire",
+     "weapons": [
+      "AmosBow",
+      "Hamayumi"
+     ]
+    },
+    {
+     "key": "KaedeharaKazuha",
+     "role": "Soutien",
+     "weapons": [
+      "FreedomSworn",
+      "IronSting"
+     ]
+    },
+    {
+     "key": "Xingqiu",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SacrificialSword"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "tartaglia",
+   "character": "Tartaglia",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/tartaglia",
+   "members": [
+    {
+     "key": "Tartaglia",
+     "role": "DPS principal",
+     "weapons": [
+      "PolarStar",
+      "Rust"
+     ]
+    },
+    {
+     "key": "Nahida",
+     "role": "DPS secondaire",
+     "weapons": [
+      "AThousandFloatingDreams",
+      "SolarPearl"
+     ]
+    },
+    {
+     "key": "Xingqiu",
+     "role": "DPS secondaire",
+     "weapons": [
+      "PrimordialJadeCutter",
+      "SapwoodBlade"
+     ]
+    },
+    {
+     "key": "KukiShinobu",
+     "role": "Soutien",
+     "weapons": [
+      "FreedomSworn",
+      "IronSting"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "xingqiu",
+   "character": "Xingqiu",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/xingqiu",
+   "members": [
+    {
+     "key": "Xiangling",
+     "role": "DPS principal",
+     "weapons": [
+      "EngulfingLightning",
+      "TheCatch"
+     ]
+    },
+    {
+     "key": "Xingqiu",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SacrificialSword"
+     ]
+    },
+    {
+     "key": "KaedeharaKazuha",
+     "role": "Soutien",
+     "weapons": [
+      "FreedomSworn",
+      "IronSting"
+     ]
+    },
+    {
+     "key": "Bennett",
+     "role": "Soutien",
+     "weapons": [
+      "SkywardBlade",
+      "FavoniusSword"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "albedo",
+   "character": "Albedo",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/albedo",
+   "members": [
+    {
+     "key": "Venti",
+     "role": "DPS principal",
+     "weapons": [
+      "TheDaybreakChronicles",
+      "Rust"
+     ]
+    },
+    {
+     "key": "Faruzan",
+     "role": "Soutien",
+     "weapons": [
+      "ElegyForTheEnd",
+      "FavoniusWarbow"
+     ]
+    },
+    {
+     "key": "Albedo",
+     "role": "DPS secondaire",
+     "weapons": [
+      "UrakuMisugiri",
+      "WolfFang"
+     ]
+    },
+    {
+     "key": "Bennett",
+     "role": "Soutien",
+     "weapons": [
+      "AquilaFavonia",
+      "TheAlleyFlash"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "yae_miko",
+   "character": "YaeMiko",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/yae_miko",
+   "members": [
+    {
+     "key": "SangonomiyaKokomi",
+     "role": "DPS principal",
+     "weapons": [
+      "EverlastingMoonglow",
+      "PrototypeAmber"
+     ]
+    },
+    {
+     "key": "YaeMiko",
+     "role": "DPS secondaire",
+     "weapons": [
+      "KagurasVerity",
+      "TheWidsith"
+     ]
+    },
+    {
+     "key": "Yelan",
+     "role": "DPS secondaire",
+     "weapons": [
+      "AquaSimulacra",
+      "FavoniusWarbow"
+     ]
+    },
+    {
+     "key": "Nahida",
+     "role": "DPS secondaire",
+     "weapons": [
+      "AThousandFloatingDreams",
+      "SolarPearl"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "raiden_shogun",
+   "character": "RaidenShogun",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/raiden_shogun",
+   "members": [
+    {
+     "key": "RaidenShogun",
+     "role": "DPS principal",
+     "weapons": [
+      "EngulfingLightning",
+      "FavoniusLance"
+     ]
+    },
+    {
+     "key": "KujouSara",
+     "role": "DPS secondaire",
+     "weapons": [
+      "ElegyForTheEnd",
+      "MouunsMoon"
+     ]
+    },
+    {
+     "key": "KaedeharaKazuha",
+     "role": "Soutien",
+     "weapons": [
+      "FreedomSworn",
+      "XiphosMoonlight"
+     ]
+    },
+    {
+     "key": "Bennett",
+     "role": "Soutien",
+     "weapons": [
+      "MistsplitterReforged",
+      "TheAlleyFlash"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "yanfei",
+   "character": "Yanfei",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/yanfei",
+   "members": [
+    {
+     "key": "Yanfei",
+     "role": "DPS principal",
+     "weapons": [
+      "LostPrayerToTheSacredWinds",
+      "TheWidsith"
+     ]
+    },
+    {
+     "key": "Yelan",
+     "role": "DPS secondaire",
+     "weapons": [
+      "AquaSimulacra",
+      "TheStringless"
+     ]
+    },
+    {
+     "key": "Nahida",
+     "role": "DPS secondaire",
+     "weapons": [
+      "AThousandFloatingDreams",
+      "SolarPearl"
+     ]
+    },
+    {
+     "key": "Zhongli",
+     "role": "Soutien",
+     "weapons": [
+      "StaffOfHoma",
+      "BlackTassel"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "sucrose",
+   "character": "Sucrose",
+   "tier": "S",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/sucrose",
+   "members": [
+    {
+     "key": "Sucrose",
+     "role": "DPS principal",
+     "weapons": [
+      "SunnyMorningSleepIn",
+      "WanderingEvenstar"
+     ]
+    },
+    {
+     "key": "Xingqiu",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SacrificialSword"
+     ]
+    },
+    {
+     "key": "Fischl",
+     "role": "DPS secondaire",
+     "weapons": [
+      "AquaSimulacra",
+      "TheStringless"
+     ]
+    },
+    {
+     "key": "Ineffa",
+     "role": "Soutien",
+     "weapons": [
+      "FracturedHalo",
+      "BalladOfTheFjords"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "kaedehara_kazuha",
+   "character": "KaedeharaKazuha",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/kaedehara_kazuha",
+   "members": [
+    {
+     "key": "Yelan",
+     "role": "DPS principal",
+     "weapons": [
+      "AquaSimulacra"
+     ]
+    },
+    {
+     "key": "Furina",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SplendorOfTranquilWaters",
+      "WolfFang"
+     ]
+    },
+    {
+     "key": "KaedeharaKazuha",
+     "role": "Soutien",
+     "weapons": [
+      "FreedomSworn",
+      "XiphosMoonlight"
+     ]
+    },
+    {
+     "key": "Sigewinne",
+     "role": "Soutien",
+     "weapons": [
+      "SilvershowerHeartstrings",
+      "FavoniusWarbow"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "lisa",
+   "character": "Lisa",
+   "tier": "S",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/lisa",
+   "members": [
+    {
+     "key": "RaidenShogun",
+     "role": "DPS principal",
+     "weapons": [
+      "EngulfingLightning",
+      "TheCatch"
+     ]
+    },
+    {
+     "key": "KujouSara",
+     "role": "Soutien",
+     "weapons": [
+      "SkywardHarp",
+      "TheStringless"
+     ]
+    },
+    {
+     "key": "Lisa",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SkywardAtlas",
+      "SacrificialFragments"
+     ]
+    },
+    {
+     "key": "Bennett",
+     "role": "Soutien",
+     "weapons": [
+      "SkywardBlade",
+      "FavoniusSword"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "diona",
+   "character": "Diona",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/diona",
+   "members": [
+    {
+     "key": "HuTao",
+     "role": "DPS principal",
+     "weapons": [
+      "StaffOfHoma",
+      "Deathmatch"
+     ]
+    },
+    {
+     "key": "Xingqiu",
+     "role": "DPS secondaire",
+     "weapons": [
+      "PrimordialJadeCutter",
+      "SacrificialSword"
+     ]
+    },
+    {
+     "key": "Rosaria",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SkywardSpine",
+      "FavoniusLance"
+     ]
+    },
+    {
+     "key": "Diona",
+     "role": "Soutien",
+     "weapons": [
+      "ElegyForTheEnd",
+      "FavoniusWarbow"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "noelle",
+   "character": "Noelle",
+   "tier": "SS",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/noelle",
+   "members": [
+    {
+     "key": "AratakiItto",
+     "role": "DPS principal",
+     "weapons": [
+      "RedhornStonethresher",
+      "Whiteblind"
+     ]
+    },
+    {
+     "key": "Noelle",
+     "role": "DPS secondaire",
+     "weapons": [
+      "RedhornStonethresher",
+      "Whiteblind"
+     ]
+    },
+    {
+     "key": "Gorou",
+     "role": "Soutien",
+     "weapons": [
+      "FavoniusWarbow"
+     ]
+    },
+    {
+     "key": "Zhongli",
+     "role": "Soutien",
+     "weapons": [
+      "StaffOfHoma",
+      "BlackTassel"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "xinyan",
+   "character": "Xinyan",
+   "tier": "A",
+   "f2p": false,
+   "url": "https://genshin-builds.com/fr/teams/xinyan",
+   "members": [
+    {
+     "key": "Eula",
+     "role": "DPS principal",
+     "weapons": [
+      "SkywardPride",
+      "SerpentSpine"
+     ]
+    },
+    {
+     "key": "Beidou",
+     "role": "DPS secondaire",
+     "weapons": [
+      "SkywardPride",
+      "SerpentSpine"
+     ]
+    },
+    {
+     "key": "Xinyan",
+     "role": "Soutien",
+     "weapons": [
+      "WolfsGravestone",
+      "Whiteblind"
+     ]
+    },
+    {
+     "key": "Bennett",
+     "role": "Soutien",
+     "weapons": [
+      "SkywardBlade",
+      "FavoniusSword"
+     ]
+    }
+   ]
+  }
+ ]
+}
