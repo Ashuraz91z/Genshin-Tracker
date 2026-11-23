@@ -153,7 +153,11 @@ namespace InventoryKamera
                     if (string.IsNullOrWhiteSpace(text)) throw new FormatException($"Unable to locate {inventoryPage} item count.");
                 }
 
-                if (!FrenchRecognition.TryReadInventoryCount(text, out int count))
+                int count;
+                bool readable = GameLanguage.IsFrench
+                    ? FrenchRecognition.TryReadInventoryCount(text, out count)
+                    : EnglishRecognition.TryReadInventoryCount(text, inventoryPage == InventoryPage.Artifacts ? "1800" : "2000", out count);
+                if (!readable)
                     throw new FormatException("Compteur illisible pour " + inventoryPage + " : " + text + ". Aucun total ne sera inventé.");
 
                 return count;

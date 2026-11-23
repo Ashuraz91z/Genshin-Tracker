@@ -300,5 +300,17 @@ namespace InventoryKamera.Properties {
                 this["Slot1Key"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("fr")]
+        public string GameLanguage {
+            get {
+                return ((string)(this["GameLanguage"]));
+            }
+            set {
+                this["GameLanguage"] = value;
+            }
+        }
     }
 }

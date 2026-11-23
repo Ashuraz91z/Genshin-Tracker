@@ -354,8 +354,10 @@ namespace InventoryKamera
             {
                 Bitmap adjusted = image;
                 GenshinProcesor.SetContrast(60.0, ref adjusted);
-                return FrenchRecognition.ReadEquippedCharacter(GenshinProcesor.AnalyzeText(adjusted),
-                    name => GenshinProcesor.FindClosestCharacterName(name));
+                string extracted = GenshinProcesor.AnalyzeText(adjusted);
+                return GameLanguage.IsFrench
+                    ? FrenchRecognition.ReadEquippedCharacter(extracted, name => GenshinProcesor.FindClosestCharacterName(name))
+                    : EnglishRecognition.ReadEquippedCharacter(extracted, name => GenshinProcesor.FindClosestCharacterName(name));
             }
         }
 

@@ -30,7 +30,7 @@ namespace InventoryKamera
         {
             var settings = Properties.Settings.Default;
             var report = new {
-                status = Status, completenessVerified = false, language = "fr",
+                status = Status, completenessVerified = false, language = GameLanguage.Current,
                 notice = "Scan expérimental : les données absentes ne prouvent pas l'absence d'un objet. Les personnages incomplets restent dans ce rapport, hors export GOOD.",
                 selected = new { characters = settings.ScanCharacters, weapons = settings.ScanWeapons, artifacts = settings.ScanArtifacts,
                     materials = settings.ScanMaterials, developmentItems = settings.ScanCharDevItems },

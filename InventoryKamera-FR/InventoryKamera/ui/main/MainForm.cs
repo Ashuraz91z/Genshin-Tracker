@@ -38,7 +38,12 @@ namespace InventoryKamera
             InitializeComponent();
             ApplyTrackerDesign();
 
-            Language_ComboBox.SelectedItem = "FR";
+            Language_ComboBox.SelectedItem = GameLanguage.IsFrench ? "FR" : "EN";
+            Language_ComboBox.SelectedIndexChanged += (sender, args) =>
+            {
+                Properties.Settings.Default.GameLanguage = Language_ComboBox.SelectedItem?.ToString() == "EN" ? GameLanguage.English : GameLanguage.French;
+                Properties.Settings.Default.Save();
+            };
 
             var version = Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
 #if DEBUG

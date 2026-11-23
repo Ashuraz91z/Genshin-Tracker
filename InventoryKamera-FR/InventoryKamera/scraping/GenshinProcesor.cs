@@ -25,7 +25,7 @@ namespace InventoryKamera
 		private const int numEngines = 8;
 
 		private static readonly string tesseractDatapath = $".\\tessdata";
-		private static readonly string tesseractLanguage = "fra+eng";
+		private static string tesseractLanguage => GameLanguage.OcrModel;
 
 		internal static Dictionary<string, string> Stats = new Dictionary<string, string>
 		{
@@ -201,7 +201,7 @@ namespace InventoryKamera
                     text = page.GetText() ?? "";
             }
             finally { engines.Add(e); }
-            text = numbersOnly ? text : FrenchRecognition.ForScanner(text);
+            text = numbersOnly || !GameLanguage.IsFrench ? text : FrenchRecognition.ForScanner(text);
 
 			return text;
 		}

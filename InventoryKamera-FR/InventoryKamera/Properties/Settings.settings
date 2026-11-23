@@ -75,5 +75,8 @@
     <Setting Name="Slot1Key" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">1</Value>
     </Setting>
+    <Setting Name="GameLanguage" Type="System.String" Scope="User">
+      <Value Profile="(Default)">fr</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

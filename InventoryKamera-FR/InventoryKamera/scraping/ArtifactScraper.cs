@@ -428,8 +428,10 @@ namespace InventoryKamera
                 string text;
                 using (var n = GenshinProcesor.ConvertToGrayscale(bm))
                     text = GenshinProcesor.AnalyzeText(n, Tesseract.PageSegMode.Auto).ToLower();
-                return FrenchRecognition.ReadArtifactSubstats(text, name => GenshinProcesor.FindClosestStat(name,80), UserInterface.AddError)
-                    .Select(pair => new SubStat { stat=pair.Key,value=pair.Value }).ToList();
+                var pairs = GameLanguage.IsFrench
+                    ? FrenchRecognition.ReadArtifactSubstats(text, name => GenshinProcesor.FindClosestStat(name,80), UserInterface.AddError)
+                    : EnglishRecognition.ReadArtifactSubstats(text, name => GenshinProcesor.FindClosestStat(name,80), UserInterface.AddError);
+                return pairs.Select(pair => new SubStat { stat=pair.Key,value=pair.Value }).ToList();
             }
             finally { bm?.Dispose(); }
         }
@@ -440,8 +442,10 @@ namespace InventoryKamera
             {
                 Bitmap adjusted = image;
                 GenshinProcesor.SetContrast(60.0, ref adjusted);
-                return FrenchRecognition.ReadEquippedCharacter(GenshinProcesor.AnalyzeText(adjusted),
-                    name => GenshinProcesor.FindClosestCharacterName(name));
+                string extracted = GenshinProcesor.AnalyzeText(adjusted);
+                return GameLanguage.IsFrench
+                    ? FrenchRecognition.ReadEquippedCharacter(extracted, name => GenshinProcesor.FindClosestCharacterName(name))
+                    : EnglishRecognition.ReadEquippedCharacter(extracted, name => GenshinProcesor.FindClosestCharacterName(name));
             }
         }
 

@@ -179,9 +179,10 @@
             // 
             this.Language_ComboBox.BackColor = System.Drawing.Color.White;
             this.Language_ComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.Language_ComboBox.Enabled = false;
+            this.Language_ComboBox.Enabled = true;
             this.Language_ComboBox.FormattingEnabled = true;
             this.Language_ComboBox.Items.AddRange(new object[] {
+            "EN",
             "FR"});
             this.Language_ComboBox.Location = new System.Drawing.Point(12, 42);
             this.Language_ComboBox.Margin = new System.Windows.Forms.Padding(2);
@@ -619,7 +620,7 @@
             this.Language_Label.Name = "Language_Label";
             this.Language_Label.Size = new System.Drawing.Size(58, 13);
             this.Language_Label.TabIndex = 80;
-            this.Language_Label.Text = "Langue :";
+            this.Language_Label.Text = "Langue du jeu :";
             // 
             // menuStrip1
             // 
