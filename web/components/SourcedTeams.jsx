@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import s from './features.module.css';
 import { teamSummary } from '../lib/team.mjs';
-const tierRank={SS:0,S:1,A:2,B:3},first=6;
+// 12 cartes : des rangées pleines à 1, 2, 3, 4 ou 6 colonnes.
+const tierRank={SS:0,S:1,A:2,B:3},first=12;
 const fold=t=>t.normalize('NFD').replace(/\p{M}/gu,'').toLowerCase();
 // genshin-builds propose souvent la même composition sur plusieurs pages de personnage : une seule carte, plusieurs guides.
 const group=teams=>Object.values(teams.reduce((acc,t)=>{const id=t.members.map(m=>m.key).sort().join();const g=acc[id]??={...t,id,guides:[]};if(!g.guides.some(x=>x.character===t.character))g.guides.push({character:t.character,url:t.url});if((tierRank[t.tier]??9)<(tierRank[g.tier]??9))g.tier=t.tier;return acc;},{}));
