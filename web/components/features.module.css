@@ -33,7 +33,8 @@
 .options{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:12px 0}
 .options label,.member label{display:grid;gap:4px;font-size:12px;color:var(--muted)}
 .members{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
-.member{display:grid;gap:8px;padding:12px;border:1px solid var(--border);border-radius:14px}
+.member{display:flex;flex-direction:column;gap:8px;padding:12px;border:1px solid var(--border);border-radius:14px}
+.member>button{margin-top:auto}
 .member header{display:flex;align-items:center;gap:8px;font-weight:600}
 .member img{border-radius:50%}
 .filters{display:flex;flex-wrap:wrap;gap:12px;align-items:end;margin:12px 0}
