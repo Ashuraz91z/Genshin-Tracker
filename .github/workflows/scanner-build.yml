@@ -1,0 +1,35 @@
+name: Scanner build
+
+# Compiles the Windows scanner (Kamera FR) so a build error shows up without a Windows PC.
+# It does not run a scan: that still needs Windows and the game.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'InventoryKamera-FR/**'
+      - '.github/workflows/scanner-build.yml'
+  pull_request:
+    paths:
+      - 'InventoryKamera-FR/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: InventoryKamera-FR/InventoryKamera
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Restore NuGet packages
+        run: msbuild InventoryKamera.csproj /t:Restore /p:Configuration=Release
+
+      - name: Build scanner (Release)
+        run: msbuild InventoryKamera.csproj /t:Build /p:Configuration=Release /m /v:minimal
