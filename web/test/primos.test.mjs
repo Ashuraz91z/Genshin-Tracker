@@ -30,3 +30,13 @@ test('substat roll tiers and upgrade count', () => {
   assert.deepEqual(rollTiers('critDMG_'),[5.44,6.22,6.99,7.77]);
   assert.equal(upgradeCount(0),0);assert.equal(upgradeCount(7),1);assert.equal(upgradeCount(20),5);
 });
+import { rollCheck } from '../lib/customization.mjs';
+test('sub-stat values must be sums of the rolls the upgrades allow', () => {
+  const s=(key,value)=>({key,value:String(value)});
+  // +4 : 3 tirages de départ + 1 amélioration = 4 tirages, une valeur par stat.
+  assert.equal(rollCheck([s('critDMG_',7.77),s('critRate_',3.89),s('atk',19.81),s('hp_',5.83)],5,4).ok,true);
+  // +8 : 5 tirages ; critDMG 14 = 2 tirages, le reste 1 chacun.
+  assert.equal(rollCheck([s('critDMG_',14),s('critRate_',3.89),s('atk',19.81),s('hp_',5.83)],5,8).ok,true);
+  // +8 sans tirage supplémentaire possible : 4 stats au maximum d'un tirage ne font pas 5 tirages.
+  assert.equal(rollCheck([s('critDMG_',7.77),s('critRate_',3.89),s('atk',19.81),s('hp_',5.83)],5,8).ok,false);
+});

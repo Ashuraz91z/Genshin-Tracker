@@ -11,6 +11,18 @@ export const substatRolls={hp:298.75,atk:19.81,def:23.15,hp_:5.83,atk_:5.83,def_
 export const rollTiers=key=>[0.7,0.8,0.9,1].map(f=>+(substatRolls[key]*f).toFixed(2));
 // Améliorations (+4, +8…) : chacune ajoute une sous-stat ou améliore une existante.
 export const upgradeCount=level=>Math.floor((Number(level)||0)/4);
+// Combien de tirages une sous-stat peut avoir eus : sa valeur doit être une somme de k tirages entre 70 % et 100 % du maximum.
+export function rollsFor(key,value) {
+  const max=substatRolls[key];if(!max)return null;
+  const tol=max*0.005+0.01,kmin=Math.max(1,Math.ceil((value-tol)/max)),kmax=Math.floor((value+tol)/(0.7*max));
+  return kmin<=kmax?[kmin,kmax]:null;
+}
+// Total de tirages = sous-stats de départ (3 pour un 5★) + améliorations. Vérifie que les valeurs saisies peuvent y correspondre.
+export function rollCheck(subs,rarity,level) {
+  const total=Math.max(1,rarity-2)+upgradeCount(level);let lo=0,hi=0;
+  for(const s of subs.filter(s=>s.key)){const r=rollsFor(s.key,Number(String(s.value).replace(',','.')));if(!r)return {ok:false,total,bad:s.key};lo+=r[0];hi+=r[1];}
+  return {ok:lo<=total&&total<=hi,total};
+}
 export function artifactIdentity(item){return JSON.stringify({setKey:item.setKey,slotKey:item.slotKey,rarity:item.rarity,level:item.level,mainStatKey:item.mainStatKey,substats:[...item.substats].sort((a,b)=>a.key.localeCompare(b.key))});}
 export function validateArtifactEdit(input,data,catalogue,custom=emptyCustomization()){
   need(input&&typeof input==='object','Correction invalide.');
