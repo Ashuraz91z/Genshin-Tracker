@@ -49,3 +49,8 @@ test('a 5★ that started with four lines accepts one more roll', () => {
   // Valeur ATQ fixe 19.81 n'existe pas (maximum 19.45).
   assert.equal(rollCheck([s('atk',19.81,1)],5,0).ok,false);
 });
+import { rollBudget } from '../lib/customization.mjs';
+test('roll budget follows the starting lines and the upgrade count', () => {
+  assert.deepEqual(rollBudget(5,0),{min:3,max:4});
+  assert.deepEqual(rollBudget(5,20),{min:8,max:9});
+});

@@ -23,8 +23,13 @@ export function achievableValues(key,k) {
 }
 // Le joueur indique combien de tirages a eu chaque sous-stat. Total = lignes de départ (selon la rareté) + améliorations.
 // Ok si chaque valeur est une somme exacte de ses tirages (à l'arrondi près) et si le total tombe dans la plage. Sans indication : null.
+// Plage du nombre total de tirages pour une rareté et un niveau.
+export function rollBudget(rarity,level) {
+  const [startMin,startMax]=startLines[rarity]??[0,0],up=upgradeCount(level);
+  return {min:startMin+up,max:startMax+up};
+}
 export function rollCheck(subs,rarity,level) {
-  const [startMin,startMax]=startLines[rarity]??[0,0],up=upgradeCount(level),lo=startMin+up,hi=startMax+up;
+  const {min:lo,max:hi}=rollBudget(rarity,level);
   const total=lo===hi?String(lo):`${lo} à ${hi}`,filled=subs.filter(s=>s.key);
   if(!filled.length)return {ok:null,total};
   const rolled=filled.reduce((sum,s)=>sum+(Number(s.rolls)||0),0);
