@@ -36,7 +36,7 @@ export function validateScan(body,{recoverArtifacts=false}={}) {
         need(Array.isArray(item.substats) && item.substats.length<=4 && item.substats.every(s=>s && substats.has(s.key) && typeof s.value==='number' && Number.isFinite(s.value) && s.value>0 && s.value<=100000),'Statistiques secondaires invalides.');
         need(new Set(item.substats.map(s=>s.key)).size===item.substats.length,'Statistiques secondaires en double.');
         return {setKey:item.setKey,slotKey:item.slotKey,rarity:item.rarity,level:item.level,mainStatKey:item.mainStatKey,
-          substats:item.substats.map(s=>({key:s.key,value:s.value,...(Number.isInteger(s.rolls)&&s.rolls>=1&&s.rolls<=6?{rolls:s.rolls}:{})})),location,lock:item.lock===true};
+          substats:item.substats.map(s=>({key:s.key,value:s.value,...(Number.isInteger(s.rolls)&&s.rolls>=1&&s.rolls<=6?{rolls:s.rolls}:{})})),location,lock:item.lock===true,...(Number.isInteger(item.startLines)&&item.startLines>=0&&item.startLines<=4?{startLines:item.startLines}:{})};
       } catch(error) {
         if(!recoverArtifacts||category!=='artifacts'||!(error instanceof Problem))throw error;
         rejectedArtifacts++;

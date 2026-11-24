@@ -54,3 +54,12 @@ test('roll budget follows the starting lines and the upgrade count', () => {
   assert.deepEqual(rollBudget(5,0),{min:3,max:4});
   assert.deepEqual(rollBudget(5,20),{min:8,max:9});
 });
+import { maxRollsPerLine } from '../lib/customization.mjs';
+test('one substat cannot take more rolls than the line limit (3 starting lines: 5 at +20, 4 lines: 6)', () => {
+  assert.equal(maxRollsPerLine(20,3),5);assert.equal(maxRollsPerLine(20,4),6);assert.equal(maxRollsPerLine(0,3),1);
+  assert.deepEqual(rollBudget(5,20,3),{min:8,max:8});
+  const s=(key,value,rolls)=>({key,value:String(value),rolls});
+  // 3 lignes au départ, +20 : 6 tirages sur une seule ligne est refusé, 5 accepté.
+  assert.equal(rollCheck([s('critDMG_',7.77,6),s('critRate_',3.89,1),s('atk',19.45,1)],5,20,3).over,'critDMG_');
+  assert.equal(rollCheck([s('critDMG_',7.77,5),s('critRate_',3.89,1),s('atk',19.45,1)],5,20,3).over,undefined);
+});

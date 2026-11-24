@@ -23,17 +23,27 @@ export function achievableValues(key,k) {
 }
 // Le joueur indique combien de tirages a eu chaque sous-stat. Total = lignes de départ (selon la rareté) + améliorations.
 // Ok si chaque valeur est une somme exacte de ses tirages (à l'arrondi près) et si le total tombe dans la plage. Sans indication : null.
-// Plage du nombre total de tirages pour une rareté et un niveau.
-export function rollBudget(rarity,level) {
-  const [startMin,startMax]=startLines[rarity]??[0,0],up=upgradeCount(level);
+// Total de tirages : exact si le nombre de lignes de départ est connu, sinon la plage de la rareté.
+export function rollBudget(rarity,level,start) {
+  const up=upgradeCount(level);
+  if(Number.isInteger(start))return {min:start+up,max:start+up};
+  const [startMin,startMax]=startLines[rarity]??[0,0];
   return {min:startMin+up,max:startMax+up};
 }
-export function rollCheck(subs,rarity,level) {
-  const {min:lo,max:hi}=rollBudget(rarity,level);
+// Plafond de tirages sur une seule ligne (note 11) : tant qu'il reste moins de 4 lignes, chaque amélioration en ajoute une.
+// 3 lignes au départ, +20 : 5 tirages max ; 4 lignes : 6. Sans départ connu : le cas le plus large.
+export function maxRollsPerLine(level,start=4) {
+  const up=upgradeCount(level);
+  return 1+Math.max(0,up-(4-Math.min(4,start)));
+}
+export function rollCheck(subs,rarity,level,start) {
+  const {min:lo,max:hi}=rollBudget(rarity,level,start),cap=maxRollsPerLine(level,start);
   const total=lo===hi?String(lo):`${lo} à ${hi}`,filled=subs.filter(s=>s.key);
   if(!filled.length)return {ok:null,total};
   const rolled=filled.reduce((sum,s)=>sum+(Number(s.rolls)||0),0);
   if(filled.some(s=>!Number(s.rolls)))return {ok:null,total,rolled};
+  const over=filled.find(s=>Number(s.rolls)>cap);
+  if(over)return {ok:false,total,rolled,over:over.key,cap};
   const bad=filled.find(s=>{const v=Number(String(s.value).replace(',','.'));return !achievableValues(s.key,Number(s.rolls)).some(a=>Math.abs(a-v)<=0.011);});
   if(bad)return {ok:false,total,rolled,bad:bad.key};
   return {ok:rolled>=lo&&rolled<=hi,total,rolled};
