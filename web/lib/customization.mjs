@@ -5,6 +5,12 @@ export const substatLimits={hp:2000,atk:150,def:200,hp_:50,atk_:50,def_:60,enerR
 export const minimumSubstats=(rarity,level)=>Math.min(4,Math.max(0,rarity-2)+Math.floor(level/4));
 export const maxArtifactLevel=rarity=>({1:4,2:4,3:12,4:16,5:20})[rarity];
 export const emptyCustomization=()=>({artifacts:[],teams:[]});
+// Valeur maximale d'une sous-stat sur un 5★ ; les 4 tirages possibles valent 70, 80, 90 et 100 % de ce maximum.
+// Mêmes pour tous les joueurs. CRIT DMG vérifié (5,44 à 7,77) ; les autres valeurs sont à vérifier en jeu.
+export const substatRolls={hp:298.75,atk:19.81,def:23.15,hp_:5.83,atk_:5.83,def_:7.29,enerRech_:6.48,eleMas:23.31,critRate_:3.89,critDMG_:7.77};
+export const rollTiers=key=>[0.7,0.8,0.9,1].map(f=>+(substatRolls[key]*f).toFixed(2));
+// Améliorations (+4, +8…) : chacune ajoute une sous-stat ou améliore une existante.
+export const upgradeCount=level=>Math.floor((Number(level)||0)/4);
 export function artifactIdentity(item){return JSON.stringify({setKey:item.setKey,slotKey:item.slotKey,rarity:item.rarity,level:item.level,mainStatKey:item.mainStatKey,substats:[...item.substats].sort((a,b)=>a.key.localeCompare(b.key))});}
 export function validateArtifactEdit(input,data,catalogue,custom=emptyCustomization()){
   need(input&&typeof input==='object','Correction invalide.');

@@ -25,3 +25,8 @@ test('banner calendar follows the 42-day version cycle and phase 2', () => {
   assert.deepEqual([c.date.getFullYear(),c.date.getMonth(),c.date.getDate()],[2027,0,5]);
   assert.equal(wishesToGuarantee(30,false),150);assert.equal(wishesToGuarantee(30,true),60);
 });
+import { rollTiers, upgradeCount } from '../lib/customization.mjs';
+test('substat roll tiers and upgrade count', () => {
+  assert.deepEqual(rollTiers('critDMG_'),[5.44,6.22,6.99,7.77]);
+  assert.equal(upgradeCount(0),0);assert.equal(upgradeCount(7),1);assert.equal(upgradeCount(20),5);
+});
