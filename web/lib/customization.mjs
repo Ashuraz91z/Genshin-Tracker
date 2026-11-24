@@ -6,27 +6,32 @@ export const minimumSubstats=(rarity,level)=>Math.min(4,Math.max(0,rarity-2)+Mat
 export const maxArtifactLevel=rarity=>({1:4,2:4,3:12,4:16,5:20})[rarity];
 export const emptyCustomization=()=>({artifacts:[],teams:[]});
 // Valeur maximale d'une sous-stat sur un 5★ ; les 4 tirages possibles valent 70, 80, 90 et 100 % de ce maximum.
-// Mêmes pour tous les joueurs. CRIT DMG vérifié (5,44 à 7,77) ; les autres valeurs sont à vérifier en jeu.
-export const substatRolls={hp:298.75,atk:19.81,def:23.15,hp_:5.83,atk_:5.83,def_:7.29,enerRech_:6.48,eleMas:23.31,critRate_:3.89,critDMG_:7.77};
+// Source : note Obsidian « 11 — Artéfacts, statistiques et paliers » (wiki Genshin, 24 nov. 2026). Mêmes pour tous les joueurs.
+export const substatRolls={hp:298.75,atk:19.45,def:23.15,hp_:5.83,atk_:5.83,def_:7.29,enerRech_:6.48,eleMas:23.31,critRate_:3.89,critDMG_:7.77};
 export const rollTiers=key=>[0.7,0.8,0.9,1].map(f=>+(substatRolls[key]*f).toFixed(2));
 // Améliorations (+4, +8…) : chacune ajoute une sous-stat ou améliore une existante.
 export const upgradeCount=level=>Math.floor((Number(level)||0)/4);
-// Combien de tirages une sous-stat peut avoir eus : sa valeur doit être une somme de k tirages entre 70 % et 100 % du maximum.
-export function rollsFor(key,value) {
-  const max=substatRolls[key];if(!max)return null;
-  const tol=max*0.005+0.01,kmin=Math.max(1,Math.ceil((value-tol)/max)),kmax=Math.floor((value+tol)/(0.7*max));
-  return kmin<=kmax?[kmin,kmax]:null;
+// Lignes de sous-stats à +0 selon la rareté (note Obsidian) : [minimum, maximum].
+export const startLines={1:[0,0],2:[0,1],3:[1,2],4:[2,3],5:[3,4]};
+// Valeurs exactes possibles pour k tirages : chaque tirage vaut 70, 80, 90 ou 100 % du maximum (somme discrète, pas une fourchette).
+const achievedCache=new Map();
+export function achievableValues(key,k) {
+  const id=key+':'+k;if(achievedCache.has(id))return achievedCache.get(id);
+  const sums=new Set();const walk=(n,sum)=>{if(n===0){sums.add(Math.round(sum));return;}for(const f of [700,800,900,1000])walk(n-1,sum+f);};
+  walk(k,0);
+  const values=[...sums].map(s=>substatRolls[key]*s/1000);achievedCache.set(id,values);return values;
 }
-// Total de tirages = sous-stats de départ (3 pour un 5★) + améliorations. Le joueur indique combien de tirages a eu chaque sous-stat
-// (il connaît ses améliorations) : chaque valeur doit tenir dans ses tirages, et le total doit être atteint. Sans indication : null.
+// Le joueur indique combien de tirages a eu chaque sous-stat. Total = lignes de départ (selon la rareté) + améliorations.
+// Ok si chaque valeur est une somme exacte de ses tirages (à l'arrondi près) et si le total tombe dans la plage. Sans indication : null.
 export function rollCheck(subs,rarity,level) {
-  const total=Math.max(1,rarity-2)+upgradeCount(level),filled=subs.filter(s=>s.key);
+  const [startMin,startMax]=startLines[rarity]??[0,0],up=upgradeCount(level),lo=startMin+up,hi=startMax+up;
+  const total=lo===hi?String(lo):`${lo} à ${hi}`,filled=subs.filter(s=>s.key);
   if(!filled.length)return {ok:null,total};
   const rolled=filled.reduce((sum,s)=>sum+(Number(s.rolls)||0),0);
   if(filled.some(s=>!Number(s.rolls)))return {ok:null,total,rolled};
-  const bad=filled.find(s=>{const v=Number(String(s.value).replace(',','.')),k=Number(s.rolls),max=substatRolls[s.key],tol=max*0.005+0.01;return !(v>=0.7*max*k-tol&&v<=max*k+tol);});
+  const bad=filled.find(s=>{const v=Number(String(s.value).replace(',','.'));return !achievableValues(s.key,Number(s.rolls)).some(a=>Math.abs(a-v)<=0.011);});
   if(bad)return {ok:false,total,rolled,bad:bad.key};
-  return {ok:rolled===total,total,rolled};
+  return {ok:rolled>=lo&&rolled<=hi,total,rolled};
 }
 export function artifactIdentity(item){return JSON.stringify({setKey:item.setKey,slotKey:item.slotKey,rarity:item.rarity,level:item.level,mainStatKey:item.mainStatKey,substats:[...item.substats].map(s=>({key:s.key,value:s.value})).sort((a,b)=>a.key.localeCompare(b.key))});}
 export function validateArtifactEdit(input,data,catalogue,custom=emptyCustomization()){
