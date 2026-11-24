@@ -118,7 +118,13 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
         store.login(u.name,input.password??'');
         const row=store.billing(u.id);
         // Stop billing before the data goes: a deleted account must never be charged again.
-        if(stripe&&row.stripe_subscription&&['active','trialing','past_due','unpaid','incomplete'].includes(row.sub_status))await stripe('DELETE','subscriptions/'+encodeURIComponent(row.stripe_subscription));
+        if(stripe&&row.stripe_subscription&&['active','trialing','past_due','unpaid','incomplete'].includes(row.sub_status)) {
+          try{await stripe('DELETE','subscriptions/'+encodeURIComponent(row.stripe_subscription));}
+          catch(error){
+            // Already cancelled on Stripe's side: nothing left to stop. Any other failure keeps the account, with a clear reason.
+            if(!/No such subscription/i.test(error.message))throw new Problem('Votre abonnement n’a pas pu être résilié, le compte n’a pas été supprimé. Réessayez plus tard ou écrivez à '+supportEmail+'.',502);
+          }
+        }
         store.deleteUser(u.id);
         return json(200,{ok:true},{'Set-Cookie':cookie('',true)});
       }
