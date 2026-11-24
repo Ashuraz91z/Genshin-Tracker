@@ -49,7 +49,7 @@ export function adviseTeam(keys,data,catalogue) {
     const used=new Set(),open=[];
     match.a.slots.forEach(slot=>{const k=slot.find(x=>members.includes(x)&&!used.has(x));if(k)used.add(k);else open.push(slot);});
     const extra=members.filter(k=>!used.has(k));
-    open.forEach((slot,i)=>{const alt=slot.find(k=>owned.has(k)&&!members.includes(k)&&!swaps.some(w=>w.add===k));if(alt)swaps.push({add:alt,remove:extra[i],text:`${extra[i]?`Remplacer ${catalogue.characters?.[extra[i]]?.name??extra[i]} : `:''}l’archétype « ${match.a.name} » prévoit ${catalogue.characters?.[alt]?.name??alt} à cette place, et vous l’avez.`});});
+    open.forEach((slot,i)=>{const alt=slot.find(k=>owned.has(k)&&!members.includes(k)&&!swaps.some(w=>w.add===k));if(alt)swaps.push({add:alt,remove:extra[i],text:`L’archétype « ${match.a.name} » prévoit ${catalogue.characters?.[alt]?.name??alt} à cette place, et vous l’avez.`});});
   }
   const invest=members.map(k=>({key:k,score:buildScore(k,data,catalogue)})).sort((a,b)=>a.score-b.score);
   return {archetype:match?.overlap>=2?match.a:null,swaps,invest,analysis:analyzeTeam(members,data,catalogue)};
