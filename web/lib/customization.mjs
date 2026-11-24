@@ -30,22 +30,27 @@ export function rollBudget(rarity,level,start) {
   const [startMin,startMax]=startLines[rarity]??[0,0];
   return {min:startMin+up,max:startMax+up};
 }
-// Plafond de tirages sur une seule ligne, selon le nombre de sous-stats actives : 5 avec 3 lignes, 4 avec 4 lignes.
-export function maxRollsPerLine(activeLines) {
-  return activeLines>=4?4:5;
+// Tirages qu'une ligne peut recevoir après sa valeur de départ. Une amélioration qui débloque une ligne manquante n'en donne pas.
+// 5★ +20 : départ 4 lignes → 5 ; départ 3 lignes → +4 active la 4e, il en reste 4 (max 4 sur chacune des 4 lignes).
+export function boostBudget(level,start) {
+  const up=upgradeCount(level);
+  return Number.isInteger(start)?Math.max(0,up-Math.max(0,4-start)):up;
 }
+// Nombre de lignes actives attendu (la 4e ligne grisée d'un départ à 3 reste inactive avant +4).
+export const activeLines=(level,start)=>Math.min(4,start+upgradeCount(level));
+// s.rolls = valeur de départ + tirages reçus (1 = aucun tirage).
 export function rollCheck(subs,rarity,level,start) {
-  const {min:lo,max:hi}=rollBudget(rarity,level,start);
+  const {min:lo,max:hi}=rollBudget(rarity,level,start),cap=boostBudget(level,start);
   const total=lo===hi?String(lo):`${lo} à ${hi}`,filled=subs.filter(s=>s.key);
-  const cap=maxRollsPerLine(filled.length);
-  if(!filled.length)return {ok:null,total};
-  const rolled=filled.reduce((sum,s)=>sum+(Number(s.rolls)||0),0);
-  if(filled.some(s=>!Number(s.rolls)))return {ok:null,total,rolled};
-  const over=filled.find(s=>Number(s.rolls)>cap);
-  if(over)return {ok:false,total,rolled,over:over.key,cap};
+  if(!filled.length)return {ok:null,total,cap,boosts:0};
+  const rolled=filled.reduce((sum,s)=>sum+(Number(s.rolls)||0),0),boosts=rolled-filled.length;
+  if(filled.some(s=>!Number(s.rolls)))return {ok:null,total,rolled,cap};
+  const over=filled.find(s=>Number(s.rolls)-1>cap);
+  if(over)return {ok:false,total,rolled,boosts,cap,over:over.key};
+  if(Number.isInteger(start)&&filled.length!==activeLines(level,start))return {ok:false,total,rolled,boosts,cap,lines:activeLines(level,start)};
   const bad=filled.find(s=>{const v=Number(String(s.value).replace(',','.'));return !achievableValues(s.key,Number(s.rolls)).some(a=>Math.abs(a-v)<=0.011);});
-  if(bad)return {ok:false,total,rolled,bad:bad.key};
-  return {ok:rolled>=lo&&rolled<=hi,total,rolled};
+  if(bad)return {ok:false,total,rolled,boosts,cap,bad:bad.key};
+  return {ok:rolled>=lo&&rolled<=hi,total,rolled,boosts,cap};
 }
 export function artifactIdentity(item){return JSON.stringify({setKey:item.setKey,slotKey:item.slotKey,rarity:item.rarity,level:item.level,mainStatKey:item.mainStatKey,substats:[...item.substats].map(s=>({key:s.key,value:s.value})).sort((a,b)=>a.key.localeCompare(b.key))});}
 export function validateArtifactEdit(input,data,catalogue,custom=emptyCustomization()){

@@ -54,14 +54,20 @@ test('roll budget follows the starting lines and the upgrade count', () => {
   assert.deepEqual(rollBudget(5,0),{min:3,max:4});
   assert.deepEqual(rollBudget(5,20),{min:8,max:9});
 });
-import { maxRollsPerLine } from '../lib/customization.mjs';
-test('one substat is capped at 5 rolls with 3 active lines and 4 with 4 lines', () => {
-  assert.equal(maxRollsPerLine(3),5);assert.equal(maxRollsPerLine(4),4);
-  assert.deepEqual(rollBudget(5,20,3),{min:8,max:8});
-  const s=(key,value,rolls)=>({key,value:String(value),rolls});
-  // 3 sous-stats : 6 tirages sur une ligne est refusé, 5 non (le contrôle de valeur vient après).
-  assert.equal(rollCheck([s('critDMG_',7.77,6),s('critRate_',3.89,1),s('atk',19.45,1)],5,20,3).over,'critDMG_');
-  assert.equal(rollCheck([s('critDMG_',7.77,5),s('critRate_',3.89,1),s('atk',19.45,1)],5,20,3).over,undefined);
-  // 4 sous-stats : 5 tirages sur une ligne est refusé.
-  assert.equal(rollCheck([s('critDMG_',7.77,5),s('critRate_',3.89,1),s('atk',19.45,1),s('hp_',5.83,1)],5,20,4).over,'critDMG_');
+import { activeLines, boostBudget } from '../lib/customization.mjs';
+test('upgrades per line: 5 max from 4 starting lines, 4 max when +4 activates the 4th line', () => {
+  assert.equal(boostBudget(20,4),5);assert.equal(boostBudget(20,3),4);assert.equal(boostBudget(4,3),0);assert.equal(boostBudget(0,3),0);
+  assert.equal(activeLines(0,3),3);assert.equal(activeLines(4,3),4);
+  // rolls = valeur de départ + tirages : 5 = 4 tirages.
+  const s=(key,value,rolls)=>({key,value:String(value),rolls}),cd=n=>Math.round(777*n)/100;
+  // Départ 3, +20 : 4 tirages sur une ligne, 4 lignes → cohérent.
+  assert.equal(rollCheck([s('critDMG_',cd(5),5),s('critRate_',3.89,1),s('atk',19.45,1),s('hp_',5.83,1)],5,20,3).ok,true);
+  // 5 tirages sur une ligne refusés quand la 4e a été activée.
+  assert.equal(rollCheck([s('critDMG_',cd(6),6),s('critRate_',3.89,1),s('atk',19.45,1)],5,20,3).over,'critDMG_');
+  // Départ 4, +20 : 5 tirages sur une ligne acceptés.
+  assert.equal(rollCheck([s('critDMG_',cd(6),6),s('critRate_',3.89,1),s('atk',19.45,1),s('hp_',5.83,1)],5,20,4).ok,true);
+  // Départ 3, +20 avec seulement 3 sous-stats : il manque la 4e.
+  assert.equal(rollCheck([s('critDMG_',cd(5),5),s('critRate_',3.89,1),s('atk',38.9,2)],5,20,3).lines,4);
+  // Départ 3, +0 : la 4e ligne grisée ne doit pas être saisie.
+  assert.equal(rollCheck([s('critDMG_',7.77,1),s('critRate_',3.89,1),s('atk',19.45,1),s('hp_',5.83,1)],5,0,3).lines,3);
 });
