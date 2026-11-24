@@ -30,15 +30,14 @@ export function rollBudget(rarity,level,start) {
   const [startMin,startMax]=startLines[rarity]??[0,0];
   return {min:startMin+up,max:startMax+up};
 }
-// Plafond de tirages sur une seule ligne (note 11) : tant qu'il reste moins de 4 lignes, chaque amélioration en ajoute une.
-// 3 lignes au départ, +20 : 5 tirages max ; 4 lignes : 6. Sans départ connu : le cas le plus large.
-export function maxRollsPerLine(level,start=4) {
-  const up=upgradeCount(level);
-  return 1+Math.max(0,up-(4-Math.min(4,start)));
+// Plafond de tirages sur une seule ligne, selon le nombre de sous-stats actives : 5 avec 3 lignes, 4 avec 4 lignes.
+export function maxRollsPerLine(activeLines) {
+  return activeLines>=4?4:5;
 }
 export function rollCheck(subs,rarity,level,start) {
-  const {min:lo,max:hi}=rollBudget(rarity,level,start),cap=maxRollsPerLine(level,start);
+  const {min:lo,max:hi}=rollBudget(rarity,level,start);
   const total=lo===hi?String(lo):`${lo} à ${hi}`,filled=subs.filter(s=>s.key);
+  const cap=maxRollsPerLine(filled.length);
   if(!filled.length)return {ok:null,total};
   const rolled=filled.reduce((sum,s)=>sum+(Number(s.rolls)||0),0);
   if(filled.some(s=>!Number(s.rolls)))return {ok:null,total,rolled};
