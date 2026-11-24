@@ -12,7 +12,12 @@ test('primogem forecast counts days, monthly resets and versions', () => {
   assert.equal(by.bargains.fates,10);
   assert.equal(f.wishes,Math.floor(f.totalPrimos/160)+12);
 });
-import { nextBanners, wishesToGuarantee } from '../lib/primos.mjs';
+import { featuredFor, nextBanners, wishesToGuarantee } from '../lib/primos.mjs';
+test('featured banner lookup returns the ups only inside their dates', () => {
+  assert.deepEqual(featuredFor(new Date(2026,10,24,9)).featured,['Zibai','Linnea']);
+  assert.equal(featuredFor(new Date(2026,10,20)),null);
+  assert.equal(featuredFor(new Date(2026,11,16)),null);
+});
 test('banner calendar follows the 42-day version cycle and phase 2', () => {
   const [a,b,c]=nextBanners(new Date(2026,10,19,15),3);
   assert.deepEqual([a.date.getMonth(),a.date.getDate(),a.label],[10,24,'Phase 2']);

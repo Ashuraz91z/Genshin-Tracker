@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { number } from './Collection';
 import Select from './Select';
-import { forecast, nextBanners, wishesToGuarantee } from '../lib/primos.mjs';
+import { baseRates, featuredFor, forecast, nextBanners, wishesToGuarantee } from '../lib/primos.mjs';
 const key='gt-primos',per={day:'par jour',month:'par mois',version:'par version'};
 const iso=d=>d.toISOString().slice(0,10),long=d=>d.toLocaleDateString('fr-FR',{day:'numeric',month:'long'});
 // ponytail: saved in this browser only; move to account customizations if people want it on every device.
@@ -12,10 +12,14 @@ export default function Primos() {
   const save=next=>{setState(next);try{localStorage.setItem(key,JSON.stringify(next));}catch{}};
   const set=(field,value)=>save({...state,[field]:value}),source=(id,field,value)=>save({...state,settings:{...state.settings,[id]:{...state.settings[id],[field]:value}}});
   const banners=nextBanners(),auto=/^b\d$/.test(state.target),target=auto?(banners[state.target[1]]??banners[0]).date:new Date(state.target+'T00:00');
+  const up=featuredFor(target);
   const f=forecast({...state,target}),date=target.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'}),need=wishesToGuarantee(state.pity,state.guaranteed);
   return <section className="panel primos" aria-label="Prévision de primogemmes">
     <div className="section-heading"><div><span className="eyebrow">VOS VŒUX À VENIR</span><h2>Primogemmes d’ici le {date}</h2></div></div>
     <div className="primos-summary"><strong>≈ {number(f.wishes)} vœux</strong><span>{number(f.totalPrimos)} primogemmes + {number(f.totalFates)} destins entrelacés · dans {f.days} jour{f.days>1?'s':''}</span><span className={f.wishes>=need?'primos-ok':'primos-short'}>{f.wishes>=need?`5★ de la bannière garanti : il vous faut au pire ${need} vœux.`:`Pas encore garanti : il faut au pire ${need} vœux, il en manque ${need-f.wishes}.`}</span></div>
+    <div className="primos-rates"><div><strong>Taux de base</strong><span>Identiques pour tous les joueurs (bannière personnage)</span></div>
+      <ul><li>5★ : {baseRates.fiveStar.base} % par vœu ; la probabilité monte à partir du {baseRates.fiveStar.softPityFrom}e vœu, 100 % au {baseRates.fiveStar.hardPity}e.</li><li>4★ : {baseRates.fourStar.base} % par vœu, au moins un tous les {baseRates.fourStar.guaranteedEvery} vœux.</li><li>{baseRates.fiftyFifty}</li></ul>
+      {up?<p className="primos-ok">Ups : {up.featured.join(' et ')} ({up.version}, vérifié le {up.checked}).</p>:<p className="muted">Ups : non renseignés pour cette date, à vérifier en jeu.</p>}</div>
     <div className="primos-inputs">
       <label>Primogemmes actuelles<input type="number" min="0" inputMode="numeric" value={state.primos} onChange={e=>set('primos',Math.max(0,Number(e.target.value)))}/></label>
       <label>Destins entrelacés (boules roses)<input type="number" min="0" inputMode="numeric" value={state.fates} onChange={e=>set('fates',Math.max(0,Number(e.target.value)))}/></label>

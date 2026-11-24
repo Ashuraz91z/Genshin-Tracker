@@ -269,6 +269,11 @@ kbd{font:inherit;font-size:10px;border:1px solid var(--border);border-radius:4px
 .primos-amount small{font-size:11px;color:var(--muted);white-space:nowrap}
 @media (max-width:640px){.primos-sources li{grid-template-columns:1fr auto}.primos-amount{grid-column:1/-1;order:3}}
 .primos-ok{color:var(--mint);font-weight:600}
+.primos-rates{display:grid;gap:8px;margin-bottom:18px;padding:12px 14px;border:1px solid var(--border);border-radius:14px;font-size:13px}
+.primos-rates strong{display:block;font-size:14px}
+.primos-rates span{color:var(--muted)}
+.primos-rates ul{margin:0;padding-left:18px;display:grid;gap:4px;line-height:1.5}
+.primos-rates p{margin:0}
 .primos-short{color:var(--gold);font-weight:600}
 .primos-guaranteed{align-self:end;font-size:12px}
 

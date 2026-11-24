@@ -41,3 +41,12 @@ export function nextBanners(now=new Date(),count=4) {
 }
 // Worst case for the banner's 5★: 90 wishes to hard pity, twice if the 50/50 is not guaranteed.
 export const wishesToGuarantee=(pity=0,guaranteed=false)=>Math.max(0,(guaranteed?90:180)-pity);
+// Taux de base de la bannière personnage : identiques pour tous les joueurs (wiki Genshin, guides communautaires).
+export const baseRates={fiveStar:{base:0.6,softPityFrom:74,hardPity:90},fourStar:{base:5.1,guaranteedEvery:10},
+  fiftyFifty:'Un 5★ sur deux est le personnage à l’affiche ; si on perd, le suivant est garanti.'};
+// Personnages à l’affiche (« ups »), saisis à la main d’après des guides : à vérifier en jeu.
+export const featuredBanners=[{start:[2026,10,24],end:[2026,11,15],version:'7.2 · Phase 2',featured:['Zibai','Linnea'],checked:'24 novembre 2026, guides communautaires'}];
+export function featuredFor(date) {
+  const d=new Date(date.getFullYear(),date.getMonth(),date.getDate());
+  return featuredBanners.find(b=>d>=new Date(...b.start)&&d<=new Date(...b.end))??null;
+}
