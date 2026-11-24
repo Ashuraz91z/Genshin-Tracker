@@ -17,13 +17,18 @@ export function rollsFor(key,value) {
   const tol=max*0.005+0.01,kmin=Math.max(1,Math.ceil((value-tol)/max)),kmax=Math.floor((value+tol)/(0.7*max));
   return kmin<=kmax?[kmin,kmax]:null;
 }
-// Total de tirages = sous-stats de départ (3 pour un 5★) + améliorations. Vérifie que les valeurs saisies peuvent y correspondre.
+// Total de tirages = sous-stats de départ (3 pour un 5★) + améliorations. Le joueur indique combien de tirages a eu chaque sous-stat
+// (il connaît ses améliorations) : chaque valeur doit tenir dans ses tirages, et le total doit être atteint. Sans indication : null.
 export function rollCheck(subs,rarity,level) {
-  const total=Math.max(1,rarity-2)+upgradeCount(level);let lo=0,hi=0;
-  for(const s of subs.filter(s=>s.key)){const r=rollsFor(s.key,Number(String(s.value).replace(',','.')));if(!r)return {ok:false,total,bad:s.key};lo+=r[0];hi+=r[1];}
-  return {ok:lo<=total&&total<=hi,total};
+  const total=Math.max(1,rarity-2)+upgradeCount(level),filled=subs.filter(s=>s.key);
+  if(!filled.length)return {ok:null,total};
+  const rolled=filled.reduce((sum,s)=>sum+(Number(s.rolls)||0),0);
+  if(filled.some(s=>!Number(s.rolls)))return {ok:null,total,rolled};
+  const bad=filled.find(s=>{const v=Number(String(s.value).replace(',','.')),k=Number(s.rolls),max=substatRolls[s.key],tol=max*0.005+0.01;return !(v>=0.7*max*k-tol&&v<=max*k+tol);});
+  if(bad)return {ok:false,total,rolled,bad:bad.key};
+  return {ok:rolled===total,total,rolled};
 }
-export function artifactIdentity(item){return JSON.stringify({setKey:item.setKey,slotKey:item.slotKey,rarity:item.rarity,level:item.level,mainStatKey:item.mainStatKey,substats:[...item.substats].sort((a,b)=>a.key.localeCompare(b.key))});}
+export function artifactIdentity(item){return JSON.stringify({setKey:item.setKey,slotKey:item.slotKey,rarity:item.rarity,level:item.level,mainStatKey:item.mainStatKey,substats:[...item.substats].map(s=>({key:s.key,value:s.value})).sort((a,b)=>a.key.localeCompare(b.key))});}
 export function validateArtifactEdit(input,data,catalogue,custom=emptyCustomization()){
   need(input&&typeof input==='object','Correction invalide.');
   need(data.characters.some(c=>c.key===input.characterKey),'Personnage absent de ce compte.');

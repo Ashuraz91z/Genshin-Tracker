@@ -31,12 +31,14 @@ test('substat roll tiers and upgrade count', () => {
   assert.equal(upgradeCount(0),0);assert.equal(upgradeCount(7),1);assert.equal(upgradeCount(20),5);
 });
 import { rollCheck } from '../lib/customization.mjs';
-test('sub-stat values must be sums of the rolls the upgrades allow', () => {
-  const s=(key,value)=>({key,value:String(value)});
-  // +4 : 3 tirages de départ + 1 amélioration = 4 tirages, une valeur par stat.
-  assert.equal(rollCheck([s('critDMG_',7.77),s('critRate_',3.89),s('atk',19.81),s('hp_',5.83)],5,4).ok,true);
-  // +8 : 5 tirages ; critDMG 14 = 2 tirages, le reste 1 chacun.
-  assert.equal(rollCheck([s('critDMG_',14),s('critRate_',3.89),s('atk',19.81),s('hp_',5.83)],5,8).ok,true);
-  // +8 sans tirage supplémentaire possible : 4 stats au maximum d'un tirage ne font pas 5 tirages.
-  assert.equal(rollCheck([s('critDMG_',7.77),s('critRate_',3.89),s('atk',19.81),s('hp_',5.83)],5,8).ok,false);
+test('sub-stat rolls declared by the player must match the value and the upgrade count', () => {
+  const s=(key,value,rolls)=>({key,value:String(value),rolls});
+  // +4 : 3 tirages de départ + 1 amélioration = 4 tirages, critDMG a eu les deux.
+  assert.equal(rollCheck([s('critDMG_',13.2,2),s('critRate_',3.89,1),s('atk',19.81,1)],5,4).ok,true);
+  // Même valeurs mais le total de tirages ne correspond pas.
+  assert.equal(rollCheck([s('critDMG_',13.2,1),s('critRate_',3.89,1),s('atk',19.81,1)],5,4).ok,false);
+  // critDMG 7.77 ne peut pas venir de 2 tirages (minimum 2 × 5,44).
+  assert.equal(rollCheck([s('critDMG_',7.77,2),s('critRate_',3.89,1),s('atk',19.81,1)],5,4).ok,false);
+  // Sans nombre de tirages : pas de verdict.
+  assert.equal(rollCheck([s('critDMG_',7.77,undefined)],5,4).ok,null);
 });
