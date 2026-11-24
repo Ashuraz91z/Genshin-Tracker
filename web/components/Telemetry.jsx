@@ -5,7 +5,9 @@ import { useEffect } from 'react';
 // Records which pages and buttons are used and which errors happen, never what people type.
 const queue=[];
 const clean=text=>String(text??'').replace(/\s+/g,' ').trim().slice(0,80);
-export function push(kind,name,detail) {if(name&&queue.length<200)queue.push({kind,name:clean(name),detail:detail&&String(detail).slice(0,400)});}
+// A browser marked « internal » (the admin's own, from the panel) is not counted.
+export const internal=()=>{try{return localStorage.getItem('gt_internal')==='1';}catch{return false;}};
+export function push(kind,name,detail) {if(name&&queue.length<200&&!internal())queue.push({kind,name:clean(name),detail:detail&&String(detail).slice(0,400)});}
 function flush() {
   if(!queue.length)return;
   fetch('/api/events',{method:'POST',keepalive:true,credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({events:queue.splice(0,50)})}).catch(()=>{});

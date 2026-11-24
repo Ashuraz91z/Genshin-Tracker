@@ -23,15 +23,21 @@ const tabs=[['overview','Vue d’ensemble'],['users','Utilisateurs'],['payments'
 
 export default function Admin() {
   const [data,setData]=useState(null),[error,setError]=useState(null),[tab,setTab]=useState('overview'),[query,setQuery]=useState(''),[filter,setFilter]=useState('all');
-  const [ticketId,setTicketId]=useState(null),[ticket,setTicket]=useState(null),[busy,setBusy]=useState(false),[notice,setNotice]=useState(null),[usageKind,setUsageKind]=useState('click');
+  const [ticketId,setTicketId]=useState(null),[ticket,setTicket]=useState(null),[busy,setBusy]=useState(false),[notice,setNotice]=useState(null),[usageKind,setUsageKind]=useState('click'),[internalOn,setInternalOn]=useState(false);
   const load=()=>api('/api/admin').then(d=>{setData(d);setError(null);}).catch(e=>setError(e));
   useEffect(()=>{
-    load();const params=new URLSearchParams(location.search),id=params.get('ticket'),hash=location.hash.slice(1);
+    load();try{setInternalOn(localStorage.getItem('gt_internal')==='1');}catch{}const params=new URLSearchParams(location.search),id=params.get('ticket'),hash=location.hash.slice(1);
     if(id){setTab('support');setTicketId(id);}else if(tabs.some(([t])=>t===hash))setTab(hash);
   },[]);
   useEffect(()=>{if(ticketId)api('/api/admin/tickets/'+encodeURIComponent(ticketId)).then(setTicket).catch(e=>say(e.message,true));else setTicket(null);},[ticketId]);
   useEffect(()=>{if(!notice)return;const t=setTimeout(()=>setNotice(null),5000);return()=>clearTimeout(t);},[notice]);
   const say=(text,isError=false)=>setNotice({text,error:isError});
+  async function fixError(g,fixed) {
+    setBusy(true);
+    try{await api('/api/admin/errors',{method:'POST',body:JSON.stringify({sig:g.sig,fixed})});await load();say(fixed?'Marquée comme corrigée. Si elle revient, elle sera signalée.':'Erreur rouverte.');}
+    catch(e){say(e.message,true);}finally{setBusy(false);}
+  }
+  const toggleInternal=()=>{const next=!internalOn;try{if(next)localStorage.setItem('gt_internal','1');else localStorage.removeItem('gt_internal');}catch{}setInternalOn(next);say(next?'Ce navigateur n’est plus compté.':'Ce navigateur est de nouveau compté.');};
   const open=next=>{setTab(next);history.replaceState(null,'',location.pathname+'#'+next);};
   async function act(user,action,extra={}) {
     if(action==='delete'&&!confirm(`Supprimer définitivement le compte « ${user.name} » et toutes ses données ? Un abonnement Stripe éventuel n’est pas résilié automatiquement.`))return;
@@ -50,13 +56,15 @@ export default function Admin() {
     if(!data)return null;
     const now=Date.now(),users=data.users,byId=Object.fromEntries(users.map(u=>[u.id,u]));
     const grouped=new Map();
-    for(const e of data.errors){const key=[e.kind,e.name,e.status,e.detail].join('|'),g=grouped.get(key)??{...e,count:0,users:new Set()};g.count++;if(e.user)g.users.add(e.user);grouped.set(key,g);}
+    for(const e of data.errors){const key=[e.kind,e.name,e.status,e.detail].join('|'),g=grouped.get(key)??{...e,sig:key,count:0,users:new Set(),first:e.at,last:e.at};g.count++;g.first=Math.min(g.first,e.at);g.last=Math.max(g.last,e.at);if(e.user)g.users.add(e.user);grouped.set(key,g);}
+    // open: never fixed · fixed: no occurrence since the fix · back: it happened again after the fix.
+    for(const g of grouped.values()){const fixedAt=data.fixes?.[g.sig];g.state=!fixedAt?'open':g.last>fixedAt?'back':'fixed';}
     return {byId,now,
       active7:users.filter(u=>u.last_seen>now-7*day).length,new7:users.filter(u=>Date.parse(u.created)>now-7*day).length,
       subscribed:users.filter(u=>access(u)[1]==='ok').length,trial:users.filter(u=>access(u)[1]==='info').length,
       failing:users.filter(u=>bad.includes(u.sub_status)),expired:users.filter(u=>access(u)[0]==='Sans accès'&&!u.sub_status),
       errors24:data.errors.filter(e=>e.at>now-day).length,groups:[...grouped.values()].sort((a,b)=>b.at-a.at),
-      openTickets:data.tickets.filter(t=>t.status==='open').length,maxDaily:Math.max(1,...data.daily.map(d=>d.users))};
+      openTickets:data.tickets.filter(t=>t.status==='open').length,maxDaily:Math.max(1,...data.daily.map(d=>d.visitors))};
   },[data]);
 
   if(error)return <div className={styles.adminShell}><div className={styles.gate}><h1>{error.status===401?'Connectez-vous':'Accès réservé'}</h1>
@@ -77,11 +85,11 @@ export default function Admin() {
       {id==='payments'&&view.failing.length>0&&<span className={styles.count}>{view.failing.length}</span>}{id==='support'&&view.openTickets>0&&<span className={styles.count}>{view.openTickets}</span>}{id==='problems'&&view.errors24>0&&<span className={styles.count}>{view.errors24}</span>}</button>)}</div>
 
     {tab==='overview'&&<section className={styles.stack}>
-      <div className={styles.kpis}>{[['Comptes',data.users.length,`+${view.new7} cette semaine`],['Actifs 7 j',view.active7,'ont utilisé le site'],['Abonnés',view.subscribed,`${view.trial} en essai`],
+      <div className={styles.kpis}>{[['Comptes',data.users.length,`+${view.new7} cette semaine`],['Visiteurs 7 j',data.visitors?.d7??0,`${data.visitors?.d30??0} sur 30 j`],['Actifs 7 j',view.active7,'ont utilisé le site'],['Abonnés',view.subscribed,`${view.trial} en essai`],
         ['Paiements en échec',view.failing.length,'à relancer','payments'],['Erreurs 24 h',view.errors24,`${data.scans.length} scan(s) à vérifier`,'problems'],['Demandes ouvertes',view.openTickets,`${data.tickets.length} au total`,'support']]
         .map(([label,value,hint,target])=><button key={label} className={`${styles.kpi} ${target&&value>0?styles.alert:''}`} onClick={()=>target&&open(target)} disabled={!target}><span>{label}</span><strong>{value}</strong><small>{hint}</small></button>)}</div>
-      <section className={styles.card}><h2>Utilisateurs actifs par jour (30 j)</h2>
-        {data.daily.length?<div className={styles.chart} role="img" aria-label="Utilisateurs actifs par jour">{data.daily.map(d=><div key={d.day} className={styles.bar} title={`${d.day} : ${d.users} utilisateur(s), ${d.errors} erreur(s)`}><span style={{height:`${d.users/view.maxDaily*100}%`}} className={d.errors?styles.barError:''}/></div>)}</div>:<p className={styles.empty}>Aucune activité enregistrée pour l’instant.</p>}
+      <section className={styles.card}><h2>Visiteurs par jour (30 j)</h2>
+        {data.daily.length?<div className={styles.chart} role="img" aria-label="Visiteurs par jour">{data.daily.map(d=><div key={d.day} className={styles.bar} title={`${d.day} : ${d.visitors} visiteur(s), ${d.users} compte(s), ${d.errors} erreur(s)`}><span style={{height:`${d.visitors/view.maxDaily*100}%`}} className={d.errors?styles.barError:''}/></div>)}</div>:<p className={styles.empty}>Aucune activité enregistrée pour l’instant.</p>}
         <p className={styles.legend}><span className={styles.dot}/>Jours sans erreur <span className={`${styles.dot} ${styles.dotError}`}/>Jours avec au moins une erreur</p></section>
       <section className={styles.card}><h2>Dernières erreurs</h2>{view.groups.length?<ul className={styles.list}>{view.groups.slice(0,6).map((g,i)=><li key={i}><strong>{g.name}</strong>{g.status&&<code>{g.status}</code>}<span>{g.detail}</span><small>{g.count}× · {g.users.size} utilisateur(s) · {ago(g.at)}</small></li>)}</ul>:<p className={styles.empty}>Rien à signaler.</p>}</section>
     </section>}
@@ -112,19 +120,24 @@ export default function Admin() {
     </section>}
 
     {tab==='problems'&&<section className={styles.stack}><div className={styles.toolbar}>{search}</div>
-      <section className={styles.card}><h2>Erreurs des 30 derniers jours</h2><p className={styles.muted}>Actions refusées ou en échec côté serveur (dont imports et synchronisations), et erreurs JavaScript dans les navigateurs. Les mauvais mots de passe ne sont pas comptés.</p>
-        {(()=>{const groups=view.groups.filter(g=>match(...g.users,g.name,g.detail));return groups.length?<div className={styles.tableWrap}><table className={styles.table}><thead><tr><th>Où</th><th>Erreur</th><th>Fois</th><th>Qui</th><th>Dernière</th></tr></thead><tbody>
-          {groups.map((g,i)=><tr key={i}><td><span className={styles.badge}>{kindLabel[g.kind]}</span><small>{g.name}</small></td><td>{g.status&&<code>{g.status}</code>} {g.detail??'—'}</td><td>{g.count}</td><td>{[...g.users].join(', ')||'visiteur'}</td><td>{ago(g.at)}</td></tr>)}</tbody></table></div>:<p className={styles.empty}>Rien à signaler.</p>;})()}</section>
+      <section className={styles.card}><h2>Erreurs des 30 derniers jours</h2><p className={styles.muted}>Actions refusées ou en échec côté serveur (dont imports et synchronisations), et erreurs JavaScript dans les navigateurs. Les mauvais mots de passe ne sont pas comptés. Vos propres tests sont exclus.</p>
+        {(()=>{const groups=view.groups.filter(g=>match(...g.users,g.name,g.detail));return groups.length?<div className={styles.tableWrap}><table className={styles.table}><thead><tr><th>Où</th><th>Erreur</th><th>Fois</th><th>Qui</th><th>Première</th><th>Dernière</th><th>Statut</th></tr></thead><tbody>
+          {groups.map((g,i)=><tr key={i}><td><span className={styles.badge}>{kindLabel[g.kind]}</span><small>{g.name}</small></td><td>{g.status&&<code>{g.status}</code>} {g.detail??'—'}</td><td>{g.count}</td><td>{[...g.users].join(', ')||'visiteur'}</td><td>{when(g.first)}</td><td>{ago(g.last)}</td>
+            <td><span className={`${styles.badge} ${g.state==='fixed'?styles.ok:styles.bad}`}>{{open:'Ouverte',fixed:'Corrigée',back:'Réapparue'}[g.state]}</span><br/><button className="text-button" disabled={busy} onClick={()=>fixError(g,g.state!=='fixed')}>{g.state==='fixed'?'Rouvrir':'Marquer corrigée'}</button></td></tr>)}</tbody></table></div>:<p className={styles.empty}>Rien à signaler.</p>;})()}</section>
       <section className={styles.card}><h2>Scans et imports à vérifier</h2><p className={styles.muted}>Relevés reçus avec des erreurs de lecture, des artéfacts rejetés ou des catégories ignorées.</p>
         {(()=>{const scans=data.scans.filter(s=>match(s.user,s.device));return scans.length?<div className={styles.tableWrap}><table className={styles.table}><thead><tr><th>Reçu</th><th>Compte</th><th>Source</th><th>Reçu</th><th>Problèmes</th></tr></thead><tbody>
           {scans.map((s,i)=><tr key={i}><td>{when(s.received)}</td><td>{s.user??'compte supprimé'}</td><td>{s.device}<small>{s.status}</small></td><td>{Object.entries(s.counts).map(([k,v])=>`${k} ${v}`).join(' · ')}</td><td>{s.issues.join(' · ')}{s.sample.map((e,j)=><small key={j}>{typeof e==='string'?e:JSON.stringify(e).slice(0,160)}</small>)}</td></tr>)}</tbody></table></div>:<p className={styles.empty}>Aucun scan problématique.</p>;})()}</section>
     </section>}
 
-    {tab==='usage'&&<section className={styles.stack}><div className={styles.toolbar}><div className={styles.segmented} role="radiogroup" aria-label="Type">{['click','page','api'].map(k=><button key={k} role="radio" aria-checked={usageKind===k} onClick={()=>setUsageKind(k)}>{{click:'Boutons',page:'Pages',api:'Fonctions'}[k]}</button>)}</div></div>
+    {tab==='usage'&&<section className={styles.stack}>
+      <section className={styles.card}><h2>Visiteurs uniques</h2><p className={styles.muted}>{data.visitors?.d7??0} sur 7 jours, {data.visitors?.d30??0} sur 30 jours. Un visiteur est un navigateur ; l’adresse IP n’est gardée que sous forme de hash quotidien, sans lien avec le compte.</p>
+        <p className={styles.muted}>{internalOn?'Ce navigateur est exclu des chiffres.':'Ce navigateur est compté. Cliquez pour le retirer de vos chiffres (à faire sur votre PC de test).'}</p>
+        <button className="button secondary" onClick={toggleInternal}>{internalOn?'Recompter ce navigateur':'Ne plus compter ce navigateur'}</button></section>
+      <div className={styles.toolbar}><div className={styles.segmented} role="radiogroup" aria-label="Type">{['click','page','api'].map(k=><button key={k} role="radio" aria-checked={usageKind===k} onClick={()=>setUsageKind(k)}>{{click:'Boutons',page:'Pages',api:'Fonctions'}[k]}</button>)}</div></div>
       <section className={styles.card}><h2>Les plus utilisés (30 j)</h2>{(()=>{const rows=data.usage.filter(u=>u.kind===usageKind),max=Math.max(1,...rows.map(r=>r.count));return rows.length?<div className={styles.tableWrap}><table className={styles.table}><thead><tr><th>Nom</th><th>Utilisations</th><th>Utilisateurs</th><th>Dernière</th></tr></thead><tbody>
         {rows.map(r=><tr key={r.name}><td>{r.name}</td><td><span className={styles.meter}><span style={{width:`${r.count/max*100}%`}}/></span>{r.count}</td><td>{r.users}</td><td>{ago(r.last)}</td></tr>)}</tbody></table></div>:<p className={styles.empty}>Pas encore de données.</p>;})()}</section></section>}
 
-    {tab==='audit'&&<section className={styles.card}><h2>Actions de l’administration</h2>{data.audit?.length?<div className={styles.tableWrap}><table className={styles.table}><thead><tr><th>Quand</th><th>Admin</th><th>Action</th><th>Cible</th></tr></thead><tbody>
+    {tab==='audit'&&<section className={styles.card}><h2>Actions de l’administration</h2><p className={styles.muted}>Ce journal ne garde que les actions faites dans ce panel (réponses, suspensions, erreurs marquées corrigées). Il ne suit ni la navigation ni les e-mails des utilisateurs.</p>{data.audit?.length?<div className={styles.tableWrap}><table className={styles.table}><thead><tr><th>Quand</th><th>Admin</th><th>Action</th><th>Cible</th></tr></thead><tbody>
       {data.audit.map((a,i)=><tr key={i}><td>{when(a.at)}</td><td>{a.user??'compte supprimé'}</td><td><code>{a.name}</code></td><td>{a.detail}</td></tr>)}</tbody></table></div>:<p className={styles.empty}>Aucune action enregistrée.</p>}</section>}
     {tab==='support'&&<section className={styles.supportLayout}>
       <aside className={styles.card}><h2>Demandes</h2><ul className={styles.ticketList}>{data.tickets.map(t=><li key={t.id}><button aria-current={t.id===ticketId} onClick={()=>setTicketId(t.id)}><strong>{t.subject}</strong><small>{t.name} · {ago(t.updated)}</small><span className={`${styles.badge} ${styles[t.status]}`}>{statusLabel[t.status]}</span></button></li>)}</ul>{!data.tickets.length&&<p className={styles.empty}>Aucune demande.</p>}</aside>

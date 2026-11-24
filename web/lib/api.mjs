@@ -11,7 +11,7 @@ import { billingView, pickSubscription, prices, stripeClient, subscriptionState 
 
 const securityHeaders={'X-Content-Type-Options':'nosniff','Referrer-Policy':'same-origin','X-Frame-Options':'DENY',
   'Content-Security-Policy':"default-src 'none'; script-src 'self'; frame-ancestors 'none'; base-uri 'none'"};
-export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',download=resolve('../dist/GenshinTracker-KameraFR-0.4.2.zip'),publicDirectory=resolve('public'),stripe=stripeClient(process.env.STRIPE_SECRET_KEY),mailer=createMailer(),publishableKey=process.env.STRIPE_PUBLISHABLE_KEY??'',adminEmails=process.env.ADMIN_EMAILS??'',supportEmail=process.env.SUPPORT_EMAIL??'contact@genshin-tracker.com'}={}) {
+export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',download=resolve('../dist/GenshinTracker-KameraFR-0.4.2.zip'),publicDirectory=resolve('public'),stripe=stripeClient(process.env.STRIPE_SECRET_KEY),mailer=createMailer(),publishableKey=process.env.STRIPE_PUBLISHABLE_KEY??'',adminEmails=process.env.ADMIN_EMAILS??'',internalEmails=process.env.INTERNAL_EMAILS??'',supportEmail=process.env.SUPPORT_EMAIL??'contact@genshin-tracker.com'}={}) {
   const publicOrigin=publicUrl?new URL(publicUrl).origin:null;
   if(publicOrigin && !publicOrigin.startsWith('https://') && !/^http:\/\/(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/.test(publicOrigin))throw new Error('PUBLIC_URL doit utiliser HTTPS hors localhost.');
   mkdirSync(dirname(dbPath),{recursive:true,mode:0o700});
@@ -44,6 +44,8 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
     if(plan.trial&&mailer&&!store.profile(userId).emailVerified)throw new Problem('Confirmez votre adresse e-mail (lien reçu à l’inscription, renvoyable depuis votre compte) pour utiliser l’essai gratuit.',403);};
   // Admins are listed by e-mail and must have confirmed it: a pseudo could be registered by anyone first.
   const admins=new Set(adminEmails.split(',').map(x=>x.trim().toLowerCase()).filter(Boolean));
+  // Admins and test accounts (INTERNAL_EMAILS) are left out of the usage statistics.
+  const internal=new Set([...admins,...internalEmails.split(',').map(x=>x.trim().toLowerCase()).filter(Boolean)]);
   const isAdmin=u=>{if(!u||!admins.size)return false;const p=store.profile(u.id);return p.emailVerified&&admins.has(p.email);};
   const cookie=(token,remove=false)=>`gt_session=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${remove?0:604800}${secure?'; Secure':''}`;
   async function route(request,ctx) {
@@ -214,7 +216,9 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
       if(method==='POST' && path==='/api/events') {
         const input=await body();limit('events:'+(user?.id??'guest'),300);
         need(Array.isArray(input.events)&&input.events.length<=50,'Événements invalides.');
-        for(const e of input.events)if(['click','page','error'].includes(e?.kind)&&typeof e.name==='string'&&e.name)store.record(user?.id,e.kind,e.name,null,typeof e.detail==='string'?e.detail:null);
+        const ip=(request.headers.get('x-forwarded-for')??'').split(',')[0].trim()||request.headers.get('x-real-ip')||'';
+        const visitor=store.visitor(ip,request.headers.get('user-agent')??'');
+        for(const e of input.events)if(['click','page','error'].includes(e?.kind)&&typeof e.name==='string'&&e.name)store.record(user?.id,e.kind,e.name,null,typeof e.detail==='string'?e.detail:null,visitor);
         return json(200,{ok:true});
       }
       if(path==='/api/support' && method==='GET')return json(200,{tickets:store.tickets(requireUser().id)});
@@ -242,7 +246,7 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
             for(const status of bad)for(const s of (await stripe('GET','subscriptions',{status,limit:100})).data){const id=s.metadata?.user_id;if(id&&store.billing(id)){store.setBilling(id,subscriptionState(s));seen.add(id);}}
             for(const row of store.db.prepare(`SELECT id,stripe_subscription FROM users WHERE sub_status IN ('past_due','unpaid','incomplete')`).all())if(!seen.has(row.id))await refreshBilling(row.id,row.stripe_subscription);
           }catch(error){stripeError=error.message;}
-          return json(200,{...store.adminOverview(),stripe:!!stripe,stripeError,mail:!!mailer});
+          return json(200,{...store.adminOverview(internal),stripe:!!stripe,stripeError,mail:!!mailer});
         }
         const [,,,kind,id]=path.split('/'),target=decodeURIComponent(id??'');
         // Audit trail of every admin write (kept past the 90-day event purge).
@@ -254,6 +258,12 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
           if(input.body!==undefined){store.reply(target,'admin',input.body,'answered');audit('ticket:reply',target);await sendMail(ticket.email,mails.reply(ticket.name,ticket.subject,String(input.body).trim(),origin+'/aide'));}
           if(input.status!==undefined){store.setTicketStatus(target,input.status);audit('ticket:'+input.status,target);}
           return json(200,store.ticket(target));
+        }
+        // Mark an error group as fixed (or reopen it). A fixed group that happens again shows as « réapparue ».
+        if(kind==='errors'&&method==='POST') {
+          const input=await body();need(typeof input.sig==='string'&&input.sig.length<=700,'Erreur introuvable.');
+          store.setFix(input.sig,!!input.fixed);audit(input.fixed?'error:fixed':'error:reopened',input.sig.slice(0,200));
+          return json(200,{ok:true});
         }
         if(kind==='users'&&id&&method==='POST') {
           const input=await body(),row=store.billing(target);if(!row)throw new Problem('Compte introuvable.',404);

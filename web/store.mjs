@@ -27,7 +27,11 @@ export function openStore(path) {
   // Support threads and usage events keep no foreign key: they outlive a deleted account (user_id set to NULL).
   db.exec(`CREATE TABLE IF NOT EXISTS events(at INTEGER,user_id TEXT,kind TEXT,name TEXT,status INTEGER,detail TEXT);CREATE INDEX IF NOT EXISTS events_at ON events(at);
     CREATE TABLE IF NOT EXISTS tickets(id TEXT PRIMARY KEY,user_id TEXT,name TEXT,email TEXT,subject TEXT,status TEXT,created TEXT,updated TEXT);
-    CREATE TABLE IF NOT EXISTS ticket_messages(ticket_id TEXT REFERENCES tickets(id) ON DELETE CASCADE,at TEXT,author TEXT,body TEXT);`);
+    CREATE TABLE IF NOT EXISTS ticket_messages(ticket_id TEXT REFERENCES tickets(id) ON DELETE CASCADE,at TEXT,author TEXT,body TEXT);
+    CREATE TABLE IF NOT EXISTS fixes(sig TEXT PRIMARY KEY,fixed_at INTEGER);
+    CREATE TABLE IF NOT EXISTS meta(key TEXT PRIMARY KEY,value TEXT);`);
+  // Pseudonymous visitor id (salted daily hash of IP + browser), added after the first release of events.
+  try{db.exec('ALTER TABLE events ADD COLUMN visitor TEXT');}catch(error){if(!/duplicate column/.test(error.message))throw error;}
   for(const column of ['terms_at TEXT','terms_version TEXT','email TEXT','email_verified INTEGER DEFAULT 0','newsletter INTEGER DEFAULT 0','newsletter_at TEXT','trial_ends TEXT','stripe_customer TEXT','stripe_subscription TEXT','sub_status TEXT','sub_plan TEXT','sub_until INTEGER','sub_checked INTEGER','sub_cancel INTEGER DEFAULT 0','sub_reminded INTEGER','disabled INTEGER DEFAULT 0'])
     try{db.exec('ALTER TABLE users ADD COLUMN '+column);}catch(error){if(!/duplicate column/.test(error.message))throw error;}
   db.exec('CREATE UNIQUE INDEX IF NOT EXISTS users_email ON users(email COLLATE NOCASE) WHERE email IS NOT NULL');
@@ -139,7 +143,18 @@ export function openStore(path) {
     setBilling(userId,{customer=null,subscription=null,status=null,plan=null,until=null,cancel=false}) {
       db.prepare('UPDATE users SET stripe_customer=COALESCE(?,stripe_customer),stripe_subscription=?,sub_status=?,sub_plan=?,sub_until=?,sub_cancel=?,sub_checked=? WHERE id=?').run(customer,subscription,status,plan,until,cancel?1:0,Date.now(),userId);
     },
-    record(userId,kind,name,status=null,detail=null) { db.prepare('INSERT INTO events VALUES(?,?,?,?,?,?)').run(Date.now(),userId??null,kind,String(name).slice(0,120),status,detail==null?null:String(detail).slice(0,500)); },
+    record(userId,kind,name,status=null,detail=null,visitor=null) { db.prepare('INSERT INTO events(at,user_id,kind,name,status,detail,visitor) VALUES(?,?,?,?,?,?,?)').run(Date.now(),userId??null,kind,String(name).slice(0,120),status,detail==null?null:String(detail).slice(0,500),visitor); },
+    // Salted, rotating daily: the IP itself is never stored, only this hash.
+    visitor(ip,agent) {
+      if(!ip)return null;
+      let row=db.prepare("SELECT value FROM meta WHERE key='visitor_salt'").get();
+      if(!row){db.prepare("INSERT INTO meta(key,value) VALUES('visitor_salt',?)").run(secret());row=db.prepare("SELECT value FROM meta WHERE key='visitor_salt'").get();}
+      return hash(row.value+new Date().toISOString().slice(0,10)+ip+(agent??'')).slice(0,24);
+    },
+    setFix(sig,fixed) {
+      if(fixed)db.prepare('INSERT OR REPLACE INTO fixes(sig,fixed_at) VALUES(?,?)').run(sig,Date.now());
+      else db.prepare('DELETE FROM fixes WHERE sig=?').run(sig);
+    },
     openTicket({userId=null,name,email,subject,body}) {
       need(typeof subject==='string'&&subject.trim().length>=3&&subject.length<=120,'Sujet : 3 à 120 caractères.');
       need(typeof body==='string'&&body.trim().length>=10&&body.length<=5000,'Message : 10 à 5000 caractères.');
@@ -179,7 +194,7 @@ export function openStore(path) {
         db.prepare('UPDATE tickets SET user_id=NULL WHERE user_id=?').run(userId);db.prepare('DELETE FROM users WHERE id=?').run(userId);db.exec('COMMIT');
       } catch(error){db.exec('ROLLBACK');throw error;}
     },
-    adminOverview() {
+    adminOverview(internalEmails=new Set()) {
       const day=864e5,since=Date.now()-30*day;
       db.prepare("DELETE FROM events WHERE at<? AND kind<>'admin'").run(Date.now()-90*day);
       const users=db.prepare(`SELECT u.id,u.name,u.email,u.email_verified,u.newsletter,u.created,u.trial_ends,u.stripe_customer,u.sub_status,u.sub_plan,u.sub_until,COALESCE(u.disabled,0) disabled,
@@ -187,7 +202,11 @@ export function openStore(path) {
         (SELECT MAX(at) FROM events e WHERE e.user_id=u.id) last_seen,(SELECT COUNT(*) FROM events e WHERE e.user_id=u.id AND e.at>? AND (e.status>=400 OR e.kind='error')) problems
         FROM users u ORDER BY u.created DESC`).all(Date.now()-7*day);
       const names=Object.fromEntries(users.map(u=>[u.id,u.name]));
-      const errors=db.prepare(`SELECT at,user_id,kind,name,status,detail FROM events WHERE at>? AND (kind='error' OR status>=500 OR (status>=400 AND status NOT IN (401,402,404) AND name NOT LIKE '%/login' AND name NOT LIKE '%/register')) ORDER BY at DESC LIMIT 200`).all(since)
+      // Internal accounts (admins, test accounts) are left out of every usage figure and error list.
+      const internal=users.filter(u=>u.email&&internalEmails.has(u.email.toLowerCase())).map(u=>u.id);
+      const outside=internal.length?` AND (user_id IS NULL OR user_id NOT IN (${internal.map(()=>'?').join(',')}))`:'';
+      const visitors=days=>db.prepare(`SELECT COUNT(DISTINCT visitor) n FROM events WHERE at>? AND visitor IS NOT NULL${outside}`).get(Date.now()-days*day,...internal).n;
+      const errors=db.prepare(`SELECT at,user_id,kind,name,status,detail FROM events WHERE at>? AND (kind='error' OR status>=500 OR (status>=400 AND status NOT IN (401,402,404) AND name NOT LIKE '%/login' AND name NOT LIKE '%/register'))${outside} ORDER BY at DESC LIMIT 200`).all(since,...internal)
         .map(e=>({...e,user:names[e.user_id]??null}));
       const scans=db.prepare('SELECT user_id,scan_id,received,device,report,counts,applied FROM scans ORDER BY received DESC LIMIT 300').all().map(s=>{
         const report=JSON.parse(s.report),applied=JSON.parse(s.applied),issues=[];
@@ -197,11 +216,12 @@ export function openStore(path) {
         for(const [category,value] of Object.entries(applied))if(['empty_scan','older_scan','preserved_previous'].includes(value))issues.push(category+' : '+value);
         return {user:names[s.user_id]??null,user_id:s.user_id,received:s.received,device:s.device,status:report.status,counts:JSON.parse(s.counts),issues,sample:(report.errors??[]).slice(0,3)};
       }).filter(s=>s.issues.length).slice(0,100);
-      const usage=db.prepare(`SELECT kind,name,COUNT(*) count,COUNT(DISTINCT user_id) users,MAX(at) last FROM events WHERE at>? AND kind IN ('click','page','api') AND COALESCE(status,200)<400 GROUP BY kind,name ORDER BY count DESC LIMIT 150`).all(since);
-      const daily=db.prepare(`SELECT CAST(at/? AS INTEGER) day,COUNT(DISTINCT user_id) users,COUNT(*) events,SUM(kind='error' OR status>=500) errors FROM events WHERE at>? GROUP BY day ORDER BY day`).all(day,since).map(d=>({...d,day:new Date(d.day*day).toISOString().slice(0,10)}));
+      const usage=db.prepare(`SELECT kind,name,COUNT(*) count,COUNT(DISTINCT user_id) users,COUNT(DISTINCT visitor) visitors,MAX(at) last FROM events WHERE at>? AND kind IN ('click','page','api') AND COALESCE(status,200)<400${outside} GROUP BY kind,name ORDER BY count DESC LIMIT 150`).all(since,...internal);
+      const daily=db.prepare(`SELECT CAST(at/? AS INTEGER) day,COUNT(DISTINCT COALESCE(visitor,'u'||user_id)) visitors,COUNT(DISTINCT user_id) users,COUNT(*) events,SUM(kind='error' OR status>=500) errors FROM events WHERE at>?${outside} GROUP BY day ORDER BY day`).all(day,since,...internal).map(d=>({...d,day:new Date(d.day*day).toISOString().slice(0,10)}));
+      const fixes=Object.fromEntries(db.prepare('SELECT sig,fixed_at FROM fixes').all().map(f=>[f.sig,f.fixed_at]));
       const tickets=db.prepare('SELECT t.*,(SELECT COUNT(*) FROM ticket_messages m WHERE m.ticket_id=t.id) messages FROM tickets t ORDER BY (status=\'open\') DESC,updated DESC LIMIT 200').all();
       const audit=db.prepare(`SELECT at,user_id,name,detail FROM events WHERE kind='admin' ORDER BY at DESC LIMIT 200`).all().map(e=>({...e,user:names[e.user_id]??null}));
-      return {users,errors,scans,usage,daily,tickets,audit};
+      return {users,errors,scans,usage,daily,tickets,audit,fixes,visitors:{d7:visitors(7),d30:visitors(30)}};
     },
     revoke(user,id) { db.prepare('DELETE FROM devices WHERE id=? AND user_id=?').run(id,user.id); },
     account(user) {
