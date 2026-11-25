@@ -57,6 +57,7 @@
     <PackageReference Include="System.Resources.Extensions" Version="8.0.0" />
     <EmbeddedResource Update="ui/main/MainForm.resx" LogicalName="InventoryKamera.MainForm.resources" />
     <EmbeddedResource Include="ui/web/kamera.html" LogicalName="InventoryKamera.kamera.html" />
+    <None Include="$(NuGetPackageRoot)microsoft.web.webview2/1.0.2903.40/runtimes/win-x64/native/WebView2Loader.dll" Link="runtimes/win-x64/native/WebView2Loader.dll" CopyToOutputDirectory="PreserveNewest" Visible="false" />
     <None Update="tessdata/fra.traineddata;tessdata/eng.traineddata;inventorylists/**/*" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

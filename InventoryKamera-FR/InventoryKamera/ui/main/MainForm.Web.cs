@@ -68,6 +68,9 @@ namespace InventoryKamera
             }
             try
             {
+                // Le paquet NuGet ne pose que le chargeur x86 à la racine ; l'exe AnyCPU tourne en 64 bits.
+                var loader = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "runtimes", Environment.Is64BitProcess ? "win-x64" : "win-x86", "native");
+                if (File.Exists(Path.Combine(loader, "WebView2Loader.dll"))) CoreWebView2Environment.SetLoaderDllFolderPath(loader);
                 CoreWebView2Environment.GetAvailableBrowserVersionString();
                 web = new WebView2 { Dock = DockStyle.Fill, DefaultBackgroundColor = Night };
                 Controls.Add(web); web.BringToFront();

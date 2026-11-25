@@ -148,8 +148,9 @@ Le serveur peut reprendre les anciens fichiers contenant des artéfacts invalide
 - Le scan, la synchronisation et l'association de l'appareil ne changent pas. Extraire le ZIP 0.5.0 complet.
 - Site : éditeur d'artéfacts avec tirages par ligne, conseils de domaine selon le RA estimé, et autres améliorations depuis la 0.6.1.
 
-### Interface en verre — Kamera FR 0.6.0 / site 0.7.1
+### Interface en verre — Kamera FR 0.6.1 / site 0.7.2
 
 - Kamera affiche une nouvelle interface moderne (WebView2, présent sur Windows 10 et 11) : panneaux en verre flouté, fond animé, compteurs en anneaux, viseurs sur les captures OCR, barre de titre sombre sur Windows 11. Mêmes couleurs que le site.
 - Le scan, les réglages, la connexion et l'envoi au site fonctionnent comme avant. Si WebView2 manque, l'interface 0.5 s'affiche à la place.
-- Extraire le ZIP 0.6.0 complet (nouvelles DLL Microsoft.Web.WebView2).
+- Extraire le ZIP 0.6.1 complet (nouvelles DLL Microsoft.Web.WebView2).
+- 0.6.1 : la 0.6.0 n'embarquait que le chargeur WebView2 32 bits et retombait sur l'interface 0.5 ; corrigé.
