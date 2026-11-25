@@ -140,3 +140,10 @@ Le serveur peut reprendre les anciens fichiers contenant des artéfacts invalide
 - L’adresse proposée par défaut est désormais `https://genshin-tracker.com` ; l’ancienne adresse `genshin.lux-audere.com` ne répond plus.
 - Une adresse déjà enregistrée dans Kamera est conservée : si elle pointe vers genshin-tracker.com, la mise à jour n’est pas nécessaire.
 - Site : simulateur gcsim 2.50.0, crédits des composants dans les mentions légales.
+
+### Interface HUD — Kamera FR 0.5.0 / site 0.7.0
+
+- Nouvelle interface de Kamera dans les couleurs du site : cadres à équerres dorées, boutons à coins coupés, en-tête animé avec l'état du scanner, jauges sur les compteurs, journaux en console.
+- Choix de la langue du jeu (EN ou FR) dans Kamera.
+- Le scan, la synchronisation et l'association de l'appareil ne changent pas. Extraire le ZIP 0.5.0 complet.
+- Site : éditeur d'artéfacts avec tirages par ligne, conseils de domaine selon le RA estimé, et autres améliorations depuis la 0.6.1.

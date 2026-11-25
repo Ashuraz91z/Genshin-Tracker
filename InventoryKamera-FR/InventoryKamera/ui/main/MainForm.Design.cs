@@ -115,7 +115,7 @@ namespace InventoryKamera
             var title = new Label { Text = "KAMERA", AutoSize = true, Font = Hud(28, true), ForeColor = Ink, BackColor = Color.Transparent, Location = new Point(0, 8) };
             var badge = new Label { Text = "FR", AutoSize = false, Size = new Size(34, 22), TextAlign = ContentAlignment.MiddleCenter, Font = Mono(9),
                 ForeColor = Night, BackColor = Gold };
-            var subtitle = new Label { Text = "SCANNER WINDOWS  //  v0.4  //  GENSHIN TRACKER", AutoSize = true, Font = Mono(9), ForeColor = Muted,
+            var subtitle = new Label { Text = "SCANNER WINDOWS  //  v0.5  //  GENSHIN TRACKER", AutoSize = true, Font = Mono(9), ForeColor = Muted,
                 BackColor = Color.Transparent, Location = new Point(3, 60) };
             var status = new Label { AutoSize = true, Font = Mono(9), BackColor = Color.Transparent, Anchor = AnchorStyles.Top | AnchorStyles.Right };
             connect.Anchor = AnchorStyles.Top | AnchorStyles.Right; connect.Location = new Point(870, 16);
