@@ -7,7 +7,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
-NAME='GenshinTracker-KameraFR-0.5.0'
+NAME='GenshinTracker-KameraFR-0.6.0'
 BUILD=ROOT/'InventoryKamera-FR/InventoryKamera/bin/Release/net472'
 DEST=ROOT/'dist'/NAME
 
@@ -46,7 +46,7 @@ def package():
             if p.is_file() and (p.name.lower().startswith(('license','notice','copying'))):
                 rel=p.relative_to(folder); (sub/rel).parent.mkdir(parents=True,exist_ok=True);shutil.copy2(p,sub/rel)
     (DEST/'licenses'/'NUGet-Notices.md').write_text('\n'.join(notices)+'\n')
-    required=['InventoryKamera.FR.exe','InventoryKamera.FR.exe.config','Tesseract.dll','Newtonsoft.Json.dll',
+    required=['InventoryKamera.FR.exe','InventoryKamera.FR.exe.config','Tesseract.dll','Newtonsoft.Json.dll','Microsoft.Web.WebView2.Core.dll','Microsoft.Web.WebView2.WinForms.dll',
         'x64/tesseract50.dll','x64/leptonica-1.82.0.dll','x86/tesseract50.dll',
         'tessdata/fra.traineddata','tessdata/eng.traineddata','inventorylists/characters.json',
         'inventorylists/french-aliases.json','inventorylists/catalogue-fr.json','README.md','LICENSE.txt']

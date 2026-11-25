@@ -24,6 +24,7 @@ namespace InventoryKamera
         }
         private void UpdateConnectionView(bool edit)
         {
+            connectionEditing=edit;
             bool connected=ClientSync.AccountName!=null;
             RefreshConnectionAccess();
             changeAccountButton.Visible=connected&&!edit;
@@ -50,7 +51,7 @@ namespace InventoryKamera
             accountSummary = Caption("Connectez-vous pour afficher les données enregistrées sur le site. Aucun inventaire n’a encore été chargé.", 10, Muted);
             accountSummary.Dock = DockStyle.Fill;
             layout.Controls.Add(accountSummary, 0, 0);
-            var refresh = ActionButton("Actualiser le compte");
+            var refresh = ActionButton("Actualiser le compte"); webButtons["refreshAccount"]=refresh;
             refresh.Click += async (s,e) => { refresh.Enabled=false; try { await ClientSync.RefreshAccount(); } finally { refresh.Enabled=true; } };
             layout.Controls.Add(refresh, 0, 1);
             accountCharacters = new DataGridView { Dock = DockStyle.Fill, ReadOnly = true, AllowUserToAddRows = false, AllowUserToDeleteRows = false,
@@ -99,7 +100,7 @@ namespace InventoryKamera
             var password = new TextBox { Width=560, BackColor=Night, ForeColor=Ink, UseSystemPasswordChar=true };
             connectionPassword=password;connectionName=name;
             AddSetting(panel,"Pseudo du compte du tracker",name); AddSetting(panel,"Mot de passe du tracker (différent de HoYoverse)",password);
-            var login=ActionButton("Se connecter",true);login.Width=220;
+            var login=ActionButton("Se connecter",true);webButtons["login"]=login;login.Width=220;
             login.Click += async (s,e) => {
                 if(running||connectionBusy) { syncStatusLabel.Text="Attendez la fin du scan avant de changer de compte."; return; }
                 login.Enabled=false;connectionBusy=true;

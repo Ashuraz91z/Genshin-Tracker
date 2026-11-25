@@ -115,7 +115,7 @@ namespace InventoryKamera
             var title = new Label { Text = "KAMERA", AutoSize = true, Font = Hud(28, true), ForeColor = Ink, BackColor = Color.Transparent, Location = new Point(0, 8) };
             var badge = new Label { Text = "FR", AutoSize = false, Size = new Size(34, 22), TextAlign = ContentAlignment.MiddleCenter, Font = Mono(9),
                 ForeColor = Night, BackColor = Gold };
-            var subtitle = new Label { Text = "SCANNER WINDOWS  //  v0.5  //  GENSHIN TRACKER", AutoSize = true, Font = Mono(9), ForeColor = Muted,
+            var subtitle = new Label { Text = "SCANNER WINDOWS  //  v0.6  //  GENSHIN TRACKER", AutoSize = true, Font = Mono(9), ForeColor = Muted,
                 BackColor = Color.Transparent, Location = new Point(3, 60) };
             var status = new Label { AutoSize = true, Font = Mono(9), BackColor = Color.Transparent, Anchor = AnchorStyles.Top | AnchorStyles.Right };
             connect.Anchor = AnchorStyles.Top | AnchorStyles.Right; connect.Location = new Point(870, 16);
@@ -252,8 +252,8 @@ namespace InventoryKamera
             var errorTitle=Caption("Journal du scanner",18,Ink);errorTitle.Height=42;
             var journalHelp=Caption("Scan, OCR et synchronisation • les erreurs sont conservées dans le rapport.",10,Muted);journalHelp.Height=36;
             var journalActions=new FlowLayoutPanel{Dock=DockStyle.Bottom,Height=60,BackColor=Surface,WrapContents=false};
-            var copyJournal=ActionButton("Copier le journal");copyJournal.Click+=(s,e)=>{if(ErrorLog_TextBox.TextLength>0){try{Clipboard.SetText(ErrorLog_TextBox.Text);syncProgressLabel.Text="Journal copié dans le presse-papiers.";}catch(System.Runtime.InteropServices.ExternalException){syncProgressLabel.Text="Presse-papiers occupé. Réessayez dans un instant.";}}};
-            var openJournal=ActionButton("Ouvrir les logs");openJournal.Click+=(s,e)=>{try{System.Diagnostics.Process.Start(System.IO.Path.GetFullPath("logging"));}catch(Exception ex){UserInterface.Trace("Impossible d’ouvrir les logs : "+ex.Message);}};
+            var copyJournal=ActionButton("Copier le journal");webButtons["copyLog"]=copyJournal;copyJournal.Click+=(s,e)=>{if(ErrorLog_TextBox.TextLength>0){try{Clipboard.SetText(ErrorLog_TextBox.Text);syncProgressLabel.Text="Journal copié dans le presse-papiers.";}catch(System.Runtime.InteropServices.ExternalException){syncProgressLabel.Text="Presse-papiers occupé. Réessayez dans un instant.";}}};
+            var openJournal=ActionButton("Ouvrir les logs");webButtons["openLogs"]=openJournal;openJournal.Click+=(s,e)=>{try{System.Diagnostics.Process.Start(System.IO.Path.GetFullPath("logging"));}catch(Exception ex){UserInterface.Trace("Impossible d’ouvrir les logs : "+ex.Message);}};
             journalActions.Controls.AddRange(new Control[]{copyJournal,openJournal});errors.Controls.Add(ErrorLog_TextBox);errors.Controls.Add(journalActions);errors.Controls.Add(journalHelp);errors.Controls.Add(errorTitle);
             var optionsStack=Stack(0);optionsStack.Margin=new Padding(0);optionsPage.Controls.Add(optionsStack);
             AddSection(optionsStack,"01  /  ÉQUIPEMENTS", "Les filtres limitent les pièces relevées ; les autres données du compte sont conservées.");
@@ -264,7 +264,7 @@ namespace InventoryKamera
             foreach(var check in new[]{EquipWeaponsCheckBox,EquipArtifactsCheckBox,LogScreenshotsCheckBox}){check.AutoSize=true;check.Margin=new Padding(0,12,0,0);optionsStack.Controls.Add(check);}
             AddSection(optionsStack,"03  /  EXPORTS ET DIAGNOSTIC", "Chaque scan produit un fichier GOOD et son rapport de lecture.");
             AddSetting(optionsStack,"Dossier des exports",OutputPath_TextBox);Chamfer(FileSelectButton,false);FileSelectButton.Width=130;FileSelectButton.Height=36;optionsStack.Controls.Add(FileSelectButton);
-            var exportButton=ActionButton("Ouvrir les exports");exportButton.Click+=ExportFolderMenuItem_Click;optionsStack.Controls.Add(exportButton);
+            var exportButton=ActionButton("Ouvrir les exports");webButtons["openExports"]=exportButton;exportButton.Click+=ExportFolderMenuItem_Click;optionsStack.Controls.Add(exportButton);
             Chamfer(ManualExportButton,false);ManualExportButton.Width=220;ManualExportButton.Height=44;ManualExportButton.Text="Exporter vers Optimizer";optionsStack.Controls.Add(ManualExportButton);
             Navigation_Image.Width=160;Navigation_Image.Height=70;Navigation_Image.SizeMode=PictureBoxSizeMode.Zoom;optionsStack.Controls.Add(Navigation_Image);
             var info=Caption("Le jeu doit rester en français, en 16:9 ou 16:10, HDR désactivé.",9,Muted);info.Width=620;info.Height=45;optionsStack.Controls.Add(info);
@@ -279,11 +279,11 @@ namespace InventoryKamera
             AddLoginControls(connectionForm);
             var alternative=Caption("Autre méthode : un code temporaire créé sur le site (une seule fois).",9,Muted);alternative.Width=620;alternative.Height=48;connectionForm.Controls.Add(alternative);
             AddSetting(connectionForm,"Code d’association (valable 10 minutes)",pairingCode);
-            var pairButton=ActionButton("Associer mon compte",true);pairButton.Width=220;pairButton.Click+=async(s,e)=>{if(running||connectionBusy){syncStatusLabel.Text="Attendez la fin du scan avant de changer de compte.";return;}pairButton.Enabled=false;connectionBusy=true;try{await ClientSync.Pair(siteAddress.Text,pairingCode.Text);pairingCode.Clear();}catch(Exception ex){UserInterface.Trace("Connexion refusée : "+ex.Message);syncStatusLabel.Text=ex.Message;syncStatusLabel.ForeColor=Color.Salmon;}finally{pairButton.Enabled=true;connectionBusy=false;}};connectionForm.Controls.Add(pairButton);
+            var pairButton=ActionButton("Associer mon compte",true);webButtons["pair"]=pairButton;pairButton.Width=220;pairButton.Click+=async(s,e)=>{if(running||connectionBusy){syncStatusLabel.Text="Attendez la fin du scan avant de changer de compte.";return;}pairButton.Enabled=false;connectionBusy=true;try{await ClientSync.Pair(siteAddress.Text,pairingCode.Text);pairingCode.Clear();}catch(Exception ex){UserInterface.Trace("Connexion refusée : "+ex.Message);syncStatusLabel.Text=ex.Message;syncStatusLabel.ForeColor=Color.Salmon;}finally{pairButton.Enabled=true;connectionBusy=false;}};connectionForm.Controls.Add(pairButton);
             cancelConnectionButton=ActionButton("Garder le compte actuel");cancelConnectionButton.Width=260;cancelConnectionButton.Click+=(s,e)=>{if(!connectionBusy){ClearConnectionSecrets();UpdateConnectionView(false);}};connectionForm.Controls.Add(cancelConnectionButton);
             UpdateConnectionView(false);
             connect.Text=ClientSync.AccountName==null?"Connexion au site":"Compte : "+ClientSync.AccountName;
-            var sendFile=ActionButton("Envoyer un fichier GOOD existant");sendFile.Width=320;sendFile.Click+=(s,e)=>{
+            var sendFile=ActionButton("Envoyer un fichier GOOD existant");webButtons["sendFile"]=sendFile;sendFile.Width=320;sendFile.Click+=(s,e)=>{
                 if(running||connectionBusy){syncStatusLabel.Text="Attendez la fin du scan ou de la connexion.";return;}
                 using(var file=new OpenFileDialog{Filter="Fichier GOOD (*.json)|*.json",Title="Choisissez le fichier GOOD, pas son rapport"})
                 {
@@ -292,7 +292,7 @@ namespace InventoryKamera
                     try{ClientSync.SendExisting(file.FileName);}catch(Exception ex){syncStatusLabel.Text=ex.Message;UserInterface.Trace(ex.Message);}
                 }
             };connectionStack.Controls.Add(sendFile);
-            var retry=ActionButton("Réessayer l’envoi");retry.Width=220;retry.Click+=async(s,e)=>{retry.Enabled=false;try{await ClientSync.SendPending();}finally{retry.Enabled=true;}};connectionStack.Controls.Add(retry);
+            var retry=ActionButton("Réessayer l’envoi");webButtons["retry"]=retry;retry.Width=220;retry.Click+=async(s,e)=>{retry.Enabled=false;try{await ClientSync.SendPending();}finally{retry.Enabled=true;}};connectionStack.Controls.Add(retry);
             syncStatusLabel=Caption(ClientSync.AccountName==null?"Aucun compte associé. Les exports restent enregistrés sur ce PC.":"Compte associé : "+ClientSync.AccountName,10,Muted);syncStatusLabel.Width=620;syncStatusLabel.Height=90;syncStatusLabel.Margin=new Padding(0,20,0,12);connectionStack.Controls.Add(syncStatusLabel);
             var privacy=Caption("La clé d’accès est protégée par votre session Windows. Les scans hors ligne restent en attente. Vous pouvez dissocier ce PC depuis le site.",9,Muted);privacy.Width=620;privacy.Height=80;connectionStack.Controls.Add(privacy);
             ClientSync.StatusChanged=(text,ok)=>{if(!IsDisposed&&IsHandleCreated)BeginInvoke((MethodInvoker)(()=>{syncStatusLabel.Text=text;syncStatusLabel.ForeColor=ok?Mint:Color.Salmon;if(syncProgressLabel!=null){syncProgressLabel.Text=text;syncProgressLabel.ForeColor=ok?Mint:Color.Salmon;}RefreshConnectionAccess();connect.Text=ClientSync.AccountName==null?"Connexion au site":"Compte : "+ClientSync.AccountName;}));};

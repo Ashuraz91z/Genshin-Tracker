@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kamera FR</title>
+<style>
+:root{
+  --bg:#0b1120;--bg2:#0e1625;--text:#edf2f7;--muted:#a6b3c6;--dim:#6f7d93;
+  --gold:#e7bf7c;--gold-hi:#f6d399;--mint:#7ed7bd;--red:#ff9b9b;--violet:#8f9cff;
+  --glass:rgba(255,255,255,.055);--glass-hi:rgba(255,255,255,.09);--edge:rgba(255,255,255,.11);--edge-hi:rgba(255,255,255,.22);
+  --r:22px;--ui:"Segoe UI Variable Text","Segoe UI Variable","Segoe UI",Inter,system-ui,sans-serif;
+  --display:"Segoe UI Variable Display","Segoe UI Variable","Segoe UI",Inter,system-ui,sans-serif;
+  --mono:"Cascadia Code","Cascadia Mono",Consolas,ui-monospace,monospace;--serif:Georgia,"Times New Roman",serif;
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--text);font:14px/1.55 var(--ui);-webkit-font-smoothing:antialiased;overflow:hidden;user-select:none}
+input,button,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+button:disabled{cursor:not-allowed;opacity:.5}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+svg.i{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+[hidden]{display:none!important}
+
+/* ---------- Fond : aurore + grille ---------- */
+.sky{position:fixed;inset:0;z-index:0;overflow:hidden;background:
+  radial-gradient(1200px 700px at 85% -10%,rgba(143,156,255,.13),transparent 60%),
+  radial-gradient(900px 600px at -10% 110%,rgba(126,215,189,.10),transparent 60%),
+  linear-gradient(180deg,#0b1120,#0a0f1c)}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.55;animation:drift 26s var(--ease) infinite alternate}
+.orb.a{width:520px;height:520px;left:-120px;top:-160px;background:radial-gradient(circle,rgba(231,191,124,.55),transparent 65%)}
+.orb.b{width:600px;height:600px;right:-180px;top:30%;background:radial-gradient(circle,rgba(126,215,189,.38),transparent 65%);animation-duration:32s;animation-delay:-8s}
+.orb.c{width:460px;height:460px;left:35%;bottom:-220px;background:radial-gradient(circle,rgba(143,156,255,.40),transparent 65%);animation-duration:38s;animation-delay:-14s}
+@keyframes drift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(60px,40px) scale(1.12)}100%{transform:translate(-40px,70px) scale(.94)}}
+.grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:44px 44px;mask-image:radial-gradient(ellipse 80% 70% at 60% 30%,#000 20%,transparent 75%)}
+body.running .orb.b{opacity:.8;animation-duration:12s}
+
+/* ---------- Verre liquide ---------- */
+.glass{position:relative;border-radius:var(--r);background:linear-gradient(160deg,rgba(255,255,255,.09),rgba(255,255,255,.025) 45%,rgba(255,255,255,.04));
+  border:1px solid var(--edge);backdrop-filter:blur(30px) saturate(170%);-webkit-backdrop-filter:blur(30px) saturate(170%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 0 0 1px rgba(255,255,255,.02),0 24px 60px -28px rgba(0,0,0,.75);isolation:isolate}
+.glass::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:-1;
+  background:radial-gradient(120% 60% at 0% 0%,rgba(255,255,255,.10),transparent 50%),radial-gradient(80% 50% at 100% 100%,rgba(231,191,124,.05),transparent 60%)}
+.glass::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;padding:1px;
+  background:linear-gradient(135deg,rgba(255,255,255,.35),transparent 30%,transparent 70%,rgba(231,191,124,.25));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:.55}
+
+/* ---------- Structure ---------- */
+.app{position:relative;z-index:1;display:grid;grid-template-columns:248px 1fr;gap:18px;height:100vh;padding:18px}
+.side{display:flex;flex-direction:column;padding:22px 14px 16px}
+.brand{display:flex;align-items:center;gap:12px;padding:0 10px 26px}
+.logo{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;color:#1a1408;
+  background:conic-gradient(from 210deg,var(--gold),var(--gold-hi),var(--mint),var(--gold));box-shadow:0 8px 26px -8px rgba(231,191,124,.7),inset 0 1px 0 rgba(255,255,255,.6)}
+.logo svg{width:22px;height:22px;stroke-width:2}
+.brand b{display:block;font:500 18px/1.1 var(--serif);letter-spacing:2.6px}
+.brand small{display:block;margin-top:5px;font:600 9px var(--ui);letter-spacing:4.6px;color:var(--gold)}
+.nav{display:flex;flex-direction:column;gap:4px}
+.nav button{display:flex;align-items:center;gap:12px;height:44px;padding:0 14px;border-radius:13px;color:var(--muted);text-align:left;transition:background .2s,color .2s;position:relative}
+.nav button:hover{background:rgba(255,255,255,.05);color:var(--text)}
+.nav button.on{color:var(--text);background:linear-gradient(90deg,rgba(231,191,124,.16),rgba(231,191,124,.03));box-shadow:inset 0 0 0 1px rgba(231,191,124,.22)}
+.nav button.on::before{content:"";position:absolute;left:-14px;top:12px;bottom:12px;width:3px;border-radius:3px;background:var(--gold);box-shadow:0 0 14px var(--gold)}
+.nav button.on svg{color:var(--gold)}
+.nav .count{margin-left:auto;font:600 11px var(--mono);color:var(--dim)}
+.side-foot{margin-top:auto;padding:14px 10px 0;border-top:1px solid rgba(255,255,255,.06);font-size:12px;color:var(--dim)}
+.side-foot .ver{font-family:var(--mono);color:var(--muted)}
+
+.main{display:flex;flex-direction:column;min-width:0;min-height:0}
+.top{display:flex;align-items:center;gap:16px;padding:6px 6px 18px}
+.top h1{margin:0;font:600 28px/1.15 var(--display);letter-spacing:-.4px}
+.top p{margin:4px 0 0;color:var(--muted);font-size:13px}
+.top .spacer{flex:1}
+.pill{display:inline-flex;align-items:center;gap:9px;height:38px;padding:0 16px;border-radius:999px;font-size:13px;color:var(--text)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--mint);box-shadow:0 0 0 4px rgba(126,215,189,.15),0 0 14px var(--mint)}
+.dot.gold{background:var(--gold);box-shadow:0 0 0 4px rgba(231,191,124,.15),0 0 14px var(--gold);animation:pulse 1.2s infinite}
+.dot.red{background:var(--red);box-shadow:0 0 0 4px rgba(255,155,155,.15)}
+.dot.off{background:var(--dim);box-shadow:none}
+@keyframes pulse{50%{box-shadow:0 0 0 8px rgba(231,191,124,0),0 0 20px var(--gold)}}
+button.pill:hover{border-color:var(--edge-hi)}
+
+.view{flex:1;min-height:0;overflow:auto;padding:0 6px 6px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.15) transparent}
+.view::-webkit-scrollbar{width:10px}.view::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:10px;border:3px solid transparent;background-clip:padding-box}
+.page{display:none;animation:rise .45s var(--ease)}
+.page.on{display:block}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.status{display:flex;align-items:center;gap:14px;margin-top:16px;padding:12px 18px;border-radius:16px;min-height:52px}
+.status .txt{flex:1;min-width:0}
+.status b{display:block;font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.status small{display:block;color:var(--muted);font:12px var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.status .bar{position:absolute;left:18px;right:18px;bottom:0;height:2px;border-radius:2px;overflow:hidden;opacity:0;transition:opacity .3s}
+body.running .status .bar{opacity:1}
+.status .bar::after{content:"";position:absolute;inset:0;width:35%;background:linear-gradient(90deg,transparent,var(--mint),transparent);animation:sweep 1.6s linear infinite}
+@keyframes sweep{from{transform:translateX(-100%)}to{transform:translateX(300%)}}
+
+/* ---------- Composants ---------- */
+.grid2{display:grid;grid-template-columns:minmax(330px,400px) 1fr;gap:18px}
+.stack{display:flex;flex-direction:column;gap:18px;min-width:0}
+.card{padding:22px}
+.eyebrow{font:600 10.5px var(--ui);letter-spacing:3.2px;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:8px}
+.eyebrow::before{content:"";width:16px;height:1px;background:currentColor;opacity:.7}
+.card h2{margin:8px 0 4px;font:600 20px/1.25 var(--display)}
+.card p.help{margin:0;color:var(--muted);font-size:13px}
+
+.cats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:18px}
+.chip{display:flex;align-items:center;gap:10px;height:46px;padding:0 12px;border-radius:14px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);color:var(--muted);transition:all .2s var(--ease);text-align:left}
+.chip:hover{border-color:rgba(255,255,255,.16);color:var(--text)}
+.chip .box{width:20px;height:20px;border-radius:7px;border:1.5px solid rgba(255,255,255,.25);display:grid;place-items:center;transition:all .2s}
+.chip .box svg{width:13px;height:13px;stroke-width:3;opacity:0;transform:scale(.5);transition:all .2s var(--ease);color:#14100a}
+.chip.on{color:var(--text);background:linear-gradient(135deg,rgba(231,191,124,.14),rgba(126,215,189,.06));border-color:rgba(231,191,124,.35)}
+.chip.on .box{background:var(--gold);border-color:var(--gold);box-shadow:0 0 14px rgba(231,191,124,.5)}
+.chip.on .box svg{opacity:1;transform:none}
+.chip.wide{grid-column:span 2}
+
+.seg{display:flex;padding:4px;border-radius:14px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.07);position:relative}
+.seg button{flex:1;height:36px;border-radius:10px;color:var(--muted);font-size:13px;font-weight:500;position:relative;z-index:1;transition:color .2s}
+.seg button.on{color:#16110a}
+.seg .thumb{position:absolute;top:4px;bottom:4px;border-radius:10px;background:linear-gradient(180deg,var(--gold-hi),var(--gold));box-shadow:0 4px 18px -4px rgba(231,191,124,.7),inset 0 1px 0 rgba(255,255,255,.5);transition:left .35s var(--ease),width .35s var(--ease)}
+.label{margin:18px 0 8px;font-size:12px;color:var(--muted);display:flex;justify-content:space-between}
+
+.go{position:relative;width:100%;height:64px;margin-top:22px;border-radius:20px;font:700 16px var(--display);letter-spacing:.3px;color:#17110a;overflow:hidden;
+  background:linear-gradient(180deg,var(--gold-hi),var(--gold) 60%,#d6a95f);box-shadow:0 18px 40px -14px rgba(231,191,124,.75),inset 0 1px 0 rgba(255,255,255,.65),inset 0 -2px 0 rgba(0,0,0,.12);
+  display:flex;align-items:center;justify-content:center;gap:12px;transition:transform .2s var(--ease),box-shadow .2s}
+.go:hover{transform:translateY(-1px);box-shadow:0 22px 50px -14px rgba(231,191,124,.9),inset 0 1px 0 rgba(255,255,255,.65)}
+.go:active{transform:translateY(1px) scale(.995)}
+.go svg{width:22px;height:22px;stroke-width:2.2}
+.go::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-20deg);animation:shine 4.5s 1.5s infinite}
+@keyframes shine{0%,70%{left:-60%}100%{left:130%}}
+body.running .go{background:linear-gradient(180deg,rgba(126,215,189,.28),rgba(126,215,189,.12));color:var(--mint);box-shadow:inset 0 0 0 1px rgba(126,215,189,.45),0 0 40px -10px rgba(126,215,189,.6)}
+body.running .go::after{background:linear-gradient(100deg,transparent,rgba(126,215,189,.35),transparent);animation-duration:1.4s;animation-delay:0s}
+.hint{margin-top:10px;text-align:center;font-size:12px;color:var(--dim)}
+kbd{font:600 11px var(--mono);padding:2px 7px;border-radius:6px;border:1px solid rgba(255,255,255,.18);border-bottom-width:2px;color:var(--text);background:rgba(255,255,255,.05)}
+
+.steps{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-direction:column;gap:10px;counter-reset:s}
+.steps li{display:flex;gap:12px;align-items:flex-start;color:var(--muted);font-size:13px;counter-increment:s}
+.steps li::before{content:counter(s);flex-shrink:0;width:24px;height:24px;border-radius:8px;display:grid;place-items:center;font:600 11px var(--mono);color:var(--gold);background:rgba(231,191,124,.1);border:1px solid rgba(231,191,124,.25)}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.tag{font-size:11.5px;padding:4px 10px;border-radius:999px;background:rgba(126,215,189,.08);border:1px solid rgba(126,215,189,.22);color:var(--mint)}
+
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:18px}
+.stat{padding:20px;display:flex;align-items:center;gap:18px;overflow:hidden}
+.ring{width:74px;height:74px;flex-shrink:0;position:relative}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:6}
+.ring .track{stroke:rgba(255,255,255,.07)}
+.ring .val{stroke:url(#g);stroke-linecap:round;transition:stroke-dashoffset .8s var(--ease);filter:drop-shadow(0 0 6px rgba(231,191,124,.5))}
+.ring .ic{position:absolute;inset:0;display:grid;place-items:center;color:var(--gold)}
+.ring .ic svg{width:24px;height:24px;transform:none}
+.stat .k{font:600 10.5px var(--ui);letter-spacing:2.6px;color:var(--muted);text-transform:uppercase}
+.stat .v{font:600 34px/1.1 var(--display);letter-spacing:-1px;font-variant-numeric:tabular-nums}
+.stat .v small{font:500 14px var(--mono);color:var(--dim);letter-spacing:0;margin-left:4px}
+.stat .pct{font:12px var(--mono);color:var(--mint)}
+.bump{animation:bump .35s var(--ease)}
+@keyframes bump{40%{transform:scale(1.06);color:var(--gold-hi)}}
+
+.live{display:grid;grid-template-columns:1.05fr 1fr;gap:18px}
+.vf{position:relative;border-radius:16px;background:rgba(3,7,16,.55);border:1px solid rgba(255,255,255,.06);min-height:220px;display:grid;place-items:center;overflow:hidden}
+.vf img{max-width:100%;max-height:100%;object-fit:contain;display:block;image-rendering:auto}
+.vf .empty{color:var(--dim);font-size:12px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px}
+.vf .empty svg{width:30px;height:30px;color:rgba(255,255,255,.18)}
+.vf .c{position:absolute;width:20px;height:20px;border-color:var(--mint);border-style:solid;opacity:.85}
+.vf .c.tl{left:10px;top:10px;border-width:2px 0 0 2px;border-top-left-radius:6px}.vf .c.tr{right:10px;top:10px;border-width:2px 2px 0 0;border-top-right-radius:6px}
+.vf .c.bl{left:10px;bottom:10px;border-width:0 0 2px 2px;border-bottom-left-radius:6px}.vf .c.br{right:10px;bottom:10px;border-width:0 2px 2px 0;border-bottom-right-radius:6px}
+.vf .scan{position:absolute;left:0;right:0;height:60px;top:-60px;background:linear-gradient(180deg,transparent,rgba(126,215,189,.18),rgba(126,215,189,.55) 96%,transparent);opacity:0;pointer-events:none}
+body.running .vf .scan{opacity:1;animation:scanline 2.2s linear infinite}
+@keyframes scanline{to{top:100%}}
+.vf.big{min-height:300px}
+.crops{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.crops .vf{min-height:64px}
+.crops .vf.span{grid-column:span 3;min-height:70px}
+.crops .vf .c{width:12px;height:12px}
+.crops .vf .c.tl,.crops .vf .c.tr{top:6px}.crops .vf .c.bl,.crops .vf .c.br{bottom:6px}.crops .vf .c.tl,.crops .vf .c.bl{left:6px}.crops .vf .c.tr,.crops .vf .c.br{right:6px}
+.cap{font:600 10px var(--ui);letter-spacing:2.4px;color:var(--dim);text-transform:uppercase;margin:0 0 8px}
+
+.term{margin-top:14px;height:170px;overflow:auto;padding:12px 14px;border-radius:14px;background:rgba(3,7,16,.6);border:1px solid rgba(255,255,255,.06);
+  font:12px/1.6 var(--mono);color:var(--mint);white-space:pre-wrap;word-break:break-word;user-select:text;scrollbar-width:thin;scrollbar-color:rgba(126,215,189,.3) transparent}
+.term:empty::before{content:attr(data-empty);color:var(--dim)}
+.term.tall{height:calc(100vh - 330px);min-height:260px;white-space:pre}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;height:42px;padding:0 18px;border-radius:13px;font-weight:600;font-size:13.5px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);box-shadow:inset 0 1px 0 rgba(255,255,255,.1);transition:all .2s var(--ease)}
+.btn:hover:not(:disabled){background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.22);transform:translateY(-1px)}
+.btn.primary{color:#17110a;background:linear-gradient(180deg,var(--gold-hi),var(--gold));border-color:transparent;box-shadow:0 10px 26px -10px rgba(231,191,124,.8),inset 0 1px 0 rgba(255,255,255,.6)}
+.btn.primary:hover:not(:disabled){background:linear-gradient(180deg,#fbe0ae,var(--gold-hi))}
+.btn.ghost{background:none;border-color:transparent;box-shadow:none;color:var(--muted)}
+.btn.ghost:hover:not(:disabled){color:var(--text);background:rgba(255,255,255,.05)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+.form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 18px;margin-top:20px}
+.field{display:flex;flex-direction:column;gap:7px;min-width:0}
+.field.full{grid-column:1/-1}
+.field>span{font-size:12px;color:var(--muted)}
+.input{height:46px;padding:0 14px;border-radius:13px;background:rgba(3,7,16,.5);border:1px solid rgba(255,255,255,.1);outline:none;transition:border-color .2s,box-shadow .2s;width:100%;min-width:0;user-select:text}
+.input:focus{border-color:rgba(231,191,124,.6);box-shadow:0 0 0 4px rgba(231,191,124,.12)}
+.input.key{text-align:center;font:600 15px var(--mono);cursor:pointer;caret-color:transparent}
+.input.key:focus{border-color:var(--mint);box-shadow:0 0 0 4px rgba(126,215,189,.14)}
+.with-btn{display:flex;gap:8px}
+.step{display:flex;align-items:center;height:46px;border-radius:13px;background:rgba(3,7,16,.5);border:1px solid rgba(255,255,255,.1);overflow:hidden;width:100%}
+.step button{width:46px;height:100%;color:var(--muted);font-size:18px;transition:background .2s,color .2s}
+.step button:hover{background:rgba(255,255,255,.06);color:var(--gold)}
+.step output{flex:1;text-align:center;font:600 16px var(--mono)}
+.stars{color:var(--gold);letter-spacing:2px}
+.toggles{display:flex;flex-direction:column;gap:4px;margin-top:6px}
+.switch{display:flex;align-items:center;gap:14px;padding:12px 4px;text-align:left;width:100%}
+.switch .t{flex:1}.switch .t b{display:block;font-weight:500}.switch .t small{color:var(--dim);font-size:12px}
+.switch .sw{width:44px;height:26px;border-radius:999px;background:rgba(255,255,255,.12);position:relative;transition:background .25s;flex-shrink:0}
+.switch .sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.4);transition:transform .3s var(--ease)}
+.switch.on .sw{background:linear-gradient(90deg,var(--mint),#9be6cf);box-shadow:0 0 16px -2px rgba(126,215,189,.6)}
+.switch.on .sw::after{transform:translateX(18px)}
+.sep{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.1),transparent);margin:24px 0 0}
+.note{margin-top:14px;padding:12px 14px;border-radius:14px;background:rgba(143,156,255,.07);border:1px solid rgba(143,156,255,.18);color:var(--muted);font-size:12.5px;display:flex;gap:10px}
+.note svg{color:var(--violet);margin-top:1px}
+
+.acct{display:flex;align-items:center;gap:16px;padding:18px;border-radius:18px;margin-top:20px;background:linear-gradient(135deg,rgba(126,215,189,.12),rgba(126,215,189,.02));border:1px solid rgba(126,215,189,.25)}
+.acct.bad{background:linear-gradient(135deg,rgba(255,155,155,.12),rgba(255,155,155,.02));border-color:rgba(255,155,155,.3)}
+.avatar{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;font:700 20px var(--display);color:#0b1120;background:linear-gradient(135deg,var(--mint),#b8f0de)}
+.acct.bad .avatar{background:linear-gradient(135deg,var(--red),#ffc9c9)}
+.acct .who{flex:1;min-width:0}.acct .who b{display:block;font-size:16px}.acct .who small{color:var(--muted);white-space:pre-line}
+.msg{margin-top:16px;font-size:13px;color:var(--muted);white-space:pre-line}
+.msg.ok{color:var(--mint)}.msg.err{color:var(--red)}
+.or{display:flex;align-items:center;gap:12px;color:var(--dim);font-size:12px;margin:22px 0 4px}
+.or::before,.or::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.08)}
+
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}
+.kpi{padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07)}
+.kpi b{display:block;font:600 24px var(--display)}.kpi span{font-size:12px;color:var(--muted)}
+.table{margin-top:18px;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.07)}
+.table table{width:100%;border-collapse:collapse;font-size:13px}
+.table th{text-align:left;font:600 10.5px var(--ui);letter-spacing:2px;text-transform:uppercase;color:var(--gold);padding:12px 14px;background:rgba(255,255,255,.05)}
+.table td{padding:11px 14px;border-top:1px solid rgba(255,255,255,.05);font-variant-numeric:tabular-nums}
+.table td:first-child{font-weight:500}
+.table tr:hover td{background:rgba(255,255,255,.03)}
+.table .scroll{max-height:340px;overflow:auto}
+.empty-row{padding:30px;text-align:center;color:var(--dim)}
+
+@media (max-width:1180px){.grid2{grid-template-columns:1fr}.live{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><defs>
+  <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6d399"/><stop offset="1" stop-color="#7ed7bd"/></linearGradient>
+  <symbol id="i-scan" viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h10"/></symbol>
+  <symbol id="i-log" viewBox="0 0 24 24"><path d="M4 17l6-6-6-6"/><path d="M12 19h8"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M10 8l6 4-6 4V8z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></symbol>
+  <symbol id="i-sword" viewBox="0 0 24 24"><path d="M14.5 17.5L3 6V3h3l11.5 11.5"/><path d="M13 19l6-6M16 16l4 4M19 21l2-2"/></symbol>
+  <symbol id="i-flower" viewBox="0 0 24 24"><path d="M12 7.5a4.5 4.5 0 1 1 4.5 4.5M12 7.5A4.5 4.5 0 1 0 7.5 12M12 7.5V9m-4.5 3a4.5 4.5 0 1 0 4.5 4.5M7.5 12H9m7.5 0a4.5 4.5 0 1 1-4.5 4.5m4.5-4.5H15m-3 4.5V15"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-people" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.5 9a9 9 0 0 1 14.9-3.4L23 10M1 14l4.6 4.4A9 9 0 0 0 20.5 15"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+</defs></svg>
+
+<div class="sky"><div class="orb a"></div><div class="orb b"></div><div class="orb c"></div><div class="grid"></div></div>
+
+<div class="app">
+  <aside class="side glass">
+    <div class="brand">
+      <div class="logo"><svg class="i"><use href="#i-scan"/></svg></div>
+      <div><b>KAMERA</b><small>FR · TRACKER</small></div>
+    </div>
+    <nav class="nav" aria-label="Sections">
+      <button data-page="scan" class="on"><svg class="i"><use href="#i-scan"/></svg>Scan</button>
+      <button data-page="journal"><svg class="i"><use href="#i-log"/></svg>Journal<span class="count" id="logCount"></span></button>
+      <button data-page="options"><svg class="i"><use href="#i-gear"/></svg>Options</button>
+      <button data-page="connexion"><svg class="i"><use href="#i-link"/></svg>Connexion</button>
+      <button data-page="compte"><svg class="i"><use href="#i-user"/></svg>Mon compte</button>
+    </nav>
+    <div class="side-foot">
+      <div>Scanner Windows de Genshin Tracker</div>
+      <div class="ver" id="version">v—</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="top">
+      <div>
+        <h1 id="title">Scan</h1>
+        <p id="subtitle">Relève votre inventaire depuis le jeu, puis l’envoie à votre carnet.</p>
+      </div>
+      <div class="spacer"></div>
+      <span class="pill glass" id="runPill"><span class="dot" id="runDot"></span><span id="runText">Système prêt</span></span>
+      <button class="pill glass" id="accountPill" data-goto="connexion"><svg class="i"><use href="#i-user"/></svg><span id="accountText">Non connecté</span></button>
+    </header>
+
+    <div class="view">
+      <!-- ============ SCAN ============ -->
+      <section class="page on" id="page-scan">
+        <div class="stats">
+          <div class="stat glass"><div class="ring" id="ringCharacters"><svg viewBox="0 0 80 80"><circle class="track" cx="40" cy="40" r="34"/><circle class="val" cx="40" cy="40" r="34"/></svg><div class="ic"><svg class="i"><use href="#i-people"/></svg></div></div>
+            <div><div class="k">Personnages</div><div class="v" id="vCharacters">0</div><div class="pct" id="pCharacters">lus ce scan</div></div></div>
+          <div class="stat glass"><div class="ring" id="ringWeapons"><svg viewBox="0 0 80 80"><circle class="track" cx="40" cy="40" r="34"/><circle class="val" cx="40" cy="40" r="34"/></svg><div class="ic"><svg class="i"><use href="#i-sword"/></svg></div></div>
+            <div><div class="k">Armes</div><div class="v"><span id="vWeapons">0</span><small id="mWeapons">/ ?</small></div><div class="pct" id="pWeapons">—</div></div></div>
+          <div class="stat glass"><div class="ring" id="ringArtifacts"><svg viewBox="0 0 80 80"><circle class="track" cx="40" cy="40" r="34"/><circle class="val" cx="40" cy="40" r="34"/></svg><div class="ic"><svg class="i"><use href="#i-flower"/></svg></div></div>
+            <div><div class="k">Artéfacts</div><div class="v"><span id="vArtifacts">0</span><small id="mArtifacts">/ ?</small></div><div class="pct" id="pArtifacts">—</div></div></div>
+        </div>
+        <div class="grid2">
+          <div class="stack">
+            <div class="card glass">
+              <div class="eyebrow">Scan local</div>
+              <h2>Préparer le scan</h2>
+              <p class="help">Choisissez ce que Kamera doit relever. Un scan peut viser une seule catégorie.</p>
+              <div class="cats">
+                <button class="chip" data-check="scanCharacters"><span class="box"><svg class="i"><use href="#i-check"/></svg></span>Personnages</button>
+                <button class="chip" data-check="scanWeapons"><span class="box"><svg class="i"><use href="#i-check"/></svg></span>Armes</button>
+                <button class="chip" data-check="scanArtifacts"><span class="box"><svg class="i"><use href="#i-check"/></svg></span>Artéfacts</button>
+                <button class="chip" data-check="scanMaterials"><span class="box"><svg class="i"><use href="#i-check"/></svg></span>Matériaux</button>
+                <button class="chip wide" data-check="scanDevItems"><span class="box"><svg class="i"><use href="#i-check"/></svg></span>Matériaux d’évolution</button>
+              </div>
+              <div class="label"><span>Vitesse de navigation</span><span id="delayHelp">Modéré conseillé</span></div>
+              <div class="seg" id="delay"><span class="thumb"></span><button data-v="0">Rapide</button><button data-v="1">Modéré</button><button data-v="2">Lent</button></div>
+              <button class="go" id="goBtn" data-click="scan"><svg class="i"><use href="#i-play"/></svg><span id="goText">Lancer le scan</span></button>
+              <div class="hint">Appuyez sur <kbd>Entrée</kbd> pour arrêter le scan à tout moment</div>
+            </div>
+            <div class="card glass">
+              <div class="eyebrow">Avant de commencer</div>
+              <ol class="steps">
+                <li>Ouvrez le menu Paimon dans Genshin.</li>
+                <li>Lancez le scan puis revenez au jeu avec Alt+Tab.</li>
+                <li>Gardez Genshin au premier plan sans toucher la souris.</li>
+              </ol>
+              <div class="tags"><span class="tag">Jeu en français</span><span class="tag">HDR désactivé</span><span class="tag">16:9 ou 16:10</span><span class="tag">Mode fenêtré</span></div>
+            </div>
+          </div>
+
+          <div class="stack">
+            <div class="card glass">
+              <div class="row" style="justify-content:space-between">
+                <div><div class="eyebrow">Lecture en direct</div><p class="help" id="hint" style="margin-top:6px">Aucun scan effectué dans cette session.</p></div>
+              </div>
+              <div class="live" style="margin-top:16px">
+                <div>
+                  <p class="cap">Équipement en cours</p>
+                  <div class="vf big"><img id="img-gear" hidden alt="Capture de l’équipement"><div class="empty" id="empty-gear"><svg class="i"><use href="#i-image"/></svg>En attente d’une capture</div><span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span><span class="scan"></span></div>
+                  <div class="term" id="log-gear" data-empty="Les armes et artéfacts lus s’afficheront ici."></div>
+                </div>
+                <div>
+                  <p class="cap">Personnage et aptitudes</p>
+                  <div class="crops">
+                    <div class="vf span"><img id="img-name" hidden alt="Nom"><span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span><span class="scan"></span></div>
+                    <div class="vf span"><img id="img-level" hidden alt="Niveau"><span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span><span class="scan"></span></div>
+                    <div class="vf"><img id="img-t0" hidden alt="Aptitude 1"><span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span></div>
+                    <div class="vf"><img id="img-t1" hidden alt="Aptitude 2"><span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span></div>
+                    <div class="vf"><img id="img-t2" hidden alt="Aptitude 3"><span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span></div>
+                  </div>
+                  <div class="term" id="log-character" data-empty="Les personnages lus s’afficheront ici."></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ JOURNAL ============ -->
+      <section class="page" id="page-journal">
+        <div class="card glass">
+          <div class="row" style="justify-content:space-between">
+            <div><div class="eyebrow">Diagnostic</div><h2>Journal du scanner</h2><p class="help">Scan, OCR et synchronisation. Les erreurs sont aussi conservées dans le rapport.</p></div>
+            <div class="row"><button class="btn" data-click="copyLog"><svg class="i"><use href="#i-copy"/></svg>Copier</button><button class="btn" data-click="openLogs"><svg class="i"><use href="#i-folder"/></svg>Ouvrir les logs</button></div>
+          </div>
+          <div class="term tall" id="log-error" data-empty="Le journal est vide."></div>
+        </div>
+      </section>
+
+      <!-- ============ OPTIONS ============ -->
+      <section class="page" id="page-options">
+        <div class="grid2" style="grid-template-columns:1fr 1fr">
+          <div class="stack">
+            <div class="card glass">
+              <div class="eyebrow">01 · Équipements</div><h2>Filtres de lecture</h2>
+              <p class="help">Les filtres limitent les pièces relevées ; les autres données du compte sont conservées.</p>
+              <div class="form">
+                <label class="field"><span>Rareté minimale des armes</span><div class="step" data-num="weaponRarity" data-stars><button aria-label="Moins">−</button><output></output><button aria-label="Plus">+</button></div></label>
+                <label class="field"><span>Rareté minimale des artéfacts</span><div class="step" data-num="artifactRarity" data-stars><button aria-label="Moins">−</button><output></output><button aria-label="Plus">+</button></div></label>
+                <label class="field"><span>Niveau minimal des armes</span><div class="step" data-num="weaponLevel"><button aria-label="Moins">−</button><output></output><button aria-label="Plus">+</button></div></label>
+                <label class="field"><span>Niveau minimal des artéfacts</span><div class="step" data-num="artifactLevel"><button aria-label="Moins">−</button><output></output><button aria-label="Plus">+</button></div></label>
+              </div>
+              <div class="sep"></div>
+              <div class="toggles">
+                <button class="switch" data-check="equipWeapons"><span class="t"><b>Lier les armes</b><small>Retrouve qui porte chaque arme.</small></span><span class="sw"></span></button>
+                <button class="switch" data-check="equipArtifacts"><span class="t"><b>Lier les artéfacts</b><small>Retrouve qui porte chaque artéfact.</small></span><span class="sw"></span></button>
+                <button class="switch" data-check="logScreenshots"><span class="t"><b>Garder les captures</b><small>Utile pour diagnostiquer une lecture ratée.</small></span><span class="sw"></span></button>
+              </div>
+            </div>
+            <div class="card glass">
+              <div class="eyebrow">02 · Personnages</div><h2>Noms personnalisés</h2>
+              <p class="help">Utilisez les noms visibles dans votre jeu.</p>
+              <div class="form">
+                <label class="field"><span>Nom du Voyageur</span><input class="input" data-text="travelerName" spellcheck="false"></label>
+                <label class="field"><span>Nom du Nomade</span><input class="input" data-text="wandererName" spellcheck="false"></label>
+              </div>
+            </div>
+          </div>
+          <div class="stack">
+            <div class="card glass">
+              <div class="eyebrow">03 · Jeu</div><h2>Langue et touches</h2>
+              <p class="help">Kamera lit l’écran dans la langue choisie et utilise vos raccourcis Genshin.</p>
+              <div class="label" style="margin-top:20px"><span>Langue du jeu</span></div>
+              <div class="seg" id="language"><span class="thumb"></span><button data-v="FR">Français</button><button data-v="EN">English</button></div>
+              <div class="form" style="grid-template-columns:repeat(3,1fr)">
+                <label class="field"><span>Inventaire</span><input class="input key" data-key="inventory" readonly></label>
+                <label class="field"><span>Personnages</span><input class="input key" data-key="character" readonly></label>
+                <label class="field"><span>Perso 1</span><input class="input key" data-key="slot1" readonly></label>
+              </div>
+              <p class="help" style="margin-top:10px;font-size:12px">Cliquez sur une case puis appuyez sur la touche voulue.</p>
+              <div class="row" style="margin-top:16px"><button class="btn" data-click="gameProcess"><svg class="i"><use href="#i-gear"/></svg>Processus du jeu</button><button class="btn ghost" data-click="referential"><svg class="i"><use href="#i-info"/></svg>Référentiel français</button></div>
+            </div>
+            <div class="card glass">
+              <div class="eyebrow">04 · Exports</div><h2>Fichiers GOOD</h2>
+              <p class="help">Chaque scan produit un fichier GOOD et son rapport de lecture.</p>
+              <div class="form"><label class="field full"><span>Dossier des exports</span>
+                <div class="with-btn"><input class="input" data-text="outputPath" spellcheck="false"><button class="btn" data-click="browseOutput">Parcourir</button></div></label></div>
+              <div class="row" style="margin-top:16px"><button class="btn" data-click="openExports"><svg class="i"><use href="#i-folder"/></svg>Ouvrir les exports</button><button class="btn" data-click="exportOptimizer" id="exportBtn"><svg class="i"><use href="#i-upload"/></svg>Exporter vers Optimizer</button></div>
+              <div class="note"><svg class="i"><use href="#i-info"/></svg>Le jeu doit rester en français (ou dans la langue choisie), en 16:9 ou 16:10, HDR désactivé.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ CONNEXION ============ -->
+      <section class="page" id="page-connexion">
+        <div class="grid2" style="grid-template-columns:minmax(0,640px) minmax(260px,1fr)">
+          <div class="card glass">
+            <div class="eyebrow">Synchronisation</div><h2>Du jeu à votre carnet</h2>
+            <p class="help">Connectez-vous une seule fois. Le PC reste relié à votre compte.</p>
+            <div class="acct" id="acctBox"><div class="avatar" id="acctAvatar">?</div><div class="who"><b id="acctName">Aucun compte relié</b><small id="acctDetail"></small></div>
+              <button class="btn" data-click="changeAccount" id="changeBtn">Changer de compte</button></div>
+            <div id="connForm">
+              <div class="form">
+                <label class="field full"><span>Adresse HTTPS du site</span><input class="input" data-text="siteAddress" spellcheck="false"></label>
+                <label class="field"><span>Pseudo du compte du tracker</span><input class="input" data-text="accountName" spellcheck="false" autocomplete="off"></label>
+                <label class="field"><span>Mot de passe du tracker</span><input class="input" type="password" id="password" autocomplete="off"></label>
+              </div>
+              <p class="help" style="margin-top:8px;font-size:12px">Différent de votre mot de passe HoYoverse.</p>
+              <div class="row" style="margin-top:16px"><button class="btn primary" id="loginBtn" data-click="login">Se connecter</button><button class="btn ghost" data-click="cancelChange" id="cancelBtn">Garder le compte actuel</button></div>
+              <div class="or">ou avec un code</div>
+              <div class="form"><label class="field full"><span>Code d’association créé sur le site (valable 10 minutes)</span>
+                <div class="with-btn"><input class="input" data-text="pairingCode" spellcheck="false" autocomplete="off" style="font-family:var(--mono);color:var(--gold)"><button class="btn primary" data-click="pair" id="pairBtn">Associer</button></div></label></div>
+            </div>
+            <div class="msg" id="syncStatus"></div>
+          </div>
+          <div class="stack">
+            <div class="card glass">
+              <div class="eyebrow">Envois</div><h2>Relevés</h2>
+              <p class="help">Les scans hors ligne restent en attente et repartent automatiquement.</p>
+              <div class="row" style="margin-top:16px;flex-direction:column;align-items:stretch">
+                <button class="btn" data-click="retry" id="retryBtn"><svg class="i"><use href="#i-refresh"/></svg>Réessayer l’envoi</button>
+                <button class="btn" data-click="sendFile" id="sendFileBtn"><svg class="i"><use href="#i-upload"/></svg>Envoyer un fichier GOOD existant</button>
+              </div>
+            </div>
+            <div class="note" style="margin:0"><svg class="i"><use href="#i-shield"/></svg>La clé d’accès est protégée par votre session Windows. Vous pouvez dissocier ce PC depuis le site.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ COMPTE ============ -->
+      <section class="page" id="page-compte">
+        <div class="card glass">
+          <div class="row" style="justify-content:space-between">
+            <div><div class="eyebrow">Données du site</div><h2>Mon compte</h2><p class="help" id="acctSummary" style="white-space:pre-line">Connectez-vous pour afficher les données enregistrées sur le site.</p></div>
+            <button class="btn" data-click="refreshAccount" id="refreshBtn"><svg class="i"><use href="#i-refresh"/></svg>Actualiser</button>
+          </div>
+          <div class="table"><div class="scroll"><table><thead><tr><th>Personnage</th><th>Niveau</th><th>Const.</th><th>Attaque</th><th>Compétence</th><th>Déchaînement</th></tr></thead><tbody id="rows"></tbody></table></div></div>
+          <p class="cap" style="margin-top:22px">Derniers relevés reçus</p>
+          <div class="term" id="history" style="height:220px;color:var(--muted)" data-empty="Les derniers scans reçus par le site apparaîtront ici."></div>
+        </div>
+      </section>
+
+      <div class="status glass" id="statusBar"><span class="dot" id="statusDot"></span><div class="txt"><b id="statusText">Prêt</b><small id="syncProgress">Les envois et accusés de réception apparaîtront ici.</small></div><span class="bar"></span></div>
+    </div>
+  </main>
+</div>
+
+<script>
+(function(){
+const host = window.chrome && window.chrome.webview;
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const send = msg => host ? host.postMessage(msg) : mock(msg);
+let S = {};
+
+const PAGES = {scan:["Scan","Relève votre inventaire depuis le jeu, puis l’envoie à votre carnet."],journal:["Journal","Tout ce que fait le scanner, ligne par ligne."],
+  options:["Options","Réglages du scan, du jeu et des exports."],connexion:["Connexion","Reliez ce PC à votre compte Genshin Tracker."],compte:["Mon compte","Ce que le site a déjà reçu."]};
+function go(p){$$(".nav button").forEach(b=>b.classList.toggle("on",b.dataset.page===p));$$(".page").forEach(s=>s.classList.toggle("on",s.id==="page-"+p));
+  $("#title").textContent=PAGES[p][0];$("#subtitle").textContent=PAGES[p][1];$(".view").scrollTop=0;
+  if(S.settings){setSeg($("#delay"),S.settings.delay);setSeg($("#language"),S.settings.language);}}
+$$(".nav button").forEach(b=>b.onclick=()=>go(b.dataset.page));
+$$("[data-goto]").forEach(b=>b.onclick=()=>go(b.dataset.goto));
+
+// Actions
+$$("[data-click]").forEach(b=>b.addEventListener("click",()=>{
+  if(b.dataset.click==="login") send({cmd:"set",id:"password",value:$("#password").value});
+  send({cmd:"click",id:b.dataset.click});
+  if(b.dataset.click==="login") $("#password").value="";
+}));
+$$("[data-check]").forEach(b=>b.onclick=()=>{const on=!b.classList.contains("on");b.classList.toggle("on",on);send({cmd:"set",id:b.dataset.check,value:on});});
+$$("[data-text]").forEach(i=>i.addEventListener("input",()=>send({cmd:"set",id:i.dataset.text,value:i.value})));
+$("#password").addEventListener("keydown",e=>{if(e.key==="Enter")$("#loginBtn").click();});
+$$("[data-key]").forEach(i=>i.addEventListener("keydown",e=>{if(e.key==="Tab")return;e.preventDefault();send({cmd:"key",id:i.dataset.key,vk:e.keyCode});}));
+function seg(el,id){el.querySelectorAll("button").forEach(b=>b.onclick=()=>{setSeg(el,b.dataset.v);send({cmd:"set",id,value:b.dataset.v});});}
+function setSeg(el,v){const bs=[...el.querySelectorAll("button")];const b=bs.find(x=>x.dataset.v===String(v))||bs[0];bs.forEach(x=>x.classList.toggle("on",x===b));
+  const t=el.querySelector(".thumb");t.style.left=b.offsetLeft+"px";t.style.width=b.offsetWidth+"px";}
+seg($("#delay"),"delay");seg($("#language"),"language");
+const DELAY=["Le plus rapide, pour un PC puissant","Modéré conseillé","Plus sûr si des lectures échouent"];
+$$("[data-num]").forEach(st=>{const [minus,plus]=st.querySelectorAll("button");
+  const bump=d=>{const r=(S.ranges||{})[st.dataset.num]||[0,99];const cur=+st.dataset.value||0;const v=Math.max(r[0],Math.min(r[1],cur+d));if(v===cur)return;setNum(st,v);send({cmd:"set",id:st.dataset.num,value:v});};
+  minus.onclick=e=>{e.preventDefault();bump(-1)};plus.onclick=e=>{e.preventDefault();bump(1)};});
+function setNum(st,v){st.dataset.value=v;st.querySelector("output").innerHTML="stars" in st.dataset?`${v} <span class="stars">${"★".repeat(Math.max(0,v))}</span>`:v;}
+
+// Rendu de l'état
+function setText(el,v){v=v==null?"":String(v);if(el.textContent!==v){el.textContent=v;return true}return false}
+function ring(el,ratio){const c=el.querySelector(".val"),L=2*Math.PI*34;c.style.strokeDasharray=L;c.style.strokeDashoffset=L*(1-Math.max(0,Math.min(1,ratio)));}
+function count(id,v,max){const el=$("#v"+id);if(setText(el,v)){el.classList.remove("bump");void el.offsetWidth;el.classList.add("bump");}
+  const n=parseInt(v,10)||0,m=parseInt(max,10);
+  if(max!==undefined){setText($("#m"+id),"/ "+(max||"?"));setText($("#p"+id),m>0?Math.round(100*n/m)+" % du jeu":"total inconnu");ring($("#ring"+id),m>0?n/m:0);}
+  else ring($("#ring"+id),S.running?((n%10)+1)/10:(n?1:0));}
+function render(s){
+  S=Object.assign(S,s);s=S;
+  document.body.classList.toggle("running",!!s.running);
+  setText($("#version"),s.version?"v"+s.version:"");
+  const st=s.status||{};
+  $("#runDot").className="dot"+(s.running?" gold":"");setText($("#runText"),s.running?"Scan en cours":"Système prêt");
+  $("#statusDot").className="dot"+(s.running?" gold":st.ok===false?" red":"");setText($("#statusText"),st.text||"Prêt");
+  const sp=s.syncProgress||{};const spEl=$("#syncProgress");setText(spEl,sp.text||"");spEl.style.color=sp.ok===false?"var(--red)":sp.text?"var(--mint)":"";
+  setText($("#goText"),s.running?"Scan en cours…":"Lancer le scan");
+  setText($("#hint"),s.hint||"");
+  const c=s.counts||{};count("Characters",c.characters||"0");count("Weapons",c.weapons||"0",c.weaponsMax);count("Artifacts",c.artifacts||"0",c.artifactsMax);
+  const set=s.settings||{};
+  $$("[data-check]").forEach(b=>{if(b.dataset.check in set)b.classList.toggle("on",!!set[b.dataset.check]);});
+  $$("[data-text]").forEach(i=>{const k=i.dataset.text;if(k in set&&document.activeElement!==i&&i.value!==set[k])i.value=set[k]||"";});
+  $$("[data-num]").forEach(st=>{const k=st.dataset.num;if(k in set&&+st.dataset.value!==+set[k])setNum(st,+set[k]);});
+  if("delay" in set){setSeg($("#delay"),set.delay);setText($("#delayHelp"),DELAY[+set.delay]||"");}
+  if(set.language)setSeg($("#language"),set.language);
+  const keys=s.keys||{};$$("[data-key]").forEach(i=>{if(keys[i.dataset.key]!=null)i.value=keys[i.dataset.key];});
+  const a=s.account||{};const connected=!!a.name;
+  setText($("#accountText"),connected?a.name:"Non connecté");
+  $("#acctBox").classList.toggle("bad",!!a.rejected);
+  setText($("#acctAvatar"),connected?a.name.trim().charAt(0).toUpperCase():"?");
+  setText($("#acctName"),connected?(a.rejected?"Accès refusé : ":"")+a.name:"Aucun compte relié");
+  setText($("#acctDetail"),connected?(a.rejected?"Les exports sont conservés. Reconnectez-vous avant de réessayer l’envoi.":(a.site||"")+"\nConnexion mémorisée sur ce PC."):"Connectez-vous une seule fois ci-dessous.");
+  $("#changeBtn").hidden=!connected||a.editing;$("#connForm").hidden=connected&&!a.editing;$("#cancelBtn").hidden=!(connected&&a.editing);
+  const ss=a.syncStatus||{};const m=$("#syncStatus");setText(m,ss.text||"");m.className="msg"+(ss.ok===false?" err":ss.ok?" ok":"");
+  const en=s.enabled||{};["login","pair","retry","refreshAccount","exportOptimizer","sendFile"].forEach(k=>{const b=$(`[data-click="${k}"]`);if(b&&k in en)b.disabled=!en[k];});
+  setText($("#acctSummary"),a.summary||"");
+  const rows=a.rows||[];const body=$("#rows");const sig=JSON.stringify(rows);
+  if(body.dataset.sig!==sig){body.dataset.sig=sig;body.innerHTML=rows.length?rows.map(r=>"<tr>"+r.map(v=>"<td>"+esc(v)+"</td>").join("")+"</tr>").join(""):'<tr><td colspan="6" class="empty-row">Aucun personnage chargé.</td></tr>';}
+  setText($("#history"),a.history||"");
+}
+const esc=v=>String(v==null?"–":v).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const LOGS={error:"#log-error",gear:"#log-gear",character:"#log-character"};
+function log(m){const el=$(LOGS[m.id]);if(!el)return;const stick=el.scrollHeight-el.scrollTop-el.clientHeight<40;
+  if(m.reset)el.textContent=m.text||"";else el.textContent+=m.text||"";
+  if(el.textContent.length>120000)el.textContent=el.textContent.slice(-90000);if(stick)el.scrollTop=el.scrollHeight;
+  if(m.id==="error"){const n=el.textContent.split("\n").filter(Boolean).length;setText($("#logCount"),n?String(n):"");}}
+function image(m){const img=$("#img-"+m.id);if(!img)return;const empty=$("#empty-"+m.id);
+  if(m.src){img.src=m.src;img.hidden=false;if(empty)empty.hidden=true;}else{img.hidden=true;img.removeAttribute("src");if(empty)empty.hidden=false;}}
+function onMessage(m){if(!m)return;if(m.type==="state")render(m.state);else if(m.type==="log")log(m);else if(m.type==="image")image(m);else if(m.type==="page")go(m.page);}
+if(host){host.addEventListener("message",e=>onMessage(e.data));host.postMessage({cmd:"ready"});}
+window.addEventListener("resize",()=>{if(S.settings){setSeg($("#delay"),S.settings.delay);setSeg($("#language"),S.settings.language);}});
+document.addEventListener("contextmenu",e=>{if(!e.target.closest("input,.term"))e.preventDefault();});
+
+// ---------- Aperçu hors Windows (navigateur seul) ----------
+function mock(msg){
+  if(msg.cmd==="set"){const st=S.settings;if(msg.id in st)st[msg.id]=msg.value;render({settings:st});}
+  if(msg.cmd==="click"&&msg.id==="scan"&&!S.running){render({running:true,status:{text:"Scanning",ok:true},counts:{characters:"0",weapons:"0",weaponsMax:"?",artifacts:"0",artifactsMax:"?"}});
+    let w=0,a=0,ch=0;setTimeout(()=>render({counts:Object.assign(S.counts,{weaponsMax:"312",artifactsMax:"1480"})}),600);
+    const t=setInterval(()=>{if(w<312)w+=7;else if(a<1480)a+=37;else if(ch<64)ch+=2;else{clearInterval(t);render({running:false,status:{text:"Terminé — consulter le rapport",ok:true}});return;}
+      render({counts:{characters:String(ch),weapons:String(Math.min(w,312)),weaponsMax:"312",artifacts:String(Math.min(a,1480)),artifactsMax:"1480"}});
+      log({id:"gear",text:a?`Artéfact ${a} · Couronne de Watatsumi · +20 · PV% 46,6\n`:`Arme ${w} · Lame de l’Abysse · Nv. 90/90 · R1\n`});
+      log({id:"error",text:`[${new Date().toLocaleTimeString("fr-FR")}] Lecture ${w+a+ch} validée\n`});},260);}
+}
+if(!host){
+  render({version:"0.5.0",running:false,status:{text:"Prêt · ouvrez le menu Paimon avant de lancer le scan",ok:true},syncProgress:{text:"Compte relié : envois automatiques actifs.",ok:true},
+    hint:"Aucun scan effectué dans cette session. Les compteurs concernent uniquement ce PC.",
+    counts:{characters:"0",weapons:"0",weaponsMax:"?",artifacts:"0",artifactsMax:"?"},
+    settings:{scanCharacters:true,scanWeapons:true,scanArtifacts:true,scanMaterials:false,scanDevItems:false,delay:"1",language:"FR",weaponRarity:3,artifactRarity:4,weaponLevel:1,artifactLevel:0,
+      equipWeapons:true,equipArtifacts:true,logScreenshots:false,travelerName:"Lumine",wandererName:"",outputPath:"C:\\Users\\Lucas\\Documents\\GenshinTracker\\exports",siteAddress:"https://genshin-tracker.com",accountName:"Lucas",pairingCode:""},
+    ranges:{weaponRarity:[1,5],artifactRarity:[1,5],weaponLevel:[1,90],artifactLevel:[0,20]},keys:{inventory:"B",character:"C",slot1:"1"},
+    enabled:{login:true,pair:true,retry:true,refreshAccount:true,exportOptimizer:false,sendFile:true},
+    account:{name:"Lucas",site:"https://genshin-tracker.com",rejected:false,editing:false,syncStatus:{text:"Compte associé : Lucas",ok:true},
+      summary:"Compte : Lucas · Données enregistrées sur le site\n64 personnages · 312 armes · 1480 artéfacts · 210 types de matériaux",
+      rows:[["Furina",90,2,10,10,10],["Neuvillette",90,0,10,9,10],["Nahida",90,1,6,10,10],["Raiden Shogun",90,0,6,9,10],["Kazuha",90,0,1,9,9]],
+      history:"DERNIERS RELEVÉS REÇUS PAR LE SITE\n25/11/2026 19:02 · PC-LUCAS · finished_unverified\n  64 personnages, 312 armes, 1480 artéfacts"}});
+}
+})();
+</script>
+</body>
+</html>

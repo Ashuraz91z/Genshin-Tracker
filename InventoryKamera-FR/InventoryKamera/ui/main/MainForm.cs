@@ -37,6 +37,7 @@ namespace InventoryKamera
         {
             InitializeComponent();
             ApplyTrackerDesign();
+            Load += (sender, args) => StartWebInterface();
 
             Language_ComboBox.SelectedItem = GameLanguage.IsFrench ? "FR" : "EN";
             Language_ComboBox.SelectedIndexChanged += (sender, args) =>

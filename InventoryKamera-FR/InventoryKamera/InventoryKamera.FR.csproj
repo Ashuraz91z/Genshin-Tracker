@@ -29,6 +29,7 @@
     <PackageReference Include="System.Security.Cryptography.Algorithms" Version="4.3.1" />
     <PackageReference Include="System.Security.Cryptography.X509Certificates" Version="4.3.2" />
     <PackageReference Include="Tesseract" Version="5.2.0" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2903.40" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -55,6 +56,7 @@
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.3" PrivateAssets="all" />
     <PackageReference Include="System.Resources.Extensions" Version="8.0.0" />
     <EmbeddedResource Update="ui/main/MainForm.resx" LogicalName="InventoryKamera.MainForm.resources" />
+    <EmbeddedResource Include="ui/web/kamera.html" LogicalName="InventoryKamera.kamera.html" />
     <None Update="tessdata/fra.traineddata;tessdata/eng.traineddata;inventorylists/**/*" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>
