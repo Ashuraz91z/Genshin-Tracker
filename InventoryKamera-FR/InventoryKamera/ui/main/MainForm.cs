@@ -188,11 +188,11 @@ namespace InventoryKamera
             {
                 if (GenshinProcesor.Characters.ContainsKey(name.ConvertToGood().ToLower()))
                 {
-                    textbox.BackColor = Color.Yellow;
+                    textbox.BackColor = Warn;
                 }
                 else
                 {
-                    textbox.BackColor = Color.White;
+                    textbox.BackColor = Night;
                 }
             }
         }
@@ -201,7 +201,7 @@ namespace InventoryKamera
         {
             var textbox = sender as TextBox;
             
-            if (textbox.BackColor == Color.Yellow)
+            if (textbox.BackColor == Warn)
             {
                 var tooltip = new ToolTip();
                 tooltip.Show($"{textbox.Text} already exists as a character's name.\n" +
