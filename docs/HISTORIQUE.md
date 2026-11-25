@@ -154,3 +154,9 @@ Le serveur peut reprendre les anciens fichiers contenant des artéfacts invalide
 - Le scan, les réglages, la connexion et l'envoi au site fonctionnent comme avant. Si WebView2 manque, l'interface 0.5 s'affiche à la place.
 - Extraire le ZIP 0.6.1 complet (nouvelles DLL Microsoft.Web.WebView2).
 - 0.6.1 : la 0.6.0 n'embarquait que le chargeur WebView2 32 bits et retombait sur l'interface 0.5 ; corrigé.
+
+### Interface en anglais — Kamera FR 0.6.2 / site 0.7.3
+
+- Kamera peut s'afficher en français ou en anglais : sélecteur FR / EN en bas du menu latéral. Le choix est retenu sur le PC ; par défaut, la langue de Windows.
+- Les messages du scan et de la synchronisation sont traduits ; le journal détaillé reste en français.
+- La langue du jeu (Options) reste un réglage séparé.

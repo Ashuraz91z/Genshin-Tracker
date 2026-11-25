@@ -65,6 +65,7 @@ body.running .orb.b{opacity:.8;animation-duration:12s}
 .nav button.on svg{color:var(--gold)}
 .nav .count{margin-left:auto;font:600 11px var(--mono);color:var(--dim)}
 .side-foot{margin-top:auto;padding:14px 10px 0;border-top:1px solid rgba(255,255,255,.06);font-size:12px;color:var(--dim)}
+.seg.mini{margin-bottom:12px}.seg.mini button{height:28px;font-size:12px;letter-spacing:1px}
 .side-foot .ver{font-family:var(--mono);color:var(--muted)}
 
 .main{display:flex;flex-direction:column;min-width:0;min-height:0}
@@ -277,6 +278,7 @@ body.running .vf .scan{opacity:1;animation:scanline 2.2s linear infinite}
       <button data-page="compte"><svg class="i"><use href="#i-user"/></svg>Mon compte</button>
     </nav>
     <div class="side-foot">
+      <div class="seg mini" id="uiLanguage" role="group" aria-label="Langue de l’interface"><span class="thumb"></span><button data-v="fr">FR</button><button data-v="en">EN</button></div>
       <div>Scanner Windows de Genshin Tracker</div>
       <div class="ver" id="version">v—</div>
     </div>
@@ -488,10 +490,92 @@ const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAl
 const send = msg => host ? host.postMessage(msg) : mock(msg);
 let S = {};
 
+// ---------- Langue de l'interface (FR / EN) ----------
+const EN={"FR · TRACKER":"FR · TRACKER","Scan":"Scan","Journal":"Log","Options":"Settings","Connexion":"Connection","Mon compte":"My account","Sections":"Sections",
+"Scanner Windows de Genshin Tracker":"Genshin Tracker Windows scanner","Langue de l’interface":"Interface language",
+"Relève votre inventaire depuis le jeu, puis l’envoie à votre carnet.":"Reads your inventory from the game, then sends it to your tracker.",
+"Tout ce que fait le scanner, ligne par ligne.":"Everything the scanner does, line by line.","Réglages du scan, du jeu et des exports.":"Scan, game and export settings.",
+"Reliez ce PC à votre compte Genshin Tracker.":"Link this PC to your Genshin Tracker account.","Ce que le site a déjà reçu.":"What the site has already received.",
+"Système prêt":"System ready","Scan en cours":"Scanning","Scan en cours…":"Scanning…","Lancer le scan":"Start scan","Prêt":"Ready","Non connecté":"Not connected",
+"Personnages":"Characters","lus ce scan":"read this scan","Armes":"Weapons","total inconnu":"total unknown","Artéfacts":"Artifacts","% du jeu":"% of game",
+"Scan local":"Local scan","Préparer le scan":"Prepare the scan","Choisissez ce que Kamera doit relever. Un scan peut viser une seule catégorie.":"Choose what Kamera should read. A scan can target a single category.",
+"Matériaux":"Materials","Matériaux d’évolution":"Ascension materials","Vitesse de navigation":"Navigation speed","Rapide":"Fast","Modéré":"Moderate","Lent":"Slow",
+"Le plus rapide, pour un PC puissant":"Fastest, for a powerful PC","Modéré conseillé":"Moderate recommended","Plus sûr si des lectures échouent":"Safer if reads fail",
+"Appuyez sur":"Press","Entrée":"Enter","pour arrêter le scan à tout moment":"to stop the scan at any time","Avant de commencer":"Before you start",
+"Ouvrez le menu Paimon dans Genshin.":"Open the Paimon menu in Genshin.","Lancez le scan puis revenez au jeu avec Alt+Tab.":"Start the scan, then go back to the game with Alt+Tab.",
+"Gardez Genshin au premier plan sans toucher la souris.":"Keep Genshin in front and don’t touch the mouse.","Jeu en français":"Game in French","HDR désactivé":"HDR off","16:9 ou 16:10":"16:9 or 16:10","Mode fenêtré":"Windowed mode",
+"Lecture en direct":"Live reading","Équipement en cours":"Current item","En attente d’une capture":"Waiting for a capture","Personnage et aptitudes":"Character and talents",
+"Capture de l’équipement":"Item capture","Nom":"Name","Niveau":"Level","Aptitude 1":"Talent 1","Aptitude 2":"Talent 2","Aptitude 3":"Talent 3",
+"Les armes et artéfacts lus s’afficheront ici.":"Weapons and artifacts read will show here.","Les personnages lus s’afficheront ici.":"Characters read will show here.",
+"Diagnostic":"Diagnostics","Journal du scanner":"Scanner log","Scan, OCR et synchronisation. Les erreurs sont aussi conservées dans le rapport.":"Scan, OCR and sync. Errors are also kept in the report.",
+"Copier":"Copy","Ouvrir les logs":"Open logs","Le journal est vide.":"The log is empty.",
+"01 · Équipements":"01 · Gear","Filtres de lecture":"Read filters","Les filtres limitent les pièces relevées ; les autres données du compte sont conservées.":"Filters limit which items are read; the rest of your account data is kept.",
+"Rareté minimale des armes":"Minimum weapon rarity","Rareté minimale des artéfacts":"Minimum artifact rarity","Niveau minimal des armes":"Minimum weapon level","Niveau minimal des artéfacts":"Minimum artifact level","Moins":"Less","Plus":"More",
+"Lier les armes":"Link weapons","Retrouve qui porte chaque arme.":"Finds who wears each weapon.","Lier les artéfacts":"Link artifacts","Retrouve qui porte chaque artéfact.":"Finds who wears each artifact.",
+"Garder les captures":"Keep screenshots","Utile pour diagnostiquer une lecture ratée.":"Useful to diagnose a failed read.",
+"02 · Personnages":"02 · Characters","Noms personnalisés":"Custom names","Utilisez les noms visibles dans votre jeu.":"Use the names shown in your game.","Nom du Voyageur":"Traveler name","Nom du Nomade":"Wanderer name",
+"03 · Jeu":"03 · Game","Langue et touches":"Language and keys","Kamera lit l’écran dans la langue choisie et utilise vos raccourcis Genshin.":"Kamera reads the screen in the chosen language and uses your Genshin shortcuts.",
+"Langue du jeu":"Game language","Inventaire":"Inventory","Perso 1":"Party slot 1","Cliquez sur une case puis appuyez sur la touche voulue.":"Click a box, then press the key you want.",
+"Processus du jeu":"Game process","Référentiel français":"French reference data","04 · Exports":"04 · Exports","Fichiers GOOD":"GOOD files","Chaque scan produit un fichier GOOD et son rapport de lecture.":"Each scan produces a GOOD file and its read report.",
+"Dossier des exports":"Export folder","Parcourir":"Browse","Ouvrir les exports":"Open exports","Exporter vers Optimizer":"Export to Optimizer",
+"Le jeu doit rester en français (ou dans la langue choisie), en 16:9 ou 16:10, HDR désactivé.":"The game must stay in French (or the chosen language), in 16:9 or 16:10, with HDR off.",
+"Synchronisation":"Sync","Du jeu à votre carnet":"From the game to your tracker","Connectez-vous une seule fois. Le PC reste relié à votre compte.":"Sign in once. This PC stays linked to your account.",
+"Aucun compte relié":"No account linked","Connectez-vous une seule fois ci-dessous.":"Sign in once below.","Connexion mémorisée sur ce PC.":"Sign-in remembered on this PC.","Accès refusé : ":"Access denied: ",
+"Les exports sont conservés. Reconnectez-vous avant de réessayer l’envoi.":"Exports are kept. Sign in again before retrying the upload.",
+"Changer de compte":"Switch account","Adresse HTTPS du site":"Site HTTPS address","Pseudo du compte du tracker":"Tracker account username","Mot de passe du tracker":"Tracker password",
+"Différent de votre mot de passe HoYoverse.":"Not your HoYoverse password.","Se connecter":"Sign in","Garder le compte actuel":"Keep current account","ou avec un code":"or with a code",
+"Code d’association créé sur le site (valable 10 minutes)":"Pairing code created on the site (valid 10 minutes)","Associer":"Pair",
+"Envois":"Uploads","Relevés":"Scans","Les scans hors ligne restent en attente et repartent automatiquement.":"Offline scans wait in the queue and are sent automatically.",
+"Réessayer l’envoi":"Retry upload","Envoyer un fichier GOOD existant":"Send an existing GOOD file",
+"La clé d’accès est protégée par votre session Windows. Vous pouvez dissocier ce PC depuis le site.":"The access key is protected by your Windows session. You can unlink this PC from the site.",
+"Données du site":"Site data","Actualiser":"Refresh","Personnage":"Character","Const.":"Const.","Attaque":"Attack","Compétence":"Skill","Déchaînement":"Burst",
+"Derniers relevés reçus":"Latest scans received","Les derniers scans reçus par le site apparaîtront ici.":"The latest scans received by the site will show here.","Aucun personnage chargé.":"No characters loaded.",
+"Connectez-vous pour afficher les données enregistrées sur le site.":"Sign in to see the data saved on the site.",
+"Les envois et accusés de réception apparaîtront ici.":"Uploads and receipts will show here.",
+// Messages du scanner
+"Scanning":"Scanning","Scan Stopped":"Scan stopped","Terminé — consulter le rapport":"Done — see the report","Arrêté — export partiel conservé":"Stopped — partial export kept",
+"Échec — export partiel conservé":"Failed — partial export kept","Dossier d’export inaccessible":"Export folder unreachable","Prêt · ouvrez le menu Paimon avant de lancer le scan":"Ready · open the Paimon menu before starting the scan",
+"Attendez la fin de la connexion au compte avant de lancer le scan.":"Wait for the account sign-in to finish before starting the scan.",
+"Un scan est encore en cours ; Entrée permet de l’arrêter.":"A scan is still running; press Enter to stop it.",
+"Revenez dans Genshin (Alt+Tab), menu Paimon ouvert — attente de 15 secondes":"Go back to Genshin (Alt+Tab) with the Paimon menu open — waiting 15 seconds",
+"Scan en cours — gardez Genshin au premier plan":"Scanning — keep Genshin in front","Lecture des armes…":"Reading weapons…","Lecture des artéfacts…":"Reading artifacts…",
+"Parcours des armes terminé ; traitement OCR en cours.":"Weapons browsed; OCR in progress.","Parcours des artéfacts terminé ; traitement OCR en cours.":"Artifacts browsed; OCR in progress.",
+"Lecture des personnages et aptitudes…":"Reading characters and talents…","Lecture des matériaux de développement…":"Reading development materials…","Matériaux de développement parcourus.":"Development materials browsed.",
+"Lecture des matériaux…":"Reading materials…","Lecture des matériaux terminée.":"Materials read.","Associez votre compte depuis l’onglet Connexion.":"Link your account from the Connection tab.",
+"Aucun envoi en attente pour ce compte.":"No uploads waiting for this account.","Connectez-vous une fois pour retrouver les données du site.":"Sign in once to get your site data.",
+"Connexion au compte du tracker…":"Signing in to the tracker account…","Export local enregistré. Associez un compte dans Connexion pour les prochains scans.":"Local export saved. Link an account in Connection for future scans.",
+"Compte relié : envois automatiques actifs.":"Account linked: automatic uploads on.","Journal copié dans le presse-papiers.":"Log copied to the clipboard.","Presse-papiers occupé. Réessayez dans un instant.":"Clipboard busy. Try again in a moment.",
+"Attendez la fin du scan avant de changer de compte.":"Wait for the scan to finish before switching accounts.","Attendez la fin du scan ou de la connexion.":"Wait for the scan or sign-in to finish.",
+"Connexion mise à jour. Chargement des données du compte…":"Connection updated. Loading account data…",
+"Aucun scan effectué dans cette session. Les compteurs concernent uniquement ce PC.":"No scan in this session yet. Counters only cover this PC.",
+"Scan de cette session • les compteurs ci-dessous affichent uniquement les lectures locales.\nLes données déjà reçues du site restent consultables dans Mon compte.":"This session’s scan • the counters below only show local reads.\nData already received by the site is still in My account."};
+// Messages avec valeurs : remplacés morceau par morceau.
+const EN_PARTS=[[/Lecture des personnages terminée : (\d+) personnages valides\./,"Characters read: $1 valid characters."],
+[/Associé au compte « (.+?) »\. Connexion mémorisée sur ce PC\./,"Linked to account “$1”. Sign-in remembered on this PC."],
+[/Connecté à « (.+?) »\. Connexion mémorisée ; le mot de passe n’est pas enregistré\./,"Signed in as “$1”. Sign-in remembered; the password isn’t saved."],
+[/Compte « (.+?) » actualisé : (\d*) personnages, (\d*) armes, (\d*) artéfacts\./,"Account “$1” refreshed: $2 characters, $3 weapons, $4 artifacts."],
+[/Envois terminés pour « (.+?) »\. Lecture des données enregistrées…/,"Uploads done for “$1”. Reading saved data…"],
+[/^Compte associé : /,"Account linked: "],[/^Compte : (.+?) · Données enregistrées sur le site/m,"Account: $1 · Data saved on the site"],
+[/(\d+) personnages · (\d+) armes · (\d+) artéfacts · (\d+) types de matériaux/,"$1 characters · $2 weapons · $3 artifacts · $4 material types"],
+[/Dernière réception : aucune\./,"Last received: none."],[/Dernière réception : /,"Last received: "],[/Les lectures OCR restent à vérifier\./,"OCR reads still need checking."],
+[/^Export préparé pour envoi : /,"Export ready to send: "],[/^Export local conservé\. Préparation de l’envoi impossible : /,"Local export kept. Couldn’t prepare the upload: "],
+[/^Impossible de relire les données du compte : /,"Couldn’t read the account data: "],[/Les données locales sont conservées\./,"Local data is kept."],
+[/^DERNIERS RELEVÉS REÇUS PAR LE SITE/,"LATEST SCANS RECEIVED BY THE SITE"],[/Erreur : /g,"Error: "],[/Personnage incomplet : (.+?) \(hors inventaire valide\)/g,"Incomplete character: $1 (outside valid inventory)"],
+[/(\d+) personnages, (\d+) armes, (\d+) artéfacts/g,"$1 characters, $2 weapons, $3 artifacts"],[/^Synchronisation interrompue : /,"Sync interrupted: "],[/Les relevés restent en attente\./,"Scans stay in the queue."]];
+let LANG="fr";
+function t(fr){if(LANG!=="en"||fr==null||fr==="")return fr;if(fr in EN)return EN[fr];let r=String(fr);EN_PARTS.forEach(([re,en])=>r=r.replace(re,en));return r;}
+const TEXTS=[],ATTRS=["data-empty","alt","aria-label"];
+(function collect(){const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:n=>n.parentElement.closest("script,style,.term,#rows")?2:1});let n;
+  while(n=w.nextNode()){const k=n.nodeValue.trim();if(k in EN)TEXTS.push([n,n.nodeValue]);}
+  $$(ATTRS.map(a=>"["+a+"]").join(",")).forEach(e=>ATTRS.forEach(a=>{const v=e.getAttribute(a);if(v in EN)TEXTS.push([e,v,a]);}));})();
+function setLang(l){LANG=l==="en"?"en":"fr";document.documentElement.lang=LANG;
+  TEXTS.forEach(([n,fr,a])=>{const v=LANG==="en"?EN[a?fr:fr.trim()]:fr;if(a)n.setAttribute(a,v);else n.nodeValue=LANG==="en"?fr.replace(fr.trim(),v):fr;});
+  setSeg($("#uiLanguage"),LANG);const p=$(".nav button.on");if(p)go(p.dataset.page);if(S.settings)render({});}
+
 const PAGES = {scan:["Scan","Relève votre inventaire depuis le jeu, puis l’envoie à votre carnet."],journal:["Journal","Tout ce que fait le scanner, ligne par ligne."],
   options:["Options","Réglages du scan, du jeu et des exports."],connexion:["Connexion","Reliez ce PC à votre compte Genshin Tracker."],compte:["Mon compte","Ce que le site a déjà reçu."]};
 function go(p){$$(".nav button").forEach(b=>b.classList.toggle("on",b.dataset.page===p));$$(".page").forEach(s=>s.classList.toggle("on",s.id==="page-"+p));
-  $("#title").textContent=PAGES[p][0];$("#subtitle").textContent=PAGES[p][1];$(".view").scrollTop=0;
+  $("#title").textContent=t(PAGES[p][0]);$("#subtitle").textContent=t(PAGES[p][1]);$(".view").scrollTop=0;
   if(S.settings){setSeg($("#delay"),S.settings.delay);setSeg($("#language"),S.settings.language);}}
 $$(".nav button").forEach(b=>b.onclick=()=>go(b.dataset.page));
 $$("[data-goto]").forEach(b=>b.onclick=()=>go(b.dataset.goto));
@@ -509,7 +593,9 @@ $$("[data-key]").forEach(i=>i.addEventListener("keydown",e=>{if(e.key==="Tab")re
 function seg(el,id){el.querySelectorAll("button").forEach(b=>b.onclick=()=>{setSeg(el,b.dataset.v);send({cmd:"set",id,value:b.dataset.v});});}
 function setSeg(el,v){const bs=[...el.querySelectorAll("button")];const b=bs.find(x=>x.dataset.v===String(v))||bs[0];bs.forEach(x=>x.classList.toggle("on",x===b));
   const t=el.querySelector(".thumb");t.style.left=b.offsetLeft+"px";t.style.width=b.offsetWidth+"px";}
-seg($("#delay"),"delay");seg($("#language"),"language");
+seg($("#delay"),"delay");seg($("#language"),"language");seg($("#uiLanguage"),"uiLanguage");
+$("#uiLanguage").querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>setLang(b.dataset.v)));
+setSeg($("#uiLanguage"),LANG);
 const DELAY=["Le plus rapide, pour un PC puissant","Modéré conseillé","Plus sûr si des lectures échouent"];
 $$("[data-num]").forEach(st=>{const [minus,plus]=st.querySelectorAll("button");
   const bump=d=>{const r=(S.ranges||{})[st.dataset.num]||[0,99];const cur=+st.dataset.value||0;const v=Math.max(r[0],Math.min(r[1],cur+d));if(v===cur)return;setNum(st,v);send({cmd:"set",id:st.dataset.num,value:v});};
@@ -521,39 +607,40 @@ function setText(el,v){v=v==null?"":String(v);if(el.textContent!==v){el.textCont
 function ring(el,ratio){const c=el.querySelector(".val"),L=2*Math.PI*34;c.style.strokeDasharray=L;c.style.strokeDashoffset=L*(1-Math.max(0,Math.min(1,ratio)));}
 function count(id,v,max){const el=$("#v"+id);if(setText(el,v)){el.classList.remove("bump");void el.offsetWidth;el.classList.add("bump");}
   const n=parseInt(v,10)||0,m=parseInt(max,10);
-  if(max!==undefined){setText($("#m"+id),"/ "+(max||"?"));setText($("#p"+id),m>0?Math.round(100*n/m)+" % du jeu":"total inconnu");ring($("#ring"+id),m>0?n/m:0);}
+  if(max!==undefined){setText($("#m"+id),"/ "+(max||"?"));setText($("#p"+id),m>0?Math.round(100*n/m)+(LANG==="en"?"% of game":" % du jeu"):t("total inconnu"));ring($("#ring"+id),m>0?n/m:0);}
   else ring($("#ring"+id),S.running?((n%10)+1)/10:(n?1:0));}
 function render(s){
   S=Object.assign(S,s);s=S;
   document.body.classList.toggle("running",!!s.running);
   setText($("#version"),s.version?"v"+s.version:"");
   const st=s.status||{};
-  $("#runDot").className="dot"+(s.running?" gold":"");setText($("#runText"),s.running?"Scan en cours":"Système prêt");
-  $("#statusDot").className="dot"+(s.running?" gold":st.ok===false?" red":"");setText($("#statusText"),st.text||"Prêt");
-  const sp=s.syncProgress||{};const spEl=$("#syncProgress");setText(spEl,sp.text||"");spEl.style.color=sp.ok===false?"var(--red)":sp.text?"var(--mint)":"";
-  setText($("#goText"),s.running?"Scan en cours…":"Lancer le scan");
-  setText($("#hint"),s.hint||"");
+  $("#runDot").className="dot"+(s.running?" gold":"");setText($("#runText"),t(s.running?"Scan en cours":"Système prêt"));
+  $("#statusDot").className="dot"+(s.running?" gold":st.ok===false?" red":"");setText($("#statusText"),t(st.text||"Prêt"));
+  const sp=s.syncProgress||{};const spEl=$("#syncProgress");setText(spEl,t(sp.text||""));spEl.style.color=sp.ok===false?"var(--red)":sp.text?"var(--mint)":"";
+  setText($("#goText"),t(s.running?"Scan en cours…":"Lancer le scan"));
+  setText($("#hint"),t(s.hint||""));
   const c=s.counts||{};count("Characters",c.characters||"0");count("Weapons",c.weapons||"0",c.weaponsMax);count("Artifacts",c.artifacts||"0",c.artifactsMax);
   const set=s.settings||{};
   $$("[data-check]").forEach(b=>{if(b.dataset.check in set)b.classList.toggle("on",!!set[b.dataset.check]);});
   $$("[data-text]").forEach(i=>{const k=i.dataset.text;if(k in set&&document.activeElement!==i&&i.value!==set[k])i.value=set[k]||"";});
   $$("[data-num]").forEach(st=>{const k=st.dataset.num;if(k in set&&+st.dataset.value!==+set[k])setNum(st,+set[k]);});
-  if("delay" in set){setSeg($("#delay"),set.delay);setText($("#delayHelp"),DELAY[+set.delay]||"");}
+  if("delay" in set){setSeg($("#delay"),set.delay);setText($("#delayHelp"),t(DELAY[+set.delay]||""));}
   if(set.language)setSeg($("#language"),set.language);
+  if(set.uiLanguage&&set.uiLanguage!==LANG)setLang(set.uiLanguage);
   const keys=s.keys||{};$$("[data-key]").forEach(i=>{if(keys[i.dataset.key]!=null)i.value=keys[i.dataset.key];});
   const a=s.account||{};const connected=!!a.name;
-  setText($("#accountText"),connected?a.name:"Non connecté");
+  setText($("#accountText"),connected?a.name:t("Non connecté"));
   $("#acctBox").classList.toggle("bad",!!a.rejected);
   setText($("#acctAvatar"),connected?a.name.trim().charAt(0).toUpperCase():"?");
-  setText($("#acctName"),connected?(a.rejected?"Accès refusé : ":"")+a.name:"Aucun compte relié");
-  setText($("#acctDetail"),connected?(a.rejected?"Les exports sont conservés. Reconnectez-vous avant de réessayer l’envoi.":(a.site||"")+"\nConnexion mémorisée sur ce PC."):"Connectez-vous une seule fois ci-dessous.");
+  setText($("#acctName"),connected?(a.rejected?t("Accès refusé : "):"")+a.name:t("Aucun compte relié"));
+  setText($("#acctDetail"),connected?(a.rejected?t("Les exports sont conservés. Reconnectez-vous avant de réessayer l’envoi."):(a.site||"")+"\n"+t("Connexion mémorisée sur ce PC.")):t("Connectez-vous une seule fois ci-dessous."));
   $("#changeBtn").hidden=!connected||a.editing;$("#connForm").hidden=connected&&!a.editing;$("#cancelBtn").hidden=!(connected&&a.editing);
-  const ss=a.syncStatus||{};const m=$("#syncStatus");setText(m,ss.text||"");m.className="msg"+(ss.ok===false?" err":ss.ok?" ok":"");
+  const ss=a.syncStatus||{};const m=$("#syncStatus");setText(m,t(ss.text||""));m.className="msg"+(ss.ok===false?" err":ss.ok?" ok":"");
   const en=s.enabled||{};["login","pair","retry","refreshAccount","exportOptimizer","sendFile"].forEach(k=>{const b=$(`[data-click="${k}"]`);if(b&&k in en)b.disabled=!en[k];});
-  setText($("#acctSummary"),a.summary||"");
+  setText($("#acctSummary"),t(a.summary||""));
   const rows=a.rows||[];const body=$("#rows");const sig=JSON.stringify(rows);
-  if(body.dataset.sig!==sig){body.dataset.sig=sig;body.innerHTML=rows.length?rows.map(r=>"<tr>"+r.map(v=>"<td>"+esc(v)+"</td>").join("")+"</tr>").join(""):'<tr><td colspan="6" class="empty-row">Aucun personnage chargé.</td></tr>';}
-  setText($("#history"),a.history||"");
+  if(body.dataset.sig!==sig+LANG){body.dataset.sig=sig+LANG;body.innerHTML=rows.length?rows.map(r=>"<tr>"+r.map(v=>"<td>"+esc(v)+"</td>").join("")+"</tr>").join(""):'<tr><td colspan="6" class="empty-row">'+t("Aucun personnage chargé.")+'</td></tr>';}
+  setText($("#history"),t(a.history||""));
 }
 const esc=v=>String(v==null?"–":v).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const LOGS={error:"#log-error",gear:"#log-gear",character:"#log-character"};
@@ -565,7 +652,7 @@ function image(m){const img=$("#img-"+m.id);if(!img)return;const empty=$("#empty
   if(m.src){img.src=m.src;img.hidden=false;if(empty)empty.hidden=true;}else{img.hidden=true;img.removeAttribute("src");if(empty)empty.hidden=false;}}
 function onMessage(m){if(!m)return;if(m.type==="state")render(m.state);else if(m.type==="log")log(m);else if(m.type==="image")image(m);else if(m.type==="page")go(m.page);}
 if(host){host.addEventListener("message",e=>onMessage(e.data));host.postMessage({cmd:"ready"});}
-window.addEventListener("resize",()=>{if(S.settings){setSeg($("#delay"),S.settings.delay);setSeg($("#language"),S.settings.language);}});
+window.addEventListener("resize",()=>{setSeg($("#uiLanguage"),LANG);if(S.settings){setSeg($("#delay"),S.settings.delay);setSeg($("#language"),S.settings.language);}});
 document.addEventListener("contextmenu",e=>{if(!e.target.closest("input,.term"))e.preventDefault();});
 
 // ---------- Aperçu hors Windows (navigateur seul) ----------
@@ -582,7 +669,7 @@ if(!host){
   render({version:"0.5.0",running:false,status:{text:"Prêt · ouvrez le menu Paimon avant de lancer le scan",ok:true},syncProgress:{text:"Compte relié : envois automatiques actifs.",ok:true},
     hint:"Aucun scan effectué dans cette session. Les compteurs concernent uniquement ce PC.",
     counts:{characters:"0",weapons:"0",weaponsMax:"?",artifacts:"0",artifactsMax:"?"},
-    settings:{scanCharacters:true,scanWeapons:true,scanArtifacts:true,scanMaterials:false,scanDevItems:false,delay:"1",language:"FR",weaponRarity:3,artifactRarity:4,weaponLevel:1,artifactLevel:0,
+    settings:{scanCharacters:true,scanWeapons:true,scanArtifacts:true,scanMaterials:false,scanDevItems:false,delay:"1",language:"FR",uiLanguage:"fr",weaponRarity:3,artifactRarity:4,weaponLevel:1,artifactLevel:0,
       equipWeapons:true,equipArtifacts:true,logScreenshots:false,travelerName:"Lumine",wandererName:"",outputPath:"C:\\Users\\Lucas\\Documents\\GenshinTracker\\exports",siteAddress:"https://genshin-tracker.com",accountName:"Lucas",pairingCode:""},
     ranges:{weaponRarity:[1,5],artifactRarity:[1,5],weaponLevel:[1,90],artifactLevel:[0,20]},keys:{inventory:"B",character:"C",slot1:"1"},
     enabled:{login:true,pair:true,retry:true,refreshAccount:true,exportOptimizer:false,sendFile:true},

@@ -178,10 +178,29 @@ namespace InventoryKamera
                 case "siteAddress": siteAddress.Text = (string)value ?? ""; break;
                 case "pairingCode": pairingCode.Text = (string)value ?? ""; break;
                 case "outputPath": OutputPath_TextBox.Text = (string)value ?? ""; settings.OutputPath = OutputPath_TextBox.Text; break;
+                case "uiLanguage": UiLanguage = (string)value; break;
                 case "language": Language_ComboBox.SelectedItem = (string)value == "EN" ? "EN" : "FR"; break;
                 case "delay":
                     int delay = Math.Max(ScannerDelay_TrackBar.Minimum, Math.Min(ScannerDelay_TrackBar.Maximum, (int)value));
                     ScannerDelay_TrackBar.Value = delay; settings.ScannerDelay = delay; break;
+            }
+        }
+
+        // Langue de l'interface web, séparée de la langue du jeu ; par défaut celle de Windows.
+        private static readonly string UiLanguageFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "GenshinTracker", "KameraFR", "ui-language.txt");
+        private static string uiLanguage;
+        private static string UiLanguage
+        {
+            get
+            {
+                if (uiLanguage != null) return uiLanguage;
+                try { if (File.Exists(UiLanguageFile)) return uiLanguage = File.ReadAllText(UiLanguageFile).Trim() == "en" ? "en" : "fr"; } catch (IOException) { } catch (UnauthorizedAccessException) { }
+                return uiLanguage = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "fr" ? "fr" : "en";
+            }
+            set
+            {
+                uiLanguage = value == "en" ? "en" : "fr";
+                try { Directory.CreateDirectory(Path.GetDirectoryName(UiLanguageFile)); File.WriteAllText(UiLanguageFile, uiLanguage); } catch (IOException) { } catch (UnauthorizedAccessException) { }
             }
         }
 
@@ -209,6 +228,7 @@ namespace InventoryKamera
             values["siteAddress"] = siteAddress.Text; values["accountName"] = connectionName.Text; values["pairingCode"] = pairingCode.Text;
             values["delay"] = ScannerDelay_TrackBar.Value.ToString();
             values["language"] = GameLanguage.IsFrench ? "FR" : "EN";
+            values["uiLanguage"] = UiLanguage;
             JArray Range(NumericUpDown n) => new JArray(n.Minimum, n.Maximum);
             Func<string, bool> enabled = name => webButtons.TryGetValue(name, out var b) && b.Enabled;
             var rows = new JArray(accountCharacters.Rows.Cast<DataGridViewRow>().Where(r => !r.IsNewRow)
