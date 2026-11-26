@@ -2,3 +2,9 @@
 .item{display:flex;flex-direction:column;gap:4px;padding:14px 16px;border:1px solid #2a3850;border-radius:10px;background:#0d1727}
 .item span{font-size:12px;color:var(--muted)}
 .item strong{font-size:20px;font-weight:500;font-variant-numeric:tabular-nums;color:var(--text)}
+.tips{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:10px}
+.tip{padding:14px 16px 14px 18px;border:1px solid #2a3850;border-left:3px solid var(--muted);border-radius:10px;background:rgba(13,23,39,.6)}
+.tip[data-tone="warn"]{border-left-color:var(--gold)}
+.tip[data-tone="ok"]{border-left-color:#7ed7bd}
+.tip strong{display:block;font-weight:500;color:var(--text)}
+.tip p{margin-top:4px;font-size:13px;line-height:1.55}
