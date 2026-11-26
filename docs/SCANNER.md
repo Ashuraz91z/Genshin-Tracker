@@ -39,7 +39,7 @@ Pour un site hébergé à distance, utilisez son adresse HTTPS. `localhost` dés
 4. Appuyez sur **Entrée** pour interrompre le scan. Quitter la fenêtre du jeu suspend également les actions.
 5. Consultez **Lecture en direct**, **Journal et erreurs**, puis les fichiers exportés.
 
-Avec **Profil et monnaies** coché, le scan commence par relever le pseudo et l'UID dans le menu Paimon, puis ouvre l'écran des vœux avec **F3** (primogemmes, destins de la bannière affichée, astérions et astéries libres) et l'écran des personnages (moras). Gardez la touche des vœux sur F3. Le destin lu dépend de la bannière ouverte : entrelacé sur une bannière événement, lié sur la bannière permanente.
+Avec **Profil et monnaies** coché, le scan commence par relever le pseudo et l'UID dans le menu Paimon, puis ouvre l'écran des vœux avec **F3** (primogemmes, destins de la bannière affichée, astéries et astrions libres) et l'écran des personnages (moras). Gardez la touche des vœux sur F3. Le destin lu dépend de la bannière ouverte : entrelacé sur une bannière événement, lié sur la bannière permanente.
 
 Les captures et la géométrie de lecture peuvent demander une adaptation à votre configuration. Le projet ne garantit pas la compatibilité avec toutes les versions du jeu ni l’absence de sanction ; il n’est pas approuvé par HoYoverse.
 

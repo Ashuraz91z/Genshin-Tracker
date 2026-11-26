@@ -28,7 +28,7 @@ namespace InventoryKamera
             Reset();
             Attempt("pseudo et UID", () =>
             {
-                Nickname = ReadText(Region(200, 22, 470, 62));
+                Nickname = ReadText(Region(200, 22, 470, 62), raw: true); // keep the exact case and accents
                 if (Nickname != null) Nickname = Regex.Replace(Nickname, @"[^\p{L}\p{N}_ .-]", "").Trim();
                 if (string.IsNullOrEmpty(Nickname)) Nickname = null;
                 var uid = Regex.Match(ReadText(Region(70, 124, 205, 158)) ?? "", @"\d{9,10}");
@@ -44,13 +44,17 @@ namespace InventoryKamera
                 Navigation.Wait(3000);
                 try
                 {
-                    var top = Numbers(Region(990, 14, 1200, 50));
-                    if (top.Count > 0) Add(inventory, "Primogem", top[0]);
-                    string fate = FateKind(Region(1110, 20, 1160, 44));
-                    if (top.Count > 1 && fate != null) Add(inventory, fate, top[1]);
-                    var bottom = Numbers(Region(35, 628, 300, 666, bottomAnchored: true));
+                    // Top right, anchored to the close button: [primogem icon] number [+]  [fate icon] number.
+                    // Coloured icons are blanked before OCR (they were read as digits), and each number is read on its own.
+                    var primos = Numbers(Region(975, 14, 1072, 50));
+                    if (primos.Count > 0) Add(inventory, "Primogem", primos.Last());
+                    string fate = FateKind(Region(1120, 18, 1150, 46));
+                    var fates = Numbers(Region(1143, 14, 1208, 50));
+                    if (fates.Count > 0 && fate != null) Add(inventory, fate, fates[0]);
+                    // Bottom left, after the first icon: Starglitter (Astérie libre) then Stardust (Astrion libre).
+                    var bottom = Numbers(Region(66, 628, 300, 666, bottomAnchored: true));
                     if (bottom.Count > 0) Add(inventory, "MasterlessStarglitter", bottom[0]);
-                    if (bottom.Count > 1) Add(inventory, "MasterlessStardust", bottom[1]);
+                    if (bottom.Count > 1) Add(inventory, "MasterlessStardust", bottom.Last());
                 }
                 finally { Navigation.MainMenuScreen(); }
             });
@@ -60,7 +64,10 @@ namespace InventoryKamera
                 Navigation.CharacterScreen();
                 try
                 {
-                    var mora = Numbers(Region(1070, 14, 1205, 50));
+                    // Mora is shown top right on the Constellation page only.
+                    Navigation.SelectCharacterConstellation();
+                    Navigation.Wait(800);
+                    var mora = Numbers(Region(1098, 14, 1205, 50));
                     if (mora.Count > 0) Add(inventory, "Mora", mora.Last());
                 }
                 finally { Navigation.MainMenuScreen(); }
@@ -68,8 +75,8 @@ namespace InventoryKamera
 
             string Count(string key) { var m = inventory.Materials.FirstOrDefault(x => x.name == key); return m.name == null ? "?" : m.count.ToString(); }
             UserInterface.Trace("Profil : " + (Nickname ?? "pseudo illisible") + " · UID " + (Uid ?? "illisible") + " · " + Count("Primogem") + " primogemmes · "
-                + Count("IntertwinedFate") + " destins entrelacés · " + Count("AcquaintFate") + " destins liés · " + Count("MasterlessStardust") + " astéries libres · "
-                + Count("MasterlessStarglitter") + " astérions libres · " + Count("Mora") + " moras.");
+                + Count("IntertwinedFate") + " destins entrelacés · " + Count("AcquaintFate") + " destins liés · " + Count("MasterlessStarglitter") + " astéries libres · "
+                + Count("MasterlessStardust") + " astrions libres · " + Count("Mora") + " moras.");
         }
 
         private static void Attempt(string step, Action action)
@@ -99,6 +106,7 @@ namespace InventoryKamera
             var bitmap = Navigation.CaptureRegion(region);
             if (Properties.Settings.Default.LogScreenshots) try { bitmap.Save($"./logging/profile_{region.X}_{region.Y}.png"); } catch (Exception) { }
             UserInterface.SetNavigation_Image(bitmap);
+            BlankColours(bitmap);
             GenshinProcesor.SetGamma(0.2, 0.2, 0.2, ref bitmap);
             GenshinProcesor.SetInvert(ref bitmap);
             var gray = GenshinProcesor.ConvertToGrayscale(bitmap);
@@ -106,10 +114,21 @@ namespace InventoryKamera
             return gray;
         }
 
-        private static string ReadText(Rectangle region, bool numbersOnly = false)
+        /// <summary>Game text is white; icons are coloured. Coloured pixels are darkened so OCR sees only the text.</summary>
+        private static void BlankColours(Bitmap bitmap)
+        {
+            for (int x = 0; x < bitmap.Width; x++)
+                for (int y = 0; y < bitmap.Height; y++)
+                {
+                    var c = bitmap.GetPixel(x, y);
+                    if (Math.Max(c.R, Math.Max(c.G, c.B)) - Math.Min(c.R, Math.Min(c.G, c.B)) > 45) bitmap.SetPixel(x, y, Color.FromArgb(30, 30, 40));
+                }
+        }
+
+        private static string ReadText(Rectangle region, bool numbersOnly = false, bool raw = false)
         {
             using (var image = Prepare(region))
-                return GenshinProcesor.AnalyzeText(image, Tesseract.PageSegMode.SingleLine, numbersOnly)?.Trim();
+                return GenshinProcesor.AnalyzeText(image, Tesseract.PageSegMode.SingleLine, numbersOnly, raw)?.Trim();
         }
 
         /// <summary>Whole numbers read left to right; icons and the "+" button are dropped.</summary>
@@ -130,13 +149,14 @@ namespace InventoryKamera
         {
             using (var bitmap = Navigation.CaptureRegion(region))
             {
+                // Intertwined is pink/violet (red above green), Acquaint is blue/cyan (green above red).
                 int pink = 0, blue = 0;
                 for (int x = 0; x < bitmap.Width; x++)
                     for (int y = 0; y < bitmap.Height; y++)
                     {
                         var c = bitmap.GetPixel(x, y);
-                        if (c.R > 170 && c.B > 140 && c.G < c.R - 40) pink++;
-                        else if (c.B > 170 && c.R < c.B - 60 && c.G < c.B - 20) blue++;
+                        if (Math.Max(c.R, Math.Max(c.G, c.B)) - Math.Min(c.R, Math.Min(c.G, c.B)) < 50 || c.B < 120) continue;
+                        if (c.R > c.G + 25) pink++; else if (c.G > c.R + 15) blue++;
                     }
                 Logger.Debug("Fate colour: pink {0}, blue {1}", pink, blue);
                 if (pink + blue < 10) { UserInterface.AddError("Profil : type de destin non reconnu sur l'écran des vœux."); return null; }

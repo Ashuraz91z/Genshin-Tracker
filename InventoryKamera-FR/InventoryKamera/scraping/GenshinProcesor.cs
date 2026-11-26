@@ -187,7 +187,7 @@ namespace InventoryKamera
 		}
 
 		/// <summary> Use Tesseract OCR to find words on picture to string </summary>
-		internal static string AnalyzeText(Bitmap bitmap, PageSegMode pageMode = PageSegMode.SingleLine, bool numbersOnly = false)
+		internal static string AnalyzeText(Bitmap bitmap, PageSegMode pageMode = PageSegMode.SingleLine, bool numbersOnly = false, bool raw = false)
 		{
 			string text = "";
 			TesseractEngine e;
@@ -201,7 +201,7 @@ namespace InventoryKamera
                     text = page.GetText() ?? "";
             }
             finally { engines.Add(e); }
-            text = numbersOnly || !GameLanguage.IsFrench ? text : FrenchRecognition.ForScanner(text);
+            text = raw || numbersOnly || !GameLanguage.IsFrench ? text : FrenchRecognition.ForScanner(text);
 
 			return text;
 		}

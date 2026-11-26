@@ -3,7 +3,7 @@ import s from './Resources.module.css';
 
 // Read by Kamera on the Paimon menu, the wish screen and the character screen.
 const items=[['Primogem','Primogemmes'],['IntertwinedFate','Destins entrelacés'],['AcquaintFate','Destins liés'],
-  ['MasterlessStarglitter','Astérions libres'],['MasterlessStardust','Astéries libres'],['Mora','Moras']];
+  ['MasterlessStarglitter','Astéries libres'],['MasterlessStardust','Astrions libres'],['Mora','Moras']];
 
 export default function Resources({data}) {
   const profile=data.profile??{},owned=items.filter(([key])=>data.materials?.[key]!==undefined);
