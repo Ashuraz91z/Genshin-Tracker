@@ -75,7 +75,7 @@ export default function Admin() {
   const q=query.trim().toLocaleLowerCase('fr'),match=(...values)=>!q||values.some(v=>String(v??'').toLocaleLowerCase('fr').includes(q));
   const users=data.users.filter(u=>match(u.name,u.email)&&(filter==='all'||(filter==='problems'?u.problems>0||bad.includes(u.sub_status):access(u)[1]===filter)));
   const search=<input type="search" className={styles.search} value={query} onChange={e=>setQuery(e.target.value)} placeholder="Filtrer par pseudo ou e-mail…" aria-label="Filtrer par pseudo ou e-mail"/>;
-  const Status=({u})=>{const [label,tone]=access(u);return <span className={`${styles.badge} ${styles[tone]}`}>{label}</span>;};
+  const Status=({u})=>{const [label,tone]=access(u);return <><span className={`${styles.badge} ${styles[tone]}`}>{label}</span>{u.shared_uid&&<span className={`${styles.badge} ${styles.bad}`} title={'UID déjà relié à un autre compte : '+u.shared_uid}>UID partagé</span>}</>;};
 
   return <div className={styles.adminShell}>
     <header className={styles.adminHeader}><div><span className="eyebrow">GENSHIN TRACKER</span><h1>Administration</h1></div>

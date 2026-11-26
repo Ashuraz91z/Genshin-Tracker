@@ -201,3 +201,19 @@ test('scan profile keeps a clean nickname and a 9-10 digit UID only',async()=>{
   assert.deepEqual(validateScan({...base,report:{profile:{nickname:'A',adventureRank:61,worldLevel:'8'}}}).report.profile,{nickname:'A'});
   assert.equal(validateScan({...base,report:{profile:{nickname:'',uid:'12ab'}}}).report.profile,undefined);
 });
+
+test('a UID already linked to another account ends a trial account and refuses its scan, without naming the other account',async t=>{
+  const {request,register,pair,dbPath}=await setup(t);
+  const first=await register('PremierCompte'),second=await register('SecondCompte');
+  const send=async(cookie,id)=>{const token=(await pair(cookie)).body.token,body=scan(id);body.report.profile={nickname:'Ashura91',uid:'720864276'};return request('/api/sync',{method:'POST',token,origin:false,data:body});};
+  assert.equal((await send(first,'uid-first')).status,200);
+  assert.equal((await send(first,'uid-first-again')).status,200);
+  const refused=await send(second,'uid-second');
+  assert.equal(refused.status,403);assert.match(refused.body.error,/UID 720864276/);assert.doesNotMatch(refused.body.error,/PremierCompte/);
+  const account=(await request('/api/account',{cookie:second})).body;
+  assert.equal(account.data.characters.length,0);
+  const {DatabaseSync}=await import('node:sqlite');const db=new DatabaseSync(dbPath);
+  const ends=name=>Date.parse(db.prepare('SELECT trial_ends FROM users WHERE name=?').get(name).trial_ends);
+  assert.ok(ends('SecondCompte')<=Date.now());assert.ok(ends('PremierCompte')>Date.now());
+  assert.equal(db.prepare('SELECT COUNT(*) n FROM uid_conflicts').get().n,1);db.close();
+});

@@ -10,6 +10,7 @@ function validEmail(email) {
   return email.trim().toLowerCase();
 }
 import { Problem, need, validateScan } from './lib/scan.mjs';
+import { billingView } from './lib/billing.mjs';
 import { emptyCustomization, projectInventory, validateArtifactEdit, validateTeam } from './lib/customization.mjs';
 export { Problem, validateScan } from './lib/scan.mjs';
 
@@ -23,6 +24,8 @@ export function openStore(path) {
     CREATE TABLE IF NOT EXISTS accounts(user_id TEXT PRIMARY KEY REFERENCES users(id),data TEXT NOT NULL);
     CREATE TABLE IF NOT EXISTS scans(user_id TEXT REFERENCES users(id),scan_id TEXT,captured TEXT,received TEXT,device TEXT,report TEXT,counts TEXT,applied TEXT,PRIMARY KEY(user_id,scan_id));`);
   db.exec('CREATE TABLE IF NOT EXISTS customizations(user_id TEXT PRIMARY KEY REFERENCES users(id),data TEXT NOT NULL)');
+  // One free trial per Genshin account: the first tracker account to send a UID owns it; others seen with it are logged.
+  db.exec('CREATE TABLE IF NOT EXISTS uid_claims(uid TEXT PRIMARY KEY,user_id TEXT REFERENCES users(id),first_seen TEXT);CREATE TABLE IF NOT EXISTS uid_conflicts(uid TEXT,user_id TEXT,at TEXT,PRIMARY KEY(uid,user_id))');
   db.exec('CREATE TABLE IF NOT EXISTS tokens(hash TEXT PRIMARY KEY,user_id TEXT REFERENCES users(id),kind TEXT,expires INTEGER)');
   // Support threads and usage events keep no foreign key: they outlive a deleted account (user_id set to NULL).
   db.exec(`CREATE TABLE IF NOT EXISTS events(at INTEGER,user_id TEXT,kind TEXT,name TEXT,status INTEGER,detail TEXT);CREATE INDEX IF NOT EXISTS events_at ON events(at);
@@ -190,7 +193,7 @@ export function openStore(path) {
     deleteUser(userId) {
       db.exec('BEGIN IMMEDIATE');
       try {
-        for(const table of ['sessions','pairs','devices','accounts','scans','customizations','tokens','events'])db.prepare(`DELETE FROM ${table} WHERE user_id=?`).run(userId);
+        for(const table of ['sessions','pairs','devices','accounts','scans','customizations','tokens','events','uid_claims','uid_conflicts'])db.prepare(`DELETE FROM ${table} WHERE user_id=?`).run(userId);
         db.prepare('UPDATE tickets SET user_id=NULL WHERE user_id=?').run(userId);db.prepare('DELETE FROM users WHERE id=?').run(userId);db.exec('COMMIT');
       } catch(error){db.exec('ROLLBACK');throw error;}
     },
@@ -199,7 +202,7 @@ export function openStore(path) {
       db.prepare("DELETE FROM events WHERE at<? AND kind<>'admin'").run(Date.now()-90*day);
       const users=db.prepare(`SELECT u.id,u.name,u.email,u.email_verified,u.newsletter,u.created,u.trial_ends,u.stripe_customer,u.sub_status,u.sub_plan,u.sub_until,COALESCE(u.disabled,0) disabled,
         (SELECT COUNT(*) FROM devices d WHERE d.user_id=u.id) devices,(SELECT MAX(received) FROM scans s WHERE s.user_id=u.id) last_scan,(SELECT COUNT(*) FROM scans s WHERE s.user_id=u.id) scans,
-        (SELECT MAX(at) FROM events e WHERE e.user_id=u.id) last_seen,(SELECT COUNT(*) FROM events e WHERE e.user_id=u.id AND e.at>? AND (e.status>=400 OR e.kind='error')) problems
+        (SELECT MAX(at) FROM events e WHERE e.user_id=u.id) last_seen,(SELECT GROUP_CONCAT(uid) FROM uid_conflicts c WHERE c.user_id=u.id) shared_uid,(SELECT COUNT(*) FROM events e WHERE e.user_id=u.id AND e.at>? AND (e.status>=400 OR e.kind='error')) problems
         FROM users u ORDER BY u.created DESC`).all(Date.now()-7*day);
       const names=Object.fromEntries(users.map(u=>[u.id,u.name]));
       // Internal accounts (admins, test accounts) are left out of every usage figure and error list.
@@ -269,6 +272,19 @@ export function openStore(path) {
       const scan=validateScan(body,{recoverArtifacts:true});
       const duplicate=db.prepare('SELECT applied,counts,report FROM scans WHERE user_id=? AND scan_id=?').get(userId,scan.scanId);
       if(duplicate)return {ok:true,duplicate:true,scanId:scan.scanId,applied:JSON.parse(duplicate.applied),counts:JSON.parse(duplicate.counts),rejectedArtifacts:JSON.parse(duplicate.report).rejectedArtifacts??0};
+      const uid=scan.report.profile?.uid;
+      if(uid){
+        const owner=db.prepare('SELECT user_id FROM uid_claims WHERE uid=?').get(uid)?.user_id;
+        if(!owner)db.prepare('INSERT INTO uid_claims VALUES(?,?,?)').run(uid,userId,now());
+        else if(owner!==userId){
+          db.prepare('INSERT OR IGNORE INTO uid_conflicts VALUES(?,?,?)').run(uid,userId,now());
+          // Subscribers pay for their account: only trial accounts are stopped. The other account is never named.
+          if(!billingView(db.prepare('SELECT trial_ends,sub_status,sub_until FROM users WHERE id=?').get(userId)).subscribed){
+            db.prepare('UPDATE users SET trial_ends=? WHERE id=? AND trial_ends>?').run(now(),userId,now());
+            throw new Problem(`Ce compte Genshin (UID ${uid}) est déjà relié à un autre compte Genshin Tracker : l’essai gratuit n’est accordé qu’une fois par compte Genshin. Connectez-vous à votre premier compte, ou choisissez une formule pour continuer ici.`,403);
+          }
+        }
+      }
       const row=db.prepare('SELECT data FROM accounts WHERE user_id=?').get(userId);
       const data=row?JSON.parse(row.data):blank(),applied={},counts={};
       for(const category of ['characters','weapons','artifacts','materials']) {
