@@ -41,6 +41,7 @@ namespace InventoryKamera
             ["weaponRarity"] = Bound("MinimumWeaponRarity", WeaponRarityControl), ["artifactRarity"] = Bound("MinimumArtifactRarity", ArtifactRarityControl),
             ["weaponLevel"] = Bound("MinimumWeaponLevel", MinimumWeaponLevelControl), ["artifactLevel"] = Bound("MinimumArtifactLevel", numericUpDown1),
             ["travelerName"] = Bound("TravelerName", travelerNameTextBox), ["wandererName"] = Bound("WandererName", wandererNameTextBox),
+            ["scanProfile"] = Bound("ScanProfile", null),
         };
         private static KeyValuePair<string, Control> Bound(string setting, Control control) => new KeyValuePair<string, Control>(setting, control);
 
@@ -167,7 +168,7 @@ namespace InventoryKamera
                 object typed = Convert.ChangeType((object)value?.ToObject<object>() ?? "", current.GetType(), System.Globalization.CultureInfo.InvariantCulture);
                 if (bound.Value is NumericUpDown number) { typed = Math.Max(number.Minimum, Math.Min(number.Maximum, (decimal)typed)); number.Value = (decimal)typed; }
                 else if (bound.Value is CheckBox check) check.Checked = (bool)typed;
-                else bound.Value.Text = (string)typed;
+                else if (bound.Value != null) bound.Value.Text = (string)typed;
                 settings[bound.Key] = typed;
                 return;
             }

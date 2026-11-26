@@ -57,10 +57,12 @@ export function validateScan(body,{recoverArtifacts=false}={}) {
   const errors=[...rejectionErrors,...(Array.isArray(raw.errors)?raw.errors.slice(0,500).map(e=>String(e).slice(0,2000)):[])].slice(0,500);
   const selected={};
   for(const category of ['characters','weapons','artifacts','materials','developmentItems']) selected[category]=raw.selected?.[category]===true;
+  const nickname=typeof raw.profile?.nickname==='string'?raw.profile.nickname.trim().slice(0,40):'',uid=typeof raw.profile?.uid==='string'&&/^\d{9,10}$/.test(raw.profile.uid)?raw.profile.uid:'';
+  const profile={...(nickname?{nickname}:{}),...(uid?{uid}:{})};
   const expected={};
   for(const category of ['weapons','artifacts']) expected[category]=integer(raw.expectedFromScreen?.[category],0,20000)?raw.expectedFromScreen[category]:null;
   return {scanId:body.scanId,capturedAt:new Date(time).toISOString(),good:cleaned,
-    report:{rejectedArtifacts,errorCount:(Array.isArray(raw.errors)?raw.errors.length:0)+rejectedArtifacts,status:String(raw.status??'imported').slice(0,80),errors,selected,expectedFromScreen:expected,
+    report:{...(Object.keys(profile).length?{profile}:{}),rejectedArtifacts,errorCount:(Array.isArray(raw.errors)?raw.errors.length:0)+rejectedArtifacts,status:String(raw.status??'imported').slice(0,80),errors,selected,expectedFromScreen:expected,
       events:Array.isArray(raw.events)?raw.events.slice(-500).map(e=>({at:Number.isFinite(Date.parse(e?.at))?new Date(e.at).toISOString():null,message:String(e?.message??'').slice(0,2000)})):[],
       partialCharacters:Array.isArray(raw.partialCharacters)?raw.partialCharacters.slice(0,300).map(c=>({key:String(c?.key??'Inconnu').slice(0,100),level:integer(c?.level,1,100)?c.level:null})):[],completenessVerified:false}};
 }

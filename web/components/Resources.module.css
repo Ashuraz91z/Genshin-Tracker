@@ -1,0 +1,4 @@
+.grid{list-style:none;margin:18px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.item{display:flex;flex-direction:column;gap:4px;padding:14px 16px;border:1px solid #2a3850;border-radius:10px;background:#0d1727}
+.item span{font-size:12px;color:var(--muted)}
+.item strong{font-size:20px;font-weight:500;font-variant-numeric:tabular-nums;color:var(--text)}

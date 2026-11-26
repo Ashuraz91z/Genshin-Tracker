@@ -298,6 +298,8 @@ export function openStore(path) {
         }
         data.watermarks[category]=scan.capturedAt;
       }
+      const profile=scan.report.profile;
+      if(profile&&!(data.profile?.at>scan.capturedAt)){data.profile={...data.profile,...profile,at:scan.capturedAt};}
       data.updatedAt=now();
       db.exec('BEGIN IMMEDIATE');
       try {

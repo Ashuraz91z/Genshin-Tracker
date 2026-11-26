@@ -6,9 +6,12 @@ import { baseRates, featuredFor, forecast, nextBanners, wishesToGuarantee } from
 const key='gt-primos',per={day:'par jour',month:'par mois',version:'par version'};
 const iso=d=>d.toISOString().slice(0,10),long=d=>d.toLocaleDateString('fr-FR',{day:'numeric',month:'long'});
 // ponytail: saved in this browser only; move to account customizations if people want it on every device.
-export default function Primos() {
+export default function Primos({scanned}) {
   const [state,setState]=useState({primos:0,fates:0,pity:0,guaranteed:false,target:'b0',settings:{}});
   useEffect(()=>{try{const saved=JSON.parse(localStorage.getItem(key));if(saved)setState(s=>({...s,...saved}));}catch{}},[]);
+  // A new Kamera scan refreshes the current primogems and fates once; manual edits stay until the next scan.
+  useEffect(()=>{if(!scanned?.at)return;setState(s=>{if(s.scanAt===scanned.at)return s;
+    const next={...s,primos:scanned.primos??s.primos,fates:scanned.fates??s.fates,scanAt:scanned.at};try{localStorage.setItem(key,JSON.stringify(next));}catch{}return next;});},[scanned?.at,scanned?.primos,scanned?.fates]);
   const save=next=>{setState(next);try{localStorage.setItem(key,JSON.stringify(next));}catch{}};
   const set=(field,value)=>save({...state,[field]:value}),source=(id,field,value)=>save({...state,settings:{...state.settings,[id]:{...state.settings[id],[field]:value}}});
   const banners=nextBanners(),auto=/^b\d$/.test(state.target),target=auto?(banners[state.target[1]]??banners[0]).date:new Date(state.target+'T00:00');

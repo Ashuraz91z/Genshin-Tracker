@@ -161,3 +161,10 @@ Le serveur peut reprendre les anciens fichiers contenant des artéfacts invalide
 - Les messages du scan et de la synchronisation sont traduits ; le journal détaillé reste en français.
 - La langue du jeu (Options) reste un réglage séparé.
 - 0.6.3 : Kamera plantait au démarrage quand la langue du jeu était réglée sur English (modèle OCR `genshin_fast_09_04_21` absent du paquet). L'anglais utilise maintenant le modèle `eng` fourni.
+
+### Profil et monnaies — Kamera FR 0.7.0 / site 0.8.0
+
+- Nouvelle case **Profil et monnaies** (cochée par défaut) : Kamera relève le pseudo et l'UID (menu Paimon), les primogemmes, les destins, les astérions et astéries libres (écran des vœux, touche F3) et les moras (écran des personnages).
+- Sans nom de Voyageur saisi, le pseudo du menu Paimon sert de nom au Voyageur.
+- Site : carte « Votre compte en jeu » sur la vue d'ensemble ; la prévision de primogemmes reprend les primogemmes et destins entrelacés du dernier scan.
+- Zones de lecture calibrées sur un écran 1920×1080 en français ; à vérifier sur les autres résolutions.

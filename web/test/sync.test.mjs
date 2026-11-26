@@ -31,9 +31,11 @@ test('pairing is single-use; bearer sync updates only its owner; token can be re
   const paired=await request('/api/device/pair',{method:'POST',data:{code:code.body.code,deviceName:'PC Alice'},origin:false});assert.equal(paired.status,200);
   assert.equal((await request('/api/device/pair',{method:'POST',data:{code:code.body.code,deviceName:'Duplicate'},origin:false})).status,401);
   const token=paired.body.token,body=scan('sync-one');
+  body.good.materials.Primogem=197;body.report.profile={nickname:'Ashura91',uid:'720864276'};
   assert.equal((await request('/api/sync',{method:'POST',data:body,origin:false})).status,401);
   assert.equal((await request('/api/sync',{method:'POST',token,data:body,origin:false})).status,200);
   const received=await request('/api/account',{cookie:alice});assert.equal(received.body.data.characters[0].level,80);assert.equal(received.body.data.materials.Mora,123456);assert.equal(received.body.data.quality.artifacts,'count_matched');
+  assert.equal(received.body.data.profile.nickname,'Ashura91');assert.equal(received.body.data.profile.uid,'720864276');assert.equal(received.body.data.materials.Primogem,197);
   assert.equal((await request('/api/account',{cookie:bob})).body.data.characters.length,0);
   const bobRevoke=await request('/api/devices/'+paired.body.deviceId,{method:'DELETE',cookie:bob});assert.equal(bobRevoke.status,200);
   assert.equal((await request('/api/sync',{method:'POST',token,data:body,origin:false})).body.duplicate,true);
@@ -190,4 +192,11 @@ test('manual artifacts and teams are isolated, validated, reversible and survive
  const removed=await request('/api/manual-artifacts/'+id,{method:'DELETE',cookie:alice});assert.equal(removed.status,200);assert.equal(removed.body.data.artifacts.length,1);assert.equal(removed.body.data.artifacts[0].level,4);assert.equal(removed.body.data.artifacts[0].location,'KamisatoAyaka');
  assert.equal((await request('/api/teams/'+teamId,{method:'DELETE',cookie:alice})).status,200);
  const untouched=await request('/api/account',{cookie:bob});assert.equal(untouched.body.customizations.teams.length,0);assert.equal(untouched.body.data.artifacts.length,0);
+});
+
+test('scan profile keeps a clean nickname and a 9-10 digit UID only',async()=>{
+  const {validateScan}=await import('../lib/scan.mjs');
+  const base={scanId:'profile-check-0001',capturedAt:new Date(Date.now()-1000).toISOString(),good:{format:'GOOD',version:2,materials:{Primogem:5}}};
+  assert.deepEqual(validateScan({...base,report:{profile:{nickname:'  Ashura91 ',uid:'720864276'}}}).report.profile,{nickname:'Ashura91',uid:'720864276'});
+  assert.equal(validateScan({...base,report:{profile:{nickname:'',uid:'12ab'}}}).report.profile,undefined);
 });

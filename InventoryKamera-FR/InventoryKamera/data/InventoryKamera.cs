@@ -105,8 +105,18 @@ namespace InventoryKamera
 			GenshinProcesor.RestartEngines();
 
 
-			// Assign Traveler's custom name
-			GenshinProcesor.AssignTravelerName(Properties.Settings.Default.TravelerName);
+			// Profile and currencies (Paimon menu, wish screen, character screen)
+			ProfileScraper.Reset();
+			if (Properties.Settings.Default.ScanProfile)
+			{
+				UserInterface.SetProgramStatus("Lecture du profil et des monnaies…");
+				ProfileScraper.Scan(Inventory);
+			}
+
+			// Assign Traveler's custom name; the Paimon-menu nickname is the Traveler's name when none is set.
+			string travelerName = Properties.Settings.Default.TravelerName;
+			if (string.IsNullOrWhiteSpace(travelerName) && ProfileScraper.Nickname != null) travelerName = ProfileScraper.Nickname;
+			GenshinProcesor.AssignTravelerName(travelerName);
 
 			// Assign Wanderer's custom name
 			GenshinProcesor.UpdateCharacterName("wanderer", Properties.Settings.Default.WandererName);

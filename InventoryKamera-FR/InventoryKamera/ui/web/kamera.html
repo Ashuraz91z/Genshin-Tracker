@@ -317,7 +317,8 @@ body.running .vf .scan{opacity:1;animation:scanline 2.2s linear infinite}
                 <button class="chip" data-check="scanWeapons"><span class="box"><svg class="i"><use href="#i-check"/></svg></span>Armes</button>
                 <button class="chip" data-check="scanArtifacts"><span class="box"><svg class="i"><use href="#i-check"/></svg></span>Artéfacts</button>
                 <button class="chip" data-check="scanMaterials"><span class="box"><svg class="i"><use href="#i-check"/></svg></span>Matériaux</button>
-                <button class="chip wide" data-check="scanDevItems"><span class="box"><svg class="i"><use href="#i-check"/></svg></span>Matériaux d’évolution</button>
+                <button class="chip" data-check="scanProfile"><span class="box"><svg class="i"><use href="#i-check"/></svg></span>Profil et monnaies</button>
+                <button class="chip" data-check="scanDevItems"><span class="box"><svg class="i"><use href="#i-check"/></svg></span>Matériaux d’évolution</button>
               </div>
               <div class="label"><span>Vitesse de navigation</span><span id="delayHelp">Modéré conseillé</span></div>
               <div class="seg" id="delay"><span class="thumb"></span><button data-v="0">Rapide</button><button data-v="1">Modéré</button><button data-v="2">Lent</button></div>
@@ -327,7 +328,7 @@ body.running .vf .scan{opacity:1;animation:scanline 2.2s linear infinite}
             <div class="card glass">
               <div class="eyebrow">Avant de commencer</div>
               <ol class="steps">
-                <li>Ouvrez le menu Paimon dans Genshin.</li>
+                <li>Ouvrez le menu Paimon dans Genshin (touche Vœux : F3).</li>
                 <li>Lancez le scan puis revenez au jeu avec Alt+Tab.</li>
                 <li>Gardez Genshin au premier plan sans toucher la souris.</li>
               </ol>
@@ -499,10 +500,10 @@ const EN={"FR · TRACKER":"FR · TRACKER","Scan":"Scan","Journal":"Log","Options
 "Système prêt":"System ready","Scan en cours":"Scanning","Scan en cours…":"Scanning…","Lancer le scan":"Start scan","Prêt":"Ready","Non connecté":"Not connected",
 "Personnages":"Characters","lus ce scan":"read this scan","Armes":"Weapons","total inconnu":"total unknown","Artéfacts":"Artifacts","% du jeu":"% of game",
 "Scan local":"Local scan","Préparer le scan":"Prepare the scan","Choisissez ce que Kamera doit relever. Un scan peut viser une seule catégorie.":"Choose what Kamera should read. A scan can target a single category.",
-"Matériaux":"Materials","Matériaux d’évolution":"Ascension materials","Vitesse de navigation":"Navigation speed","Rapide":"Fast","Modéré":"Moderate","Lent":"Slow",
+"Matériaux":"Materials","Profil et monnaies":"Profile and currencies","Lecture du profil et des monnaies…":"Reading profile and currencies…","Matériaux d’évolution":"Ascension materials","Vitesse de navigation":"Navigation speed","Rapide":"Fast","Modéré":"Moderate","Lent":"Slow",
 "Le plus rapide, pour un PC puissant":"Fastest, for a powerful PC","Modéré conseillé":"Moderate recommended","Plus sûr si des lectures échouent":"Safer if reads fail",
 "Appuyez sur":"Press","Entrée":"Enter","pour arrêter le scan à tout moment":"to stop the scan at any time","Avant de commencer":"Before you start",
-"Ouvrez le menu Paimon dans Genshin.":"Open the Paimon menu in Genshin.","Lancez le scan puis revenez au jeu avec Alt+Tab.":"Start the scan, then go back to the game with Alt+Tab.",
+"Ouvrez le menu Paimon dans Genshin (touche Vœux : F3).":"Open the Paimon menu in Genshin (Wish key: F3).","Lancez le scan puis revenez au jeu avec Alt+Tab.":"Start the scan, then go back to the game with Alt+Tab.",
 "Gardez Genshin au premier plan sans toucher la souris.":"Keep Genshin in front and don’t touch the mouse.","Jeu en français":"Game in French","HDR désactivé":"HDR off","16:9 ou 16:10":"16:9 or 16:10","Mode fenêtré":"Windowed mode",
 "Lecture en direct":"Live reading","Équipement en cours":"Current item","En attente d’une capture":"Waiting for a capture","Personnage et aptitudes":"Character and talents",
 "Capture de l’équipement":"Item capture","Nom":"Name","Niveau":"Level","Aptitude 1":"Talent 1","Aptitude 2":"Talent 2","Aptitude 3":"Talent 3",
@@ -669,7 +670,7 @@ if(!host){
   render({version:"0.5.0",running:false,status:{text:"Prêt · ouvrez le menu Paimon avant de lancer le scan",ok:true},syncProgress:{text:"Compte relié : envois automatiques actifs.",ok:true},
     hint:"Aucun scan effectué dans cette session. Les compteurs concernent uniquement ce PC.",
     counts:{characters:"0",weapons:"0",weaponsMax:"?",artifacts:"0",artifactsMax:"?"},
-    settings:{scanCharacters:true,scanWeapons:true,scanArtifacts:true,scanMaterials:false,scanDevItems:false,delay:"1",language:"FR",uiLanguage:"fr",weaponRarity:3,artifactRarity:4,weaponLevel:1,artifactLevel:0,
+    settings:{scanCharacters:true,scanWeapons:true,scanArtifacts:true,scanMaterials:false,scanDevItems:false,scanProfile:true,delay:"1",language:"FR",uiLanguage:"fr",weaponRarity:3,artifactRarity:4,weaponLevel:1,artifactLevel:0,
       equipWeapons:true,equipArtifacts:true,logScreenshots:false,travelerName:"Lumine",wandererName:"",outputPath:"C:\\Users\\Lucas\\Documents\\GenshinTracker\\exports",siteAddress:"https://genshin-tracker.com",accountName:"Lucas",pairingCode:""},
     ranges:{weaponRarity:[1,5],artifactRarity:[1,5],weaponLevel:[1,90],artifactLevel:[0,20]},keys:{inventory:"B",character:"C",slot1:"1"},
     enabled:{login:true,pair:true,retry:true,refreshAccount:true,exportOptimizer:false,sendFile:true},
