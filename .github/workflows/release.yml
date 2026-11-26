@@ -48,19 +48,26 @@ jobs:
         with:
           name: genshin-tracker-packages
           path: dist/*.zip*
-      - name: Publish release
+      - name: Publish test build as a private draft
+        # Every push to main builds a draft, visible only to the repository's collaborators.
+        # A version goes public only when someone publishes the draft (gh release edit vX --draft=false --latest).
         env:
           GH_TOKEN: ${{ github.token }}
         shell: pwsh
         run: |
           $version = (Get-Content web/package.json | ConvertFrom-Json).version
           $tag = "v$version"
-          $existing = gh release view $tag --json tagName 2>$null
+          $short = $env:GITHUB_SHA.Substring(0,7)
           $assets = @(Get-ChildItem dist -File | Where-Object { $_.Name -match "\.(zip|sha256)$" } | ForEach-Object { $_.FullName })
-          if ($LASTEXITCODE -eq 0) {
-            Write-Host "Release $tag already exists; keeping its original artifacts."
-            exit 0
+          $notes = "Version de test (brouillon privé) construite depuis $short. Extraire tout le paquet Windows. Les tests automatisés ne remplacent pas un essai réel dans Genshin."
+          $draft = gh release view $tag --json isDraft --jq .isDraft 2>$null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create $tag @assets --draft --target $env:GITHUB_SHA --title "Genshin Tracker $version" --notes $notes
+          } elseif ($draft -eq "true") {
+            gh release upload $tag @assets --clobber
+            if ($LASTEXITCODE -eq 0) { gh release edit $tag --target $env:GITHUB_SHA --notes $notes }
           } else {
-            gh release create $tag @assets --target $env:GITHUB_SHA --title "Genshin Tracker $version" --notes "Site avec synchronisation de compte et compagnon Windows Kamera FR. Extraire tout le paquet Windows. Les tests automatisés ne remplacent pas un essai réel dans Genshin."
+            Write-Host "Release $tag is already public; bump web/package.json for a new test build."
+            exit 0
           }
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

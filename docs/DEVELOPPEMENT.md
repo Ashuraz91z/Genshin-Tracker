@@ -83,7 +83,13 @@ python3 scripts/prepare_web_assets.py /chemin/vers/genshin-db
 
 ## Préparer les distributions
 
-Le workflow [Build and release Windows app](../.github/workflows/release.yml) construit et teste le site, vérifie le moteur, puis compile et emballe le scanner et le serveur. Il conserve les ressources d’une release déjà existante au lieu de les remplacer.
+Le workflow [Build and release Windows app](../.github/workflows/release.yml) construit et teste le site, vérifie le moteur, puis compile et emballe le scanner et le serveur. Chaque push sur `main` produit une **release brouillon** (visible seulement par les collaborateurs du dépôt) pour la version de `web/package.json` ; les push suivants remplacent les fichiers de ce brouillon. Une version devient publique seulement quand on publie le brouillon après un essai réel sous Windows :
+
+```bash
+gh release edit vX.Y.Z --draft=false --latest
+```
+
+Une release déjà publique n’est jamais modifiée : changez la version dans `web/package.json` pour un nouveau cycle de test.
 
 - Le paquet Windows inclut son guide utilisateur, les modèles, DLL et notices.
 - Le paquet serveur inclut les sources web et le ZIP du compagnon attendu par `DOWNLOAD_PATH`.
