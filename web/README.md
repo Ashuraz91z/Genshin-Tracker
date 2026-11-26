@@ -49,7 +49,7 @@ L'exhaustivité du compte et la précision OCR restent à vérifier dans le jeu.
 
 L'hébergement doit exécuter **Node.js 24+** avec disque persistant, ou Docker. Un hébergement statique/PHP seul ne suffit pas. Aucun serveur Hostinger n'a été modifié.
 
-Le paquet serveur de la release inclut les sources Next et le ZIP Windows attendu par le Dockerfile. Depuis un clone Git seul, télécharger l'asset `GenshinTracker-KameraFR-0.6.2.zip` dans `dist/` avant le build Docker.
+Le paquet serveur de la release inclut les sources Next et le ZIP Windows attendu par le Dockerfile. Depuis un clone Git seul, télécharger l'asset `GenshinTracker-KameraFR-0.6.3.zip` dans `dist/` avant le build Docker.
 
 Depuis `web/`, avec domaine pointant vers le serveur et ports 80/443 disponibles :
 

@@ -4,7 +4,7 @@ namespace InventoryKamera
 {
     /// <summary>
     /// The language the game is set to. The OCR model, the text rules and the saved scan report must all follow it:
-    /// English uses the Genshin-trained model and the original English rules; French uses the French rules.
+    /// English uses the shipped tessdata_fast English model and the original English rules; French uses the French rules.
     /// </summary>
     internal static class GameLanguage
     {
@@ -15,6 +15,6 @@ namespace InventoryKamera
 
         public static bool IsFrench => Current == French;
 
-        public static string OcrModel => IsFrench ? "fra+eng" : "genshin_fast_09_04_21";
+        public static string OcrModel => IsFrench ? "fra+eng" : "eng";
     }
 }

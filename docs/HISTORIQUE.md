@@ -160,3 +160,4 @@ Le serveur peut reprendre les anciens fichiers contenant des artéfacts invalide
 - Kamera peut s'afficher en français ou en anglais : sélecteur FR / EN en bas du menu latéral. Le choix est retenu sur le PC ; par défaut, la langue de Windows.
 - Les messages du scan et de la synchronisation sont traduits ; le journal détaillé reste en français.
 - La langue du jeu (Options) reste un réglage séparé.
+- 0.6.3 : Kamera plantait au démarrage quand la langue du jeu était réglée sur English (modèle OCR `genshin_fast_09_04_21` absent du paquet). L'anglais utilise maintenant le modèle `eng` fourni.
