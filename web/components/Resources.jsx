@@ -2,7 +2,7 @@ import { number, when } from './Collection';
 import s from './Resources.module.css';
 
 // Read by Kamera on the Paimon menu, the wish screen and the character screen.
-const items=[['Primogem','Primogemmes'],['IntertwinedFate','Destins entrelacés'],['AcquaintFate','Destins liés'],
+const items=[['Primogem','Primogemmes'],['IntertwinedFate','Pierres de la fatalité'],['AcquaintFate','Pierres de la destinée'],
   ['MasterlessStarglitter','Astéries libres'],['MasterlessStardust','Astrions libres'],['Mora','Moras']];
 
 export default function Resources({data}) {

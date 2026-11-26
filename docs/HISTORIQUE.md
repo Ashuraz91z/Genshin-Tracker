@@ -166,6 +166,7 @@ Le serveur peut reprendre les anciens fichiers contenant des artéfacts invalide
 
 - Nouvelle case **Profil et monnaies** (cochée par défaut) : Kamera relève le pseudo et l'UID (menu Paimon), les primogemmes, les destins, les astéries et astrions libres (écran des vœux, touche F3) et les moras (écran des personnages).
 - Sans nom de Voyageur saisi, le pseudo du menu Paimon sert de nom au Voyageur.
-- Site : carte « Votre compte en jeu » sur la vue d'ensemble ; la prévision de primogemmes reprend les primogemmes et destins entrelacés du dernier scan.
+- Site : carte « Votre compte en jeu » sur la vue d'ensemble ; la prévision de primogemmes reprend les primogemmes et pierres de la fatalité du dernier scan.
 - Zones de lecture calibrées sur un écran 1920×1080 en français ; à vérifier sur les autres résolutions.
 - 0.7.1 : pseudo gardé avec ses majuscules ; icônes colorées ignorées à la lecture (elles étaient lues comme des chiffres) ; primogemmes et destins lus séparément ; astéries (Starglitter) et astrions (Stardust) remis dans le bon ordre ; moras lus sur la page Constellation.
+- 0.7.2 : les deux destins sont relevés — Pierre de la fatalité (rose, bannières événement) et Pierre de la destinée (bleue, bannière permanente). Kamera reconnaît la bannière ouverte puis passe à l'autre type de bannière avec les flèches. Noms français du jeu sur le site.

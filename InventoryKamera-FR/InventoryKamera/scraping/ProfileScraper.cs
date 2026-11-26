@@ -48,9 +48,16 @@ namespace InventoryKamera
                     // Coloured icons are blanked before OCR (they were read as digits), and each number is read on its own.
                     var primos = Numbers(Region(975, 14, 1072, 50));
                     if (primos.Count > 0) Add(inventory, "Primogem", primos.Last());
-                    string fate = FateKind(Region(1120, 18, 1150, 46));
-                    var fates = Numbers(Region(1143, 14, 1208, 50));
-                    if (fates.Count > 0 && fate != null) Add(inventory, fate, fates[0]);
+                    // The fate shown is the one of the open banner: every event banner uses Pierre de la fatalité
+                    // (Intertwined, pink icon), the standard banner, last in the list, uses Pierre de la destinée (Acquaint, blue).
+                    ReadFate(inventory);
+                    var arrow = IsIntertwined() ? At(1227, 360, middle: true) : At(47, 360, middle: true);
+                    for (int i = 0; i < 8 && !(inventory.Materials.Contains(new Material("IntertwinedFate", 0)) && inventory.Materials.Contains(new Material("AcquaintFate", 0))); i++)
+                    {
+                        Navigation.Click(arrow); // next banner towards the missing fate
+                        Navigation.Wait(900);
+                        ReadFate(inventory);
+                    }
                     // Bottom left, after the first icon: Starglitter (Astérie libre) then Stardust (Astrion libre).
                     var bottom = Numbers(Region(66, 628, 300, 666, bottomAnchored: true));
                     if (bottom.Count > 0) Add(inventory, "MasterlessStarglitter", bottom[0]);
@@ -75,7 +82,7 @@ namespace InventoryKamera
 
             string Count(string key) { var m = inventory.Materials.FirstOrDefault(x => x.name == key); return m.name == null ? "?" : m.count.ToString(); }
             UserInterface.Trace("Profil : " + (Nickname ?? "pseudo illisible") + " · UID " + (Uid ?? "illisible") + " · " + Count("Primogem") + " primogemmes · "
-                + Count("IntertwinedFate") + " destins entrelacés · " + Count("AcquaintFate") + " destins liés · " + Count("MasterlessStarglitter") + " astéries libres · "
+                + Count("IntertwinedFate") + " pierres de la fatalité · " + Count("AcquaintFate") + " pierres de la destinée · " + Count("MasterlessStarglitter") + " astéries libres · "
                 + Count("MasterlessStardust") + " astrions libres · " + Count("Mora") + " moras.");
         }
 
@@ -144,23 +151,39 @@ namespace InventoryKamera
                 .Cast<Match>().Select(m => Regex.Replace(m.Value, @"\D", ""))
                 .Where(s => s.Length <= 9).Select(int.Parse).ToList();
 
-        /// <summary>The wish screen shows the fate of the current banner: pink = Intertwined, blue = Acquaint.</summary>
-        private static string FateKind(Rectangle region)
+        private static Point At(int x, int y, bool middle = false)
+        {
+            double height = middle || Navigation.GetAspectRatio() != new Size(8, 5) ? 720.0 : 800.0;
+            return new Point((int)(x / 1280.0 * Navigation.GetWidth()), (int)(y / height * Navigation.GetHeight()));
+        }
+
+        private static bool IsIntertwined() => PinkShare(Region(1120, 18, 1150, 46)) >= 0.08;
+
+        private static void ReadFate(Inventory inventory)
+        {
+            string key = IsIntertwined() ? "IntertwinedFate" : "AcquaintFate";
+            if (inventory.Materials.Contains(new Material(key, 0))) return;
+            var fates = Numbers(Region(1143, 14, 1208, 50));
+            if (fates.Count > 0) Add(inventory, key, fates[0]);
+        }
+
+        /// <summary>Share of coloured pixels that are pink. The Intertwined icon is pink with a blue ring (~25 % pink on a
+        /// 1920×1080 capture); the Acquaint icon is blue only.</summary>
+        private static double PinkShare(Rectangle region)
         {
             using (var bitmap = Navigation.CaptureRegion(region))
             {
-                // Intertwined is pink/violet (red above green), Acquaint is blue/cyan (green above red).
-                int pink = 0, blue = 0;
+                int pink = 0, coloured = 0;
                 for (int x = 0; x < bitmap.Width; x++)
                     for (int y = 0; y < bitmap.Height; y++)
                     {
                         var c = bitmap.GetPixel(x, y);
                         if (Math.Max(c.R, Math.Max(c.G, c.B)) - Math.Min(c.R, Math.Min(c.G, c.B)) < 50 || c.B < 120) continue;
-                        if (c.R > c.G + 25) pink++; else if (c.G > c.R + 15) blue++;
+                        coloured++;
+                        if (c.R > c.G + 25) pink++;
                     }
-                Logger.Debug("Fate colour: pink {0}, blue {1}", pink, blue);
-                if (pink + blue < 10) { UserInterface.AddError("Profil : type de destin non reconnu sur l'écran des vœux."); return null; }
-                return pink >= blue ? "IntertwinedFate" : "AcquaintFate";
+                Logger.Debug("Fate icon: {0} pink of {1} coloured pixels", pink, coloured);
+                return coloured < 10 ? 1.0 : pink / (double)coloured;
             }
         }
     }
