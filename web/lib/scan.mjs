@@ -58,7 +58,8 @@ export function validateScan(body,{recoverArtifacts=false}={}) {
   const selected={};
   for(const category of ['characters','weapons','artifacts','materials','developmentItems']) selected[category]=raw.selected?.[category]===true;
   const nickname=typeof raw.profile?.nickname==='string'?raw.profile.nickname.trim().slice(0,40):'',uid=typeof raw.profile?.uid==='string'&&/^\d{9,10}$/.test(raw.profile.uid)?raw.profile.uid:'';
-  const profile={...(nickname?{nickname}:{}),...(uid?{uid}:{})};
+  const rank=integer(raw.profile?.adventureRank,1,60)?raw.profile.adventureRank:null,world=integer(raw.profile?.worldLevel,0,9)?raw.profile.worldLevel:null;
+  const profile={...(nickname?{nickname}:{}),...(uid?{uid}:{}),...(rank!==null?{adventureRank:rank}:{}),...(world!==null?{worldLevel:world}:{})};
   const expected={};
   for(const category of ['weapons','artifacts']) expected[category]=integer(raw.expectedFromScreen?.[category],0,20000)?raw.expectedFromScreen[category]:null;
   return {scanId:body.scanId,capturedAt:new Date(time).toISOString(),good:cleaned,

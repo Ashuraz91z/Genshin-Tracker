@@ -19,8 +19,10 @@ namespace InventoryKamera
 
         internal static string Nickname { get; private set; }
         internal static string Uid { get; private set; }
+        internal static int? AdventureRank { get; private set; }
+        internal static int? WorldLevel { get; private set; }
 
-        internal static void Reset() { Nickname = null; Uid = null; }
+        internal static void Reset() { Nickname = null; Uid = null; AdventureRank = null; WorldLevel = null; }
 
         /// <summary>Starts and ends with the Paimon menu open.</summary>
         internal static void Scan(Inventory inventory)
@@ -34,6 +36,9 @@ namespace InventoryKamera
                 var uid = Regex.Match(ReadText(Region(70, 124, 205, 158)) ?? "", @"\d{9,10}");
                 if (!uid.Success) uid = Regex.Match(ReadText(Region(70, 124, 205, 158), numbersOnly: true) ?? "", @"\d{9,10}");
                 Uid = uid.Success ? uid.Value : null;
+                // Right-hand numbers of "Niv. d'aventure" and "Niv. du monde", left of the (i) buttons.
+                AdventureRank = Level(Region(415, 106, 472, 137), 1, 60);
+                WorldLevel = Level(Region(415, 160, 472, 188), 0, 9);
             });
 
             Attempt("écran des vœux", () =>
@@ -81,7 +86,8 @@ namespace InventoryKamera
             });
 
             string Count(string key) { var m = inventory.Materials.FirstOrDefault(x => x.name == key); return m.name == null ? "?" : m.count.ToString(); }
-            UserInterface.Trace("Profil : " + (Nickname ?? "pseudo illisible") + " · UID " + (Uid ?? "illisible") + " · " + Count("Primogem") + " primogemmes · "
+            UserInterface.Trace("Profil : " + (Nickname ?? "pseudo illisible") + " · UID " + (Uid ?? "illisible") + " · rang d'aventure " + (AdventureRank?.ToString() ?? "?")
+                + " · niveau du monde " + (WorldLevel?.ToString() ?? "?") + " · " + Count("Primogem") + " primogemmes · "
                 + Count("IntertwinedFate") + " pierres de la fatalité · " + Count("AcquaintFate") + " pierres de la destinée · " + Count("MasterlessStarglitter") + " astéries libres · "
                 + Count("MasterlessStardust") + " astrions libres · " + Count("Mora") + " moras.");
         }
@@ -136,6 +142,14 @@ namespace InventoryKamera
         {
             using (var image = Prepare(region))
                 return GenshinProcesor.AnalyzeText(image, Tesseract.PageSegMode.SingleLine, numbersOnly, raw)?.Trim();
+        }
+
+        /// <summary>A small number in range; retried with a digits-only whitelist, which reads lone digits better.</summary>
+        private static int? Level(Rectangle region, int min, int max)
+        {
+            var found = Numbers(region).Where(n => n >= min && n <= max).ToList();
+            if (found.Count == 0) found = ParseNumbers(ReadText(region, numbersOnly: true)).Where(n => n >= min && n <= max).ToList();
+            return found.Count > 0 ? found.Last() : (int?)null;
         }
 
         /// <summary>Whole numbers read left to right; icons and the "+" button are dropped.</summary>

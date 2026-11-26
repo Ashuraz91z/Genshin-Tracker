@@ -130,7 +130,7 @@ export default function Tracker({view,characterKey}) {
         {account.billing?.trial&&daysLeft(account.billing.trialEnds)<=5&&<div className="guest-banner trial-banner" role="status"><p><strong>Essai gratuit · {daysLeft(account.billing.trialEnds)} jour{daysLeft(account.billing.trialEnds)>1?'s':''} restant{daysLeft(account.billing.trialEnds)>1?'s':''}</strong> · Aucune carte demandée. Ensuite, dès 14,99 € par an.</p><button className="text-button" onClick={()=>setModal('billing')}>Choisir une formule</button></div>}
         
         {view==='overview'&&<section className="overview-content">
-          <Resources data={data} teams={account.customizations?.teams??[]}/>
+          <Resources data={data}/>
           {data.characters.length>0&&<FarmToday data={data} catalogue={catalogue} teams={account.customizations?.teams??[]}/>}
           <Primos scanned={data.materials?.Primogem!==undefined?{primos:data.materials.Primogem,fates:data.materials.IntertwinedFate,at:data.profile?.at??data.watermarks?.materials}:null}/>
           <div className="stats-grid">{[['users',data.characters.length,'Personnages','dans votre carnet'],['sword',data.weapons.length,'Armes','relevées'],['flower',data.artifacts.length,'Artéfacts','relevés'],['box',Object.keys(data.materials).length,'Matériaux','types de ressources']].map(([symbol,count,name,note])=><Link href={symbol==='users'?'/characters':'/inventory'} className="stat" key={name}><div className="stat-symbol"><Icon name={symbol}/></div><div><strong>{data.updatedAt?number(count):'—'}</strong><p>{name}</p></div><small>{note}</small></Link>)}</div>

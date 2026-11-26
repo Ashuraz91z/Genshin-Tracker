@@ -197,6 +197,7 @@ test('manual artifacts and teams are isolated, validated, reversible and survive
 test('scan profile keeps a clean nickname and a 9-10 digit UID only',async()=>{
   const {validateScan}=await import('../lib/scan.mjs');
   const base={scanId:'profile-check-0001',capturedAt:new Date(Date.now()-1000).toISOString(),good:{format:'GOOD',version:2,materials:{Primogem:5}}};
-  assert.deepEqual(validateScan({...base,report:{profile:{nickname:'  Ashura91 ',uid:'720864276'}}}).report.profile,{nickname:'Ashura91',uid:'720864276'});
+  assert.deepEqual(validateScan({...base,report:{profile:{nickname:'  Ashura91 ',uid:'720864276',adventureRank:55,worldLevel:8}}}).report.profile,{nickname:'Ashura91',uid:'720864276',adventureRank:55,worldLevel:8});
+  assert.deepEqual(validateScan({...base,report:{profile:{nickname:'A',adventureRank:61,worldLevel:'8'}}}).report.profile,{nickname:'A'});
   assert.equal(validateScan({...base,report:{profile:{nickname:'',uid:'12ab'}}}).report.profile,undefined);
 });

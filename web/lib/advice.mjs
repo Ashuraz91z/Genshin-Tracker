@@ -1,33 +1,16 @@
-import { characterNeeds, weaponNeeds } from './planner.mjs';
-
-const fmt=n=>n.toLocaleString('fr-FR'),who=n=>n>1?`vos ${n} personnages principaux`:'votre personnage principal';
+const fmt=n=>n.toLocaleString('fr-FR');
 // Paimon's Bargains: up to 5 Pierres de la fatalité a month for 75 Astrions libres each, and 5 for 5 Astéries libres each.
 const SHOP={stardust:75,starglitter:5,perMonth:5};
-export const TARGET={ascension:6,talent:8};
 
-// Main characters: those in saved teams, otherwise the 8 highest-level ones.
-export function mainCharacters(data,teams=[]) {
-  const inTeams=new Set(teams.flatMap(t=>t.characters??[]));
-  const picked=data.characters.filter(c=>inTeams.has(c.key));
-  return picked.length?picked:[...data.characters].sort((a,b)=>b.level-a.level).slice(0,8);
-}
+// Mora reserve below which upgrades risk stalling: the goal is not running dry when spending resin, not a full build total.
+// ponytail: two fixed steps by Adventure Rank; tune them if they feel off for very new or very old accounts.
+export const moraFloor=rank=>Number.isInteger(rank)&&rank<45?1_000_000:2_000_000;
 
-// ponytail: ascensions and talents only; character and weapon levels (EXP books cost Mora too) are left out, so this is a floor.
-export function moraNeeded(data,planner,teams=[]) {
-  const characters=mainCharacters(data,teams);let total=0;
-  for(const c of characters){
-    total+=characterNeeds(c,planner.characters?.[c.key],TARGET).Mora??0;
-    for(const w of data.weapons.filter(w=>w.location===c.key))total+=weaponNeeds(w,planner.weapons?.[w.key]).Mora??0;
-  }
-  return {total,characters:characters.length};
-}
-
-export function currencyAdvice(data,planner,teams=[]) {
+export function currencyAdvice(data) {
   const m=data.materials??{},tips=[];
-  if(m.Mora!==undefined&&planner){
-    const need=moraNeeded(data,planner,teams),missing=need.total-m.Mora;
-    if(missing>0)tips.push({tone:'warn',title:'Moras à farmer',text:`Il vous manque au moins ${fmt(missing)} moras pour élever ${who(need.characters)} et ${need.characters>1?'leurs armes':'son arme'} (élévations et aptitudes 8, sans les niveaux). Passez votre résine dans les Fleurs de richesse (Flux de mora) et faites vos commissions chaque jour.`});
-    else if(need.total>0)tips.push({tone:'ok',title:'Moras suffisants',text:`${fmt(m.Mora)} moras couvrent les ${fmt(need.total)} demandés par les élévations et aptitudes 8 de ${who(need.characters)}. Les niveaux de personnage et d'arme en consomment encore.`});
+  if(m.Mora!==undefined){
+    const floor=moraFloor(data.profile?.adventureRank);
+    if(m.Mora<floor)tips.push({tone:'warn',title:'Réserve de moras basse',text:`${fmt(m.Mora)} moras, sous les ${fmt(floor)} conseillés pour votre compte. Gardez de la résine pour les Fleurs de richesse (Flux de mora) afin de ne pas être bloqué au moment d’élever un personnage ou une arme.`});
   }
   if(m.Primogem!==undefined||m.IntertwinedFate!==undefined){
     const wishes=Math.floor((m.Primogem??0)/160)+(m.IntertwinedFate??0);
