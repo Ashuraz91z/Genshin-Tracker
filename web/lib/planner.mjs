@@ -84,6 +84,12 @@ export function goalPlan(data,catalogue,planner,keys,target,day=new Date().getDa
   const all=Object.values(dated).sort(byWho);
   return {rank,today:all.filter(g=>openOn(g,day)),later:all.filter(g=>!openOn(g,day)),other:Object.values(other).sort((a,b)=>byWho(a,b)||b.missing-a.missing),artifacts:Object.values(artifacts).sort(byWho),count:chars.length};
 }
+// Moras nécessaires pour les personnages (keys = tous si absent) vers la cible, comparés aux moras possédés.
+export function moraNeeds(data,planner,target=goals.all.target,keys) {
+  const chars=keys?data.characters.filter(c=>keys.includes(c.key)):data.characters;
+  const needed=chars.reduce((sum,c)=>sum+(characterNeeds(c,planner?.characters?.[c.key],target).Mora??0),0),owned=data.materials?.Mora??0;
+  return {needed,owned,missing:Math.max(0,needed-owned)};
+}
 // Moyennes genshin-db au niveau du monde 8 (RA 55+). Boss normal : 40 résine ; la résine remonte de 180 par jour.
 export function farmEstimate(sources=[],missing) {
   const best=sources[0];if(!best)return null;
