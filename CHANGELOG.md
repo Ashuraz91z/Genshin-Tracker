@@ -2,7 +2,7 @@
 
 Format libre, du plus récent au plus ancien. Le détail des versions antérieures est dans [docs/HISTORIQUE.md](docs/HISTORIQUE.md).
 
-## Kamera 0.7.3 · site 0.8.3 (27/11/2026)
+## Kamera 1.0.0 · site 1.0.0 (27/11/2026)
 
 ### Kamera
 - **Guide de démarrage** (français et anglais) : réglages de Genshin, de Kamera, compte, premier scan, avec une vidéo de démonstration, puis une **visite guidée** de l'écran Scan et des Options (zones assombries).

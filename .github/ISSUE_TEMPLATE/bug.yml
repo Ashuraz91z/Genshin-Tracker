@@ -12,7 +12,7 @@ body:
     attributes:
       label: Version de Kamera
       description: Visible en bas du menu latéral de Kamera.
-      placeholder: "0.7.3"
+      placeholder: "1.0.0"
     validations:
       required: true
   - type: dropdown
