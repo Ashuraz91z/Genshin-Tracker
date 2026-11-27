@@ -148,7 +148,8 @@ namespace InventoryKamera
 				Navigation.SystemWait(Navigation.Speed.Normal);
 
                 // Apply the actual C3/C5 bonus, including normal-attack constellations.
-                if (character.Constellation >= 3 && GenshinProcesor.Characters.TryGetValue(name.ToLower(), out var characterData))
+                // The Traveler is left exactly as read (e.g. C6 with every talent at 1): no bonus is removed and nothing is checked.
+                if (character.Constellation >= 3 && !character.NameGOOD.Contains("Traveler") && GenshinProcesor.Characters.TryGetValue(name.ToLower(), out var characterData))
                 {
                     var order = character.NameGOOD.Contains("Traveler")
                         ? characterData["ConstellationOrder"][character.Element.ToLower()]
