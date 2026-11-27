@@ -130,6 +130,7 @@ namespace InventoryKamera
                     case "click": ClickFromWeb(id); break;
                     case "set": SetFromWeb(id, message["value"]); break;
                     case "key": KeyFromWeb(id, (int?)message["vk"] ?? 0); break;
+                    case "onboardingDone": OnboardingDone = true; break;
                 }
             }
             catch (Exception error)
@@ -205,6 +206,23 @@ namespace InventoryKamera
             }
         }
 
+        // Premier lancement : le guide de démarrage s'affiche une fois, puis reste accessible depuis le menu latéral.
+        private static readonly string OnboardingFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "GenshinTracker", "KameraFR", "onboarding-done.txt");
+        private static bool? onboardingDone;
+        private static bool OnboardingDone
+        {
+            get
+            {
+                if (onboardingDone == null) { try { onboardingDone = File.Exists(OnboardingFile); } catch (IOException) { onboardingDone = false; } }
+                return onboardingDone.Value;
+            }
+            set
+            {
+                onboardingDone = value;
+                try { Directory.CreateDirectory(Path.GetDirectoryName(OnboardingFile)); File.WriteAllText(OnboardingFile, "1"); } catch (IOException) { } catch (UnauthorizedAccessException) { }
+            }
+        }
+
         private void KeyFromWeb(string id, int key)
         {
             var box = id == "inventory" ? inventoryToolStripTextBox : id == "character" ? characterToolStripTextBox : id == "slot1" ? slot1StripTextBox : null;
@@ -216,6 +234,18 @@ namespace InventoryKamera
             var result = new JObject { ["text"] = label?.Text ?? "" };
             if (label != null && label.ForeColor != neutral) result["ok"] = label.ForeColor != Color.Salmon;
             return result;
+        }
+
+        // Profil et monnaies lus pendant le scan ; une clé absente = pas encore lue.
+        private static JObject ProfileState()
+        {
+            var profile = new JObject();
+            void Put(string name, object value) { if (value != null) profile[name] = JToken.FromObject(value); }
+            Put("name", ProfileScraper.Nickname); Put("uid", ProfileScraper.Uid); Put("ar", ProfileScraper.AdventureRank); Put("wl", ProfileScraper.WorldLevel);
+            foreach (var pair in new Dictionary<string, string> { ["Mora"] = "mora", ["Primogem"] = "primogem", ["AcquaintFate"] = "acquaint",
+                ["IntertwinedFate"] = "intertwined", ["MasterlessStarglitter"] = "starglitter", ["MasterlessStardust"] = "stardust" })
+                if (ProfileScraper.Currencies.TryGetValue(pair.Key, out int count)) profile[pair.Value] = count;
+            return profile;
         }
 
         private void PushWebState()
@@ -238,6 +268,8 @@ namespace InventoryKamera
             {
                 ["version"] = Assembly.GetExecutingAssembly().GetName().Version.ToString(3),
                 ["running"] = running,
+                ["onboarded"] = OnboardingDone,
+                ["profile"] = ProfileState(),
                 ["status"] = Tone(ProgramStatus_Label, Color.Empty),
                 ["syncProgress"] = Tone(syncProgressLabel, Muted),
                 ["hint"] = localScanHint.Text,

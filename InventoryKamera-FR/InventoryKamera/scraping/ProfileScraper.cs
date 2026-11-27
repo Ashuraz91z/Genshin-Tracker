@@ -22,7 +22,10 @@ namespace InventoryKamera
         internal static int? AdventureRank { get; private set; }
         internal static int? WorldLevel { get; private set; }
 
-        internal static void Reset() { Nickname = null; Uid = null; AdventureRank = null; WorldLevel = null; }
+        // Values read so far, shown live in the interface while the scan is running (key = material name).
+        internal static readonly System.Collections.Concurrent.ConcurrentDictionary<string, int> Currencies = new System.Collections.Concurrent.ConcurrentDictionary<string, int>();
+
+        internal static void Reset() { Nickname = null; Uid = null; AdventureRank = null; WorldLevel = null; Currencies.Clear(); }
 
         /// <summary>Starts and ends with the Paimon menu open.</summary>
         internal static void Scan(Inventory inventory)
@@ -102,6 +105,7 @@ namespace InventoryKamera
         private static void Add(Inventory inventory, string key, int count)
         {
             var material = new Material(key, count);
+            Currencies[key] = count;
             inventory.Materials.Remove(material);
             inventory.Materials.Add(material);
         }

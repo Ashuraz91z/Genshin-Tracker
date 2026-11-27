@@ -21,6 +21,14 @@ La version du site et celle du scanner ont des numéros indépendants. Choisisse
 
 Les raretés minimales sont à 1 par défaut. Sélectionnez les catégories que vous voulez relever avant de commencer.
 
+## Guide de démarrage
+
+Au premier lancement, Kamera ouvre un guide en cinq étapes (réglages de Genshin, réglages de Kamera, compte, premier scan), en français ou en anglais selon la langue de l'interface. Le bouton **Guide de démarrage** du menu latéral le rouvre à tout moment.
+
+Réglages à retenir côté Genshin : résolution **1920 × 1080** (16:9, la configuration testée), **HDR désactivé** dans Windows, clavier et souris, Genshin au premier plan. Les résolutions inférieures n'ont pas été validées.
+
+Pendant un scan avec **Profil et monnaies**, l'onglet Scan affiche en direct le pseudo, l'UID, les moras, les primogemmes, les pierres de la destinée et de la fatalité, les astéries libres et les astrions libres, au fur et à mesure de leur lecture.
+
 ## Relier le PC au carnet
 
 Créez un compte sur [Genshin Tracker](https://genshin-tracker.com). Dans l’onglet **Connexion** du scanner, renseignez l’adresse du site, votre pseudo et votre mot de passe **du tracker**. Utilisez un mot de passe différent de celui de HoYoverse.
