@@ -10,7 +10,7 @@ export function currencyAdvice(data) {
   const m=data.materials??{},tips=[];
   if(m.Mora!==undefined){
     const floor=moraFloor(data.profile?.adventureRank);
-    if(m.Mora<floor)tips.push({tone:'warn',title:'Réserve de moras basse',text:`${fmt(m.Mora)} moras, sous les ${fmt(floor)} conseillés pour votre compte. Gardez de la résine pour les Fleurs de richesse (Flux de mora) afin de ne pas être bloqué au moment d’élever un personnage ou une arme.`});
+    if(m.Mora<floor)tips.push({tone:m.Mora<floor/4?'bad':'warn',title:'Réserve de moras basse',text:`${fmt(m.Mora)} moras, sous les ${fmt(floor)} conseillés pour votre compte. Gardez de la résine pour les Fleurs de richesse (Flux de mora) afin de ne pas être bloqué au moment d’élever un personnage ou une arme.`});
   }
   if(m.Primogem!==undefined||m.IntertwinedFate!==undefined){
     const wishes=Math.floor((m.Primogem??0)/160)+(m.IntertwinedFate??0);
