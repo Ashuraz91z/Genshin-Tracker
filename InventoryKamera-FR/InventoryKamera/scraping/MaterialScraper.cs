@@ -376,20 +376,12 @@ namespace InventoryKamera
                 }
 			}
 			
-			// Nothing readable (seen on 2-star items such as Sealed Scroll, although the digits are clear on the capture):
-			// retry once on the lower half of the tile only, plain dark-on-light digits, no colour filtering.
+			// Nothing readable (seen on 2- and 3-star tiles such as Sealed Scroll, although the digits are clear on the capture).
 			if (counts.Keys.All(k => k == 0))
 			{
-				using (Bitmap lower = quantity.Clone(new Rectangle(0, quantity.Height * 45 / 100, quantity.Width, quantity.Height - quantity.Height * 45 / 100), quantity.PixelFormat))
-				using (Bitmap big = GenshinProcesor.ResizeImage(lower, lower.Width * 3, lower.Height * 3))
-				{
-					Bitmap g = GenshinProcesor.ConvertToGrayscale(big);
-					g = new Threshold(130).Apply(g);
-					string text = GenshinProcesor.AnalyzeText(g, Tesseract.PageSegMode.SingleLine, numbersOnly: true).Trim();
-					g.Dispose();
-					Logger.Debug($"Fallback quantity read: {text}");
-					if (int.TryParse(Regex.Replace(text, @"[^0-9]", string.Empty), out int fallback) && fallback > 0) return fallback;
-				}
+				int fallback = FallbackQuantity(quantity);
+				Logger.Debug($"Fallback quantity read: {fallback}");
+				if (fallback > 0) return fallback;
 			}
 
 			var nullableMode = SafeExtractMaxCounter(counts);
@@ -402,6 +394,42 @@ namespace InventoryKamera
 			
 			counts.Remove(mode.Key);
 			return SafeExtractMaxCounter(counts)?.Value ?? 0;
+		}
+
+		// Second chance on the centred lower half of the tile: black/white at three thresholds, white margin, 3x nearest-neighbour,
+		// read as a line and as a word. A value counts only with at least 3 of the 6 reads agreeing; the longest such value wins,
+		// since the usual failure is a dropped digit. Calibrated on the capture of 336 tiles from the 27/11/2026 full scan.
+		private static int FallbackQuantity(Bitmap tile)
+		{
+			int w = tile.Width, h = tile.Height;
+			var votes = new Dictionary<int, int>();
+			foreach (int threshold in new[] { 120, 130, 140 })
+				using (Bitmap image = Binarize(tile, w * 25 / 100, w * 75 / 100, h * 45 / 100, h - 3, threshold, 10, 3))
+					foreach (var mode in new[] { Tesseract.PageSegMode.SingleLine, Tesseract.PageSegMode.SingleWord })
+					{
+						string digits = Regex.Replace(GenshinProcesor.AnalyzeText(image, mode, numbersOnly: true), @"\D", string.Empty);
+						if (int.TryParse(digits, out int value) && value > 0)
+						{
+							votes.TryGetValue(value, out int count);
+							votes[value] = count + 1;
+						}
+					}
+			return votes.Where(v => v.Value >= 3).OrderByDescending(v => v.Key.ToString().Length).ThenByDescending(v => v.Value)
+				.Select(v => v.Key).FirstOrDefault();
+		}
+
+		private static Bitmap Binarize(Bitmap source, int left, int right, int top, int bottom, int threshold, int pad, int scale)
+		{
+			var result = new Bitmap((right - left + 2 * pad) * scale, (bottom - top + 2 * pad) * scale);
+			for (int y = 0; y < result.Height; y++)
+				for (int x = 0; x < result.Width; x++)
+				{
+					int sx = x / scale - pad + left, sy = y / scale - pad + top;
+					bool dark = sx >= left && sx < right && sy >= top && sy < bottom
+						&& (0.299 * source.GetPixel(sx, sy).R + 0.587 * source.GetPixel(sx, sy).G + 0.114 * source.GetPixel(sx, sy).B) < threshold;
+					result.SetPixel(x, y, dark ? Color.Black : Color.White);
+				}
+			return result;
 		}
 
 		private static KeyValuePair<int, int>? SafeExtractMaxCounter(Dictionary<int, int> counts)
