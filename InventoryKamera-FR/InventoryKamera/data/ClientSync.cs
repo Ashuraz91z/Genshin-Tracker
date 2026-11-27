@@ -81,6 +81,13 @@ namespace InventoryKamera
             AccessRejected=false;
             AccountChanged?.Invoke(null);
         }
+        // Forgets the account on this PC only: the saved key is deleted, local exports stay. The PC can also be unlinked from the site.
+        internal static void SignOut()
+        {
+            lock (ConfigLock) { if (File.Exists(ConfigPath)) File.Delete(ConfigPath); }
+            AccessRejected = false;
+            Status("Déconnecté de ce PC. Les exports locaux sont conservés ; reconnectez-vous pour reprendre les envois.");
+        }
         internal static async Task Login(string url, string name, string password)
         {
             url = ValidateUrl(url);

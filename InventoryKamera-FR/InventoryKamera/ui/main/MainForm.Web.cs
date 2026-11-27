@@ -156,6 +156,13 @@ namespace InventoryKamera
                 case "cancelChange": Press(cancelConnectionButton); break;
                 case "gameProcess": updateExecutablesToolStripMenuItem_Click(this, EventArgs.Empty); break;
                 case "referential": DatabaseUpdateMenuItem_Click(this, EventArgs.Empty); break;
+                case "signOut":
+                    if (running || connectionBusy) { UserInterface.Trace("Attendez la fin du scan ou de la connexion avant de vous déconnecter."); break; }
+                    ClientSync.SignOut();
+                    accountSummary.Text = "Connectez-vous pour afficher les données enregistrées sur le site. Aucun inventaire n’a encore été chargé.";
+                    accountCharacters.Rows.Clear(); accountHistory.Text = "Les derniers scans reçus par le site apparaîtront ici.";
+                    UpdateConnectionView(false);
+                    break;
                 default: if (id != null && webButtons.TryGetValue(id, out var button)) Press(button); break;
             }
         }

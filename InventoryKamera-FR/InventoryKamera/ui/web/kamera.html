@@ -189,6 +189,7 @@ body.running .vf .scan{opacity:1;animation:scanline 2.2s linear infinite}
 .btn.primary:hover:not(:disabled){background:linear-gradient(180deg,#fbe0ae,var(--gold-hi))}
 .btn.ghost{background:none;border-color:transparent;box-shadow:none;color:var(--muted)}
 .btn.ghost:hover:not(:disabled){color:var(--text);background:rgba(255,255,255,.05)}
+.btn.ghost.danger,.btn.danger{color:var(--red);border-color:rgba(255,155,155,.45);background:rgba(255,155,155,.08)}
 .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 
 .form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 18px;margin-top:20px}
@@ -350,6 +351,7 @@ body.running .vf .scan{opacity:1;animation:scanline 2.2s linear infinite}
   <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M18 6l-2.5 2.5M8.5 15.5L6 18"/></symbol>
   <symbol id="i-id" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="3"/><circle cx="8.5" cy="11" r="2"/><path d="M5.5 16c.6-1.6 2-2.2 3-2.2s2.4.6 3 2.2M14 10h5M14 14h3"/></symbol>
   <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 2.5-3 4.5M12 17.5h.01"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
   <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
 </defs></svg>
 
@@ -575,7 +577,7 @@ body.running .vf .scan{opacity:1;animation:scanline 2.2s linear infinite}
         <div class="card glass">
           <div class="row" style="justify-content:space-between">
             <div><div class="eyebrow">Données du site</div><h2>Mon compte</h2><p class="help" id="acctSummary" style="white-space:pre-line">Connectez-vous pour afficher les données enregistrées sur le site.</p></div>
-            <button class="btn" data-click="refreshAccount" id="refreshBtn"><svg class="i"><use href="#i-refresh"/></svg>Actualiser</button>
+            <div class="row"><button class="btn" data-click="refreshAccount" id="refreshBtn"><svg class="i"><use href="#i-refresh"/></svg>Actualiser</button><button class="btn ghost" id="signOutBtn" hidden><svg class="i"><use href="#i-logout"/></svg><span>Se déconnecter</span></button></div>
           </div>
           <div class="table"><div class="scroll"><table><thead><tr><th>Personnage</th><th>Niveau</th><th>Const.</th><th>Attaque</th><th>Compétence</th><th>Déchaînement</th></tr></thead><tbody id="rows"></tbody></table></div></div>
           <p class="cap" style="margin-top:22px">Derniers relevés reçus</p>
@@ -641,7 +643,7 @@ const EN={"FR · TRACKER":"FR · TRACKER","Scan":"Scan","Journal":"Log","Options
 "Dossier des exports":"Export folder","Parcourir":"Browse","Ouvrir les exports":"Open exports","Exporter vers Optimizer":"Export to Optimizer",
 "Le jeu doit rester en français (ou dans la langue choisie), en 16:9 ou 16:10, HDR désactivé.":"The game must stay in French (or the chosen language), in 16:9 or 16:10, with HDR off.",
 "Guide de démarrage":"Getting started","Compte":"Account","Moras":"Mora","Primogemmes":"Primogems","Pierres de la destinée":"Acquaint Fate","Pierres de la fatalité":"Intertwined Fate","Astéries libres":"Masterless Starglitter","Astrions libres":"Masterless Stardust",
-"Synchronisation":"Sync","Du jeu à votre carnet":"From the game to your tracker","Connectez-vous une seule fois. Le PC reste relié à votre compte.":"Sign in once. This PC stays linked to your account.",
+"Se déconnecter":"Sign out","Synchronisation":"Sync","Du jeu à votre carnet":"From the game to your tracker","Connectez-vous une seule fois. Le PC reste relié à votre compte.":"Sign in once. This PC stays linked to your account.",
 "Aucun compte relié":"No account linked","Connectez-vous une seule fois ci-dessous.":"Sign in once below.","Connexion mémorisée sur ce PC.":"Sign-in remembered on this PC.","Accès refusé : ":"Access denied: ",
 "Les exports sont conservés. Reconnectez-vous avant de réessayer l’envoi.":"Exports are kept. Sign in again before retrying the upload.",
 "Changer de compte":"Switch account","Adresse HTTPS du site":"Site HTTPS address","Pseudo du compte du tracker":"Tracker account username","Mot de passe du tracker":"Tracker password",
@@ -718,6 +720,11 @@ function setSeg(el,v){const bs=[...el.querySelectorAll("button")];const b=bs.fin
 seg($("#delay"),"delay");seg($("#language"),"language");seg($("#uiLanguage"),"uiLanguage");
 $("#uiLanguage").querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>setLang(b.dataset.v)));
 setSeg($("#uiLanguage"),LANG);
+// Deux clics pour se déconnecter : le premier arme le bouton pendant 4 secondes.
+(function(){const b=$("#signOutBtn"),lab=b.querySelector("span");let armed=null;
+  b.addEventListener("click",()=>{if(armed){clearTimeout(armed);armed=null;lab.textContent=t("Se déconnecter");b.classList.remove("danger");send({cmd:"click",id:"signOut"});return;}
+    lab.textContent=L("Confirmer la déconnexion","Confirm sign out");b.classList.add("danger");
+    armed=setTimeout(()=>{armed=null;lab.textContent=t("Se déconnecter");b.classList.remove("danger");},4000);});})();
 const DELAY=["Le plus rapide, pour un PC puissant","Modéré conseillé","Plus sûr si des lectures échouent"];
 $$("[data-num]").forEach(st=>{const [minus,plus]=st.querySelectorAll("button");
   const bump=d=>{const r=(S.ranges||{})[st.dataset.num]||[0,99];const cur=+st.dataset.value||0;const v=Math.max(r[0],Math.min(r[1],cur+d));if(v===cur)return;setNum(st,v);send({cmd:"set",id:st.dataset.num,value:v});};
@@ -756,7 +763,7 @@ function render(s){
   setText($("#acctAvatar"),connected?a.name.trim().charAt(0).toUpperCase():"?");
   setText($("#acctName"),connected?(a.rejected?t("Accès refusé : "):"")+a.name:t("Aucun compte relié"));
   setText($("#acctDetail"),connected?(a.rejected?t("Les exports sont conservés. Reconnectez-vous avant de réessayer l’envoi."):(a.site||"")+"\n"+t("Connexion mémorisée sur ce PC.")):t("Connectez-vous une seule fois ci-dessous."));
-  $("#changeBtn").hidden=!connected||a.editing;$("#connForm").hidden=connected&&!a.editing;$("#cancelBtn").hidden=!(connected&&a.editing);
+  $("#signOutBtn").hidden=!connected;$("#changeBtn").hidden=!connected||a.editing;$("#connForm").hidden=connected&&!a.editing;$("#cancelBtn").hidden=!(connected&&a.editing);
   const ss=a.syncStatus||{};const m=$("#syncStatus");setText(m,t(ss.text||""));m.className="msg"+(ss.ok===false?" err":ss.ok?" ok":"");
   const en=s.enabled||{};["login","pair","retry","refreshAccount","exportOptimizer","sendFile"].forEach(k=>{const b=$(`[data-click="${k}"]`);if(b&&k in en)b.disabled=!en[k];});
   setText($("#acctSummary"),t(a.summary||""));
