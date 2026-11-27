@@ -60,6 +60,9 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
       const session=(request.headers.get('cookie')??'').split(';').map(x=>x.trim()).find(x=>x.startsWith('gt_session='))?.slice(11);
       const user=store.user(session);ctx.userId=user?.id;
       const requireUser=()=>{if(!user)throw new Problem('Connectez-vous pour accéder à votre compte.',401);return user;};
+      // Pseudonymous visitor (daily salted IP+UA hash), computed once: keys the global/anonymous limits so one actor cannot lock everyone out.
+      const ip=(request.headers.get('x-forwarded-for')??'').split(',')[0].trim()||request.headers.get('x-real-ip')||'';
+      const visitor=store.visitor(ip,request.headers.get('user-agent')??''),who=visitor??'anon';
       async function body() {
         if(!(request.headers.get('content-type')??'').startsWith('application/json'))throw new Problem('Format JSON requis.',415);
         const limit=16*1024*1024;
@@ -68,12 +71,12 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
         if(reader)try{while(true){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>limit){await reader.cancel();throw new Problem('Scan trop volumineux (16 Mo maximum).',413);}chunks.push(Buffer.from(value));}}finally{reader.releaseLock();}
         try{return JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{throw new Problem('JSON illisible.');}
       }
-      // Never trust a client-supplied proxy IP: limits are per route and, for logins, per pseudo.
+      // Never trust a client-supplied proxy IP: limits are per route+visitor hash (best effort) and, for logins, per pseudo (the real brute-force guard).
       // ponytail: in-memory per-process map, cleared when large; move to SQLite if several instances run.
       const limit=(key,max)=>{const previous=rates.get(key),rate=previous&&previous.until>Date.now()?previous:{count:0,until:Date.now()+600000};
         if(++rate.count>max)throw new Problem('Trop de tentatives. Réessayez dans dix minutes.',429);if(rates.size>10000)rates.clear();rates.set(key,rate);};
       const limitLogin=input=>limit(path+':'+String(input?.name??'').trim().toLowerCase(),10);
-      if(method==='POST' && ['/api/register','/api/login','/api/device/pair','/api/device/login','/api/password/forgot'].includes(path))limit(path,path.endsWith('/login')?300:30);
+      if(method==='POST' && ['/api/register','/api/login','/api/device/pair','/api/device/login','/api/password/forgot'].includes(path))limit(path+':'+who,path.endsWith('/login')?300:30);
       if(method==='POST' && ['/api/register','/api/login'].includes(path)) {
         const input=await body();if(path==='/api/login')limitLogin(input);
         if(path==='/api/register')need(input.terms===true,'Acceptez les conditions d’utilisation pour créer un compte.');
@@ -216,20 +219,18 @@ export function createApi({dbPath=resolve('data/tracker.sqlite'),publicUrl='',do
       }
       if(method==='POST' && path==='/api/import'){const u=requireUser();await paid(u.id);const input=await body();input.scanId??=secret();input.capturedAt??=new Date().toISOString();return json(200,store.sync(u.id,'Import manuel',input,undefined,input.replaceInventory===true));}
       if(method==='POST'&&path==='/api/manual-artifacts'){const u=requireUser();await paid(u.id);const input=await body(),catalogue=JSON.parse(await readFile(join(publicDirectory,'assets/catalogue.json'),'utf8'));return json(200,store.saveArtifact(u,input,catalogue));}
-      if(method==='DELETE'&&/^\/api\/manual-artifacts\/[^/]+$/.test(path)){await paid(requireUser().id);return json(200,store.removeArtifact(user,decodeURIComponent(path.split('/').pop())));}
-      if(method==='POST'&&path==='/api/teams'){await paid(requireUser().id);return json(200,store.saveTeam(user,await body()));}
-      if(method==='DELETE'&&/^\/api\/teams\/[^/]+$/.test(path)){await paid(requireUser().id);return json(200,store.removeTeam(user,decodeURIComponent(path.split('/').pop())));}
+      if(method==='DELETE'&&/^\/api\/manual-artifacts\/[^/]+$/.test(path)){const u=requireUser();await paid(u.id);return json(200,store.removeArtifact(u,decodeURIComponent(path.split('/').pop())));}
+      if(method==='POST'&&path==='/api/teams'){const u=requireUser();await paid(u.id);return json(200,store.saveTeam(u,await body()));}
+      if(method==='DELETE'&&/^\/api\/teams\/[^/]+$/.test(path)){const u=requireUser();await paid(u.id);return json(200,store.removeTeam(u,decodeURIComponent(path.split('/').pop())));}
       if(method==='POST' && path==='/api/events') {
-        const input=await body();limit('events:'+(user?.id??'guest'),300);
+        const input=await body();limit('events:'+(user?.id??who),300);
         need(Array.isArray(input.events)&&input.events.length<=50,'Événements invalides.');
-        const ip=(request.headers.get('x-forwarded-for')??'').split(',')[0].trim()||request.headers.get('x-real-ip')||'';
-        const visitor=store.visitor(ip,request.headers.get('user-agent')??'');
         for(const e of input.events)if(['click','page','error'].includes(e?.kind)&&typeof e.name==='string'&&e.name)store.record(user?.id,e.kind,e.name,null,typeof e.detail==='string'?e.detail:null,visitor);
         return json(200,{ok:true});
       }
       if(path==='/api/support' && method==='GET')return json(200,{tickets:store.tickets(requireUser().id)});
       if(path==='/api/support' && method==='POST') {
-        const input=await body();limit('support:'+(user?.id??'guest'),user?5:30);
+        const input=await body();limit('support:'+(user?.id??who),user?5:30);
         if(input.website)return json(200,{ok:true}); // honeypot field, invisible to people
         const ticket=store.openTicket({userId:user?.id??null,name:user?.name??input.name,email:(user&&store.profile(user.id).email)||input.email,subject:input.subject,body:input.body});
         await sendMail(supportEmail,mails.ticket(ticket,input.body.trim(),origin+'/admin?ticket='+ticket.id));

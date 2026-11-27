@@ -5,4 +5,8 @@ const post=(name)=>api.handle(new Request('http://localhost/api/login',{method:'
 for(let i=0;i<10;i++)assert.equal((await post('victim')).status,401);
 assert.equal((await post('victim')).status,429,'11th attempt on same pseudo blocked');
 assert.equal((await post('other')).status,401,'other pseudo not locked out');
+const reg=ip=>api.handle(new Request('http://localhost/api/register',{method:'POST',headers:{host:'localhost','content-type':'application/json',origin:'http://localhost','x-forwarded-for':ip},body:'{}'}));
+for(let i=0;i<30;i++)assert.notEqual((await reg('203.0.113.1')).status,429);
+assert.equal((await reg('203.0.113.1')).status,429,'one visitor hits the route cap');
+assert.notEqual((await reg('203.0.113.2')).status,429,'another visitor is not locked out');
 api.close();
