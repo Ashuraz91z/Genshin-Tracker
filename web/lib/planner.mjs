@@ -80,7 +80,8 @@ export function goalPlan(data,catalogue,planner,keys,target,day=new Date().getDa
   for(const w of weapons){const m=planner.weapons?.[w.key]?.material,info=m&&planner.materialDays[m];if(info)family(push(dated,m,w.location,{kind:'weapon',...info,place:info.domain.split(' : ').pop(),needs:{}}),weaponNeeds(w,planner.weapons[w.key]));}
   for(const g of Object.values(dated)){const miss=shortfall(g.needs,data.materials).filter(n=>n.missing).map(n=>({...n,rarity:catalogue.materials?.[n.key]?.rarity??0})).sort((a,b)=>b.rarity-a.rarity||b.missing-a.missing);g.short=miss[0]??null;g.tier=domainTier(planner.domainTiers?.[g.domain],g.short?.rarity,rank);delete g.needs;}
   for(const g of Object.values(artifacts))g.tier=domainTier(planner.domainTiers?.[g.key],5,rank);
-  const byWho=(a,b)=>b.who.length-a.who.length;
+  // À nombre de personnages égal, le plus rare d'abord (c'est lui qui bloque), puis le plus gros manque.
+  const byWho=(a,b)=>b.who.length-a.who.length||(b.short?.rarity??0)-(a.short?.rarity??0)||(b.short?.missing??0)-(a.short?.missing??0);
   const all=Object.values(dated).sort(byWho);
   return {rank,today:all.filter(g=>openOn(g,day)),later:all.filter(g=>!openOn(g,day)),other:Object.values(other).sort((a,b)=>byWho(a,b)||b.missing-a.missing),artifacts:Object.values(artifacts).sort(byWho),count:chars.length};
 }
