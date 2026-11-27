@@ -361,6 +361,21 @@ namespace InventoryKamera
 			return gearSlot;
 		}
 
+		private static string ReadMainStat(Bitmap bm)
+		{
+			Bitmap copy = (Bitmap)bm.Clone();
+			GenshinProcesor.SetContrast(100.0, ref copy);
+			Bitmap n = GenshinProcesor.ConvertToGrayscale(copy);
+			GenshinProcesor.SetThreshold(135, ref n);
+			GenshinProcesor.SetInvert(ref n);
+
+			// Remove anything not a-z as well as removes spaces/underscores
+			string text = Regex.Replace(GenshinProcesor.AnalyzeText(n).ToLower().Trim(), @"[\W_0-9]", string.Empty);
+			n.Dispose();
+			copy.Dispose();
+			return GenshinProcesor.FindClosestStat(text, 80);
+		}
+
 		private static string ScanArtifactMainStat(Bitmap bm, string gearSlot)
 		{
 			switch (gearSlot)
@@ -375,28 +390,17 @@ namespace InventoryKamera
 
 				// Otherwise it's either sands, goblet or circlet.
 				default:
-					Bitmap copy = (Bitmap)bm.Clone();
-					GenshinProcesor.SetContrast(100.0, ref copy);
-					Bitmap n = GenshinProcesor.ConvertToGrayscale(copy);
-
-					GenshinProcesor.SetThreshold(135, ref n);
-					GenshinProcesor.SetInvert(ref n);
-
-					// Get Main Stat
-					string mainStat = GenshinProcesor.AnalyzeText(n).ToLower().Trim();
-
-
-					// Remove anything not a-z as well as removes spaces/underscores
-					mainStat = Regex.Replace(mainStat, @"[\W_0-9]", string.Empty);
-
-					mainStat = GenshinProcesor.FindClosestStat(mainStat, 80);
+					// The wide crop fits long FR labels but picks up the artifact art next to short ones
+					// ("DÉF", "PV"): retry on the left 55% when the full width matches no stat.
+					string mainStat = ReadMainStat(bm);
+					if (string.IsNullOrWhiteSpace(mainStat))
+						using (var left = GenshinProcesor.CopyBitmap(bm, new Rectangle(0, 0, (int)(bm.Width * 0.55), bm.Height)))
+							mainStat = ReadMainStat(left);
 
 					if (mainStat == "def" || mainStat == "atk" || mainStat == "hp")
 					{
 						mainStat += "_";
 					}
-					n.Dispose();
-					copy.Dispose();
 					return mainStat;
 			}
 		}
