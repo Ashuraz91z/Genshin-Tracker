@@ -93,6 +93,9 @@ namespace InventoryKamera
                 core.NavigationStarting += (s, e) => { if (loaded) { e.Cancel = true; OpenExternal(e.Uri); } };
                 core.NavigationCompleted += (s, e) => { loaded = true; web.Focus(); };
                 core.NewWindowRequested += (s, e) => { e.Handled = true; OpenExternal(e.Uri); };
+                // Vidéo de démonstration du guide : servie depuis le dossier assets, à côté de l'exécutable.
+                var assets = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets");
+                if (Directory.Exists(assets)) core.SetVirtualHostNameToFolderMapping("kamera.assets", assets, CoreWebView2HostResourceAccessKind.Allow);
                 core.WebMessageReceived += OnWebMessage;
                 core.NavigateToString(html);
             }

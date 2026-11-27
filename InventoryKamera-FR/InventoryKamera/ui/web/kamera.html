@@ -354,6 +354,49 @@ body.running .vf .scan{opacity:1;animation:scanline 2.2s linear infinite}
 .tour .tip .row{margin-top:14px;justify-content:space-between}
 details.adv{margin-top:14px}details.adv summary{cursor:pointer;color:var(--dim);font-size:12px;list-style:none}details.adv summary::before{content:"›";display:inline-block;width:14px;transition:transform .2s}details.adv[open] summary::before{transform:rotate(90deg)}
 
+/* ---------- Vidéo de démonstration ---------- */
+.demo{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:16/9;background:#050a14;border:1px solid rgba(255,255,255,.14);box-shadow:0 22px 50px -22px rgba(0,0,0,.85)}
+.demo video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.demo .c{position:absolute;width:22px;height:22px;border-color:var(--mint);border-style:solid;opacity:.9;z-index:2}
+.demo .c.tl{left:10px;top:10px;border-width:2px 0 0 2px;border-top-left-radius:6px}.demo .c.tr{right:10px;top:10px;border-width:2px 2px 0 0;border-top-right-radius:6px}
+.demo .c.bl{left:10px;bottom:10px;border-width:0 0 2px 2px;border-bottom-left-radius:6px}.demo .c.br{right:10px;bottom:10px;border-width:0 2px 2px 0;border-bottom-right-radius:6px}
+.demo .scan{position:absolute;left:0;right:0;height:70px;top:-70px;background:linear-gradient(180deg,transparent,rgba(126,215,189,.16),rgba(126,215,189,.5) 96%,transparent);animation:scanline 3.4s linear infinite;z-index:1;pointer-events:none}
+.demo .tag{position:absolute;left:12px;bottom:12px;z-index:2;display:flex;align-items:center;gap:8px;padding:5px 11px;border-radius:999px;font:600 10px var(--mono);letter-spacing:1.6px;color:var(--mint);background:rgba(3,7,16,.65);border:1px solid rgba(126,215,189,.35);backdrop-filter:blur(8px)}
+.demo .tag i{width:7px;height:7px;border-radius:50%;background:var(--red);box-shadow:0 0 10px var(--red);animation:pulse 1.4s infinite}
+
+/* ---------- Bandeau de fin de scan ---------- */
+.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:70;width:min(560px,calc(100vw - 32px));padding:16px 18px;border-radius:20px;animation:drop .55s var(--ease)}
+@keyframes drop{from{opacity:0;transform:translate(-50%,-24px) scale(.97)}to{opacity:1;transform:translateX(-50%)}}
+.toast.ok{box-shadow:0 0 0 1px rgba(126,215,189,.55),0 24px 60px -20px rgba(126,215,189,.45)}
+.toast.warn{box-shadow:0 0 0 1px rgba(231,191,124,.6),0 24px 60px -20px rgba(231,191,124,.4)}
+.toast.bad{box-shadow:0 0 0 1px rgba(255,155,155,.6),0 24px 60px -20px rgba(255,155,155,.4)}
+.toast .th{display:flex;gap:14px;align-items:center}
+.toast .ti{width:40px;height:40px;border-radius:14px;flex-shrink:0;display:grid;place-items:center;background:rgba(126,215,189,.15);color:var(--mint)}
+.toast.warn .ti{background:rgba(231,191,124,.15);color:var(--gold)}.toast.bad .ti{background:rgba(255,155,155,.15);color:var(--red)}
+.toast .ti svg{width:22px;height:22px;stroke-width:2.4}
+.toast b{display:block;font:600 16px var(--display)}.toast small{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}
+.toast .errs{margin:12px 0 0;padding:10px 12px;max-height:150px;overflow:auto;border-radius:12px;background:rgba(3,7,16,.55);border:1px solid rgba(255,255,255,.07);font:12px/1.65 var(--mono);color:var(--muted);list-style:none;user-select:text}
+.toast .errs li::before{content:"• ";color:var(--gold)}
+.toast .tr{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+
+/* ---------- Transition cinématique ---------- */
+.cine{position:fixed;inset:0;z-index:80;display:grid;place-items:center;background:radial-gradient(circle at 50% 50%,#101a33,#050a14 70%);animation:fade .35s var(--ease)}
+.cine.out{animation:cineout .5s var(--ease) forwards}
+@keyframes cineout{to{opacity:0;transform:scale(1.06)}}
+.cine .ring{position:absolute;left:50%;top:50%;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:50%;border:1.5px solid var(--gold);opacity:0;animation:cring 2s var(--ease) infinite}
+.cine .ring:nth-child(2){animation-delay:.45s;border-color:var(--mint)}.cine .ring:nth-child(3){animation-delay:.9s}
+@keyframes cring{0%{transform:scale(.4);opacity:.9}100%{transform:scale(5.5);opacity:0}}
+.cine .core{position:relative;text-align:center}
+.cine .mark{width:74px;height:74px;margin:0 auto 22px;border-radius:24px;display:grid;place-items:center;color:#1a1408;background:conic-gradient(from 210deg,var(--gold),var(--gold-hi),var(--mint),var(--gold));box-shadow:0 0 60px rgba(231,191,124,.6);animation:markspin 2s var(--ease)}
+.cine .mark svg{width:38px;height:38px;stroke-width:2}
+@keyframes markspin{0%{transform:scale(.4) rotate(-90deg);opacity:0}60%{transform:scale(1.08) rotate(6deg);opacity:1}100%{transform:none}}
+.cine h2{margin:0;font:600 34px/1.2 var(--display);letter-spacing:-.5px;overflow:hidden}
+.cine h2 span{display:inline-block;opacity:0;transform:translateY(60%);animation:letter .5s var(--ease) forwards;animation-delay:calc(.35s + var(--i)*28ms)}
+@keyframes letter{to{opacity:1;transform:none}}
+.cine p{margin:10px 0 0;color:var(--muted);font-size:14px;opacity:0;animation:rise .6s .9s var(--ease) forwards}
+.cine .bar{width:220px;height:2px;margin:26px auto 0;border-radius:2px;background:rgba(255,255,255,.1);overflow:hidden}
+.cine .bar i{display:block;height:100%;transform-origin:left;background:linear-gradient(90deg,var(--gold),var(--mint));animation:fill 1.7s .15s linear forwards;transform:scaleX(0)}
+
 @media (max-width:1180px){.grid2{grid-template-columns:1fr}.live{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
@@ -641,6 +684,7 @@ details.adv{margin-top:14px}details.adv summary{cursor:pointer;color:var(--dim);
   </div>
 </div>
 
+<div class="toast glass" id="toast" role="status" hidden></div>
 <div class="tour" id="tour" hidden><div class="spot" id="tourSpot"></div><div class="tip glass" id="tourTip"><div class="eyebrow" id="tourK"></div><h3 id="tourT"></h3><p id="tourP"></p><div class="row"><button class="btn ghost" id="tourEnd"></button><span class="row"><button class="btn" id="tourPrev"></button><button class="btn primary" id="tourNext"></button></span></div></div></div>
 <script>
 (function(){
@@ -777,6 +821,7 @@ function count(id,v,max){const el=$("#v"+id);if(setText(el,v)){el.classList.remo
 function render(s){
   S=Object.assign(S,s);s=S;
   document.body.classList.toggle("running",!!s.running);
+  if(!!s.running!==wasRunning)onRunChange(!!s.running);
   setText($("#version"),s.version?"v"+s.version:"");
   const st=s.status||{};
   $("#runDot").className="dot"+(s.running?" gold":"");setText($("#runText"),t(s.running?"Scan en cours":"Système prêt"));
@@ -853,6 +898,47 @@ const tick='<span class="tick"><svg class="i"><use href="#i-check"/></svg></span
 const kk=(...a)=>a.map(x=>'<span class="key">'+x+'</span>').join('<span>+</span>');
 function chk(d,title,sub,warn){return '<div class="chk rv'+(warn?' warn':'')+'" style="--d:'+d+'">'+tick+'<div><b>'+title+'</b><span class="s">'+sub+'</span></div></div>';}
 
+
+// ---------- Vidéo de démonstration (repli : animation CSS) ----------
+function demo(){return '<div class="demo"><video src="https://kamera.assets/demo.mp4" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video><span class="c tl"></span><span class="c tr"></span><span class="c bl"></span><span class="c br"></span><span class="scan"></span><span class="tag"><i></i>KAMERA · '+L("EN DIRECT","LIVE")+'</span></div>';}
+function wireDemo(){$$("#obBody .demo video").forEach(v=>{
+  v.addEventListener("error",()=>{const box=v.closest(".demo");if(box)box.outerHTML=scene();},{once:true});
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches)v.pause();});}
+
+// ---------- Transition cinématique ----------
+function cine(title,sub,done){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches){done&&done();return;}
+  const el=document.createElement("div");el.className="cine";el.setAttribute("aria-hidden","true");
+  el.innerHTML='<span class="ring"></span><span class="ring"></span><span class="ring"></span><div class="core"><div class="mark"><svg class="i"><use href="#i-scan"/></svg></div><h2>'+[...title].map((c,i)=>'<span style="--i:'+i+'">'+(c===" "?"&nbsp;":esc(c))+'</span>').join("")+'</h2><p>'+esc(sub)+'</p><div class="bar"><i></i></div></div>';
+  document.body.appendChild(el);
+  setTimeout(()=>{done&&done();el.classList.add("out");setTimeout(()=>el.remove(),520);},1900);}
+
+// ---------- Bandeau de fin de scan ----------
+let errStart=0,wasRunning=false;
+function scanProblems(text){const out=[];const seen=new Set();const add=x=>{if(!seen.has(x)){seen.add(x);out.push(x);}};
+  const art=/Unable to validate information for artifact ID#(\d+)[\s\S]*?Invalid artifact ([a-z ]+)[\s\S]*?Slot: (\w+)\s*Set: (\w+)\s*Rarity: (\d)\s*Level: (\d+)/g;let m;
+  while((m=art.exec(text)))add(L("Artéfact #","Artifact #")+m[1]+" · "+m[5]+"★ "+m[3]+" · "+m[4]+" +"+m[6]+" — "+(/main/.test(m[2])?L("stat principale illisible","unreadable main stat"):L("sous-stat illisible","unreadable substat")));
+  const wp=/Unable to validate information for weapon ID#(\d+)/g;while((m=wp.exec(text)))add(L("Arme #","Weapon #")+m[1]+" — "+L("lecture invalide","invalid read"));
+  const other=/(Failed to parse quantity for \S+|Personnage incomplet : [^\n]+|Could not determine [^\n]+|Constellation de [^\n]+|Résolution [^\n]+|Genshin a perdu le premier plan[^\n]*|Failed to scan weapon[^\n]*)/g;
+  while((m=other.exec(text))){const x=m[1].trim();if(!/^Personnage incomplet : *$/.test(x))add(x.replace(/^Failed to parse quantity for /,L("Quantité illisible : ","Unreadable quantity: ")));}
+  return out;}
+function showToast(kind,title,sub,items){const t=$("#toast");
+  t.className="toast glass "+kind;t.hidden=false;
+  t.innerHTML='<div class="th"><span class="ti"><svg class="i"><use href="#'+(kind==="ok"?"i-check":"i-info")+'"/></svg></span><div><b>'+esc(title)+'</b><small>'+esc(sub)+'</small></div></div>'+
+    (items.length?'<ul class="errs">'+items.slice(0,40).map(x=>'<li>'+esc(x)+'</li>').join("")+(items.length>40?'<li>… +'+(items.length-40)+'</li>':"")+'</ul>':"")+
+    '<div class="tr">'+(items.length?'<button class="btn" id="toastLog">'+L("Voir le journal","Open log")+'</button>':"")+'<button class="btn primary" id="toastOk">'+L("Compris","Got it")+'</button></div>';
+  $("#toastOk").onclick=()=>{t.hidden=true;};const lg=$("#toastLog");if(lg)lg.onclick=()=>{t.hidden=true;go("journal");};}
+function onRunChange(running){
+  if(running){errStart=$("#log-error").textContent.length;$("#toast").hidden=true;}
+  else if(wasRunning){setTimeout(()=>{
+    const c=S.counts||{},stt=((S.status||{}).text||""),items=scanProblems($("#log-error").textContent.slice(errStart));
+    const sum=[c.characters+" "+L("personnages","characters"),c.weapons+" "+L("armes","weapons"),c.artifacts+" "+L("artéfacts","artifacts")].join(" · ");
+    if(/^Arr[êe]t|stopped/i.test(stt))showToast("warn",L("Scan arrêté","Scan stopped"),L("Export partiel conservé. ","Partial export kept. ")+sum,items);
+    else if(/^[ÉE]chec|failed/i.test(stt))showToast("bad",L("Le scan a échoué","The scan failed"),L("Export partiel conservé. ","Partial export kept. ")+sum,items);
+    else if(items.length)showToast("warn",L("Scan terminé avec ","Scan finished with ")+items.length+L(" point"+(items.length>1?"s":"")+" à vérifier"," item"+(items.length>1?"s":"")+" to check"),sum,items);
+    else showToast("ok",L("Scan terminé","Scan finished"),sum+" · "+L("aucune erreur","no errors"),[]);
+  },700);}
+  wasRunning=running;}
 function scene(){const tiles=Array.from({length:18},(_,k)=>'<span class="t'+(k%5===2?' p':'')+'"></span>').join("");
   return '<div class="scene" aria-hidden="true"><div class="sc-top"><i></i>GENSHIN IMPACT · '+L("ARTÉFACTS","ARTIFACTS")+'</div><div class="sc-body"><div class="sc-grid">'+tiles+'<span class="sc-sel"></span><svg class="sc-cur" viewBox="0 0 24 24" fill="currentColor"><path d="M4 2l16 9-7 2 4 8-3 1-4-8-6 5z"/></svg></div>'+
   '<div class="sc-panel"><b>'+L("Chant d’écho","Echo of the deep")+'</b><div class="ln"><span>PV</span><span>4 780</span></div><div class="ln"><span>Rech.</span><span>14,9 %</span></div><div class="ln"><span>ATQ</span><span>5,8 %</span></div><div class="ln"><span>CRIT</span><span>3,5 %</span></div><div class="ln"><span>DGT CRIT</span><span>26,4 %</span></div><div class="sc-bar"><i></i></div></div></div>'+
@@ -861,7 +947,7 @@ function obPanel(i){
   const head=(k,t,l)=>'<div class="eyebrow rv">'+k+'</div><h2 class="rv" id="obTitle" style="--d:1">'+t+'</h2><p class="lead rv" style="--d:2">'+l+'</p>';
   if(i===0)return head(L("Guide de démarrage · 2 minutes","Getting started · 2 minutes"),L("Bienvenue dans Kamera","Welcome to Kamera"),
       L("Kamera lit votre inventaire Genshin directement à l’écran, puis l’envoie à votre carnet. Trois choses à faire : régler le jeu, régler Kamera, lancer le scan.","Kamera reads your Genshin inventory straight from the screen, then sends it to your tracker. Three things to do: set up the game, set up Kamera, run the scan."))+
-    '<div class="obgrid"><div class="rv" style="--d:3">'+scene()+'<div class="floats">'+[L("Personnages","Characters"),L("Armes","Weapons"),L("Artéfacts","Artifacts"),L("Matériaux","Materials"),L("Moras","Mora"),L("Primogemmes","Primogems")].map((x,k)=>'<span class="tag" style="--k:'+k+'">'+x+'</span>').join("")+'</div></div>'+
+    '<div class="obgrid"><div class="rv" style="--d:3">'+demo()+'<div class="floats">'+[L("Personnages","Characters"),L("Armes","Weapons"),L("Artéfacts","Artifacts"),L("Matériaux","Materials"),L("Moras","Mora"),L("Primogemmes","Primogems")].map((x,k)=>'<span class="tag" style="--k:'+k+'">'+x+'</span>').join("")+'</div></div>'+
     '<div>'+chk(4,L("Lecture par OCR","Read by OCR"),L("Kamera lit les menus à l’écran, comme vous le feriez.","Kamera reads the on-screen menus, like you would."))+
       chk(5,L("Le jeu se pilote seul","The game runs itself"),L("Pendant le scan, souris et clavier sont utilisés par Kamera : ne touchez plus rien.","During the scan Kamera uses the mouse and keyboard: don’t touch anything."))+
       chk(6,L("Vos données restent à vous","Your data stays yours"),L("Les exports sont gardés sur ce PC, et envoyés au site si vous reliez un compte.","Exports are kept on this PC, and sent to the site if you link an account."))+'</div></div>';
@@ -897,7 +983,7 @@ function obPanel(i){
        [L("Ne touchez plus à rien","Don’t touch anything"),L("Souris et clavier sont pilotés par Kamera. Quitter la fenêtre du jeu suspend le scan.","Kamera drives the mouse and keyboard. Leaving the game window pauses the scan."),""],
        [L("Entrée pour arrêter","Enter to stop"),L("Les exports partiels sont conservés.","Partial exports are kept."),kk("Entrée")]]
       .map((r,k)=>'<li class="rv" style="--d:'+(3+k)+'"><span class="num">'+(k+1)+'</span><div class="tx">'+r[0]+'<small>'+r[1]+'</small></div><div class="keys">'+r[2]+'</div></li>').join("")+'</ul>'+
-    '</div><div class="rv" style="--d:4">'+scene()+'<div class="note obnote rv" style="--d:8"><svg class="i"><use href="#i-info"/></svg><span>'+L("Pendant le scan, le profil et les monnaies (moras, primogemmes, pierres, astéries, astrions) s’affichent en direct dans l’onglet Scan.","During the scan, your profile and currencies (Mora, Primogems, Fates, Starglitter, Stardust) appear live in the Scan tab.")+'</span></div>'+'</div></div>';
+    '</div><div class="rv" style="--d:4">'+demo()+'<div class="note obnote rv" style="--d:8"><svg class="i"><use href="#i-info"/></svg><span>'+L("Pendant le scan, le profil et les monnaies (moras, primogemmes, pierres, astéries, astrions) s’affichent en direct dans l’onglet Scan.","During the scan, your profile and currencies (Mora, Primogems, Fates, Starglitter, Stardust) appear live in the Scan tab.")+'</span></div>'+'</div></div>';
 }
 function obRender(){
   const names=obNames();
@@ -907,7 +993,7 @@ function obRender(){
   $("#obSkip").textContent=obStep===OB_N-1?L("Terminer","Finish"):L("Passer le guide","Skip guide");
   $("#obBack").textContent=L("Retour","Back");$("#obBack").hidden=obStep===0;
   $("#obNext").innerHTML=obStep===OB_N-1?L("Visite de l’écran Scan","Tour of the Scan screen")+' <svg class="i"><use href="#i-arrow"/></svg>':L("Suivant","Next")+' <svg class="i"><use href="#i-arrow"/></svg>';
-  obSync();
+  obSync();wireDemo();
   clearInterval(obTimer);
   if(obStep===OB_N-1){const li=[...$$("#obHow li")];let h=0;const tickHot=()=>{li.forEach((e,k)=>e.classList.toggle("hot",k===h));h=(h+1)%li.length;};tickHot();obTimer=setInterval(tickHot,2300);}
 }
@@ -920,7 +1006,7 @@ function obSync(){
 function obOpen(step){obStep=step||0;$("#ob").hidden=false;obRender();$("#obNext").focus();}
 function obClose(){if($("#ob").hidden)return;$("#ob").hidden=true;clearInterval(obTimer);send({cmd:"onboardingDone"});}
 function obGo(n){obStep=Math.max(0,Math.min(OB_N-1,n));obRender();$("#obNext").focus();}
-$("#obNext").onclick=()=>{if(obStep===OB_N-1){obClose();go("scan");setTimeout(()=>tourStart("scan"),350);}else obGo(obStep+1);};
+$("#obNext").onclick=()=>{if(obStep===OB_N-1){obClose();cine(L("Visite de l’écran Scan","Scan screen tour"),L("Une zone à la fois","One area at a time"),()=>{go("scan");setTimeout(()=>tourStart("scan"),420);});}else obGo(obStep+1);};
 $("#obBack").onclick=()=>obGo(obStep-1);
 $("#obSkip").onclick=obClose;
 $("#guideBtn").onclick=()=>obOpen(0);
@@ -970,7 +1056,7 @@ function tourPlace(el){const r=el.getBoundingClientRect(),sp=$("#tourSpot"),tip=
   else if(r.bottom+pad+16+th<=H){x=r.left;y=r.bottom+pad+16;}
   else{x=r.left;y=Math.max(12,r.top-pad-16-th);}
   tip.style.left=Math.max(12,Math.min(W-tw-12,x))+"px";tip.style.top=Math.max(12,Math.min(H-th-12,y))+"px";}
-$("#tourNext").onclick=()=>{const st=TOUR()[tourI];if(tourI===TOUR().length-1&&st.next){tourStop();go(st.next);setTimeout(()=>tourStart(st.next),350);}else tourShow(tourI+1);};$("#tourBtn").onclick=()=>tourStart($(".nav button.on").dataset.page);$("#tourPrev").onclick=()=>tourShow(tourI-1);$("#tourEnd").onclick=tourStop;
+$("#tourNext").onclick=()=>{const st=TOUR()[tourI];if(tourI===TOUR().length-1&&st.next){tourStop();cine(L("Visite des Options","Settings tour"),L("Ce que vous pouvez régler","What you can set"),()=>{go(st.next);setTimeout(()=>tourStart(st.next),420);});}else tourShow(tourI+1);};$("#tourBtn").onclick=()=>tourStart($(".nav button.on").dataset.page);$("#tourPrev").onclick=()=>tourShow(tourI-1);$("#tourEnd").onclick=tourStop;
 addEventListener("resize",()=>{if(!$("#tour").hidden){const el=$(TOUR()[tourI].sel);if(el)tourPlace(el);}});
 document.addEventListener("keydown",e=>{if($("#tour").hidden)return;if(e.key==="Escape"){e.preventDefault();tourStop();}else if(e.key==="ArrowRight")$("#tourNext").click();else if(e.key==="ArrowLeft")tourShow(tourI-1);});
 
@@ -980,6 +1066,7 @@ function mock(msg){
   if(msg.cmd==="click"&&msg.id==="scan"&&!S.running){render({profile:{},running:true,status:{text:"Scanning",ok:true},counts:{characters:"0",weapons:"0",weaponsMax:"?",artifacts:"0",artifactsMax:"?"}});
     const P=[["name","Ashuraz"],["mora",12483920],["primogem",18260],["acquaint",12],["intertwined",47],["starglitter",318],["stardust",2450]];
     P.forEach(([k,v],i)=>setTimeout(()=>{const pr=Object.assign({},S.profile);if(k==="name"){pr.name=v;pr.uid="812345678";pr.ar=60;pr.wl=8;}else pr[k]=v;render({profile:pr});},900+i*750));
+    setTimeout(()=>log({id:"error",text:"Unable to validate information for artifact ID#647\nInvalid artifact sub stats\nArtifact ID: 647\nSlot: circlet\nSet: PrayersForIllumination\nRarity: 3\nLevel: 0\n\nFailed to parse quantity for SealedScroll\n"}),2500);
     let w=0,a=0,ch=0;setTimeout(()=>render({counts:Object.assign(S.counts,{weaponsMax:"312",artifactsMax:"1480"})}),600);
     const t=setInterval(()=>{if(w<312)w+=7;else if(a<1480)a+=37;else if(ch<64)ch+=2;else{clearInterval(t);render({running:false,status:{text:"Terminé — consulter le rapport",ok:true}});return;}
       render({counts:{characters:String(ch),weapons:String(Math.min(w,312)),weaponsMax:"312",artifacts:String(Math.min(a,1480)),artifactsMax:"1480"}});

@@ -276,7 +276,7 @@ namespace InventoryKamera
 					else
                     {
                         Logger.Debug("Could not parse character name/element (Atempt {0}/{1}, OCR : « {2} »). Retrying...", attempts+1, maxAttempts, line);
-                        bm.Save($"./logging/characters/{bm.GetHashCode()}.png");
+                        if (attempts == 0 || attempts == 20 || attempts == maxAttempts - 1) bm.Save($"./logging/characters/{bm.GetHashCode()}.png"); // a few frames, not all 75
                     }
 				}
 				attempts++;

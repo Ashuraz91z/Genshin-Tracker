@@ -66,6 +66,16 @@ namespace InventoryKamera
 
         public void ResetLogging()
         {
+            // Captures of earlier scans pile up fast (hundreds of MB per full scan): keep only the most recent archive.
+            try
+            {
+                string archives = "./logging/archives";
+                if (Directory.Exists(archives))
+                    foreach (var old in new DirectoryInfo(archives).GetDirectories("captures_*").OrderByDescending(d => d.Name).Skip(1))
+                        old.Delete(true);
+            }
+            catch (IOException) { }
+            catch (UnauthorizedAccessException) { }
             string archive = Path.Combine("./logging/archives", "captures_" + DateTime.Now.ToString("yyyyMMdd_HHmmss_fff"));
             foreach (string category in new[] { "weapons", "artifacts", "characters", "materials" })
             {
