@@ -263,7 +263,7 @@ body.running .vf .scan{opacity:1;animation:scanline 2.2s linear infinite}
 .ob{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:24px;background:rgba(5,9,18,.66);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);animation:fade .35s var(--ease)}
 @keyframes fade{from{opacity:0}to{opacity:1}}
 @keyframes pop{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}
-.obwin{width:min(1000px,100%);height:min(620px,100%);display:grid;grid-template-columns:232px minmax(0,1fr);overflow:hidden;animation:pop .55s var(--ease)}
+.obwin{width:min(1080px,100%);height:min(700px,100%);display:grid;grid-template-columns:232px minmax(0,1fr);overflow:hidden;animation:pop .55s var(--ease)}
 .obrail{padding:26px 16px 20px;border-right:1px solid rgba(255,255,255,.07);display:flex;flex-direction:column;gap:4px}
 .obrail .eyebrow{padding:0 10px 14px}
 .obrail .st{display:flex;gap:12px;align-items:center;padding:10px;border-radius:13px;color:var(--dim);font-size:13px;text-align:left;width:100%;transition:background .25s,color .25s}
@@ -319,6 +319,40 @@ body.running .vf .scan{opacity:1;animation:scanline 2.2s linear infinite}
 .obchips{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0 6px}
 .obnote{margin-top:12px}
 @media (max-width:860px){.obwin{grid-template-columns:1fr}.obrail{display:none}.obgrid{grid-template-columns:1fr}.obmain{padding:22px}}
+
+/* ---------- Mini-vidéo : scan simulé ---------- */
+.scene{--s:30px;--g:6px;position:relative;border-radius:16px;padding:12px;background:linear-gradient(160deg,#1a2a52,#0b1428 70%);border:1px solid rgba(255,255,255,.12);box-shadow:0 20px 44px -22px rgba(0,0,0,.8);overflow:hidden}
+.scene .sc-top{display:flex;align-items:center;gap:8px;margin-bottom:10px;font:600 9px var(--ui);letter-spacing:2.4px;color:var(--muted)}
+.scene .sc-top i{width:7px;height:7px;border-radius:50%;background:var(--red);box-shadow:0 0 10px var(--red);animation:pulse 1.4s infinite}
+.sc-body{display:flex;gap:12px;align-items:flex-start}
+.sc-grid{position:relative;display:grid;grid-template-columns:repeat(6,var(--s));gap:var(--g);flex-shrink:0}
+.sc-grid .t{width:var(--s);height:var(--s);border-radius:7px;background:linear-gradient(160deg,#e9c27a,#b58336);box-shadow:inset 0 -6px 0 rgba(255,255,255,.18);position:relative}
+.sc-grid .t.p{background:linear-gradient(160deg,#b79af0,#6e4ab8)}
+.sc-grid .t::after{content:"";position:absolute;left:25%;right:25%;top:22%;height:36%;border-radius:50% 50% 40% 40%;background:rgba(255,255,255,.35)}
+.sc-sel{position:absolute;left:-3px;top:-3px;width:calc(var(--s) + 6px);height:calc(var(--s) + 6px);border:2px solid var(--mint);border-radius:9px;box-shadow:0 0 16px rgba(126,215,189,.7);animation:selmove 6s steps(1) infinite}
+.sc-sel::after{content:"";position:absolute;inset:-2px;border-radius:9px;border:2px solid var(--mint);animation:ripple 1.5s ease-out infinite}
+@keyframes ripple{from{transform:scale(1);opacity:.9}to{transform:scale(1.7);opacity:0}}
+.sc-cur{position:absolute;left:calc(var(--s)*.55);top:calc(var(--s)*.5);width:16px;height:16px;color:#fff;filter:drop-shadow(0 2px 4px rgba(0,0,0,.6));animation:selmove 6s steps(1) infinite}
+@keyframes selmove{0%{transform:translate(0,0)}25%{transform:translate(calc(var(--s) + var(--g)),0)}50%{transform:translate(calc(2*(var(--s) + var(--g))),0)}75%{transform:translate(calc(2*(var(--s) + var(--g))),calc(var(--s) + var(--g)))}}
+.sc-grid::after{content:"";position:absolute;left:0;right:0;height:26px;top:-26px;background:linear-gradient(180deg,transparent,rgba(126,215,189,.4));animation:scanline 3s linear infinite;pointer-events:none}
+.sc-panel{flex:1;min-width:0;font:10.5px/1.5 var(--mono);color:var(--muted)}
+.sc-panel b{display:block;margin-bottom:6px;font:600 12px var(--ui);color:var(--text)}
+.sc-panel .ln{display:flex;justify-content:space-between;gap:6px;padding:2px 0;border-bottom:1px solid rgba(255,255,255,.06);animation:ln 1.5s infinite both}
+.sc-panel .ln:nth-of-type(2){animation-delay:.12s}.sc-panel .ln:nth-of-type(3){animation-delay:.24s}.sc-panel .ln:nth-of-type(4){animation-delay:.36s}.sc-panel .ln:nth-of-type(5){animation-delay:.48s}
+.sc-panel .ln span:last-child{color:var(--mint)}
+@keyframes ln{0%,6%{opacity:0;transform:translateX(-6px)}22%,86%{opacity:1;transform:none}100%{opacity:0}}
+.sc-bar{height:3px;border-radius:3px;background:rgba(255,255,255,.1);margin-top:12px;overflow:hidden}
+.sc-bar i{display:block;height:100%;width:100%;transform-origin:left;background:linear-gradient(90deg,var(--gold),var(--mint));animation:fill 1.5s linear infinite}
+@keyframes fill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.sc-cap{margin-top:10px;font:600 9.5px var(--mono);letter-spacing:2px;color:var(--mint)}
+
+/* ---------- Visite guidée (zones assombries) ---------- */
+.tour{position:fixed;inset:0;z-index:60}
+.tour .spot{position:fixed;border-radius:18px;box-shadow:0 0 0 9999px rgba(4,8,18,.78),0 0 0 2px var(--gold),0 0 30px rgba(231,191,124,.5);transition:all .45s var(--ease);pointer-events:none}
+.tour .tip{position:fixed;width:340px;max-width:calc(100vw - 24px);padding:18px 20px;border-radius:18px;transition:top .45s var(--ease),left .45s var(--ease)}
+.tour .tip h3{margin:6px 0 4px;font:600 17px var(--display)}.tour .tip p{margin:0;color:var(--muted);font-size:13px}
+.tour .tip .row{margin-top:14px;justify-content:space-between}
+details.adv{margin-top:14px}details.adv summary{cursor:pointer;color:var(--dim);font-size:12px;list-style:none}details.adv summary::before{content:"›";display:inline-block;width:14px;transition:transform .2s}details.adv[open] summary::before{transform:rotate(90deg)}
 
 @media (max-width:1180px){.grid2{grid-template-columns:1fr}.live{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
@@ -546,11 +580,11 @@ body.running .vf .scan{opacity:1;animation:scanline 2.2s linear infinite}
               <button class="btn" data-click="changeAccount" id="changeBtn">Changer de compte</button></div>
             <div id="connForm">
               <div class="form">
-                <label class="field full"><span>Adresse HTTPS du site</span><input class="input" data-text="siteAddress" spellcheck="false"></label>
                 <label class="field"><span>Pseudo du compte du tracker</span><input class="input" data-text="accountName" spellcheck="false" autocomplete="off"></label>
                 <label class="field"><span>Mot de passe du tracker</span><input class="input" type="password" id="password" autocomplete="off"></label>
               </div>
               <p class="help" style="margin-top:8px;font-size:12px">Différent de votre mot de passe HoYoverse.</p>
+              <details class="adv"><summary>Serveur personnalisé (avancé)</summary><div class="form" style="margin-top:10px"><label class="field full"><span>Adresse HTTPS du site</span><input class="input" data-text="siteAddress" spellcheck="false"></label></div></details>
               <div class="row" style="margin-top:16px"><button class="btn primary" id="loginBtn" data-click="login">Se connecter</button><button class="btn ghost" data-click="cancelChange" id="cancelBtn">Garder le compte actuel</button></div>
               <div class="or">ou avec un code</div>
               <div class="form"><label class="field full"><span>Code d’association créé sur le site (valable 10 minutes)</span>
@@ -606,6 +640,7 @@ body.running .vf .scan{opacity:1;animation:scanline 2.2s linear infinite}
   </div>
 </div>
 
+<div class="tour" id="tour" hidden><div class="spot" id="tourSpot"></div><div class="tip glass" id="tourTip"><div class="eyebrow" id="tourK"></div><h3 id="tourT"></h3><p id="tourP"></p><div class="row"><button class="btn ghost" id="tourEnd"></button><span class="row"><button class="btn" id="tourPrev"></button><button class="btn primary" id="tourNext"></button></span></div></div></div>
 <script>
 (function(){
 const host = window.chrome && window.chrome.webview;
@@ -643,7 +678,7 @@ const EN={"FR · TRACKER":"FR · TRACKER","Scan":"Scan","Journal":"Log","Options
 "Dossier des exports":"Export folder","Parcourir":"Browse","Ouvrir les exports":"Open exports","Exporter vers Optimizer":"Export to Optimizer",
 "Le jeu doit rester en français (ou dans la langue choisie), en 16:9 ou 16:10, HDR désactivé.":"The game must stay in French (or the chosen language), in 16:9 or 16:10, with HDR off.",
 "Guide de démarrage":"Getting started","Compte":"Account","Moras":"Mora","Primogemmes":"Primogems","Pierres de la destinée":"Acquaint Fate","Pierres de la fatalité":"Intertwined Fate","Astéries libres":"Masterless Starglitter","Astrions libres":"Masterless Stardust",
-"Se déconnecter":"Sign out","Synchronisation":"Sync","Du jeu à votre carnet":"From the game to your tracker","Connectez-vous une seule fois. Le PC reste relié à votre compte.":"Sign in once. This PC stays linked to your account.",
+"Se déconnecter":"Sign out","Serveur personnalisé (avancé)":"Custom server (advanced)","Synchronisation":"Sync","Du jeu à votre carnet":"From the game to your tracker","Connectez-vous une seule fois. Le PC reste relié à votre compte.":"Sign in once. This PC stays linked to your account.",
 "Aucun compte relié":"No account linked","Connectez-vous une seule fois ci-dessous.":"Sign in once below.","Connexion mémorisée sur ce PC.":"Sign-in remembered on this PC.","Accès refusé : ":"Access denied: ",
 "Les exports sont conservés. Reconnectez-vous avant de réessayer l’envoi.":"Exports are kept. Sign in again before retrying the upload.",
 "Changer de compte":"Switch account","Adresse HTTPS du site":"Site HTTPS address","Pseudo du compte du tracker":"Tracker account username","Mot de passe du tracker":"Tracker password",
@@ -762,7 +797,7 @@ function render(s){
   $("#acctBox").classList.toggle("bad",!!a.rejected);
   setText($("#acctAvatar"),connected?a.name.trim().charAt(0).toUpperCase():"?");
   setText($("#acctName"),connected?(a.rejected?t("Accès refusé : "):"")+a.name:t("Aucun compte relié"));
-  setText($("#acctDetail"),connected?(a.rejected?t("Les exports sont conservés. Reconnectez-vous avant de réessayer l’envoi."):(a.site||"")+"\n"+t("Connexion mémorisée sur ce PC.")):t("Connectez-vous une seule fois ci-dessous."));
+  setText($("#acctDetail"),connected?(a.rejected?t("Les exports sont conservés. Reconnectez-vous avant de réessayer l’envoi."):(a.site&&a.site!=="https://genshin-tracker.com"?a.site+"\n":"")+t("Connexion mémorisée sur ce PC.")):t("Connectez-vous une seule fois ci-dessous."));
   $("#signOutBtn").hidden=!connected;$("#changeBtn").hidden=!connected||a.editing;$("#connForm").hidden=connected&&!a.editing;$("#cancelBtn").hidden=!(connected&&a.editing);
   const ss=a.syncStatus||{};const m=$("#syncStatus");setText(m,t(ss.text||""));m.className="msg"+(ss.ok===false?" err":ss.ok?" ok":"");
   const en=s.enabled||{};["login","pair","retry","refreshAccount","exportOptimizer","sendFile"].forEach(k=>{const b=$(`[data-click="${k}"]`);if(b&&k in en)b.disabled=!en[k];});
@@ -816,12 +851,16 @@ const corners='<span class="c tl"></span><span class="c tr"></span><span class="
 const tick='<span class="tick"><svg class="i"><use href="#i-check"/></svg></span>';
 const kk=(...a)=>a.map(x=>'<span class="key">'+x+'</span>').join('<span>+</span>');
 function chk(d,title,sub,warn){return '<div class="chk rv'+(warn?' warn':'')+'" style="--d:'+d+'">'+tick+'<div><b>'+title+'</b><span class="s">'+sub+'</span></div></div>';}
+
+function scene(){const tiles=Array.from({length:18},(_,k)=>'<span class="t'+(k%5===2?' p':'')+'"></span>').join("");
+  return '<div class="scene" aria-hidden="true"><div class="sc-top"><i></i>GENSHIN IMPACT · '+L("ARTÉFACTS","ARTIFACTS")+'</div><div class="sc-body"><div class="sc-grid">'+tiles+'<span class="sc-sel"></span><svg class="sc-cur" viewBox="0 0 24 24" fill="currentColor"><path d="M4 2l16 9-7 2 4 8-3 1-4-8-6 5z"/></svg></div>'+
+  '<div class="sc-panel"><b>'+L("Chant d’écho","Echo of the deep")+'</b><div class="ln"><span>PV</span><span>4 780</span></div><div class="ln"><span>Rech.</span><span>14,9 %</span></div><div class="ln"><span>ATQ</span><span>5,8 %</span></div><div class="ln"><span>CRIT</span><span>3,5 %</span></div><div class="ln"><span>DGT CRIT</span><span>26,4 %</span></div><div class="sc-bar"><i></i></div></div></div>'+
+  '<div class="sc-cap">KAMERA · '+L("LECTURE EN COURS","READING")+'</div></div>';}
 function obPanel(i){
   const head=(k,t,l)=>'<div class="eyebrow rv">'+k+'</div><h2 class="rv" id="obTitle" style="--d:1">'+t+'</h2><p class="lead rv" style="--d:2">'+l+'</p>';
   if(i===0)return head(L("Guide de démarrage · 2 minutes","Getting started · 2 minutes"),L("Bienvenue dans Kamera","Welcome to Kamera"),
       L("Kamera lit votre inventaire Genshin directement à l’écran, puis l’envoie à votre carnet. Trois choses à faire : régler le jeu, régler Kamera, lancer le scan.","Kamera reads your Genshin inventory straight from the screen, then sends it to your tracker. Three things to do: set up the game, set up Kamera, run the scan."))+
-    '<div class="obgrid"><div class="rv" style="--d:3"><div class="vf hero">'+corners+'<span class="scan"></span><div class="lbl">KAMERA · SCAN</div></div>'+
-      '<div class="floats">'+[L("Personnages","Characters"),L("Armes","Weapons"),L("Artéfacts","Artifacts"),L("Matériaux","Materials"),L("Moras","Mora"),L("Primogemmes","Primogems")].map((x,k)=>'<span class="tag" style="--k:'+k+'">'+x+'</span>').join("")+'</div></div>'+
+    '<div class="obgrid"><div class="rv" style="--d:3">'+scene()+'<div class="floats">'+[L("Personnages","Characters"),L("Armes","Weapons"),L("Artéfacts","Artifacts"),L("Matériaux","Materials"),L("Moras","Mora"),L("Primogemmes","Primogems")].map((x,k)=>'<span class="tag" style="--k:'+k+'">'+x+'</span>').join("")+'</div></div>'+
     '<div>'+chk(4,L("Lecture par OCR","Read by OCR"),L("Kamera lit les menus à l’écran, comme vous le feriez.","Kamera reads the on-screen menus, like you would."))+
       chk(5,L("Le jeu se pilote seul","The game runs itself"),L("Pendant le scan, souris et clavier sont utilisés par Kamera : ne touchez plus rien.","During the scan Kamera uses the mouse and keyboard: don’t touch anything."))+
       chk(6,L("Vos données restent à vous","Your data stays yours"),L("Les exports sont gardés sur ce PC, et envoyés au site si vous reliez un compte.","Exports are kept on this PC, and sent to the site if you link an account."))+'</div></div>';
@@ -835,13 +874,13 @@ function obPanel(i){
       chk(7,L("Genshin au premier plan","Genshin in front"),L("Aucune autre fenêtre devant le jeu : Kamera lit l’écran.","No other window over the game: Kamera reads the screen."))+
     '</div><div class="rv" style="--d:4"><div class="mon"><span class="ar">16 : 9</span><div class="res">1920 × 1080<small>'+L("RÉSOLUTION CONSEILLÉE","RECOMMENDED RESOLUTION")+'</small></div><div class="hdr"><i></i><em></em></div></div></div></div>';
   if(i===2)return head(L("Étape 2 · Dans Kamera","Step 2 · In Kamera"),L("Réglez Kamera","Set up Kamera"),
-      L("Choisissez la langue de votre jeu et ce que Kamera doit relever. Vous pourrez tout changer plus tard.","Pick your game’s language and what Kamera should read. You can change everything later."))+
-    '<div class="rv" style="--d:3"><div class="label" style="margin-top:4px"><span>'+L("Langue du jeu","Game language")+'</span></div><div class="seg" id="obLanguage" data-obseg="language"><span class="thumb"></span><button data-v="FR">Français</button><button data-v="EN">English</button></div></div>'+
-    '<div class="rv" style="--d:4"><div class="label"><span>'+L("Que relever ?","What to read?")+'</span></div><div class="obchips">'+
+      L("Trois réglages avant le premier scan. Vos choix s’enregistrent tout de suite et restent modifiables dans Options.","Three settings before your first scan. Your choices save immediately and stay editable in Settings."))+
+    '<div class="rv" style="--d:3"><div class="label" style="margin-top:4px"><span>'+L("1 · Langue du jeu","1 · Game language")+'</span><span>'+L("La même que dans Genshin","Same as in Genshin")+'</span></div><div class="seg" id="obLanguage" data-obseg="language"><span class="thumb"></span><button data-v="FR">Français</button><button data-v="EN">English</button></div></div>'+
+    '<div class="rv" style="--d:4"><div class="label"><span>'+L("2 · Que relever ?","2 · What to read?")+'</span><span>'+L("Tout cocher convient pour un premier scan","Ticking everything is fine for a first scan")+'</span></div><div class="obchips">'+
       [["scanCharacters",L("Personnages","Characters")],["scanWeapons",L("Armes","Weapons")],["scanArtifacts",L("Artéfacts","Artifacts")],["scanMaterials",L("Matériaux","Materials")],["scanProfile",L("Profil et monnaies","Profile and currencies")],["scanDevItems",L("Matériaux d’évolution","Ascension materials")]]
       .map(c=>'<button class="chip" data-obcheck="'+c[0]+'"><span class="box"><svg class="i"><use href="#i-check"/></svg></span>'+c[1]+'</button>').join("")+'</div></div>'+
-    '<div class="note obnote rv" style="--d:5"><svg class="i"><use href="#i-info"/></svg><span>'+L("Voyageur ou Nomade renommés, touches, dossier des exports : onglet Options.","Renamed Traveler or Wanderer, keys, export folder: Settings tab.")+'</span></div>'+
-    '<div class="row rv" style="margin-top:12px;--d:6"><button class="btn" data-obgo="options">'+L("Ouvrir Options","Open Settings")+'</button></div>';
+    '<div class="rv" style="--d:5"><div class="label"><span>'+L("3 · Vitesse de navigation","3 · Navigation speed")+'</span><span>'+L("Modéré conseillé ; Lent si des lectures échouent","Moderate recommended; Slow if reads fail")+'</span></div><div class="seg" id="obDelay" data-obseg="delay"><span class="thumb"></span><button data-v="0">'+L("Rapide","Fast")+'</button><button data-v="1">'+L("Modéré","Moderate")+'</button><button data-v="2">'+L("Lent","Slow")+'</button></div></div>'+
+    '<div class="row rv" style="margin-top:14px;--d:6"><span class="help" style="font-size:12px;color:var(--dim)">'+L("Filtres de rareté, noms du Voyageur, touches, dossier des exports :","Rarity filters, Traveler name, keys, export folder:")+'</span><button class="btn ghost" data-obgo="options">'+L("Ouvrir Options","Open Settings")+'</button></div>';
   if(i===3){const a=(S.account||{});
     return head(L("Étape 3 · Facultatif","Step 3 · Optional"),L("Reliez votre compte Genshin Tracker","Link your Genshin Tracker account"),
       L("Sans compte, les exports restent sur ce PC. Avec un compte, chaque scan part automatiquement vers votre carnet.","Without an account, exports stay on this PC. With one, every scan is sent to your tracker automatically."))+
@@ -851,22 +890,22 @@ function obPanel(i){
     '<div class="row rv" style="margin-top:16px;--d:6"><button class="btn primary" data-obgo="connexion">'+L("Ouvrir Connexion","Open Connection")+'</button></div>';}
   return head(L("Étape 4 · Premier scan","Step 4 · First scan"),L("Lancez le scan","Run the scan"),
       L("Quatre gestes. Ensuite, Kamera fait le reste.","Four moves. Kamera does the rest."))+
-    '<ul class="how" id="obHow">'+
+    '<div class="obgrid"><div><ul class="how" id="obHow">'+
       [[L("Ouvrez le menu Paimon dans Genshin","Open the Paimon menu in Genshin"),L("En jeu, touche Échap.","In game, press Esc."),kk("Esc")],
        [L("Cliquez sur « Lancer le scan » dans Kamera","Click “Start scan” in Kamera"),L("Puis revenez au jeu : Kamera attend 15 secondes.","Then go back to the game: Kamera waits 15 seconds."),kk("Alt","Tab")],
        [L("Ne touchez plus à rien","Don’t touch anything"),L("Souris et clavier sont pilotés par Kamera. Quitter la fenêtre du jeu suspend le scan.","Kamera drives the mouse and keyboard. Leaving the game window pauses the scan."),""],
        [L("Entrée pour arrêter","Enter to stop"),L("Les exports partiels sont conservés.","Partial exports are kept."),kk("Entrée")]]
       .map((r,k)=>'<li class="rv" style="--d:'+(3+k)+'"><span class="num">'+(k+1)+'</span><div class="tx">'+r[0]+'<small>'+r[1]+'</small></div><div class="keys">'+r[2]+'</div></li>').join("")+'</ul>'+
-    '<div class="note obnote rv" style="--d:8"><svg class="i"><use href="#i-info"/></svg><span>'+L("Pendant le scan, le profil et les monnaies (moras, primogemmes, pierres, astéries, astrions) s’affichent en direct dans l’onglet Scan.","During the scan, your profile and currencies (Mora, Primogems, Fates, Starglitter, Stardust) appear live in the Scan tab.")+'</span></div>';
+    '</div><div class="rv" style="--d:4">'+scene()+'<div class="note obnote rv" style="--d:8"><svg class="i"><use href="#i-info"/></svg><span>'+L("Pendant le scan, le profil et les monnaies (moras, primogemmes, pierres, astéries, astrions) s’affichent en direct dans l’onglet Scan.","During the scan, your profile and currencies (Mora, Primogems, Fates, Starglitter, Stardust) appear live in the Scan tab.")+'</span></div>'+'</div></div>';
 }
 function obRender(){
   const names=obNames();
   $("#obRail").innerHTML='<div class="eyebrow">'+L("Guide","Guide")+'</div>'+names.map((n,k)=>'<button class="st'+(k===obStep?' on':k<obStep?' done':'')+'" data-obstep="'+k+'"><span class="n">'+(k<obStep?'<svg class="i"><use href="#i-check"/></svg>':k+1)+'</span>'+n+'</button>').join("");
   $("#obBody").innerHTML='<section class="obp">'+obPanel(obStep)+'</section>';$("#obBody").scrollTop=0;
   $("#obDots").innerHTML=names.map((_,k)=>'<i class="'+(k===obStep?'on':'')+'"></i>').join("");
-  $("#obSkip").textContent=obStep===OB_N-1?"":L("Passer le guide","Skip guide");$("#obSkip").hidden=obStep===OB_N-1;
+  $("#obSkip").textContent=obStep===OB_N-1?L("Terminer","Finish"):L("Passer le guide","Skip guide");
   $("#obBack").textContent=L("Retour","Back");$("#obBack").hidden=obStep===0;
-  $("#obNext").innerHTML=obStep===OB_N-1?L("C’est parti","Let’s go")+' <svg class="i"><use href="#i-arrow"/></svg>':L("Suivant","Next")+' <svg class="i"><use href="#i-arrow"/></svg>';
+  $("#obNext").innerHTML=obStep===OB_N-1?L("Visite de l’écran Scan","Tour of the Scan screen")+' <svg class="i"><use href="#i-arrow"/></svg>':L("Suivant","Next")+' <svg class="i"><use href="#i-arrow"/></svg>';
   obSync();
   clearInterval(obTimer);
   if(obStep===OB_N-1){const li=[...$$("#obHow li")];let h=0;const tickHot=()=>{li.forEach((e,k)=>e.classList.toggle("hot",k===h));h=(h+1)%li.length;};tickHot();obTimer=setInterval(tickHot,2300);}
@@ -875,11 +914,12 @@ function obSync(){
   if($("#ob").hidden)return;const set=S.settings||{};
   $$("#ob [data-obcheck]").forEach(b=>b.classList.toggle("on",!!set[b.dataset.obcheck]));
   const sg=$("#obLanguage");if(sg&&set.language)setSeg(sg,set.language);
+  const dl=$("#obDelay");if(dl&&set.delay!=null)setSeg(dl,set.delay);
 }
 function obOpen(step){obStep=step||0;$("#ob").hidden=false;obRender();$("#obNext").focus();}
 function obClose(){if($("#ob").hidden)return;$("#ob").hidden=true;clearInterval(obTimer);send({cmd:"onboardingDone"});}
 function obGo(n){obStep=Math.max(0,Math.min(OB_N-1,n));obRender();$("#obNext").focus();}
-$("#obNext").onclick=()=>{if(obStep===OB_N-1){obClose();go("scan");}else obGo(obStep+1);};
+$("#obNext").onclick=()=>{if(obStep===OB_N-1){obClose();go("scan");setTimeout(()=>tourStart(),350);}else obGo(obStep+1);};
 $("#obBack").onclick=()=>obGo(obStep-1);
 $("#obSkip").onclick=obClose;
 $("#guideBtn").onclick=()=>obOpen(0);
@@ -896,6 +936,34 @@ document.addEventListener("keydown",e=>{if($("#ob").hidden)return;
   else if(e.key==="Tab"){const f=[...$$("#ob button:not([hidden])")];if(!f.length)return;const i=f.indexOf(document.activeElement);
     if(e.shiftKey&&i<=0){e.preventDefault();f[f.length-1].focus();}else if(!e.shiftKey&&i===f.length-1){e.preventDefault();f[0].focus();}}
 });
+
+// ---------- Visite guidée : zones assombries ----------
+const TOUR=()=>[
+ {sel:"#page-scan .cats",t:L("Ce que Kamera relève","What Kamera reads"),p:L("Cochez les catégories à scanner. Pour un premier essai, laissez tout coché.","Tick the categories to scan. For a first try, leave everything ticked.")},
+ {sel:"#delay",t:L("La vitesse","Speed"),p:L("Modéré convient à la plupart des PC. Passez à Lent si des lectures échouent.","Moderate suits most PCs. Switch to Slow if reads fail.")},
+ {sel:"#goBtn",t:L("Lancer le scan","Start the scan"),p:L("Ouvrez le menu Paimon dans Genshin, cliquez ici, puis revenez au jeu avec Alt+Tab. Entrée arrête le scan.","Open the Paimon menu in Genshin, click here, then go back to the game with Alt+Tab. Enter stops the scan.")},
+ {sel:"#profileCard",t:L("Profil et monnaies","Profile and currencies"),p:L("Pseudo, UID, moras, primogemmes, pierres, astéries et astrions s’allument ici au fil de la lecture.","Name, UID, Mora, Primogems, Fates, Starglitter and Stardust light up here as they are read.")},
+ {sel:"#page-scan .live",t:L("Lecture en direct","Live reading"),p:L("Ce que Kamera voit : l’équipement ou le personnage en cours, et ce qu’il en lit.","What Kamera sees: the current item or character, and what it reads from it.")},
+ {sel:"nav.nav",t:L("Le reste de l’application","The rest of the app"),p:L("Journal pour les erreurs, Options pour les réglages et les touches, Connexion pour relier votre compte, Mon compte pour voir ce que le site a reçu.","Log for errors, Settings for options and keys, Connection to link your account, My account to see what the site received.")}];
+let tourI=0;
+function tourStart(){tourI=0;$("#tour").hidden=false;tourShow(0);}
+function tourStop(){$("#tour").hidden=true;}
+function tourShow(i){const T=TOUR();if(i<0||i>=T.length)return tourStop();tourI=i;const st=T[i],el=$(st.sel);if(!el)return tourStop();
+  el.scrollIntoView({block:"center"});
+  $("#tourK").textContent=L("Visite","Tour")+" · "+(i+1)+"/"+T.length;$("#tourT").textContent=st.t;$("#tourP").textContent=st.p;
+  $("#tourEnd").textContent=L("Quitter","Quit");$("#tourPrev").textContent=L("Retour","Back");$("#tourPrev").hidden=i===0;$("#tourNext").textContent=i===T.length-1?L("Terminer","Finish"):L("Suivant","Next");
+  requestAnimationFrame(()=>tourPlace(el));setTimeout(()=>tourPlace(el),120);$("#tourNext").focus();}
+function tourPlace(el){const r=el.getBoundingClientRect(),sp=$("#tourSpot"),tip=$("#tourTip"),W=innerWidth,H=innerHeight,pad=8;
+  Object.assign(sp.style,{left:r.left-pad+"px",top:r.top-pad+"px",width:r.width+2*pad+"px",height:r.height+2*pad+"px"});
+  const tw=tip.offsetWidth,th=tip.offsetHeight;let x,y;
+  if(r.right+pad+16+tw<=W){x=r.right+pad+16;y=r.top;}
+  else if(r.left-pad-16-tw>=0){x=r.left-pad-16-tw;y=r.top;}
+  else if(r.bottom+pad+16+th<=H){x=r.left;y=r.bottom+pad+16;}
+  else{x=r.left;y=Math.max(12,r.top-pad-16-th);}
+  tip.style.left=Math.max(12,Math.min(W-tw-12,x))+"px";tip.style.top=Math.max(12,Math.min(H-th-12,y))+"px";}
+$("#tourNext").onclick=()=>tourShow(tourI+1);$("#tourPrev").onclick=()=>tourShow(tourI-1);$("#tourEnd").onclick=tourStop;
+addEventListener("resize",()=>{if(!$("#tour").hidden){const el=$(TOUR()[tourI].sel);if(el)tourPlace(el);}});
+document.addEventListener("keydown",e=>{if($("#tour").hidden)return;if(e.key==="Escape"){e.preventDefault();tourStop();}else if(e.key==="ArrowRight")tourShow(tourI+1);else if(e.key==="ArrowLeft")tourShow(tourI-1);});
 
 // ---------- Aperçu hors Windows (navigateur seul) ----------
 function mock(msg){
