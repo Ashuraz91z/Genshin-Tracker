@@ -162,10 +162,13 @@ namespace InventoryKamera
                             UserInterface.AddError("Constellation de " + character.NameGOOD + " incohérente avec ses aptitudes : C0 retenu, à vérifier en jeu.");
                         character.Constellation = 0;
                     }
-                    for (int bonus = 0; bonus < (character.Constellation >= 5 ? 2 : 1); bonus++)
+                    // After the reset above the constellation can be back to C0: no bonus to remove then.
+                    bool traveler = character.NameGOOD.Contains("Traveler");
+                    for (int bonus = 0; character.Constellation >= 3 && bonus < (character.Constellation >= 5 ? 2 : 1); bonus++)
                     {
                         string talent = (string)order[bonus];
-                        if (!string.IsNullOrEmpty(talent) && character.Talents[talent] >= 1)
+                        // The Traveler is never rejected for this: a raised talent shows at least 4, otherwise leave it as read.
+                        if (!string.IsNullOrEmpty(talent) && character.Talents[talent] >= 1 && (!traveler || character.Talents[talent] >= 4))
                             character.Talents[talent] -= 3;
                     }
                 }
