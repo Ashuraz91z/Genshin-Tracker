@@ -399,10 +399,10 @@ details.adv{margin-top:14px}details.adv summary{cursor:pointer;color:var(--dim);
     </div>
     <nav class="nav" aria-label="Sections">
       <button data-page="scan" class="on"><svg class="i"><use href="#i-scan"/></svg>Scan</button>
-      <button data-page="journal"><svg class="i"><use href="#i-log"/></svg>Journal<span class="count" id="logCount"></span></button>
       <button data-page="options"><svg class="i"><use href="#i-gear"/></svg>Options</button>
       <button data-page="connexion"><svg class="i"><use href="#i-link"/></svg>Connexion</button>
       <button data-page="compte"><svg class="i"><use href="#i-user"/></svg>Mon compte</button>
+      <button data-page="journal"><svg class="i"><use href="#i-log"/></svg>Journal<span class="count" id="logCount"></span></button>
     </nav>
     <div class="side-foot">
       <button class="nav-help" id="guideBtn"><svg class="i"><use href="#i-help"/></svg>Guide de démarrage</button>
@@ -419,6 +419,7 @@ details.adv{margin-top:14px}details.adv summary{cursor:pointer;color:var(--dim);
         <p id="subtitle">Relève votre inventaire depuis le jeu, puis l’envoie à votre carnet.</p>
       </div>
       <div class="spacer"></div>
+      <button class="pill glass" id="tourBtn"><svg class="i"><use href="#i-help"/></svg><span>Visite guidée</span></button>
       <span class="pill glass" id="runPill"><span class="dot" id="runDot"></span><span id="runText">Système prêt</span></span>
       <button class="pill glass" id="accountPill" data-goto="connexion"><svg class="i"><use href="#i-user"/></svg><span id="accountText">Non connecté</span></button>
     </header>
@@ -522,20 +523,20 @@ details.adv{margin-top:14px}details.adv summary{cursor:pointer;color:var(--dim);
             <div class="card glass">
               <div class="eyebrow">01 · Équipements</div><h2>Filtres de lecture</h2>
               <p class="help">Les filtres limitent les pièces relevées ; les autres données du compte sont conservées.</p>
-              <div class="form">
+              <div class="form" id="optFilters">
                 <label class="field"><span>Rareté minimale des armes</span><div class="step" data-num="weaponRarity" data-stars><button aria-label="Moins">−</button><output></output><button aria-label="Plus">+</button></div></label>
                 <label class="field"><span>Rareté minimale des artéfacts</span><div class="step" data-num="artifactRarity" data-stars><button aria-label="Moins">−</button><output></output><button aria-label="Plus">+</button></div></label>
                 <label class="field"><span>Niveau minimal des armes</span><div class="step" data-num="weaponLevel"><button aria-label="Moins">−</button><output></output><button aria-label="Plus">+</button></div></label>
                 <label class="field"><span>Niveau minimal des artéfacts</span><div class="step" data-num="artifactLevel"><button aria-label="Moins">−</button><output></output><button aria-label="Plus">+</button></div></label>
               </div>
               <div class="sep"></div>
-              <div class="toggles">
+              <div class="toggles" id="optToggles">
                 <button class="switch" data-check="equipWeapons"><span class="t"><b>Lier les armes</b><small>Retrouve qui porte chaque arme.</small></span><span class="sw"></span></button>
                 <button class="switch" data-check="equipArtifacts"><span class="t"><b>Lier les artéfacts</b><small>Retrouve qui porte chaque artéfact.</small></span><span class="sw"></span></button>
                 <button class="switch" data-check="logScreenshots"><span class="t"><b>Garder les captures</b><small>Utile pour diagnostiquer une lecture ratée.</small></span><span class="sw"></span></button>
               </div>
             </div>
-            <div class="card glass">
+            <div class="card glass" id="optNames">
               <div class="eyebrow">02 · Personnages</div><h2>Noms personnalisés</h2>
               <p class="help">Utilisez les noms visibles dans votre jeu.</p>
               <div class="form">
@@ -550,7 +551,7 @@ details.adv{margin-top:14px}details.adv summary{cursor:pointer;color:var(--dim);
               <p class="help">Kamera lit l’écran dans la langue choisie et utilise vos raccourcis Genshin.</p>
               <div class="label" style="margin-top:20px"><span>Langue du jeu</span></div>
               <div class="seg" id="language"><span class="thumb"></span><button data-v="FR">Français</button><button data-v="EN">English</button></div>
-              <div class="form" style="grid-template-columns:repeat(3,1fr)">
+              <div class="form" id="optKeys" style="grid-template-columns:repeat(3,1fr)">
                 <label class="field"><span>Inventaire</span><input class="input key" data-key="inventory" readonly></label>
                 <label class="field"><span>Personnages</span><input class="input key" data-key="character" readonly></label>
                 <label class="field"><span>Perso 1</span><input class="input key" data-key="slot1" readonly></label>
@@ -558,7 +559,7 @@ details.adv{margin-top:14px}details.adv summary{cursor:pointer;color:var(--dim);
               <p class="help" style="margin-top:10px;font-size:12px">Cliquez sur une case puis appuyez sur la touche voulue.</p>
               <div class="row" style="margin-top:16px"><button class="btn" data-click="gameProcess"><svg class="i"><use href="#i-gear"/></svg>Processus du jeu</button><button class="btn ghost" data-click="referential"><svg class="i"><use href="#i-info"/></svg>Référentiel français</button></div>
             </div>
-            <div class="card glass">
+            <div class="card glass" id="optExports">
               <div class="eyebrow">04 · Exports</div><h2>Fichiers GOOD</h2>
               <p class="help">Chaque scan produit un fichier GOOD et son rapport de lecture.</p>
               <div class="form"><label class="field full"><span>Dossier des exports</span>
@@ -658,7 +659,7 @@ const EN={"FR · TRACKER":"FR · TRACKER","Scan":"Scan","Journal":"Log","Options
 "Personnages":"Characters","lus ce scan":"read this scan","Armes":"Weapons","total inconnu":"total unknown","Artéfacts":"Artifacts","% du jeu":"% of game",
 "Scan local":"Local scan","Préparer le scan":"Prepare the scan","Choisissez ce que Kamera doit relever. Un scan peut viser une seule catégorie.":"Choose what Kamera should read. A scan can target a single category.",
 "Matériaux":"Materials","Profil et monnaies":"Profile and currencies","Lecture du profil et des monnaies…":"Reading profile and currencies…","Matériaux d’évolution":"Ascension materials","Vitesse de navigation":"Navigation speed","Rapide":"Fast","Modéré":"Moderate","Lent":"Slow",
-"Le plus rapide, pour un PC puissant":"Fastest, for a powerful PC","Modéré conseillé":"Moderate recommended","Plus sûr si des lectures échouent":"Safer if reads fail",
+"Le plus rapide, convient à tous les PC":"Fastest, fine on any PC","Modéré conseillé":"Moderate recommended","Plus sûr si des lectures échouent":"Safer if reads fail",
 "Appuyez sur":"Press","Entrée":"Enter","pour arrêter le scan à tout moment":"to stop the scan at any time","Avant de commencer":"Before you start",
 "Ouvrez le menu Paimon dans Genshin (touche Vœux : F3).":"Open the Paimon menu in Genshin (Wish key: F3).","Lancez le scan puis revenez au jeu avec Alt+Tab.":"Start the scan, then go back to the game with Alt+Tab.",
 "Gardez Genshin au premier plan sans toucher la souris.":"Keep Genshin in front and don’t touch the mouse.","Jeu en français":"Game in French","HDR désactivé":"HDR off","16:9 ou 16:10":"16:9 or 16:10","Mode fenêtré":"Windowed mode",
@@ -678,7 +679,7 @@ const EN={"FR · TRACKER":"FR · TRACKER","Scan":"Scan","Journal":"Log","Options
 "Dossier des exports":"Export folder","Parcourir":"Browse","Ouvrir les exports":"Open exports","Exporter vers Optimizer":"Export to Optimizer",
 "Le jeu doit rester en français (ou dans la langue choisie), en 16:9 ou 16:10, HDR désactivé.":"The game must stay in French (or the chosen language), in 16:9 or 16:10, with HDR off.",
 "Guide de démarrage":"Getting started","Compte":"Account","Moras":"Mora","Primogemmes":"Primogems","Pierres de la destinée":"Acquaint Fate","Pierres de la fatalité":"Intertwined Fate","Astéries libres":"Masterless Starglitter","Astrions libres":"Masterless Stardust",
-"Se déconnecter":"Sign out","Serveur personnalisé (avancé)":"Custom server (advanced)","Synchronisation":"Sync","Du jeu à votre carnet":"From the game to your tracker","Connectez-vous une seule fois. Le PC reste relié à votre compte.":"Sign in once. This PC stays linked to your account.",
+"Se déconnecter":"Sign out","Visite guidée":"Guided tour","Serveur personnalisé (avancé)":"Custom server (advanced)","Synchronisation":"Sync","Du jeu à votre carnet":"From the game to your tracker","Connectez-vous une seule fois. Le PC reste relié à votre compte.":"Sign in once. This PC stays linked to your account.",
 "Aucun compte relié":"No account linked","Connectez-vous une seule fois ci-dessous.":"Sign in once below.","Connexion mémorisée sur ce PC.":"Sign-in remembered on this PC.","Accès refusé : ":"Access denied: ",
 "Les exports sont conservés. Reconnectez-vous avant de réessayer l’envoi.":"Exports are kept. Sign in again before retrying the upload.",
 "Changer de compte":"Switch account","Adresse HTTPS du site":"Site HTTPS address","Pseudo du compte du tracker":"Tracker account username","Mot de passe du tracker":"Tracker password",
@@ -734,7 +735,7 @@ function setLang(l){LANG=l==="en"?"en":"fr";document.documentElement.lang=LANG;
 const PAGES = {scan:["Scan","Relève votre inventaire depuis le jeu, puis l’envoie à votre carnet."],journal:["Journal","Tout ce que fait le scanner, ligne par ligne."],
   options:["Options","Réglages du scan, du jeu et des exports."],connexion:["Connexion","Reliez ce PC à votre compte Genshin Tracker."],compte:["Mon compte","Ce que le site a déjà reçu."]};
 function go(p){$$(".nav button").forEach(b=>b.classList.toggle("on",b.dataset.page===p));$$(".page").forEach(s=>s.classList.toggle("on",s.id==="page-"+p));
-  $("#title").textContent=t(PAGES[p][0]);$("#subtitle").textContent=t(PAGES[p][1]);$(".view").scrollTop=0;
+  $("#tourBtn").hidden=!(p==="scan"||p==="options");$("#title").textContent=t(PAGES[p][0]);$("#subtitle").textContent=t(PAGES[p][1]);$(".view").scrollTop=0;
   if(S.settings){setSeg($("#delay"),S.settings.delay);setSeg($("#language"),S.settings.language);}}
 $$(".nav button").forEach(b=>b.onclick=()=>go(b.dataset.page));
 $$("[data-goto]").forEach(b=>b.onclick=()=>go(b.dataset.goto));
@@ -760,7 +761,7 @@ setSeg($("#uiLanguage"),LANG);
   b.addEventListener("click",()=>{if(armed){clearTimeout(armed);armed=null;lab.textContent=t("Se déconnecter");b.classList.remove("danger");send({cmd:"click",id:"signOut"});return;}
     lab.textContent=L("Confirmer la déconnexion","Confirm sign out");b.classList.add("danger");
     armed=setTimeout(()=>{armed=null;lab.textContent=t("Se déconnecter");b.classList.remove("danger");},4000);});})();
-const DELAY=["Le plus rapide, pour un PC puissant","Modéré conseillé","Plus sûr si des lectures échouent"];
+const DELAY=["Le plus rapide, convient à tous les PC","Modéré conseillé","Plus sûr si des lectures échouent"];
 $$("[data-num]").forEach(st=>{const [minus,plus]=st.querySelectorAll("button");
   const bump=d=>{const r=(S.ranges||{})[st.dataset.num]||[0,99];const cur=+st.dataset.value||0;const v=Math.max(r[0],Math.min(r[1],cur+d));if(v===cur)return;setNum(st,v);send({cmd:"set",id:st.dataset.num,value:v});};
   minus.onclick=e=>{e.preventDefault();bump(-1)};plus.onclick=e=>{e.preventDefault();bump(1)};});
@@ -879,7 +880,7 @@ function obPanel(i){
     '<div class="rv" style="--d:4"><div class="label"><span>'+L("2 · Que relever ?","2 · What to read?")+'</span><span>'+L("Tout cocher convient pour un premier scan","Ticking everything is fine for a first scan")+'</span></div><div class="obchips">'+
       [["scanCharacters",L("Personnages","Characters")],["scanWeapons",L("Armes","Weapons")],["scanArtifacts",L("Artéfacts","Artifacts")],["scanMaterials",L("Matériaux","Materials")],["scanProfile",L("Profil et monnaies","Profile and currencies")],["scanDevItems",L("Matériaux d’évolution","Ascension materials")]]
       .map(c=>'<button class="chip" data-obcheck="'+c[0]+'"><span class="box"><svg class="i"><use href="#i-check"/></svg></span>'+c[1]+'</button>').join("")+'</div></div>'+
-    '<div class="rv" style="--d:5"><div class="label"><span>'+L("3 · Vitesse de navigation","3 · Navigation speed")+'</span><span>'+L("Modéré conseillé ; Lent si des lectures échouent","Moderate recommended; Slow if reads fail")+'</span></div><div class="seg" id="obDelay" data-obseg="delay"><span class="thumb"></span><button data-v="0">'+L("Rapide","Fast")+'</button><button data-v="1">'+L("Modéré","Moderate")+'</button><button data-v="2">'+L("Lent","Slow")+'</button></div></div>'+
+    '<div class="rv" style="--d:5"><div class="label"><span>'+L("3 · Vitesse de navigation","3 · Navigation speed")+'</span><span>'+L("Rapide et Modéré marchent sur tous les PC ; Lent seulement si des lectures échouent","Fast and Moderate work on any PC; Slow only if reads fail")+'</span></div><div class="seg" id="obDelay" data-obseg="delay"><span class="thumb"></span><button data-v="0">'+L("Rapide","Fast")+'</button><button data-v="1">'+L("Modéré","Moderate")+'</button><button data-v="2">'+L("Lent","Slow")+'</button></div></div>'+
     '<div class="row rv" style="margin-top:14px;--d:6"><span class="help" style="font-size:12px;color:var(--dim)">'+L("Filtres de rareté, noms du Voyageur, touches, dossier des exports :","Rarity filters, Traveler name, keys, export folder:")+'</span><button class="btn ghost" data-obgo="options">'+L("Ouvrir Options","Open Settings")+'</button></div>';
   if(i===3){const a=(S.account||{});
     return head(L("Étape 3 · Facultatif","Step 3 · Optional"),L("Reliez votre compte Genshin Tracker","Link your Genshin Tracker account"),
@@ -919,7 +920,7 @@ function obSync(){
 function obOpen(step){obStep=step||0;$("#ob").hidden=false;obRender();$("#obNext").focus();}
 function obClose(){if($("#ob").hidden)return;$("#ob").hidden=true;clearInterval(obTimer);send({cmd:"onboardingDone"});}
 function obGo(n){obStep=Math.max(0,Math.min(OB_N-1,n));obRender();$("#obNext").focus();}
-$("#obNext").onclick=()=>{if(obStep===OB_N-1){obClose();go("scan");setTimeout(()=>tourStart(),350);}else obGo(obStep+1);};
+$("#obNext").onclick=()=>{if(obStep===OB_N-1){obClose();go("scan");setTimeout(()=>tourStart("scan"),350);}else obGo(obStep+1);};
 $("#obBack").onclick=()=>obGo(obStep-1);
 $("#obSkip").onclick=obClose;
 $("#guideBtn").onclick=()=>obOpen(0);
@@ -938,20 +939,28 @@ document.addEventListener("keydown",e=>{if($("#ob").hidden)return;
 });
 
 // ---------- Visite guidée : zones assombries ----------
-const TOUR=()=>[
+const TOURS={
+ scan:()=>[
  {sel:"#page-scan .cats",t:L("Ce que Kamera relève","What Kamera reads"),p:L("Cochez les catégories à scanner. Pour un premier essai, laissez tout coché.","Tick the categories to scan. For a first try, leave everything ticked.")},
- {sel:"#delay",t:L("La vitesse","Speed"),p:L("Modéré convient à la plupart des PC. Passez à Lent si des lectures échouent.","Moderate suits most PCs. Switch to Slow if reads fail.")},
+ {sel:"#delay",t:L("La vitesse","Speed"),p:L("Rapide et Modéré fonctionnent sur tous les PC, même anciens. Passez à Lent seulement si des lectures échouent.","Fast and Moderate work on any PC, even older ones. Switch to Slow only if reads fail.")},
  {sel:"#goBtn",t:L("Lancer le scan","Start the scan"),p:L("Ouvrez le menu Paimon dans Genshin, cliquez ici, puis revenez au jeu avec Alt+Tab. Entrée arrête le scan.","Open the Paimon menu in Genshin, click here, then go back to the game with Alt+Tab. Enter stops the scan.")},
  {sel:"#profileCard",t:L("Profil et monnaies","Profile and currencies"),p:L("Pseudo, UID, moras, primogemmes, pierres, astéries et astrions s’allument ici au fil de la lecture.","Name, UID, Mora, Primogems, Fates, Starglitter and Stardust light up here as they are read.")},
  {sel:"#page-scan .live",t:L("Lecture en direct","Live reading"),p:L("Ce que Kamera voit : l’équipement ou le personnage en cours, et ce qu’il en lit.","What Kamera sees: the current item or character, and what it reads from it.")},
- {sel:"nav.nav",t:L("Le reste de l’application","The rest of the app"),p:L("Journal pour les erreurs, Options pour les réglages et les touches, Connexion pour relier votre compte, Mon compte pour voir ce que le site a reçu.","Log for errors, Settings for options and keys, Connection to link your account, My account to see what the site received.")}];
-let tourI=0;
-function tourStart(){tourI=0;$("#tour").hidden=false;tourShow(0);}
+ {sel:"nav.nav",t:L("Le reste de l’application","The rest of the app"),p:L("Options pour les réglages et les touches, Connexion pour relier votre compte, Mon compte pour voir ce que le site a reçu, Journal pour les erreurs.","Settings for options and keys, Connection to link your account, My account for what the site received, Log for errors."),next:"options",nextLabel:L("Visite des Options","Settings tour")}],
+ options:()=>{const r=S.ranges||{},wl=r.weaponLevel||[1,90],al=r.artifactLevel||[0,20];return [
+ {sel:"#optFilters",t:L("Filtres : ce que vous choisissez","Filters: what you choose"),p:L("Rareté de 1 à 5 ★ et niveau minimal ("+wl[0]+" à "+wl[1]+" pour les armes, "+al[0]+" à "+al[1]+" pour les artéfacts) : Kamera ignore ce qui est en dessous. Ex. rareté 5 et niveau "+al[0]+" : seulement vos 5★. Rien n’est supprimé dans le jeu.","Rarity 1 to 5 ★ and minimum level ("+wl[0]+" to "+wl[1]+" for weapons, "+al[0]+" to "+al[1]+" for artifacts): Kamera skips anything below. E.g. rarity 5 and level "+al[0]+": only your 5★. Nothing is deleted in the game.")},
+ {sel:"#optToggles",t:L("Liens et captures","Links and screenshots"),p:L("« Lier » retrouve quel personnage porte chaque arme ou artéfact. « Garder les captures » enregistre les images lues dans le dossier logging, à côté de Kamera : utile pour diagnostiquer, mais ça prend de la place.","“Link” finds which character wears each weapon or artifact. “Keep screenshots” saves the images read in the logging folder next to Kamera: useful for diagnosis, but it takes space.")},
+ {sel:"#optNames",t:L("Noms personnalisés","Custom names"),p:L("Seulement si vous avez renommé le Voyageur ou le Nomade en jeu : saisissez le nom exact. Sinon, laissez vide.","Only if you renamed the Traveler or Wanderer in game: type the exact name. Otherwise leave it empty.")},
+ {sel:"#language",t:L("Langue du jeu","Game language"),p:L("Deux choix seulement : Français ou English. Ce doit être la langue de Genshin, sinon Kamera ne reconnaît pas les textes.","Only two choices: French or English. It must match Genshin’s language, otherwise Kamera can’t recognise the text.")},
+ {sel:"#optKeys",t:L("Touches","Keys"),p:L("Inventaire, personnages, personnage 1 : cliquez sur une case puis appuyez sur la touche utilisée dans Genshin (elles ne se tapent pas comme du texte). La touche des vœux reste F3 et n’est pas modifiable ici.","Inventory, characters, character 1: click a box, then press the key used in Genshin (they aren’t typed like text). The wish key stays F3 and can’t be changed here.")},
+ {sel:"#optExports",t:L("Exports","Exports"),p:L("Dossier où sont écrits les fichiers GOOD et leurs rapports. « Exporter vers Optimizer » peut rester grisé tant qu’aucun scan n’a été fait.","Folder where GOOD files and their reports are written. “Export to Optimizer” may stay greyed out until a scan has been done.")}];}};
+let tourI=0,tourPage="scan";const TOUR=()=>TOURS[tourPage]();
+function tourStart(page){tourPage=page||"scan";tourI=0;$("#tour").hidden=false;tourShow(0);}
 function tourStop(){$("#tour").hidden=true;}
 function tourShow(i){const T=TOUR();if(i<0||i>=T.length)return tourStop();tourI=i;const st=T[i],el=$(st.sel);if(!el)return tourStop();
   el.scrollIntoView({block:"center"});
   $("#tourK").textContent=L("Visite","Tour")+" · "+(i+1)+"/"+T.length;$("#tourT").textContent=st.t;$("#tourP").textContent=st.p;
-  $("#tourEnd").textContent=L("Quitter","Quit");$("#tourPrev").textContent=L("Retour","Back");$("#tourPrev").hidden=i===0;$("#tourNext").textContent=i===T.length-1?L("Terminer","Finish"):L("Suivant","Next");
+  $("#tourEnd").textContent=L("Quitter","Quit");$("#tourPrev").textContent=L("Retour","Back");$("#tourPrev").hidden=i===0;$("#tourNext").textContent=i===T.length-1?(st.nextLabel||L("Terminer","Finish")):L("Suivant","Next");
   requestAnimationFrame(()=>tourPlace(el));setTimeout(()=>tourPlace(el),120);$("#tourNext").focus();}
 function tourPlace(el){const r=el.getBoundingClientRect(),sp=$("#tourSpot"),tip=$("#tourTip"),W=innerWidth,H=innerHeight,pad=8;
   Object.assign(sp.style,{left:r.left-pad+"px",top:r.top-pad+"px",width:r.width+2*pad+"px",height:r.height+2*pad+"px"});
@@ -961,9 +970,9 @@ function tourPlace(el){const r=el.getBoundingClientRect(),sp=$("#tourSpot"),tip=
   else if(r.bottom+pad+16+th<=H){x=r.left;y=r.bottom+pad+16;}
   else{x=r.left;y=Math.max(12,r.top-pad-16-th);}
   tip.style.left=Math.max(12,Math.min(W-tw-12,x))+"px";tip.style.top=Math.max(12,Math.min(H-th-12,y))+"px";}
-$("#tourNext").onclick=()=>tourShow(tourI+1);$("#tourPrev").onclick=()=>tourShow(tourI-1);$("#tourEnd").onclick=tourStop;
+$("#tourNext").onclick=()=>{const st=TOUR()[tourI];if(tourI===TOUR().length-1&&st.next){tourStop();go(st.next);setTimeout(()=>tourStart(st.next),350);}else tourShow(tourI+1);};$("#tourBtn").onclick=()=>tourStart($(".nav button.on").dataset.page);$("#tourPrev").onclick=()=>tourShow(tourI-1);$("#tourEnd").onclick=tourStop;
 addEventListener("resize",()=>{if(!$("#tour").hidden){const el=$(TOUR()[tourI].sel);if(el)tourPlace(el);}});
-document.addEventListener("keydown",e=>{if($("#tour").hidden)return;if(e.key==="Escape"){e.preventDefault();tourStop();}else if(e.key==="ArrowRight")tourShow(tourI+1);else if(e.key==="ArrowLeft")tourShow(tourI-1);});
+document.addEventListener("keydown",e=>{if($("#tour").hidden)return;if(e.key==="Escape"){e.preventDefault();tourStop();}else if(e.key==="ArrowRight")$("#tourNext").click();else if(e.key==="ArrowLeft")tourShow(tourI-1);});
 
 // ---------- Aperçu hors Windows (navigateur seul) ----------
 function mock(msg){
