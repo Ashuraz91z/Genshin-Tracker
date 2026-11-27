@@ -270,7 +270,7 @@ namespace InventoryKamera
 
                         if (!sizes.Contains(Navigation.GetAspectRatio()))
                         {
-                            throw new NotImplementedException($"{Navigation.GetSize().Width}x{Navigation.GetSize().Height} is an unsupported resolution.");
+                            throw new NotImplementedException($"Résolution {Navigation.GetSize().Width}x{Navigation.GetSize().Height} non prise en charge : utilisez le format 16:9 ou 16:10, idéalement 1920x1080 (fenêtre de Genshin, pas l’écran entier si votre écran est ultra-large).");
                         }
 
                         if (Navigation.GetSize() != Navigation.CaptureWindow().Size) throw new FormatException("Window size and screenshot size mismatch. Please make sure the game is not in a fullscreen mode.");

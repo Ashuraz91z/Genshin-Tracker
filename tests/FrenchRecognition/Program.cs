@@ -46,8 +46,9 @@ if(rolls.Count!=3||rolls[0].Key!="hp"||rolls[0].Value!=239||rolls[2].Key!="enerR
 var broken=FrenchRecognition.ReadArtifactSubstats("atk+5,8%\ninconnu+12",Map,failures.Add);
 if(broken.Count!=2||broken[0].Key!="atk_"||broken[1].Key!=""||broken[1].Value!=-1||failures.Count!=1)throw new Exception("Invalid active stats were silently accepted or dropped.");
 failures.Clear();
-if(FrenchRecognition.ReadArtifactSubstats("atk+i,1 %",Map,failures.Add)[0].Key!=""||failures.Count!=1)throw new Exception("Dropped-digit percent must stay an error.");
+if(FrenchRecognition.ReadArtifactSubstats("atk+0,5 %",Map,failures.Add)[0].Key!=""||failures.Count!=1)throw new Exception("Dropped-digit percent must stay an error.");
 failures.Clear();
+if(FrenchRecognition.ReadArtifactSubstats("atk+1,6 %",Map,failures.Add)[0].Value!=1.6m||failures.Count!=0)throw new Exception("3-star percent rolls must be accepted.");
 var ocr=FrenchRecognition.ReadArtifactSubstats("hp+i1,1 %\ndef+16(a\nhp+h9\natk+n,1 %\natk+hi6",Map,failures.Add);
 if(ocr.Count!=4||ocr[0].Key!="hp_"||ocr[0].Value!=11.1m||ocr[1].Value!=19||ocr[2].Key!="atk_"||ocr[2].Value!=11.1m||ocr[3].Value!=16||failures.Count!=0)throw new Exception("OCR digit-1 confusions or truncated inactive marker not handled.");
 failures.Clear();

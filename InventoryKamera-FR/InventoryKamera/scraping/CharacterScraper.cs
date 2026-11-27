@@ -250,7 +250,9 @@ namespace InventoryKamera
 
 						// Find character based on string after /
 						// Long name characters might search by their last name only but it'll still work.
-						name = GenshinProcesor.FindClosestCharacterName(Regex.Replace(split[1], @"[\W]", string.Empty));
+						// Letters like "q" are often misread (Xingqiu, Keqing): after 10 failed tries accept a looser name match;
+						// the element check just below still has to agree, so a wrong character cannot slip through.
+						name = GenshinProcesor.FindClosestCharacterName(Regex.Replace(split[1], @"[\W]", string.Empty), attempts < 10 ? 90 : 75);
 
 						if (!GenshinProcesor.CharacterMatchesElement(name, element)) { name = ""; element = ""; }
                     }
@@ -264,7 +266,7 @@ namespace InventoryKamera
 					}
 					else
                     {
-                        Logger.Debug("Could not parse character name/element (Atempt {0}/{1}). Retrying...", attempts+1, maxAttempts);
+                        Logger.Debug("Could not parse character name/element (Atempt {0}/{1}, OCR : « {2} »). Retrying...", attempts+1, maxAttempts, line);
                         bm.Save($"./logging/characters/{bm.GetHashCode()}.png");
                     }
 				}
