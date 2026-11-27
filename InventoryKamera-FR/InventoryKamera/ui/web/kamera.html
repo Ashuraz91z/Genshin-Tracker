@@ -379,23 +379,10 @@ details.adv{margin-top:14px}details.adv summary{cursor:pointer;color:var(--dim);
 .toast .errs li::before{content:"• ";color:var(--gold)}
 .toast .tr{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
 
-/* ---------- Transition cinématique ---------- */
-.cine{position:fixed;inset:0;z-index:80;display:grid;place-items:center;background:radial-gradient(circle at 50% 50%,#101a33,#050a14 70%);animation:fade .35s var(--ease)}
-.cine.out{animation:cineout .5s var(--ease) forwards}
-@keyframes cineout{to{opacity:0;transform:scale(1.06)}}
-.cine .ring{position:absolute;left:50%;top:50%;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:50%;border:1.5px solid var(--gold);opacity:0;animation:cring 2s var(--ease) infinite}
-.cine .ring:nth-child(2){animation-delay:.45s;border-color:var(--mint)}.cine .ring:nth-child(3){animation-delay:.9s}
-@keyframes cring{0%{transform:scale(.4);opacity:.9}100%{transform:scale(5.5);opacity:0}}
-.cine .core{position:relative;text-align:center}
-.cine .mark{width:74px;height:74px;margin:0 auto 22px;border-radius:24px;display:grid;place-items:center;color:#1a1408;background:conic-gradient(from 210deg,var(--gold),var(--gold-hi),var(--mint),var(--gold));box-shadow:0 0 60px rgba(231,191,124,.6);animation:markspin 2s var(--ease)}
-.cine .mark svg{width:38px;height:38px;stroke-width:2}
-@keyframes markspin{0%{transform:scale(.4) rotate(-90deg);opacity:0}60%{transform:scale(1.08) rotate(6deg);opacity:1}100%{transform:none}}
-.cine h2{margin:0;font:600 34px/1.2 var(--display);letter-spacing:-.5px;overflow:hidden}
-.cine h2 span{display:inline-block;opacity:0;transform:translateY(60%);animation:letter .5s var(--ease) forwards;animation-delay:calc(.35s + var(--i)*28ms)}
-@keyframes letter{to{opacity:1;transform:none}}
-.cine p{margin:10px 0 0;color:var(--muted);font-size:14px;opacity:0;animation:rise .6s .9s var(--ease) forwards}
-.cine .bar{width:220px;height:2px;margin:26px auto 0;border-radius:2px;background:rgba(255,255,255,.1);overflow:hidden}
-.cine .bar i{display:block;height:100%;transform-origin:left;background:linear-gradient(90deg,var(--gold),var(--mint));animation:fill 1.7s .15s linear forwards;transform:scaleX(0)}
+/* ---------- Transition douce ---------- */
+.cine{position:fixed;inset:0;z-index:80;background:rgba(5,9,18,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;animation:cinein .22s var(--ease) forwards;pointer-events:none}
+.cine.out{animation:cineout .38s var(--ease) forwards}
+@keyframes cinein{to{opacity:1}}@keyframes cineout{from{opacity:1}to{opacity:0}}
 
 @media (max-width:1180px){.grid2{grid-template-columns:1fr}.live{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
@@ -908,10 +895,8 @@ function wireDemo(){$$("#obBody .demo video").forEach(v=>{
 // ---------- Transition cinématique ----------
 function cine(title,sub,done){
   if(matchMedia("(prefers-reduced-motion: reduce)").matches){done&&done();return;}
-  const el=document.createElement("div");el.className="cine";el.setAttribute("aria-hidden","true");
-  el.innerHTML='<span class="ring"></span><span class="ring"></span><span class="ring"></span><div class="core"><div class="mark"><svg class="i"><use href="#i-scan"/></svg></div><h2>'+[...title].map((c,i)=>'<span style="--i:'+i+'">'+(c===" "?"&nbsp;":esc(c))+'</span>').join("")+'</h2><p>'+esc(sub)+'</p><div class="bar"><i></i></div></div>';
-  document.body.appendChild(el);
-  setTimeout(()=>{done&&done();el.classList.add("out");setTimeout(()=>el.remove(),520);},1900);}
+  const el=document.createElement("div");el.className="cine";el.setAttribute("aria-hidden","true");document.body.appendChild(el);
+  setTimeout(()=>{done&&done();el.classList.add("out");setTimeout(()=>el.remove(),400);},240);}
 
 // ---------- Bandeau de fin de scan ----------
 let errStart=0,wasRunning=false;
