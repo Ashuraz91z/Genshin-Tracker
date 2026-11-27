@@ -153,6 +153,13 @@ namespace InventoryKamera
                     var order = character.NameGOOD.Contains("Traveler")
                         ? characterData["ConstellationOrder"][character.Element.ToLower()]
                         : characterData["ConstellationOrder"];
+                    // A talent raised by C3/C5 shows at least 4. C6 with such a talent at 1 means no constellation was ever
+                    // detected as active (the loop ran to its end), as seen on a new Pyro Traveler: keep C0 and say so.
+                    if (character.Constellation == 6 && Enumerable.Range(0, 2).Any(k => { string t = (string)order[k]; return !string.IsNullOrEmpty(t) && character.Talents[t] < 4; }))
+                    {
+                        UserInterface.AddError("Constellation de " + character.NameGOOD + " incohérente avec ses aptitudes : C0 retenu, à vérifier en jeu.");
+                        character.Constellation = 0;
+                    }
                     for (int bonus = 0; bonus < (character.Constellation >= 5 ? 2 : 1); bonus++)
                     {
                         string talent = (string)order[bonus];

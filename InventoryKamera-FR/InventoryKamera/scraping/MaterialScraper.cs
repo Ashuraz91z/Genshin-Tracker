@@ -376,6 +376,22 @@ namespace InventoryKamera
                 }
 			}
 			
+			// Nothing readable (seen on 2-star items such as Sealed Scroll, although the digits are clear on the capture):
+			// retry once on the lower half of the tile only, plain dark-on-light digits, no colour filtering.
+			if (counts.Keys.All(k => k == 0))
+			{
+				using (Bitmap lower = quantity.Clone(new Rectangle(0, quantity.Height * 45 / 100, quantity.Width, quantity.Height - quantity.Height * 45 / 100), quantity.PixelFormat))
+				using (Bitmap big = GenshinProcesor.ResizeImage(lower, lower.Width * 3, lower.Height * 3))
+				{
+					Bitmap g = GenshinProcesor.ConvertToGrayscale(big);
+					g = new Threshold(130).Apply(g);
+					string text = GenshinProcesor.AnalyzeText(g, Tesseract.PageSegMode.SingleLine, numbersOnly: true).Trim();
+					g.Dispose();
+					Logger.Debug($"Fallback quantity read: {text}");
+					if (int.TryParse(Regex.Replace(text, @"[^0-9]", string.Empty), out int fallback) && fallback > 0) return fallback;
+				}
+			}
+
 			var nullableMode = SafeExtractMaxCounter(counts);
 			if (nullableMode == null)
 				return 0;
