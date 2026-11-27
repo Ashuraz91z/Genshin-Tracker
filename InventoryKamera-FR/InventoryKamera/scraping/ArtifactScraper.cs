@@ -225,7 +225,7 @@ namespace InventoryKamera
 			return GenshinProcesor.CopyBitmap(card, new Rectangle(
 				x: (int)(card.Width * 0.0405),
 				y: (int)(card.Height * (Navigation.IsNormal ? 0.1722 : 0.1477)),
-				width: (int)(card.Width * 0.4555),
+				width: (int)(card.Width * 0.56), // FR labels ("Bonus de DGT Électro") overflow the old 0.4555
 				height: (int)(card.Height * (Navigation.IsNormal ? 0.0416 : 0.0416))));
         }
 

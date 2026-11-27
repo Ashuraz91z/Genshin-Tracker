@@ -87,14 +87,18 @@ namespace InventoryKamera
                 if(line.Contains(":")||line.Contains("piece")||line.Contains("set")||line.Contains("2-"))break;
                 if(!line.Any(char.IsDigit))continue;
                 // Locked preview rolls are not active substats; do not add their values to the export.
-                if(Regex.IsMatch(line,@"\(a+ctiver\)?$"))continue;
+                // OCR often cuts the marker to "(a" / "(aact", so accept any "(a…" tail.
+                if(Regex.IsMatch(line,@"\(a[a-z]*\)?$"))continue;
                 line=Regex.Replace(line,@"^[^a-zA-Z]*","");
+                // OCR turns 1s into letters: "n" is "11", other glyphs (i l h j t | !) are one "1"; repaired after "+" only.
+                // ("atk+n,1%" -> "11,1%", "atk+hi6" -> "16"). A % roll under 2 still means a dropped digit: error.
+                line=Regex.Replace(line,@"(?<=\+)[^+]*",m=>Regex.Replace(m.Value.Replace("n","11"),@"[ilhjt|!]+","1"));
                 var match=Regex.Match(line,@"^(.*?)(\d+.*)$");
                 string name=Regex.Replace(match.Groups[1].Value,@"[^\w]","");
                 string valueText=match.Groups[2].Value;
                 string key=findStat(name+(valueText.Contains("%")?"%":""))??"";
                 decimal value;
-                if(string.IsNullOrWhiteSpace(key)||!TryReadNumber(valueText,out value)||value<=0)
+                if(string.IsNullOrWhiteSpace(key)||!TryReadNumber(valueText,out value)||value<=0||(valueText.Contains("%")&&value<2))
                 {
                     error("Sous-statistique illisible : « "+raw.Trim()+" ». Cette pièce est exclue de l’export valide.");
                     stats.Add(new KeyValuePair<string,decimal>("",-1));

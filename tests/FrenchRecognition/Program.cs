@@ -40,11 +40,17 @@ foreach (string invalid in new[] { "1232100", "123/100", "12/?", "12/0", "-1/100
 Console.WriteLine("9 checks passed: inventory totals, changed capacity and unreadable counts.");
 
 var failures=new System.Collections.Generic.List<string>();
-string Map(string name)=>new System.Collections.Generic.Dictionary<string,string>{{"hp","hp"},{"hp%","hp_"},{"def","def"},{"critrate%","critRate_"},{"energyrecharge%","enerRech_"},{"atk%","atk_"}}.TryGetValue(name,out var key)?key:null;
+string Map(string name)=>new System.Collections.Generic.Dictionary<string,string>{{"hp","hp"},{"atk","atk"},{"hp%","hp_"},{"def","def"},{"critrate%","critRate_"},{"energyrecharge%","enerRech_"},{"atk%","atk_"}}.TryGetValue(name,out var key)?key:null;
 var rolls=FrenchRecognition.ReadArtifactSubstats("PV sans valeur\nhp+239\nTexte OCR sans nombre\ndef+23\ncritrate+3,5%(aactiver)\nenergyrecharge+5,2%",Map,failures.Add);
 if(rolls.Count!=3||rolls[0].Key!="hp"||rolls[0].Value!=239||rolls[2].Key!="enerRech_"||rolls[2].Value!=5.2m||failures.Count!=0)throw new Exception("Non-stat lines or inactive previews corrupted artifact parsing.");
-var broken=FrenchRecognition.ReadArtifactSubstats("atk+5,8%(a\ninconnu+12",Map,failures.Add);
-if(broken.Count!=2||broken.Any(s=>s.Key!=""||s.Value!=-1)||failures.Count!=2)throw new Exception("Invalid active stats were silently accepted or dropped.");
+var broken=FrenchRecognition.ReadArtifactSubstats("atk+5,8%\ninconnu+12",Map,failures.Add);
+if(broken.Count!=2||broken[0].Key!="atk_"||broken[1].Key!=""||broken[1].Value!=-1||failures.Count!=1)throw new Exception("Invalid active stats were silently accepted or dropped.");
+failures.Clear();
+if(FrenchRecognition.ReadArtifactSubstats("atk+i,1 %",Map,failures.Add)[0].Key!=""||failures.Count!=1)throw new Exception("Dropped-digit percent must stay an error.");
+failures.Clear();
+var ocr=FrenchRecognition.ReadArtifactSubstats("hp+i1,1 %\ndef+16(a\nhp+h9\natk+n,1 %\natk+hi6",Map,failures.Add);
+if(ocr.Count!=4||ocr[0].Key!="hp_"||ocr[0].Value!=11.1m||ocr[1].Value!=19||ocr[2].Key!="atk_"||ocr[2].Value!=11.1m||ocr[3].Value!=16||failures.Count!=0)throw new Exception("OCR digit-1 confusions or truncated inactive marker not handled.");
+failures.Clear();
 var setStop=FrenchRecognition.ReadArtifactSubstats("hp+239\n2-piece: +18% ATK",Map,failures.Add);
 if(setStop.Count!=1)throw new Exception("Set bonuses were parsed as substats.");
 Console.WriteLine("Artifact OCR regressions: non-stat line gaps, inactive rolls, French decimals, truncated suffixes and set boundaries passed.");
