@@ -90,6 +90,8 @@ namespace InventoryKamera
                 // OCR often cuts the marker to "(a" / "(aact", so accept any "(a…" tail.
                 if(Regex.IsMatch(line,@"\(a[a-z]*\)?$"))continue;
                 line=Regex.Replace(line,@"^[^a-zA-Z]*","");
+                // A missing "+" ("defh5" for "DÉF+15"): put it back, turning a "1"-like letter just before the digits into "1".
+                if(!line.Contains("+"))line=Regex.Replace(line,@"^(.*?)([ilhjt|!]*)(\d)",m=>m.Groups[1].Value+"+"+(m.Groups[2].Length>0?"1":"")+m.Groups[3].Value);
                 // OCR turns 1s into letters: "n" is "11", other glyphs (i l h j t | !) are one "1"; repaired after "+" only.
                 // ("atk+n,1%" -> "11,1%", "atk+hi6" -> "16"). A % roll under 1 still means a dropped digit: error (3-star rolls go down to 1.6 %).
                 line=Regex.Replace(line,@"(?<=\+)[^+]*",m=>Regex.Replace(m.Value.Replace("n","11"),@"[ilhjt|!]+","1"));
