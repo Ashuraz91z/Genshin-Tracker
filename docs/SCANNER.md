@@ -29,6 +29,14 @@ Réglages à retenir côté Genshin : résolution **1920 × 1080** (16:9, la con
 
 Pendant un scan avec **Profil et monnaies**, l'onglet Scan affiche en direct le pseudo, l'UID, les moras, les primogemmes, les pierres de la destinée et de la fatalité, les astéries libres et les astrions libres, au fur et à mesure de leur lecture.
 
+## Mises à jour et signalement de bugs
+
+Au démarrage, Kamera consulte les releases publiques du dépôt GitHub (une simple requête, sans donnée personnelle). Si une version plus récente existe, un bouton **Mise à jour** apparaît en haut : il ouvre la page de la release, rien n'est installé automatiquement.
+
+**Signaler un bug** (menu latéral, page Journal, ou bandeau de fin de scan) crée sur le Bureau un ZIP « Kamera-rapport-… » avec la version, vos réglages et les journaux (pseudo, UID et noms du PC masqués), puis ouvre le formulaire GitHub. Joignez le ZIP et dites quel objet est mal lu. Les captures ne sont pas incluses.
+
+Par défaut, Kamera ne garde pas les captures de chaque objet : seules celles des pièces invalides sont conservées. L'option « Garder les captures » (Options) les enregistre toutes, ce qui peut dépasser 500 Mo pour un scan complet ; seule la dernière archive est gardée.
+
 ## Relier le PC au carnet
 
 Créez un compte sur [Genshin Tracker](https://genshin-tracker.com). Dans l’onglet **Connexion** du scanner, renseignez l’adresse du site, votre pseudo et votre mot de passe **du tracker**. Utilisez un mot de passe différent de celui de HoYoverse.

@@ -25,6 +25,8 @@ namespace InventoryKamera
         private readonly Dictionary<string, Image> webImages = new Dictionary<string, Image>();
         private bool connectionEditing;
         private WebView2 web;
+        private UpdateInfo update;
+        private bool updateChecked;
         private Timer webTimer;
         private string lastWebState;
 
@@ -122,6 +124,7 @@ namespace InventoryKamera
                 switch ((string)message["cmd"])
                 {
                     case "ready":
+                        if (!updateChecked) { updateChecked = true; System.Threading.Tasks.Task.Run(async () => update = await Diagnostics.CheckForUpdate()); }
                         lastWebState = null; webLogLength.Clear(); webImages.Clear(); PushWebState();
                         if (webTimer == null)
                         {
@@ -159,6 +162,18 @@ namespace InventoryKamera
                 case "cancelChange": Press(cancelConnectionButton); break;
                 case "gameProcess": updateExecutablesToolStripMenuItem_Click(this, EventArgs.Empty); break;
                 case "referential": DatabaseUpdateMenuItem_Click(this, EventArgs.Empty); break;
+                case "openUpdate": if (update != null) OpenExternal(update.Url); break;
+                case "reportBug":
+                    try
+                    {
+                        string zip = Diagnostics.CreateBugReport(ErrorLog_TextBox.Text, out string issue);
+                        Process.Start(new ProcessStartInfo("explorer.exe", "/select,\"" + zip + "\"") { UseShellExecute = true });
+                        OpenExternal(issue);
+                        Notice("ok", "Rapport prêt sur le Bureau", "Joignez le fichier ZIP à votre signalement GitHub. Pseudo, UID et noms du PC y sont masqués ; relisez-le avant de l’envoyer.");
+                    }
+                    catch (Exception error) when (error is IOException || error is UnauthorizedAccessException || error is InvalidOperationException)
+                    { Notice("bad", "Rapport impossible", error.Message); }
+                    break;
                 case "signOut":
                     if (running || connectionBusy) { UserInterface.Trace("Attendez la fin du scan ou de la connexion avant de vous déconnecter."); break; }
                     ClientSync.SignOut();
@@ -246,6 +261,11 @@ namespace InventoryKamera
             return result;
         }
 
+        private void Notice(string kind, string title, string text)
+        {
+            web?.CoreWebView2?.PostWebMessageAsJson(new JObject { ["type"] = "notice", ["kind"] = kind, ["title"] = title, ["text"] = text }.ToString(Formatting.None));
+        }
+
         // Profil et monnaies lus pendant le scan ; une clé absente = pas encore lue.
         private static JObject ProfileState()
         {
@@ -279,6 +299,7 @@ namespace InventoryKamera
                 ["version"] = Assembly.GetExecutingAssembly().GetName().Version.ToString(3),
                 ["running"] = running,
                 ["onboarded"] = OnboardingDone,
+                ["update"] = update == null ? JValue.CreateNull() : (JToken)new JObject { ["version"] = update.Version, ["url"] = update.Url },
                 ["profile"] = ProfileState(),
                 ["status"] = Tone(ProgramStatus_Label, Color.Empty),
                 ["syncProgress"] = Tone(syncProgressLabel, Muted),

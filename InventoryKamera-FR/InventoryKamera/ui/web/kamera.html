@@ -67,6 +67,7 @@ body.running .orb.b{opacity:.8;animation-duration:12s}
 .side-foot{margin-top:auto;padding:14px 10px 0;border-top:1px solid rgba(255,255,255,.06);font-size:12px;color:var(--dim)}
 .seg.mini{margin-bottom:12px}.seg.mini button{height:28px;font-size:12px;letter-spacing:1px}
 .nav-help{display:flex;align-items:center;gap:10px;width:100%;height:38px;padding:0 10px;margin-bottom:12px;border-radius:12px;color:var(--gold);font-size:13px;font-weight:500;background:rgba(231,191,124,.07);border:1px solid rgba(231,191,124,.2);transition:background .2s}
+.nav-help.quiet{color:var(--muted);background:none;border-color:rgba(255,255,255,.1)}
 .nav-help:hover{background:rgba(231,191,124,.14)}
 .side-foot .ver{font-family:var(--mono);color:var(--muted)}
 
@@ -435,6 +436,7 @@ details.adv{margin-top:14px}details.adv summary{cursor:pointer;color:var(--dim);
       <button data-page="journal"><svg class="i"><use href="#i-log"/></svg>Journal<span class="count" id="logCount"></span></button>
     </nav>
     <div class="side-foot">
+      <button class="nav-help quiet" data-click="reportBug"><svg class="i"><use href="#i-info"/></svg>Signaler un bug</button>
       <button class="nav-help" id="guideBtn"><svg class="i"><use href="#i-help"/></svg>Guide de démarrage</button>
       <div class="seg mini" id="uiLanguage" role="group" aria-label="Langue de l’interface"><span class="thumb"></span><button data-v="fr">FR</button><button data-v="en">EN</button></div>
       <div>Scanner Windows de Genshin Tracker</div>
@@ -449,6 +451,7 @@ details.adv{margin-top:14px}details.adv summary{cursor:pointer;color:var(--dim);
         <p id="subtitle">Relève votre inventaire depuis le jeu, puis l’envoie à votre carnet.</p>
       </div>
       <div class="spacer"></div>
+      <button class="pill glass" id="updatePill" data-click="openUpdate" hidden><svg class="i"><use href="#i-upload"/></svg><span></span></button>
       <button class="pill glass" id="tourBtn"><svg class="i"><use href="#i-help"/></svg><span>Visite guidée</span></button>
       <span class="pill glass" id="runPill"><span class="dot" id="runDot"></span><span id="runText">Système prêt</span></span>
       <button class="pill glass" id="accountPill" data-goto="connexion"><svg class="i"><use href="#i-user"/></svg><span id="accountText">Non connecté</span></button>
@@ -540,7 +543,7 @@ details.adv{margin-top:14px}details.adv summary{cursor:pointer;color:var(--dim);
         <div class="card glass">
           <div class="row" style="justify-content:space-between">
             <div><div class="eyebrow">Diagnostic</div><h2>Journal du scanner</h2><p class="help">Scan, OCR et synchronisation. Les erreurs sont aussi conservées dans le rapport.</p></div>
-            <div class="row"><button class="btn" data-click="copyLog"><svg class="i"><use href="#i-copy"/></svg>Copier</button><button class="btn" data-click="openLogs"><svg class="i"><use href="#i-folder"/></svg>Ouvrir les logs</button></div>
+            <div class="row"><button class="btn" data-click="reportBug"><svg class="i"><use href="#i-info"/></svg>Signaler un bug</button><button class="btn" data-click="copyLog"><svg class="i"><use href="#i-copy"/></svg>Copier</button><button class="btn" data-click="openLogs"><svg class="i"><use href="#i-folder"/></svg>Ouvrir les logs</button></div>
           </div>
           <div class="term tall" id="log-error" data-empty="Le journal est vide."></div>
         </div>
@@ -710,7 +713,7 @@ const EN={"FR · TRACKER":"FR · TRACKER","Scan":"Scan","Journal":"Log","Options
 "Dossier des exports":"Export folder","Parcourir":"Browse","Ouvrir les exports":"Open exports","Exporter vers Optimizer":"Export to Optimizer",
 "Le jeu doit rester en français (ou dans la langue choisie), en 16:9 ou 16:10, HDR désactivé.":"The game must stay in French (or the chosen language), in 16:9 or 16:10, with HDR off.",
 "Guide de démarrage":"Getting started","Compte":"Account","Moras":"Mora","Primogemmes":"Primogems","Pierres de la destinée":"Acquaint Fate","Pierres de la fatalité":"Intertwined Fate","Astéries libres":"Masterless Starglitter","Astrions libres":"Masterless Stardust",
-"Se déconnecter":"Sign out","Visite guidée":"Guided tour","Serveur personnalisé (avancé)":"Custom server (advanced)","Synchronisation":"Sync","Du jeu à votre carnet":"From the game to your tracker","Connectez-vous une seule fois. Le PC reste relié à votre compte.":"Sign in once. This PC stays linked to your account.",
+"Se déconnecter":"Sign out","Signaler un bug":"Report a bug","Visite guidée":"Guided tour","Serveur personnalisé (avancé)":"Custom server (advanced)","Synchronisation":"Sync","Du jeu à votre carnet":"From the game to your tracker","Connectez-vous une seule fois. Le PC reste relié à votre compte.":"Sign in once. This PC stays linked to your account.",
 "Aucun compte relié":"No account linked","Connectez-vous une seule fois ci-dessous.":"Sign in once below.","Connexion mémorisée sur ce PC.":"Sign-in remembered on this PC.","Accès refusé : ":"Access denied: ",
 "Les exports sont conservés. Reconnectez-vous avant de réessayer l’envoi.":"Exports are kept. Sign in again before retrying the upload.",
 "Changer de compte":"Switch account","Adresse HTTPS du site":"Site HTTPS address","Pseudo du compte du tracker":"Tracker account username","Mot de passe du tracker":"Tracker password",
@@ -839,6 +842,7 @@ function render(s){
   if(body.dataset.sig!==sig+LANG){body.dataset.sig=sig+LANG;body.innerHTML=rows.length?rows.map(r=>"<tr>"+r.map(v=>"<td>"+esc(v)+"</td>").join("")+"</tr>").join(""):'<tr><td colspan="6" class="empty-row">'+t("Aucun personnage chargé.")+'</td></tr>';}
   setText($("#history"),t(a.history||""));
   renderProfile(s);obSync();
+  const up=$("#updatePill");up.hidden=!s.update;if(s.update)setText(up.querySelector("span"),L("Mise à jour ","Update ")+s.update.version);
   if(s.onboarded===false&&!obShown){obShown=true;obOpen(0);}
 }
 const esc=v=>String(v==null?"–":v).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -849,7 +853,7 @@ function log(m){const el=$(LOGS[m.id]);if(!el)return;const stick=el.scrollHeight
   if(m.id==="error"){const n=el.textContent.split("\n").filter(Boolean).length;setText($("#logCount"),n?String(n):"");}}
 function image(m){const img=$("#img-"+m.id);if(!img)return;const empty=$("#empty-"+m.id);
   if(m.src){img.src=m.src;img.hidden=false;if(empty)empty.hidden=true;}else{img.hidden=true;img.removeAttribute("src");if(empty)empty.hidden=false;}}
-function onMessage(m){if(!m)return;if(m.type==="state")render(m.state);else if(m.type==="log")log(m);else if(m.type==="image")image(m);else if(m.type==="page")go(m.page);}
+function onMessage(m){if(!m)return;if(m.type==="state")render(m.state);else if(m.type==="log")log(m);else if(m.type==="image")image(m);else if(m.type==="page")go(m.page);else if(m.type==="notice")showToast(m.kind==="bad"?"bad":"ok",m.title,m.text,[]);}
 if(host){host.addEventListener("message",e=>onMessage(e.data));host.postMessage({cmd:"ready"});}
 window.addEventListener("resize",()=>{setSeg($("#uiLanguage"),LANG);if(S.settings){setSeg($("#delay"),S.settings.delay);setSeg($("#language"),S.settings.language);}});
 document.addEventListener("contextmenu",e=>{if(!e.target.closest("input,.term"))e.preventDefault();});
@@ -911,8 +915,8 @@ function showToast(kind,title,sub,items){const t=$("#toast");
   t.className="toast glass "+kind;t.hidden=false;
   t.innerHTML='<div class="th"><span class="ti"><svg class="i"><use href="#'+(kind==="ok"?"i-check":"i-info")+'"/></svg></span><div><b>'+esc(title)+'</b><small>'+esc(sub)+'</small></div></div>'+
     (items.length?'<ul class="errs">'+items.slice(0,40).map(x=>'<li>'+esc(x)+'</li>').join("")+(items.length>40?'<li>… +'+(items.length-40)+'</li>':"")+'</ul>':"")+
-    '<div class="tr">'+(items.length?'<button class="btn" id="toastLog">'+L("Voir le journal","Open log")+'</button>':"")+'<button class="btn primary" id="toastOk">'+L("Compris","Got it")+'</button></div>';
-  $("#toastOk").onclick=()=>{t.hidden=true;};const lg=$("#toastLog");if(lg)lg.onclick=()=>{t.hidden=true;go("journal");};}
+    '<div class="tr">'+(items.length?'<button class="btn" id="toastBug">'+L("Signaler un bug","Report a bug")+'</button><button class="btn" id="toastLog">'+L("Voir le journal","Open log")+'</button>':"")+'<button class="btn primary" id="toastOk">'+L("Compris","Got it")+'</button></div>';
+  $("#toastOk").onclick=()=>{t.hidden=true;};const lg=$("#toastLog");if(lg)lg.onclick=()=>{t.hidden=true;go("journal");};const bg=$("#toastBug");if(bg)bg.onclick=()=>{send({cmd:"click",id:"reportBug"});};}
 function onRunChange(running){
   if(running){errStart=$("#log-error").textContent.length;$("#toast").hidden=true;}
   else if(wasRunning){setTimeout(()=>{

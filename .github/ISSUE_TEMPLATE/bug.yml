@@ -1,0 +1,42 @@
+name: Signaler un bug
+description: Kamera lit mal un objet, plante, ou le site se comporte mal.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Merci de prendre le temps de signaler. **Dans Kamera, le bouton « Signaler un bug »** prépare un ZIP sur le Bureau (version, réglages, journaux ; pseudo, UID et noms du PC masqués) et ouvre ce formulaire. Joignez-le ici par glisser-déposer.
+        Ne publiez jamais de mot de passe, de clé d'accès ni de capture montrant votre UID.
+  - type: input
+    id: version
+    attributes:
+      label: Version de Kamera
+      description: Visible en bas du menu latéral de Kamera.
+      placeholder: "0.7.3"
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Où ?
+      options: [Scanner Kamera, Site genshin-tracker.com, Autre]
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: Que s'est-il passé ?
+      description: Ce que vous attendiez, ce que vous avez obtenu, et sur quel objet (nom de l'artéfact, de l'arme, du personnage) si c'est un scan.
+    validations:
+      required: true
+  - type: textarea
+    id: setup
+    attributes:
+      label: Votre configuration
+      description: Résolution du jeu, HDR activé ou non, langue du jeu, vitesse de navigation.
+      placeholder: "1920x1080, HDR désactivé, jeu en français, vitesse Modéré"
+  - type: textarea
+    id: logs
+    attributes:
+      label: Rapport
+      description: Glissez ici le ZIP « Kamera-rapport-… » (ou collez les lignes d'erreur du journal).
