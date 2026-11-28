@@ -5,7 +5,7 @@ Format libre, du plus récent au plus ancien. Le détail des versions antérieur
 ## Kamera 0.9.0 · site 0.9.0 (28/11/2026)
 
 ### Kamera
-- **Journal de quêtes** : nouvelle case **Quêtes** dans « Préparer le scan », cochable seule (pas besoin d'un scan complet). Kamera ouvre le journal (J) et lit **chaque onglet** (touche E pour passer au suivant) : il remonte en haut de la liste, la lit en entier en la faisant défiler, et s'arrête en retombant sur un onglet déjà lu. Les quêtes présentes dans plusieurs onglets sont fusionnées. Zones calibrées sur une capture 1920×1080 en français, pas encore essayé dans le jeu.
+- **Journal de quêtes** : nouvelle case **Quêtes** dans « Préparer le scan », cochable seule (pas besoin d'un scan complet). Kamera ouvre le journal (J), passe tout de suite l'onglet qui mélange tout, puis lit **chaque onglet de catégorie** (touche E, 4 au plus) : il remonte en haut de la liste, la lit en entier en la faisant défiler, et s'arrête en retombant sur un onglet déjà lu. Les quêtes présentes dans plusieurs onglets sont fusionnées. Zones calibrées sur une capture 1920×1080 en français, pas encore essayé dans le jeu.
 
 ### Site
 - **Panneau « Journal de quêtes »** dans la vue d'ensemble : quêtes faisables maintenant (avec la distance) et quêtes bloquées (« Terminez d'abord les quêtes requises »), par type de quête et chapitre, avec un résumé dans la vue d'ensemble et une page **Quêtes** dans le menu (filtre Toutes / Faisables / Bloquées).

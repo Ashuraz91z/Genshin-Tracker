@@ -8,8 +8,8 @@ using WindowsInput.Native;
 namespace InventoryKamera
 {
     /// <summary>
-    /// Quest log (J): every tab is read in turn (E = next tab). In each tab the list is scrolled back to the top,
-    /// then read page by page while scrolling down.
+    /// Quest log (J): it opens on the tab that mixes every quest type, which is skipped. E goes to each quest-type tab
+    /// (4 according to Lucas, 28/11/2026); in each one the list is scrolled back to the top, then read page by page while scrolling down.
     /// Only raw OCR lines are sent, grouped by tab; the site turns them into quests (web/lib/quests.mjs), so the parsing is tested there.
     /// Regions are in 1280×720 reference coordinates (calibrated on a 1920×1080 French screenshot, 28/11/2026).
     /// </summary>
@@ -22,8 +22,9 @@ namespace InventoryKamera
         internal static List<List<string[]>> Tabs { get; } = new List<List<string[]>>();
         internal static void Reset() => Tabs.Clear();
 
-        // ponytail: fixed scroll steps and caps, calibrate if pages are skipped (too far) or a tab is longer than 30 pages.
-        private const int ScrollTicks = 5, TopTicks = 60, MaxPages = 30, MaxTabs = 8;
+        // ponytail: fixed scroll steps and caps, calibrate if pages are skipped (too far), a tab is longer than 30 pages,
+        // or the game adds a quest-type tab (MaxTabs).
+        private const int ScrollTicks = 5, TopTicks = 60, MaxPages = 30, MaxTabs = 4;
 
         /// <summary>Starts and ends with the Paimon menu open.</summary>
         internal static void Scan()
@@ -40,7 +41,8 @@ namespace InventoryKamera
                 int empty = 0;
                 for (int tab = 0; tab < MaxTabs; tab++)
                 {
-                    if (tab > 0) { Navigation.KeyPress(nextTabKey); Navigation.Wait(1200); }
+                    Navigation.KeyPress(nextTabKey); // the first E leaves the "all quests" tab, which is not read
+                    Navigation.Wait(1200);
                     var pages = ReadTab(list);
                     string first = string.Join("\n", pages.FirstOrDefault() ?? new string[0]);
                     if (first.Length == 0) { if (++empty >= 2) break; continue; } // empty tab; two in a row = nothing left
