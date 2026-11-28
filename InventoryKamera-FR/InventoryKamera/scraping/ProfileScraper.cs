@@ -110,7 +110,7 @@ namespace InventoryKamera
             inventory.Materials.Add(material);
         }
 
-        private static Rectangle Region(int left, int top, int right, int bottom, bool bottomAnchored = false)
+        internal static Rectangle Region(int left, int top, int right, int bottom, bool bottomAnchored = false)
         {
             double height = 720.0;
             if (Navigation.GetAspectRatio() == new Size(8, 5)) { height = 800.0; if (bottomAnchored) { top += 80; bottom += 80; } }

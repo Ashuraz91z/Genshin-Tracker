@@ -1,0 +1,47 @@
+// Quest log read by Kamera (journal J, onglet « En cours ») : pages of raw OCR lines, top to bottom, while scrolling.
+// Card layout: section header, chapter title + subtitle (« Chapitre VII - Acte 1 »), then each quest followed by
+// either its distance (« 11199m », faisable) or a red line (« Terminez d'abord les quêtes requises… », bloquée).
+const section=/^(qu[êe]tes?\s+(d['’]\s*)?(archons?|histoire|monde|légendes?|commissions?|événements?|d['’]?exploration)|(archon|story|world|event|commission)\s+quests?)\b/i;
+const subtitle=/\b(chapitre|chapter|prologue|interm[èeé]de|interlude|acte?|act)\b/i;
+const distance=/^\d[\d\s.,]*\s?m$/i;
+const lock=/terminez|requis|pr[ée]requis|prerequisite|complete the|niv(eau)?\.? d.?aventure|rang d.?aventure|adventure rank|d[ée]bloqu|unlock|disponible|available/i;
+
+// Card icons on the left come out as symbols, a digit or a lone lowercase letter (« 6 Sal Flore »).
+const tidy=l=>l.replace(/^[^\p{L}\d«"']+/u,'').replace(/^(\d{1,2}|\p{Ll})\s+(?=\p{Lu})/u,'').replace(/\s+[^\p{L}\d\s]{1,3}$/u,'').replace(/\s+[QO©@®]$/u,'').replace(/[\s|©@®.,]+$/u,'').trim();
+// Archon chapters number acts in digits (« Acte 1 »), the others in Roman numerals (« Acte I »).
+const subtitleText=l=>l.replace(/(acte?|act)\s*[\]!l|]?$/i,(_,a)=>a+(/^chap/i.test(l)?' 1':' I'));
+const words=l=>l.split(/\s+/).filter(Boolean);
+// Card borders sometimes come out as noise (« RE - Jen Rs Re Len Leone… »).
+const noise=l=>{const w=words(l),letters=(l.match(/\p{L}/gu)??[]).length;
+  return letters<3||letters/l.replace(/\s/g,'').length<0.7||!w.some(x=>x.replace(/[^\p{L}]/gu,'').length>=4)||(w.length>4&&w.filter(x=>x.length<=3).length/w.length>=0.6);};
+const keyOf=q=>[q.section,q.group,q.title].map(x=>(x??'').toLowerCase().replace(/[^\p{L}\d]/gu,'')).join('|');
+
+export function parseQuestPages(pages) {
+  const found=new Map();let current={section:null,group:null};
+  for(const page of pages){
+    let previous=null; // last quest read on this page: distance and lock lines belong to it
+    for(const raw of page){
+      const line=tidy(String(raw));
+      if(!line)continue;
+      if(section.test(line)){current={section:line.replace(/^qu[êe]tes?/i,'Quêtes'),group:null};previous=null;continue;}
+      if(lock.test(line)){if(previous){previous.status='locked';previous.reason=/terminez|requis/i.test(line)?'Terminez d’abord les quêtes requises.':line;}continue;}
+      if(distance.test(line)){if(previous&&previous.status!=='locked'){previous.status='available';previous.distance=Number(line.replace(/\D/g,''));}continue;}
+      if(noise(line))continue;
+      if(subtitle.test(line)&&previous&&!previous.reason&&previous.distance===undefined){
+        // The line before was a chapter title, not a quest.
+        found.delete(previous.key);current={...current,group:previous.title,chapter:subtitleText(line)};previous=null;continue;}
+      const quest={section:current.section,group:current.group,chapter:current.chapter,title:line,status:'available'};
+      quest.key=keyOf(quest);
+      const seen=found.get(quest.key);
+      previous=seen??quest;
+      if(!seen)found.set(quest.key,quest);
+    }
+  }
+  return [...found.values()].map(({key,...q})=>Object.fromEntries(Object.entries(q).filter(([,v])=>v!==undefined&&v!==null)));
+}
+
+export function validateQuestPages(raw) {
+  if(!raw||!Array.isArray(raw.pages))return null;
+  const pages=raw.pages.slice(0,40).filter(Array.isArray).map(p=>p.slice(0,200).map(l=>String(l).slice(0,200)));
+  return pages.length?pages:null;
+}

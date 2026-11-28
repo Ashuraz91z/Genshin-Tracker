@@ -1,3 +1,4 @@
+import { parseQuestPages, validateQuestPages } from './quests.mjs';
 export class Problem extends Error { constructor(message, status=400) { super(message); this.status=status; } }
 const integer = (v,min,max) => Number.isInteger(v) && v>=min && v<=max;
 const substats=new Set(['hp','hp_','atk','atk_','def','def_','enerRech_','eleMas','critRate_','critDMG_']);
@@ -60,10 +61,11 @@ export function validateScan(body,{recoverArtifacts=false}={}) {
   const nickname=typeof raw.profile?.nickname==='string'?raw.profile.nickname.trim().slice(0,40):'',uid=typeof raw.profile?.uid==='string'&&/^\d{9,10}$/.test(raw.profile.uid)?raw.profile.uid:'';
   const rank=integer(raw.profile?.adventureRank,1,60)?raw.profile.adventureRank:null,world=integer(raw.profile?.worldLevel,0,9)?raw.profile.worldLevel:null;
   const profile={...(nickname?{nickname}:{}),...(uid?{uid}:{}),...(rank!==null?{adventureRank:rank}:{}),...(world!==null?{worldLevel:world}:{})};
+  const questPages=validateQuestPages(raw.quests),quests=questPages?parseQuestPages(questPages).slice(0,500):null;
   const expected={};
   for(const category of ['weapons','artifacts']) expected[category]=integer(raw.expectedFromScreen?.[category],0,20000)?raw.expectedFromScreen[category]:null;
   return {scanId:body.scanId,capturedAt:new Date(time).toISOString(),good:cleaned,
-    report:{...(Object.keys(profile).length?{profile}:{}),rejectedArtifacts,errorCount:(Array.isArray(raw.errors)?raw.errors.length:0)+rejectedArtifacts,status:String(raw.status??'imported').slice(0,80),errors,selected,expectedFromScreen:expected,
+    report:{...(Object.keys(profile).length?{profile}:{}),...(quests?.length?{quests}:{}),rejectedArtifacts,errorCount:(Array.isArray(raw.errors)?raw.errors.length:0)+rejectedArtifacts,status:String(raw.status??'imported').slice(0,80),errors,selected,expectedFromScreen:expected,
       events:Array.isArray(raw.events)?raw.events.slice(-500).map(e=>({at:Number.isFinite(Date.parse(e?.at))?new Date(e.at).toISOString():null,message:String(e?.message??'').slice(0,2000)})):[],
       partialCharacters:Array.isArray(raw.partialCharacters)?raw.partialCharacters.slice(0,300).map(c=>({key:String(c?.key??'Inconnu').slice(0,100),level:integer(c?.level,1,100)?c.level:null})):[],completenessVerified:false}};
 }

@@ -18,6 +18,7 @@ import QuickSearch from './QuickSearch';
 import FarmToday from './FarmToday';
 import Primos from './Primos';
 import Resources from './Resources';
+import Quests from './Quests';
 import GameCollection from './GameCollection';
 import Recommendations from './Recommendations';
 import { CvBadge } from './Inventory';
@@ -131,6 +132,7 @@ export default function Tracker({view,characterKey}) {
         
         {view==='overview'&&<section className="overview-content">
           <Resources data={data}/>
+          <Quests quests={data.quests}/>
           {data.characters.length>0&&<FarmToday data={data} catalogue={catalogue} teams={account.customizations?.teams??[]}/>}
           <Primos scanned={data.materials?.Primogem!==undefined?{primos:data.materials.Primogem,fates:data.materials.IntertwinedFate,at:data.profile?.at??data.watermarks?.materials}:null}/>
           <div className="stats-grid">{[['users',data.characters.length,'Personnages','dans votre carnet'],['sword',data.weapons.length,'Armes','relevées'],['flower',data.artifacts.length,'Artéfacts','relevés'],['box',Object.keys(data.materials).length,'Matériaux','types de ressources']].map(([symbol,count,name,note])=><Link href={symbol==='users'?'/characters':'/inventory'} className="stat" key={name}><div className="stat-symbol"><Icon name={symbol}/></div><div><strong>{data.updatedAt?number(count):'—'}</strong><p>{name}</p></div><small>{note}</small></Link>)}</div>

@@ -35,13 +35,14 @@ namespace InventoryKamera
                 selected = new { characters = settings.ScanCharacters, weapons = settings.ScanWeapons, artifacts = settings.ScanArtifacts,
                     materials = settings.ScanMaterials, developmentItems = settings.ScanCharDevItems, profile = settings.ScanProfile },
                 profile = new { nickname = ProfileScraper.Nickname, uid = ProfileScraper.Uid, adventureRank = ProfileScraper.AdventureRank, worldLevel = ProfileScraper.WorldLevel },
+                quests = new { pages = QuestScraper.Pages },
                 counts = new { characters = data.Characters.Count, weapons = data.Inventory.Weapons.Count,
                     artifacts = data.Inventory.Artifacts.Count, materials = data.Inventory.AllMaterials.Count() },
                 expectedFromScreen = new { weapons = ExpectedWeapons, artifacts = ExpectedArtifacts },
                 countsAgree = new { weapons = ExpectedWeapons.HasValue ? (bool?)(ExpectedWeapons.Value == data.Inventory.Weapons.Count) : null,
                     artifacts = ExpectedArtifacts.HasValue ? (bool?)(ExpectedArtifacts.Value == data.Inventory.Artifacts.Count) : null },
                 events = Events.ToArray(), errors = Errors.ToArray(), partialCharacters = PartialCharacters.ToArray(),
-                unsupported = new[] { "quêtes", "succès", "exploration", "événements", "autres onglets d'inventaire" }
+                unsupported = new[] { "succès", "exploration", "événements", "autres onglets d'inventaire" }
             };
             File.WriteAllText(path, JsonConvert.SerializeObject(report, Formatting.Indented));
         }

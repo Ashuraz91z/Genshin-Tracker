@@ -2,6 +2,14 @@
 
 Format libre, du plus récent au plus ancien. Le détail des versions antérieures est dans [docs/HISTORIQUE.md](docs/HISTORIQUE.md).
 
+## Kamera 0.9.0 · site 0.9.0 (28/11/2026)
+
+### Kamera
+- **Journal de quêtes** : avec « Profil et monnaies », Kamera ouvre le journal (J), onglet « En cours », et lit toute la liste en la faisant défiler. Zones calibrées sur une capture 1920×1080 en français, pas encore essayé dans le jeu.
+
+### Site
+- **Panneau « Journal de quêtes »** dans la vue d'ensemble : quêtes faisables maintenant (avec la distance) et quêtes bloquées (« Terminez d'abord les quêtes requises »), par type de quête et chapitre.
+
 ## Kamera 1.0.0 · site 1.0.0 (27/11/2026)
 
 ### Kamera
