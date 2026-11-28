@@ -26,3 +26,12 @@ test('Kamera report pages are validated and parsed into report.quests',async()=>
   assert.equal(scan.report.quests.length,4);
   assert.equal(validateScan({scanId:'q'.repeat(20),capturedAt:new Date().toISOString(),good:{format:'GOOD',version:2,materials:{Mora:1}},report:{}}).report.quests,undefined);
 });
+
+test('a scan with only the quest log is accepted and stored',async()=>{
+  const {openStore}=await import('../store.mjs');const {mkdtempSync}=await import('node:fs');const {tmpdir}=await import('node:os');const {join}=await import('node:path');
+  const store=openStore(join(mkdtempSync(join(tmpdir(),'quests-')),'t.sqlite')),u=store.register('Quetes','quetes-password-123','q@example.test');
+  const result=store.sync(u.id,'PC',{scanId:'r'.repeat(20),capturedAt:new Date().toISOString(),good:{format:'GOOD',version:2},report:{quests:{pages:[page1,page2]}}});
+  assert.deepEqual([result.counts,result.applied],[{quests:4},{quests:'log_replaced'}]);
+  assert.equal(store.account(u).data.quests.list.length,4);
+  store.close();
+});

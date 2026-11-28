@@ -24,7 +24,7 @@ export default function Quests({quests,full=false}) {
   const [filter,setFilter]=useState('all');
   const list=quests?.list??[];
   if(!list.length)return full?<section className="panel" aria-label="Quêtes"><div className="section-heading"><div><span className="eyebrow">JOURNAL DE QUÊTES</span><h2>Aucune quête relevée</h2>
-    <p>Lancez un scan avec Kamera, option « Profil et monnaies » cochée : il lit votre journal de quêtes (touche J, onglet « En cours ») et l’envoie ici.</p></div></div></section>:null;
+    <p>Lancez un scan avec Kamera, case « Quêtes » cochée (seule si vous voulez, sans scan complet) : il lit votre journal de quêtes (touche J, onglet « En cours ») et l’envoie ici.</p></div></div></section>:null;
   const open=list.filter(q=>q.status!=='locked'),locked=list.length-open.length;
   if(!full)return <section className="panel" aria-label="Quêtes en cours"><Heading quests={quests} open={open.length} locked={locked}/>
     {open.length>0&&<ul className={s.tips} aria-label="Quêtes faisables">{open.slice(0,4).map(q=><Item key={q.section+chapter(q)+q.title} q={q} showSection/>)}</ul>}

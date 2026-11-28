@@ -65,7 +65,7 @@ namespace InventoryKamera
             info.AppendLine("Windows : " + Environment.OSVersion.VersionString + (Environment.Is64BitOperatingSystem ? " (64 bits)" : " (32 bits)"));
             try { info.AppendLine("Résolution du jeu : " + Navigation.GetWidth() + "x" + Navigation.GetHeight()); } catch (Exception) { info.AppendLine("Résolution du jeu : inconnue (jeu non détecté)"); }
             info.AppendLine("Langue du jeu : " + (GameLanguage.IsFrench ? "FR" : "EN"));
-            foreach (var name in new[] { "ScannerDelay", "ScanCharacters", "ScanWeapons", "ScanArtifacts", "ScanMaterials", "ScanProfile", "MinimumWeaponRarity", "MinimumArtifactRarity", "LogScreenshots" })
+            foreach (var name in new[] { "ScannerDelay", "ScanCharacters", "ScanWeapons", "ScanArtifacts", "ScanMaterials", "ScanProfile", "ScanQuests", "MinimumWeaponRarity", "MinimumArtifactRarity", "LogScreenshots" })
                 info.AppendLine(name + " = " + settings[name]);
 
             using (var zip = new ZipArchive(File.Create(path), ZipArchiveMode.Create))

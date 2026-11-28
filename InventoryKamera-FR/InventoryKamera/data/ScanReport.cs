@@ -33,7 +33,7 @@ namespace InventoryKamera
                 status = Status, completenessVerified = false, language = GameLanguage.Current,
                 notice = "Scan expérimental : les données absentes ne prouvent pas l'absence d'un objet. Les personnages incomplets restent dans ce rapport, hors export GOOD.",
                 selected = new { characters = settings.ScanCharacters, weapons = settings.ScanWeapons, artifacts = settings.ScanArtifacts,
-                    materials = settings.ScanMaterials, developmentItems = settings.ScanCharDevItems, profile = settings.ScanProfile },
+                    materials = settings.ScanMaterials, developmentItems = settings.ScanCharDevItems, profile = settings.ScanProfile, quests = settings.ScanQuests },
                 profile = new { nickname = ProfileScraper.Nickname, uid = ProfileScraper.Uid, adventureRank = ProfileScraper.AdventureRank, worldLevel = ProfileScraper.WorldLevel },
                 quests = new { pages = QuestScraper.Pages },
                 counts = new { characters = data.Characters.Count, weapons = data.Inventory.Weapons.Count,

@@ -122,6 +122,9 @@ namespace InventoryKamera
 			{
 				UserInterface.SetProgramStatus("Lecture du profil et des monnaies…");
 				ProfileScraper.Scan(Inventory);
+			}
+			if (Properties.Settings.Default.ScanQuests)
+			{
 				UserInterface.SetProgramStatus("Lecture du journal de quêtes…");
 				QuestScraper.Scan();
 			}
