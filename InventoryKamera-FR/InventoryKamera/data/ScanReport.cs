@@ -35,7 +35,7 @@ namespace InventoryKamera
                 selected = new { characters = settings.ScanCharacters, weapons = settings.ScanWeapons, artifacts = settings.ScanArtifacts,
                     materials = settings.ScanMaterials, developmentItems = settings.ScanCharDevItems, profile = settings.ScanProfile, quests = settings.ScanQuests },
                 profile = new { nickname = ProfileScraper.Nickname, uid = ProfileScraper.Uid, adventureRank = ProfileScraper.AdventureRank, worldLevel = ProfileScraper.WorldLevel },
-                quests = new { pages = QuestScraper.Pages },
+                quests = new { tabs = QuestScraper.Tabs },
                 counts = new { characters = data.Characters.Count, weapons = data.Inventory.Weapons.Count,
                     artifacts = data.Inventory.Artifacts.Count, materials = data.Inventory.AllMaterials.Count() },
                 expectedFromScreen = new { weapons = ExpectedWeapons, artifacts = ExpectedArtifacts },

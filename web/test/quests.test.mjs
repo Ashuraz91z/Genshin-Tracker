@@ -35,3 +35,18 @@ test('a scan with only the quest log is accepted and stored',async()=>{
   assert.equal(store.account(u).data.quests.list.length,4);
   store.close();
 });
+
+test('every tab of the log is read on its own and duplicates across tabs are merged',async()=>{
+  const {parseQuestTabs,validateQuestTabs}=await import('../lib/quests.mjs');
+  // Second tab: one quest type only, no section header, starts mid-list; one quest already seen in « En cours ».
+  const archonTab=[["Intermède - Acte 2","$ Sentier périlleux","Intermède - Acte 2","Un touriste inattendu","Terminez d'abord les quêtes requises avant de continuer.",
+    "$ Le chant de la cité","Chapitre VI - Acte 4","Au-delà des nuages","842m"]];
+  const quests=parseQuestTabs([[page1,page2],archonTab]);
+  assert.equal(quests.length,5);
+  const tourist=quests.filter(q=>q.title==='Un touriste inattendu');
+  assert.equal(tourist.length,1);assert.equal(tourist[0].section,"Quêtes d'Archons");
+  assert.deepEqual(quests.at(-1),{group:'Le chant de la cité',chapter:'Chapitre VI - Acte 4',title:'Au-delà des nuages',status:'available',distance:842});
+  // Older 0.9 builds sent one flat list of pages.
+  assert.equal(validateQuestTabs({pages:[page1]}).length,1);
+  assert.equal(validateQuestTabs({tabs:[[],'x']}),null);
+});

@@ -1,4 +1,4 @@
-import { parseQuestPages, validateQuestPages } from './quests.mjs';
+import { parseQuestTabs, validateQuestTabs } from './quests.mjs';
 export class Problem extends Error { constructor(message, status=400) { super(message); this.status=status; } }
 const integer = (v,min,max) => Number.isInteger(v) && v>=min && v<=max;
 const substats=new Set(['hp','hp_','atk','atk_','def','def_','enerRech_','eleMas','critRate_','critDMG_']);
@@ -60,7 +60,7 @@ export function validateScan(body,{recoverArtifacts=false}={}) {
   const nickname=typeof raw.profile?.nickname==='string'?raw.profile.nickname.trim().slice(0,40):'',uid=typeof raw.profile?.uid==='string'&&/^\d{9,10}$/.test(raw.profile.uid)?raw.profile.uid:'';
   const rank=integer(raw.profile?.adventureRank,1,60)?raw.profile.adventureRank:null,world=integer(raw.profile?.worldLevel,0,9)?raw.profile.worldLevel:null;
   const profile={...(nickname?{nickname}:{}),...(uid?{uid}:{}),...(rank!==null?{adventureRank:rank}:{}),...(world!==null?{worldLevel:world}:{})};
-  const questPages=validateQuestPages(raw.quests),quests=questPages?parseQuestPages(questPages).slice(0,500):null;
+  const questTabs=validateQuestTabs(raw.quests),quests=questTabs?parseQuestTabs(questTabs).slice(0,500):null;
   // A scan may hold only the quest log (« Quêtes » ticked alone in Kamera).
   need(Object.keys(cleaned).length>0||quests?.length>0,'Le scan ne contient aucune catégorie exploitable.');
   const expected={};

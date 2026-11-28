@@ -13,7 +13,7 @@ const subtitleText=l=>l.replace(/(acte?|act)\s*[\]!l|]?$/i,(_,a)=>a+(/^chap/i.te
 const words=l=>l.split(/\s+/).filter(Boolean);
 // Card borders sometimes come out as noise (« RE - Jen Rs Re Len Leone… »).
 const noise=l=>{const w=words(l),letters=(l.match(/\p{L}/gu)??[]).length;
-  return letters<3||letters/l.replace(/\s/g,'').length<0.7||!w.some(x=>x.replace(/[^\p{L}]/gu,'').length>=4)||(w.length>4&&w.filter(x=>x.length<=3).length/w.length>=0.6);};
+  return letters<3||letters/l.replace(/\s/g,'').length<0.7||!w.some(x=>x.replace(/[^\p{L}]/gu,'').length>=4)||(w.length>=6&&w.filter(x=>x.length<=3).length/w.length>=0.75);};
 const keyOf=q=>[q.section,q.group,q.title].map(x=>(x??'').toLowerCase().replace(/[^\p{L}\d]/gu,'')).join('|');
 
 export function parseQuestPages(pages) {
@@ -27,7 +27,8 @@ export function parseQuestPages(pages) {
       if(lock.test(line)){if(previous){previous.status='locked';previous.reason=/terminez|requis/i.test(line)?'Terminez d’abord les quêtes requises.':line;}continue;}
       if(distance.test(line)){if(previous&&previous.status!=='locked'){previous.status='available';previous.distance=Number(line.replace(/\D/g,''));}continue;}
       if(noise(line))continue;
-      if(subtitle.test(line)&&previous&&!previous.reason&&previous.distance===undefined){
+      if(subtitle.test(line)&&(!previous||previous.reason||previous.distance!==undefined))continue; // card cut at the top of the page
+      if(subtitle.test(line)){
         // The line before was a chapter title, not a quest.
         found.delete(previous.key);current={...current,group:previous.title,chapter:subtitleText(line)};previous=null;continue;}
       const quest={section:current.section,group:current.group,chapter:current.chapter,title:line,status:'available'};
@@ -40,8 +41,29 @@ export function parseQuestPages(pages) {
   return [...found.values()].map(({key,...q})=>Object.fromEntries(Object.entries(q).filter(([,v])=>v!==undefined&&v!==null)));
 }
 
-export function validateQuestPages(raw) {
-  if(!raw||!Array.isArray(raw.pages))return null;
-  const pages=raw.pages.slice(0,40).filter(Array.isArray).map(p=>p.slice(0,200).map(l=>String(l).slice(0,200)));
-  return pages.length?pages:null;
+// Kamera reads every tab of the log (E = next tab). The same quest can show in several tabs (« En cours » and its own tab,
+// with or without the section header): merged on chapter + title, missing fields filled, a status backed by a distance
+// or a red line wins over a bare one.
+const evidence=q=>q.distance!==undefined||q.reason!==undefined;
+const mergeKey=q=>[q.group,q.title].map(x=>(x??'').toLowerCase().replace(/[^\p{L}\d]/gu,'')).join('|');
+export function parseQuestTabs(tabs) {
+  const merged=new Map();
+  for(const tab of tabs)for(const q of parseQuestPages(tab)){
+    const k=mergeKey(q),old=merged.get(k);
+    if(!old){merged.set(k,q);continue;}
+    const base=!evidence(old)&&evidence(q)?{...old,...q}:{...q,...old};
+    merged.set(k,base);
+  }
+  return [...merged.values()];
+}
+
+/** Kamera 0.9: {tabs:[[page,…],…]}; first 0.9 builds: {pages:[…]} (one tab). */
+export function validateQuestTabs(raw) {
+  if(!raw||typeof raw!=='object')return null;
+  const tabs=Array.isArray(raw.tabs)?raw.tabs:Array.isArray(raw.pages)?[raw.pages]:null;
+  if(!tabs)return null;
+  let budget=120;
+  const clean=tabs.slice(0,8).filter(Array.isArray).map(t=>t.filter(Array.isArray).slice(0,40).filter(()=>budget-->0)
+    .map(p=>p.slice(0,200).map(l=>String(l).slice(0,200))));
+  return clean.some(t=>t.length)?clean:null;
 }
