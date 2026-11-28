@@ -8,7 +8,8 @@ Format libre, du plus récent au plus ancien. Le détail des versions antérieur
 - **Journal de quêtes** : avec « Profil et monnaies », Kamera ouvre le journal (J), onglet « En cours », et lit toute la liste en la faisant défiler. Zones calibrées sur une capture 1920×1080 en français, pas encore essayé dans le jeu.
 
 ### Site
-- **Panneau « Journal de quêtes »** dans la vue d'ensemble : quêtes faisables maintenant (avec la distance) et quêtes bloquées (« Terminez d'abord les quêtes requises »), par type de quête et chapitre.
+- **Panneau « Journal de quêtes »** dans la vue d'ensemble : quêtes faisables maintenant (avec la distance) et quêtes bloquées (« Terminez d'abord les quêtes requises »), par type de quête et chapitre, avec un résumé dans la vue d'ensemble et une page **Quêtes** dans le menu (filtre Toutes / Faisables / Bloquées).
+- Correction : erreur React « deux enfants avec la même clé » sur la page Inventaire (listes déroulantes).
 
 ## Kamera 1.0.0 · site 1.0.0 (27/11/2026)
 
