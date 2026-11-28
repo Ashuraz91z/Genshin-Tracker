@@ -77,7 +77,7 @@ namespace InventoryKamera
             catch (IOException) { }
             catch (UnauthorizedAccessException) { }
             string archive = Path.Combine("./logging/archives", "captures_" + DateTime.Now.ToString("yyyyMMdd_HHmmss_fff"));
-            foreach (string category in new[] { "weapons", "artifacts", "characters", "materials" })
+            foreach (string category in new[] { "weapons", "artifacts", "characters", "materials", "quests" })
             {
                 string path = Path.Combine("./logging", category);
                 if (Directory.Exists(path))

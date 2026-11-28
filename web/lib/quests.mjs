@@ -16,28 +16,30 @@ const noise=l=>{const w=words(l),letters=(l.match(/\p{L}/gu)??[]).length;
   return letters<3||letters/l.replace(/\s/g,'').length<0.7||!w.some(x=>x.replace(/[^\p{L}]/gu,'').length>=4)||(w.length>=6&&w.filter(x=>x.length<=3).length/w.length>=0.75);};
 const keyOf=q=>[q.section,q.group,q.title].map(x=>(x??'').toLowerCase().replace(/[^\p{L}\d]/gu,'')).join('|');
 
-export function parseQuestPages(pages) {
+/** trace (optional): receives one [page, raw line, decision] per line read, to see on the Sync page how each line was understood. */
+export function parseQuestPages(pages,trace=null) {
   const found=new Map();let current={section:null,group:null};
-  for(const page of pages){
+  pages.forEach((page,p)=>{
     let previous=null; // last quest read on this page: distance and lock lines belong to it
     for(const raw of page){
-      const line=tidy(String(raw));
-      if(!line)continue;
-      if(section.test(line)){current={section:line.replace(/^qu[êe]tes?/i,'Quêtes'),group:null};previous=null;continue;}
-      if(lock.test(line)){if(previous){previous.status='locked';previous.reason=/terminez|requis/i.test(line)?'Terminez d’abord les quêtes requises.':line;}continue;}
-      if(distance.test(line)){if(previous&&previous.status!=='locked'){previous.status='available';previous.distance=Number(line.replace(/\D/g,''));}continue;}
-      if(noise(line))continue;
-      if(subtitle.test(line)&&(!previous||previous.reason||previous.distance!==undefined))continue; // card cut at the top of the page
+      const line=tidy(String(raw)),note=kind=>trace?.push([p+1,String(raw),kind]);
+      if(!line){note('vide après nettoyage');continue;}
+      if(section.test(line)){current={section:line.replace(/^qu[êe]tes?/i,'Quêtes'),group:null};previous=null;note(`type de quête : ${current.section}`);continue;}
+      if(lock.test(line)){if(previous){previous.status='locked';previous.reason=/terminez|requis/i.test(line)?'Terminez d’abord les quêtes requises.':line;note(`bloque « ${previous.title} »`);}else note('ligne de blocage sans quête au-dessus (ignorée)');continue;}
+      if(distance.test(line)){if(previous&&previous.status!=='locked'){previous.status='available';previous.distance=Number(line.replace(/\D/g,''));note(`distance de « ${previous.title} »`);}else note('distance sans quête au-dessus (ignorée)');continue;}
+      if(noise(line)){note('bruit (ignoré)');continue;}
+      if(subtitle.test(line)&&(!previous||previous.reason||previous.distance!==undefined)){note('sous-titre sans titre au-dessus, carte coupée (ignoré)');continue;}
       if(subtitle.test(line)){
         // The line before was a chapter title, not a quest.
-        found.delete(previous.key);current={...current,group:previous.title,chapter:subtitleText(line)};previous=null;continue;}
+        found.delete(previous.key);current={...current,group:previous.title,chapter:subtitleText(line)};previous=null;note(`chapitre : « ${current.group} » (${current.chapter}), la ligne d’avant n’était pas une quête`);continue;}
       const quest={section:current.section,group:current.group,chapter:current.chapter,title:line,status:'available'};
       quest.key=keyOf(quest);
       const seen=found.get(quest.key);
       previous=seen??quest;
       if(!seen)found.set(quest.key,quest);
+      note(seen?`quête déjà vue : « ${line} »`:`quête : « ${line} »`);
     }
-  }
+  });
   return [...found.values()].map(({key,...q})=>Object.fromEntries(Object.entries(q).filter(([,v])=>v!==undefined&&v!==null)));
 }
 
@@ -46,14 +48,14 @@ export function parseQuestPages(pages) {
 // or a red line wins over a bare one.
 const evidence=q=>q.distance!==undefined||q.reason!==undefined;
 const mergeKey=q=>[q.group,q.title].map(x=>(x??'').toLowerCase().replace(/[^\p{L}\d]/gu,'')).join('|');
-export function parseQuestTabs(tabs) {
+export function parseQuestTabs(tabs,trace=null) {
   const merged=new Map();
-  for(const tab of tabs)for(const q of parseQuestPages(tab)){
+  for(const [t,tab] of tabs.entries()){const lines=trace?[]:null;const quests=parseQuestPages(tab,lines);lines?.forEach(l=>trace.push([t+1,...l]));for(const q of quests){
     const k=mergeKey(q),old=merged.get(k);
     if(!old){merged.set(k,q);continue;}
     const base=!evidence(old)&&evidence(q)?{...old,...q}:{...q,...old};
     merged.set(k,base);
-  }
+  }}
   return [...merged.values()];
 }
 

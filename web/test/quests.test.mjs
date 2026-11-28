@@ -50,3 +50,11 @@ test('every tab of the log is read on its own and duplicates across tabs are mer
   assert.equal(validateQuestTabs({pages:[page1]}).length,1);
   assert.equal(validateQuestTabs({tabs:[[],'x']}),null);
 });
+
+test('the scan report keeps a line-by-line trace of the quest log for debugging',async()=>{
+  const {validateScan}=await import('../lib/scan.mjs');
+  const scan=validateScan({scanId:'t'.repeat(20),capturedAt:new Date().toISOString(),good:{format:'GOOD',version:2},report:{quests:{tabs:[[page1]]}}});
+  assert.equal(scan.report.questTrace.length,page1.length);
+  assert.deepEqual(scan.report.questTrace[3],[1,1,'| Dans le vent, dans le nord glacial Q','quête : « Dans le vent, dans le nord glacial »']);
+  assert.ok(scan.report.questTrace.some(([, , ,kind])=>kind==='bruit (ignoré)'));
+});
