@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Genshin Tracker — Présentation animée</title>
+<style>
+:root{
+  --bg:#0b1120;--surface:#121c2e;--surface-high:#19253a;--border:#29364b;
+  --text:#edf2f7;--muted:#a6b3c6;--gold:#e7bf7c;--mint:#7ed7bd;
+  --serif:Georgia,'Times New Roman',serif;
+  --sans:Inter,'Segoe UI',system-ui,sans-serif;
+  --ease:cubic-bezier(.2,.7,.1,1);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:var(--sans);overflow:hidden}
+body::before{content:"";position:fixed;inset:-20%;background:
+  radial-gradient(ellipse 60% 50% at 20% 30%,rgba(231,191,124,.10),transparent 70%),
+  radial-gradient(ellipse 50% 45% at 80% 70%,rgba(126,215,189,.08),transparent 70%);
+  animation:drift 24s ease-in-out infinite alternate;pointer-events:none}
+@keyframes drift{to{transform:translate3d(4%,-3%,0) scale(1.05)}}
+
+.stage{position:fixed;inset:0;display:grid;place-items:center;padding:6vmin}
+.scene{position:absolute;inset:0;display:grid;place-items:center;padding:8vmin;opacity:0;visibility:hidden;transition:opacity .6s var(--ease),visibility .6s}
+.scene.on{opacity:1;visibility:visible}
+.center{text-align:center;max-width:980px}
+.eyebrow{font-size:clamp(11px,1.1vw,14px);letter-spacing:.35em;text-transform:uppercase;color:var(--gold);opacity:0;transform:translateY(10px)}
+h1,h2{font-family:var(--serif);font-weight:500;letter-spacing:-.02em;line-height:1.08;margin:.3em 0}
+h1{font-size:clamp(44px,8vw,112px)}
+h2{font-size:clamp(34px,5.4vw,76px)}
+.lead{font-size:clamp(16px,2vw,24px);color:var(--muted);line-height:1.5;max-width:44ch;margin:0 auto}
+.gold{color:var(--gold)}
+
+/* reveal helper: elements with .rv animate in when their scene is on */
+.rv{opacity:0;transform:translateY(24px);transition:opacity .8s var(--ease),transform .8s var(--ease);transition-delay:var(--d,0s)}
+.scene.on .rv{opacity:1;transform:none}
+
+/* ---- Scene 1 : logo ---- */
+.mark-wrap{position:relative;width:clamp(120px,18vw,220px);aspect-ratio:1;margin:0 auto 4vh}
+.mark-wrap svg{width:100%;height:100%;overflow:visible}
+.mark-wrap .frame{stroke-dasharray:200;stroke-dashoffset:200;transition:stroke-dashoffset 1.2s var(--ease) .2s}
+.mark-wrap .star{transform-origin:24px 24px;transform:scale(0) rotate(-90deg);transition:transform 1s var(--ease) .9s}
+.mark-wrap .core{transform:scale(0);transform-origin:24px 24px;transition:transform .6s var(--ease) 1.6s}
+.scene.on .mark-wrap .frame{stroke-dashoffset:0}
+.scene.on .mark-wrap .star{transform:scale(1) rotate(0)}
+.scene.on .mark-wrap .core{transform:scale(1)}
+.mark-wrap .glow{position:absolute;inset:-20%;border-radius:50%;background:radial-gradient(circle,rgba(231,191,124,.35),transparent 65%);opacity:0;transition:opacity 1.6s ease 1.2s;animation:pulse 4s ease-in-out 3s infinite}
+.scene.on .mark-wrap .glow{opacity:1}
+@keyframes pulse{50%{transform:scale(1.12);opacity:.7}}
+.brand-line{font-family:var(--serif);letter-spacing:.12em;font-size:clamp(14px,1.6vw,20px);color:var(--gold)}
+.word{display:inline-block;opacity:0;transform:translateY(40px) rotateX(-40deg);transition:all .7s var(--ease);transition-delay:calc(var(--i)*70ms + 1.4s)}
+.scene.on .word{opacity:1;transform:none}
+
+/* ---- Scene 2 : question ---- */
+.question{font-family:var(--serif);font-size:clamp(40px,7vw,96px);line-height:1.1;margin:0}
+.caret{display:inline-block;width:.06em;height:.9em;background:var(--gold);vertical-align:-.1em;margin-left:.05em;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.answer{margin-top:4vh;display:inline-flex;gap:14px;align-items:center;padding:18px 26px;border:1px solid var(--border);border-radius:16px;background:var(--surface);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.answer .dot{width:12px;height:12px;border-radius:50%;background:var(--mint);box-shadow:0 0 0 6px rgba(126,215,189,.15)}
+.answer span{font-size:clamp(16px,2vw,22px)}
+.answer b{color:var(--gold);font-weight:600}
+
+/* ---- Scene 3 : modules ---- */
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,1.6vw,22px);width:min(1100px,100%);margin-top:3vh}
+.card{position:relative;text-align:left;padding:clamp(18px,2.2vw,28px);border-radius:16px;background:var(--surface);border:1px solid var(--border);overflow:hidden}
+.card::after{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gold);transform:scaleY(0);transform-origin:top;transition:transform .6s var(--ease);transition-delay:var(--d,0s)}
+.scene.on .card::after{transform:scaleY(1)}
+.card .ico{width:38px;height:38px;border-radius:10px;background:var(--surface-high);display:grid;place-items:center;color:var(--gold);font-family:var(--serif);font-size:18px;margin-bottom:14px}
+.card h3{font-family:var(--serif);font-weight:500;font-size:clamp(18px,1.9vw,24px);margin:0 0 6px}
+.card p{margin:0;font-size:clamp(13px,1.2vw,15px);color:var(--muted);line-height:1.5}
+.scene h2 .sub{display:block;font-size:.45em;color:var(--muted);font-family:var(--sans);letter-spacing:0;margin-top:.4em}
+
+/* ---- Scene 4 : flux PC -> carnet ---- */
+.flow{display:flex;align-items:center;justify-content:center;gap:clamp(10px,2vw,28px);flex-wrap:wrap;margin-top:4vh}
+.node{min-width:clamp(150px,22vw,230px);padding:clamp(18px,2.4vw,28px);border-radius:18px;background:var(--surface);border:1px solid var(--border);text-align:left}
+.node .k{font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--gold)}
+.node strong{display:block;font-family:var(--serif);font-weight:500;font-size:clamp(20px,2.4vw,30px);margin:8px 0 4px}
+.node small{color:var(--muted);font-size:13px}
+.link{position:relative;width:clamp(60px,10vw,140px);height:2px;background:var(--border);border-radius:2px;overflow:hidden}
+.link::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,var(--mint),transparent);transform:translateX(-100%);animation:travel 2.4s linear infinite}
+.link.l2::after{animation-delay:1.2s}
+@keyframes travel{to{transform:translateX(100%)}}
+.hint{margin-top:5vh;color:var(--muted);font-size:clamp(14px,1.4vw,17px)}
+
+/* ---- Scene 5 : chiffres ---- */
+.stats{display:flex;gap:clamp(24px,5vw,80px);justify-content:center;flex-wrap:wrap;margin-top:4vh}
+.stat{text-align:center}
+.stat .n{font-family:var(--serif);font-size:clamp(56px,9vw,128px);line-height:1;color:var(--gold);font-variant-numeric:tabular-nums}
+.stat .t{margin-top:10px;color:var(--muted);font-size:clamp(13px,1.3vw,16px);letter-spacing:.04em}
+
+/* ---- Scene 6 : fin ---- */
+.cta{display:inline-flex;align-items:center;gap:10px;margin-top:5vh;padding:16px 30px;border-radius:12px;background:var(--gold);color:var(--bg);font-weight:600;font-size:clamp(15px,1.6vw,19px);text-decoration:none;box-shadow:0 12px 40px rgba(231,191,124,.25);transition:transform .3s var(--ease)}
+.cta:hover{transform:translateY(-2px)}
+.cta:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
+.foot{margin-top:4vh;font-size:13px;color:var(--muted)}
+
+/* ---- Chrome : progression + contrôles ---- */
+.progress{position:fixed;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.06);z-index:5}
+.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--mint))}
+.dots{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:5}
+.dots button{width:10px;height:10px;border-radius:50%;border:1px solid var(--border);background:transparent;padding:0;transition:all .3s}
+.dots button[aria-current="true"]{background:var(--gold);border-color:var(--gold);width:28px;border-radius:6px}
+.dots button:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.hud{position:fixed;top:18px;right:20px;z-index:5;display:flex;gap:8px}
+.hud button{font:inherit;font-size:12px;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 12px}
+.hud button:hover{color:var(--text)}
+.hud button:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+
+/* ---- Réduction des animations ---- */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .rv,.word,.card::after,.mark-wrap .frame,.mark-wrap .star,.mark-wrap .core,.mark-wrap .glow{opacity:1!important;transform:none!important;stroke-dashoffset:0!important}
+  .card::after{transform:none!important}
+}
+@media (max-width:760px){
+  .scene{padding:14vh 6vw 14vh}
+  .grid{grid-template-columns:1fr 1fr;gap:10px}
+  .card{padding:14px}
+  .card .ico{width:30px;height:30px;margin-bottom:8px;font-size:15px}
+  .card h3{font-size:17px;overflow-wrap:anywhere}
+  .card p{font-size:12px}
+  .flow{flex-direction:column}
+  .link{width:2px;height:40px}
+  .link::after{animation-name:travelV}
+}
+@keyframes travelV{to{transform:translateY(100%)}}
+</style>
+</head>
+<body>
+
+<div class="progress" aria-hidden="true"><i id="bar"></i></div>
+<div class="hud">
+  <button id="play" type="button" aria-label="Mettre en pause">Pause</button>
+</div>
+
+<main class="stage" aria-live="off">
+
+  <!-- 1. Logo -->
+  <section class="scene on" data-scene="0" aria-label="Accueil">
+    <div class="center">
+      <div class="mark-wrap" aria-hidden="true">
+        <div class="glow"></div>
+        <svg viewBox="0 0 48 48" fill="none">
+          <rect class="frame" x="1" y="1" width="46" height="46" rx="14" stroke="#36465b" fill="#152238" pathLength="200"/>
+          <path class="star" d="m24 7 4.7 12.3L41 24l-12.3 4.7L24 41l-4.7-12.3L7 24l12.3-4.7L24 7Z" fill="#e7bf7c"/>
+          <path class="core" d="m24 16 2.2 5.8L32 24l-5.8 2.2L24 32l-2.2-5.8L16 24l5.8-2.2L24 16Z" fill="#152238"/>
+          <circle class="core" cx="24" cy="24" r="2" fill="#e7bf7c"/>
+        </svg>
+      </div>
+      <h1 aria-label="Genshin Tracker"><span class="word" style="--i:0">Genshin</span> <span class="word gold" style="--i:1">Tracker</span></h1>
+      <p class="lead rv" style="--d:1.9s">Votre carnet de progression pour Genshin Impact.</p>
+    </div>
+  </section>
+
+  <!-- 2. Question -->
+  <section class="scene" data-scene="1" aria-label="Question du jour">
+    <div class="center">
+      <p class="eyebrow rv">Le problème</p>
+      <h2 class="question" id="q"><span></span><span class="caret"></span></h2>
+      <div class="answer rv" style="--d:2.8s">
+        <span class="dot"></span>
+        <span>Le carnet vous répond : <b>personnage ciblé, ordre concret</b>.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Modules -->
+  <section class="scene" data-scene="2" aria-label="Le carnet">
+    <div class="center" style="width:min(1100px,100%)">
+      <p class="eyebrow rv">Un seul carnet</p>
+      <h2 class="rv" style="--d:.1s">Tout ce que vous suivez, <span class="gold">au même endroit</span></h2>
+      <div class="grid">
+        <div class="card rv" style="--d:.3s"><div class="ico">P</div><h3>Personnages</h3><p>Niveaux, constellations, talents et équipements.</p></div>
+        <div class="card rv" style="--d:.42s"><div class="ico">I</div><h3>Inventaire</h3><p>Armes, artéfacts et matériaux, à filtrer et corriger.</p></div>
+        <div class="card rv" style="--d:.54s"><div class="ico">F</div><h3>Progression</h3><p>Ressources manquantes et activités de farm à lancer.</p></div>
+        <div class="card rv" style="--d:.66s"><div class="ico">E</div><h3>Équipes</h3><p>Composez vos équipes et simulez-les avec gcsim.</p></div>
+        <div class="card rv" style="--d:.78s"><div class="ico">C</div><h3>Collection</h3><p>Comparez le catalogue du jeu à ce que vous possédez.</p></div>
+        <div class="card rv" style="--d:.9s"><div class="ico">S</div><h3>Synchronisation</h3><p>Reliez votre PC et suivez chaque relevé.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Flux -->
+  <section class="scene" data-scene="3" aria-label="Comment ça marche">
+    <div class="center">
+      <p class="eyebrow rv">Le parcours</p>
+      <h2 class="rv" style="--d:.1s">Du jeu au carnet, <span class="gold">en un scan</span></h2>
+      <div class="flow">
+        <div class="node rv" style="--d:.4s"><span class="k">Étape 1</span><strong>Kamera FR</strong><small>Scanner Windows, jeu en français</small></div>
+        <div class="link rv" style="--d:.9s"></div>
+        <div class="node rv" style="--d:1.1s"><span class="k">Étape 2</span><strong>Relevé GOOD</strong><small>Fichier .json du jeu</small></div>
+        <div class="link l2 rv" style="--d:1.6s"></div>
+        <div class="node rv" style="--d:1.8s"><span class="k">Étape 3</span><strong>Votre carnet</strong><small>Consultable partout</small></div>
+      </div>
+      <p class="hint rv" style="--d:2.4s">Sans compte, un fichier GOOD suffit : il reste dans votre navigateur.</p>
+    </div>
+  </section>
+
+  <!-- 5. Chiffres / promesse -->
+  <section class="scene" data-scene="4" aria-label="En bref">
+    <div class="center">
+      <p class="eyebrow rv">En bref</p>
+      <h2 class="rv" style="--d:.1s">Un compte, <span class="gold">une vue d’ensemble</span></h2>
+      <div class="stats">
+        <div class="stat rv" style="--d:.4s"><div class="n">6</div><div class="t">modules dans le carnet</div></div>
+        <div class="stat rv" style="--d:.6s"><div class="n">1</div><div class="t">fichier GOOD pour démarrer</div></div>
+        <div class="stat rv" style="--d:.8s"><div class="n">0</div><div class="t">donnée envoyée sans votre accord en mode visiteur</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Fin -->
+  <section class="scene" data-scene="5" aria-label="Conclusion">
+    <div class="center">
+      <div class="mark-wrap" style="width:clamp(90px,12vw,140px);margin-bottom:3vh" aria-hidden="true">
+        <svg viewBox="0 0 48 48" fill="none">
+          <rect x="1" y="1" width="46" height="46" rx="14" fill="#152238" stroke="#36465b"/>
+          <path class="star rv" d="m24 7 4.7 12.3L41 24l-12.3 4.7L24 41l-4.7-12.3L7 24l12.3-4.7L24 7Z" fill="#e7bf7c"/>
+          <path d="m24 16 2.2 5.8L32 24l-5.8 2.2L24 32l-2.2-5.8L16 24l5.8-2.2L24 16Z" fill="#152238"/>
+          <circle cx="24" cy="24" r="2" fill="#e7bf7c"/>
+        </svg>
+      </div>
+      <h2 class="rv" style="--d:.2s">Votre carnet d’aventure</h2>
+      <p class="lead rv" style="--d:.5s">Prêt à savoir quoi farmer aujourd’hui ?</p>
+      <a class="cta rv" style="--d:.8s" href="https://genshin-tracker.com">Ouvrir genshin-tracker.com →</a>
+      <p class="foot rv" style="--d:1s">© 2026 Lux Audere</p>
+    </div>
+  </section>
+
+</main>
+
+<nav class="dots" aria-label="Scènes"></nav>
+
+<script>
+(() => {
+  const scenes = [...document.querySelectorAll('.scene')];
+  const dotsWrap = document.querySelector('.dots');
+  const bar = document.getElementById('bar');
+  const playBtn = document.getElementById('play');
+  const qEl = document.getElementById('q');
+  const QUESTION = 'Quoi farmer aujourd’hui ?';
+  const DURATIONS = [4200, 4800, 5200, 5000, 4200, 5000]; // ms par scène
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // points de navigation
+  scenes.forEach((_, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.setAttribute('aria-label', 'Scène ' + (i + 1));
+    b.addEventListener('click', () => go(i, true));
+    dotsWrap.appendChild(b);
+  });
+
+  let idx = 0, playing = true, elapsed = 0, last = performance.now(), typed = false, typeTimer = null;
+
+  function typeQuestion() {
+    clearTimeout(typeTimer);
+    const span = qEl.querySelector('span');
+    if (reduced) { span.textContent = QUESTION; return; }
+    span.textContent = '';
+    let k = 0;
+    const step = () => {
+      span.textContent = QUESTION.slice(0, ++k);
+      if (k < QUESTION.length) typeTimer = setTimeout(step, 55);
+    };
+    typeTimer = setTimeout(step, 450);
+  }
+
+  function render() {
+    scenes.forEach((s, i) => s.classList.toggle('on', i === idx));
+    [...dotsWrap.children].forEach((d, i) => d.setAttribute('aria-current', i === idx ? 'true' : 'false'));
+    if (idx === 1) typeQuestion();
+    playBtn.textContent = playing ? 'Pause' : 'Lecture';
+    playBtn.setAttribute('aria-label', playing ? 'Mettre en pause' : 'Reprendre la lecture');
+  }
+
+  function go(i, user) {
+    idx = (i + scenes.length) % scenes.length;
+    elapsed = 0;
+    render();
+  }
+
+  function loop(now) {
+    const dt = now - last; last = now;
+    if (playing) {
+      elapsed += dt;
+      if (elapsed >= DURATIONS[idx]) go(idx + 1);
+    }
+    bar.style.width = (Math.min(elapsed / DURATIONS[idx], 1) * 100) + '%';
+    requestAnimationFrame(loop);
+  }
+
+  playBtn.addEventListener('click', () => { playing = !playing; last = performance.now(); render(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') go(idx + 1);
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') go(idx - 1);
+    else if (e.key === ' ') { e.preventDefault(); playBtn.click(); }
+  });
+  let touchX = null;
+  document.addEventListener('touchstart', (e) => { touchX = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', (e) => {
+    if (touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 40) go(idx + (dx < 0 ? 1 : -1));
+    touchX = null;
+  });
+
+  render();
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
