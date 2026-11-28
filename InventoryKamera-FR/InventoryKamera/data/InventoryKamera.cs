@@ -77,7 +77,7 @@ namespace InventoryKamera
             catch (IOException) { }
             catch (UnauthorizedAccessException) { }
             string archive = Path.Combine("./logging/archives", "captures_" + DateTime.Now.ToString("yyyyMMdd_HHmmss_fff"));
-            foreach (string category in new[] { "weapons", "artifacts", "characters", "materials", "quests" })
+            foreach (string category in new[] { "weapons", "artifacts", "characters", "materials" })
             {
                 string path = Path.Combine("./logging", category);
                 if (Directory.Exists(path))
@@ -117,16 +117,10 @@ namespace InventoryKamera
 
 			// Profile and currencies (Paimon menu, wish screen, character screen)
 			ProfileScraper.Reset();
-			QuestScraper.Reset();
 			if (Properties.Settings.Default.ScanProfile)
 			{
 				UserInterface.SetProgramStatus("Lecture du profil et des monnaies…");
 				ProfileScraper.Scan(Inventory);
-			}
-			if (Properties.Settings.Default.ScanQuests)
-			{
-				UserInterface.SetProgramStatus("Lecture du journal de quêtes…");
-				QuestScraper.Scan();
 			}
 
 			// Assign Traveler's custom name; the Paimon-menu nickname is the Traveler's name when none is set.

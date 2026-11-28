@@ -493,7 +493,6 @@ details.adv{margin-top:14px}details.adv summary{cursor:pointer;color:var(--dim);
                 <button class="chip" data-check="scanMaterials"><span class="box"><svg class="i"><use href="#i-check"/></svg></span>Matériaux</button>
                 <button class="chip" data-check="scanProfile"><span class="box"><svg class="i"><use href="#i-check"/></svg></span>Profil et monnaies</button>
                 <button class="chip" data-check="scanDevItems"><span class="box"><svg class="i"><use href="#i-check"/></svg></span>Matériaux d’évolution</button>
-                <button class="chip wide" data-check="scanQuests"><span class="box"><svg class="i"><use href="#i-check"/></svg></span>Quêtes</button>
               </div>
               <div class="label"><span>Vitesse de navigation</span><span id="delayHelp">Modéré conseillé</span></div>
               <div class="seg" id="delay"><span class="thumb"></span><button data-v="0">Rapide</button><button data-v="1">Modéré</button><button data-v="2">Lent</button></div>
@@ -693,7 +692,7 @@ const EN={"FR · TRACKER":"FR · TRACKER","Scan":"Scan","Journal":"Log","Options
 "Système prêt":"System ready","Scan en cours":"Scanning","Scan en cours…":"Scanning…","Lancer le scan":"Start scan","Prêt":"Ready","Non connecté":"Not connected",
 "Personnages":"Characters","lus ce scan":"read this scan","Armes":"Weapons","total inconnu":"total unknown","Artéfacts":"Artifacts","% du jeu":"% of game",
 "Scan local":"Local scan","Préparer le scan":"Prepare the scan","Choisissez ce que Kamera doit relever. Un scan peut viser une seule catégorie.":"Choose what Kamera should read. A scan can target a single category.",
-"Matériaux":"Materials","Profil et monnaies":"Profile and currencies","Lecture du profil et des monnaies…":"Reading profile and currencies…","Matériaux d’évolution":"Ascension materials","Quêtes":"Quests","Lecture du journal de quêtes…":"Reading the quest log…","Vitesse de navigation":"Navigation speed","Rapide":"Fast","Modéré":"Moderate","Lent":"Slow",
+"Matériaux":"Materials","Profil et monnaies":"Profile and currencies","Lecture du profil et des monnaies…":"Reading profile and currencies…","Matériaux d’évolution":"Ascension materials","Vitesse de navigation":"Navigation speed","Rapide":"Fast","Modéré":"Moderate","Lent":"Slow",
 "Le plus rapide, convient à tous les PC":"Fastest, fine on any PC","Modéré conseillé":"Moderate recommended","Plus sûr si des lectures échouent":"Safer if reads fail",
 "Appuyez sur":"Press","Entrée":"Enter","pour arrêter le scan à tout moment":"to stop the scan at any time","Avant de commencer":"Before you start",
 "Ouvrez le menu Paimon dans Genshin (touche Vœux : F3).":"Open the Paimon menu in Genshin (Wish key: F3).","Lancez le scan puis revenez au jeu avec Alt+Tab.":"Start the scan, then go back to the game with Alt+Tab.",
@@ -954,7 +953,7 @@ function obPanel(i){
       L("Trois réglages avant le premier scan. Vos choix s’enregistrent tout de suite et restent modifiables dans Options.","Three settings before your first scan. Your choices save immediately and stay editable in Settings."))+
     '<div class="rv" style="--d:3"><div class="label" style="margin-top:4px"><span>'+L("1 · Langue du jeu","1 · Game language")+'</span><span>'+L("La même que dans Genshin","Same as in Genshin")+'</span></div><div class="seg" id="obLanguage" data-obseg="language"><span class="thumb"></span><button data-v="FR">Français</button><button data-v="EN">English</button></div></div>'+
     '<div class="rv" style="--d:4"><div class="label"><span>'+L("2 · Que relever ?","2 · What to read?")+'</span><span>'+L("Tout cocher convient pour un premier scan","Ticking everything is fine for a first scan")+'</span></div><div class="obchips">'+
-      [["scanCharacters",L("Personnages","Characters")],["scanWeapons",L("Armes","Weapons")],["scanArtifacts",L("Artéfacts","Artifacts")],["scanMaterials",L("Matériaux","Materials")],["scanProfile",L("Profil et monnaies","Profile and currencies")],["scanDevItems",L("Matériaux d’évolution","Ascension materials")],["scanQuests",L("Quêtes","Quests")]]
+      [["scanCharacters",L("Personnages","Characters")],["scanWeapons",L("Armes","Weapons")],["scanArtifacts",L("Artéfacts","Artifacts")],["scanMaterials",L("Matériaux","Materials")],["scanProfile",L("Profil et monnaies","Profile and currencies")],["scanDevItems",L("Matériaux d’évolution","Ascension materials")]]
       .map(c=>'<button class="chip" data-obcheck="'+c[0]+'"><span class="box"><svg class="i"><use href="#i-check"/></svg></span>'+c[1]+'</button>').join("")+'</div></div>'+
     '<div class="rv" style="--d:5"><div class="label"><span>'+L("3 · Vitesse de navigation","3 · Navigation speed")+'</span><span>'+L("Rapide et Modéré marchent sur tous les PC ; Lent seulement si des lectures échouent","Fast and Moderate work on any PC; Slow only if reads fail")+'</span></div><div class="seg" id="obDelay" data-obseg="delay"><span class="thumb"></span><button data-v="0">'+L("Rapide","Fast")+'</button><button data-v="1">'+L("Modéré","Moderate")+'</button><button data-v="2">'+L("Lent","Slow")+'</button></div></div>'+
     '<div class="row rv" style="margin-top:14px;--d:6"><span class="help" style="font-size:12px;color:var(--dim)">'+L("Filtres de rareté, noms du Voyageur, touches, dossier des exports :","Rarity filters, Traveler name, keys, export folder:")+'</span><button class="btn ghost" data-obgo="options">'+L("Ouvrir Options","Open Settings")+'</button></div>';
@@ -1067,7 +1066,7 @@ if(!host){
   render({version:"0.5.0",onboarded:false,profile:{},running:false,status:{text:"Prêt · ouvrez le menu Paimon avant de lancer le scan",ok:true},syncProgress:{text:"Compte relié : envois automatiques actifs.",ok:true},
     hint:"Aucun scan effectué dans cette session. Les compteurs concernent uniquement ce PC.",
     counts:{characters:"0",weapons:"0",weaponsMax:"?",artifacts:"0",artifactsMax:"?"},
-    settings:{scanCharacters:true,scanWeapons:true,scanArtifacts:true,scanMaterials:false,scanDevItems:false,scanProfile:true,scanQuests:true,delay:"1",language:"FR",uiLanguage:"fr",weaponRarity:3,artifactRarity:4,weaponLevel:1,artifactLevel:0,
+    settings:{scanCharacters:true,scanWeapons:true,scanArtifacts:true,scanMaterials:false,scanDevItems:false,scanProfile:true,delay:"1",language:"FR",uiLanguage:"fr",weaponRarity:3,artifactRarity:4,weaponLevel:1,artifactLevel:0,
       equipWeapons:true,equipArtifacts:true,logScreenshots:false,travelerName:"Lumine",wandererName:"",outputPath:"C:\\Users\\Lucas\\Documents\\GenshinTracker\\exports",siteAddress:"https://genshin-tracker.com",accountName:"Lucas",pairingCode:""},
     ranges:{weaponRarity:[1,5],artifactRarity:[1,5],weaponLevel:[1,90],artifactLevel:[0,20]},keys:{inventory:"B",character:"C",slot1:"1"},
     enabled:{login:true,pair:true,retry:true,refreshAccount:true,exportOptimizer:false,sendFile:true},

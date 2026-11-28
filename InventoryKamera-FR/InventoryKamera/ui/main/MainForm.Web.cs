@@ -43,7 +43,7 @@ namespace InventoryKamera
             ["weaponRarity"] = Bound("MinimumWeaponRarity", WeaponRarityControl), ["artifactRarity"] = Bound("MinimumArtifactRarity", ArtifactRarityControl),
             ["weaponLevel"] = Bound("MinimumWeaponLevel", MinimumWeaponLevelControl), ["artifactLevel"] = Bound("MinimumArtifactLevel", numericUpDown1),
             ["travelerName"] = Bound("TravelerName", travelerNameTextBox), ["wandererName"] = Bound("WandererName", wandererNameTextBox),
-            ["scanProfile"] = Bound("ScanProfile", null), ["scanQuests"] = Bound("ScanQuests", null),
+            ["scanProfile"] = Bound("ScanProfile", null),
         };
         private static KeyValuePair<string, Control> Bound(string setting, Control control) => new KeyValuePair<string, Control>(setting, control);
 

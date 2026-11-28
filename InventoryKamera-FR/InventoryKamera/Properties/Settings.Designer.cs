@@ -134,18 +134,6 @@ namespace InventoryKamera.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ScanQuests {
-            get {
-                return ((bool)(this["ScanQuests"]));
-            }
-            set {
-                this["ScanQuests"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool ScanMaterials {
             get {
                 return ((bool)(this["ScanMaterials"]));

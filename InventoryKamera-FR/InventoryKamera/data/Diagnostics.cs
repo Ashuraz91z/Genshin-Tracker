@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
@@ -66,7 +65,7 @@ namespace InventoryKamera
             info.AppendLine("Windows : " + Environment.OSVersion.VersionString + (Environment.Is64BitOperatingSystem ? " (64 bits)" : " (32 bits)"));
             try { info.AppendLine("Résolution du jeu : " + Navigation.GetWidth() + "x" + Navigation.GetHeight()); } catch (Exception) { info.AppendLine("Résolution du jeu : inconnue (jeu non détecté)"); }
             info.AppendLine("Langue du jeu : " + (GameLanguage.IsFrench ? "FR" : "EN"));
-            foreach (var name in new[] { "ScannerDelay", "ScanCharacters", "ScanWeapons", "ScanArtifacts", "ScanMaterials", "ScanProfile", "ScanQuests", "MinimumWeaponRarity", "MinimumArtifactRarity", "LogScreenshots" })
+            foreach (var name in new[] { "ScannerDelay", "ScanCharacters", "ScanWeapons", "ScanArtifacts", "ScanMaterials", "ScanProfile", "MinimumWeaponRarity", "MinimumArtifactRarity", "LogScreenshots" })
                 info.AppendLine(name + " = " + settings[name]);
 
             using (var zip = new ZipArchive(File.Create(path), ZipArchiveMode.Create))
@@ -78,17 +77,6 @@ namespace InventoryKamera
                 }
                 Add("infos.txt", info.ToString());
                 Add("journal-erreurs.txt", journal);
-                // Quest log debug: steps, OCR text and images of the last scan (images up to ~15 MB).
-                string quests = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logging", "quests");
-                if (Directory.Exists(quests))
-                {
-                    long budget = 15L * 1024 * 1024;
-                    foreach (var file in new DirectoryInfo(quests).GetFiles().OrderBy(f => f.Extension == ".png").ThenBy(f => f.Name))
-                    {
-                        if (file.Extension == ".png") { if (file.Length > budget) continue; budget -= file.Length; using (var input = file.OpenRead()) using (var output = zip.CreateEntry("quetes/" + file.Name).Open()) input.CopyTo(output); }
-                        else Add("quetes/" + file.Name, File.ReadAllText(file.FullName));
-                    }
-                }
                 foreach (var file in new[] { "InventoryKamera.log", "InventoryKamera.debug.log" })
                 {
                     string source = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logging", file);

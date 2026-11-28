@@ -29,9 +29,6 @@
     <Setting Name="ScanProfile" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="ScanQuests" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
     <Setting Name="ScanMaterials" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>

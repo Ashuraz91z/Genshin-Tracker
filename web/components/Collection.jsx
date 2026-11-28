@@ -26,14 +26,8 @@ export function CharacterCard({character,reference={},equipment,onClick}) {
     {reference.portrait?<img src={reference.portrait} alt="" loading="lazy" width="200" height="190"/>:<span className="portrait-initial">{name[0]}</span>}
     <span className="element-badge">{elementName(reference.element)||'Non référencé'}</span></div><div className="character-info"><div className="stars" aria-label={`${reference.rarity??'?'} étoiles`}>{'✦'.repeat(reference.rarity??0)}</div><h3>{name}</h3><div><span>Niv. {character.level}</span><span>C{character.constellation}</span></div>{equipment&&<Loadout equipment={equipment}/>}</div></button>;
 }
-const categories={characters:'Personnages',weapons:'Armes',artifacts:'Artéfacts',materials:'Matériaux',quests:'Quêtes'};
-const outcomes={log_replaced:'journal de quêtes remplacé par ce relevé',partial_merged:'pièces valides fusionnées, pièces précédentes conservées',merged:'données fusionnées',replaced:'inventaire actualisé, compteur concordant',first_partial:'premier relevé partiel enregistré',preserved_previous:'inventaire précédent conservé, scan incomplet',older_scan:'relevé plus ancien, données actuelles conservées',empty_scan:'aucune donnée lisible, données précédentes conservées',manual_replaced:'inventaire remplacé à votre demande, import non vérifié'};
-// Debug: every line Kamera read in the quest log, and what the site understood (lib/quests.mjs).
-function QuestTrace({trace}) {
-  return <details className="scan-details"><summary>Journal de quêtes : lecture ligne par ligne ({number(trace.length)} lignes)</summary>
-    <ol className="scan-timeline" style={{maxHeight:480,listStyle:'none',paddingLeft:0}}>{trace.map(([tab,page,line,kind],i)=><li key={i} style={{opacity:/ignor|bruit|vide/.test(kind)?.6:1}}>
-      <time>onglet {tab} · p. {page}</time>« {line} » → {kind}</li>)}</ol></details>;
-}
+const categories={characters:'Personnages',weapons:'Armes',artifacts:'Artéfacts',materials:'Matériaux'};
+const outcomes={partial_merged:'pièces valides fusionnées, pièces précédentes conservées',merged:'données fusionnées',replaced:'inventaire actualisé, compteur concordant',first_partial:'premier relevé partiel enregistré',preserved_previous:'inventaire précédent conservé, scan incomplet',older_scan:'relevé plus ancien, données actuelles conservées',empty_scan:'aucune donnée lisible, données précédentes conservées',manual_replaced:'inventaire remplacé à votre demande, import non vérifié'};
 export function Activity({scan,details=false,catalogue}) {
   const issue=scan.report.errors.length>0||scan.report.partialCharacters.length>0||['interrupted','failed','finished_with_errors','imported'].includes(scan.report.status)||Object.values(scan.applied).some(v=>['partial_merged','preserved_previous','first_partial','older_scan','empty_scan','manual_replaced'].includes(v));
   const total=Object.entries(scan.counts).map(([key,n])=>`${number(n)} ${categories[key].toLocaleLowerCase('fr')}`).join(' · ');
@@ -44,7 +38,7 @@ export function Activity({scan,details=false,catalogue}) {
       {scan.counts.characters===0&&<li>Aucun personnage valide dans ce fichier. Vérifiez que la catégorie Personnages est cochée et consultez les erreurs OCR.</li>}
       {scan.report.partialCharacters.map((c,i)=><li key={`partial-${i}`}>Personnage incomplet : {catalogue.characters?.[c.key]?.name??c.key}</li>)}
       {scan.report.errors.map((error,i)=><li key={`error-${i}`}>{error}</li>)}
-      {scan.report.errorCount>scan.report.errors.length&&<li>Autres erreurs disponibles dans le rapport local de Kamera.</li>}</ul>{scan.report.events?.length>0&&<><h3>Étapes du scan</h3><ol className="scan-timeline">{scan.report.events.map((event,i)=><li key={i}><time>{event.at?when(event.at):"Heure inconnue"}</time> {event.message}</li>)}</ol></>}{scan.report.questTrace?.length>0&&<QuestTrace trace={scan.report.questTrace}/>}</details>}</>;
+      {scan.report.errorCount>scan.report.errors.length&&<li>Autres erreurs disponibles dans le rapport local de Kamera.</li>}</ul>{scan.report.events?.length>0&&<><h3>Étapes du scan</h3><ol className="scan-timeline">{scan.report.events.map((event,i)=><li key={i}><time>{event.at?when(event.at):"Heure inconnue"}</time> {event.message}</li>)}</ol></>}</details>}</>;
 }
 export const statNames={hp:'PV',hp_:'PV %',atk:'ATQ',atk_:'ATQ %',def:'DÉF',def_:'DÉF %',enerRech_:'Recharge d’énergie',eleMas:'Maîtrise élémentaire',critRate_:'Taux CRIT',critDMG_:'DGT CRIT',heal_:'Bonus de soins',physical_dmg_:'DGT physiques',pyro_dmg_:'Bonus DGT Pyro',hydro_dmg_:'Bonus DGT Hydro',anemo_dmg_:'Bonus DGT Anémo',electro_dmg_:'Bonus DGT Électro',cryo_dmg_:'Bonus DGT Cryo',geo_dmg_:'Bonus DGT Géo',dendro_dmg_:'Bonus DGT Dendro'};
 export const slotNames={flower:'Fleur',plume:'Plume',sands:'Sablier',goblet:'Coupe',circlet:'Couronne'};

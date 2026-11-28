@@ -2,17 +2,6 @@
 
 Format libre, du plus récent au plus ancien. Le détail des versions antérieures est dans [docs/HISTORIQUE.md](docs/HISTORIQUE.md).
 
-## Kamera 0.9.0 · site 0.9.0 (28/11/2026)
-
-### Kamera
-- **Debug du journal de quêtes** : chaque étape (touches, défilement, zone lue, résolution, durée de lecture, part de texte dans l'image, décisions de fin de liste et d'onglet) s'affiche dans le journal de Kamera et dans `logging\quests\etapes.txt`. Chaque page lue est gardée : capture brute (`_brut.png`), image donnée à l'OCR (`_ocr.png`) et texte lu (`.txt`). Le tout est joint au rapport « Signaler un bug ».
-- **Journal de quêtes** : nouvelle case **Quêtes** dans « Préparer le scan », cochable seule (pas besoin d'un scan complet). Kamera ouvre le journal (J), passe tout de suite l'onglet qui mélange tout, puis lit **chaque onglet de catégorie** (touche E, 4 au plus) : il remonte en haut de la liste, la lit en entier en la faisant défiler, et s'arrête en retombant sur un onglet déjà lu. Les quêtes présentes dans plusieurs onglets sont fusionnées. Zones calibrées sur une capture 1920×1080 en français, pas encore essayé dans le jeu.
-
-### Site
-- **Debug** : dans Synchronisation, « Détails du relevé » montre chaque ligne lue par Kamera dans le journal de quêtes et ce que le site en a compris (type, chapitre, quête, blocage, distance, bruit ignoré…).
-- **Panneau « Journal de quêtes »** dans la vue d'ensemble : quêtes faisables maintenant (avec la distance) et quêtes bloquées (« Terminez d'abord les quêtes requises »), par type de quête et chapitre, avec un résumé dans la vue d'ensemble et une page **Quêtes** dans le menu (filtre Toutes / Faisables / Bloquées).
-- Correction : erreur React « deux enfants avec la même clé » sur la page Inventaire (listes déroulantes).
-
 ## Kamera 1.0.0 · site 1.0.0 (27/11/2026)
 
 ### Kamera

@@ -316,7 +316,6 @@ export function openStore(path) {
       }
       const profile=scan.report.profile;
       if(profile&&!(data.profile?.at>scan.capturedAt)){data.profile={...data.profile,...profile,at:scan.capturedAt};}
-      if(scan.report.quests){counts.quests=scan.report.quests.length;if(data.quests?.at>scan.capturedAt)applied.quests='older_scan';else{data.quests={list:scan.report.quests,at:scan.capturedAt};applied.quests='log_replaced';}}
       data.updatedAt=now();
       db.exec('BEGIN IMMEDIATE');
       try {
